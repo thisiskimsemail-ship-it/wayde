@@ -24,45 +24,140 @@
 
     <main class="chat-area" id="chatArea">
         <div class="welcome" id="welcome">
-            <p class="welcome-tagline">Innovation is a mindset, a method and a muscle.</p>
             <h1 class="welcome-title">Meet Wayde</h1>
             <p class="welcome-sub">Your AI innovation coach.</p>
-            <p class="welcome-intro">Bring a challenge, an idea, or just a hunch — and let's think it through together.</p>
+            <p class="welcome-tagline">Innovation is a mindset, a method and a muscle.</p>
+            <p class="welcome-intro">Pick a thinking tool that fits where you are. Work through it in conversation with Wayde — and walk away with a personalised session report.</p>
+
+            <div class="welcome-guide">
+                <span class="guide-item"><span class="guide-signal">Problem unclear?</span> Start with Clarify</span>
+                <span class="guide-sep">·</span>
+                <span class="guide-item"><span class="guide-signal">Ready to generate ideas?</span> Move to Ideate</span>
+                <span class="guide-sep">·</span>
+                <span class="guide-item"><span class="guide-signal">Have an idea to stress-test?</span> Go to Validate</span>
+                <span class="guide-sep">·</span>
+                <span class="guide-item"><span class="guide-signal">Ready to structure it?</span> Try Develop</span>
+            </div>
 
             <div class="welcome-cards">
 
                 <div class="welcome-card card-reframe">
                     <div class="card-header">
                         <span class="card-mode-name">Clarify</span>
-                        <span class="card-mode-desc">Find the real problem</span>
+                        <span class="card-mode-desc">Not sure what's really going on? Start here.</span>
                     </div>
                     <div class="card-exercises">
-                        <button class="card-exercise-btn" data-mode="reframe" data-exercise="five-whys">Five Whys</button>
-                        <button class="card-exercise-btn" data-mode="reframe" data-exercise="hmw">How Might We</button>
+                        <button class="card-exercise-btn" data-mode="reframe" data-exercise="five-whys">
+                            <div class="exercise-header">
+                                <span class="exercise-name">Five Whys</span>
+                                <span class="exercise-time">~15 min</span>
+                            </div>
+                            <p class="exercise-desc">Ask "why?" five times to move past symptoms and find what's really causing the problem. From Toyota's production system, taught at Harvard Business School.</p>
+                        </button>
+                        <button class="card-exercise-btn" data-mode="reframe" data-exercise="jtbd">
+                            <div class="exercise-header">
+                                <span class="exercise-name">Jobs to Be Done</span>
+                                <span class="exercise-time">~20 min</span>
+                            </div>
+                            <p class="exercise-desc">Understand what your customer is actually trying to accomplish. People don't buy products — they hire them to make progress. Clayton Christensen's framework, core to YC's approach.</p>
+                        </button>
+                        <button class="card-exercise-btn" data-mode="reframe" data-exercise="empathy-map">
+                            <div class="exercise-header">
+                                <span class="exercise-name">Empathy Map</span>
+                                <span class="exercise-time">~20 min</span>
+                            </div>
+                            <p class="exercise-desc">Deeply understand your user before defining the problem — what they say, think, do, and feel. The gap between those is where the real opportunity lives. Stanford d.school's Empathise stage.</p>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="welcome-card card-ideate">
+                    <div class="card-header">
+                        <span class="card-mode-name">Ideate</span>
+                        <span class="card-mode-desc">Have a direction? Generate bold ideas before settling on one.</span>
+                    </div>
+                    <div class="card-exercises">
+                        <button class="card-exercise-btn" data-mode="ideate" data-exercise="hmw">
+                            <div class="exercise-header">
+                                <span class="exercise-name">How Might We</span>
+                                <span class="exercise-time">~20 min</span>
+                            </div>
+                            <p class="exercise-desc">Reframe your problem as an opportunity and open up new directions before committing to one. Stanford d.school's bridge between defining a problem and generating solutions.</p>
+                        </button>
+                        <button class="card-exercise-btn" data-mode="ideate" data-exercise="scamper">
+                            <div class="exercise-header">
+                                <span class="exercise-name">SCAMPER</span>
+                                <span class="exercise-time">~20 min</span>
+                            </div>
+                            <p class="exercise-desc">A structured checklist for generating ideas: Substitute, Combine, Adapt, Modify, Put to other uses, Eliminate, Reverse. Alex Osborn's creativity method, widely used in product design.</p>
+                        </button>
+                        <button class="card-exercise-btn" data-mode="ideate" data-exercise="crazy-8s">
+                            <div class="exercise-header">
+                                <span class="exercise-name">Crazy 8s</span>
+                                <span class="exercise-time">~15 min</span>
+                            </div>
+                            <p class="exercise-desc">Generate 8 distinct ideas fast. Forces quantity over quality and breaks your fixation on the first "good" idea. The cornerstone of Google Ventures' Design Sprint methodology.</p>
+                        </button>
                     </div>
                 </div>
 
                 <div class="welcome-card card-debate">
                     <div class="card-header">
-                        <span class="card-mode-name">Test</span>
-                        <span class="card-mode-desc">Poke the weak spots</span>
+                        <span class="card-mode-name">Validate</span>
+                        <span class="card-mode-desc">Have an idea? Stress-test it before you commit to building.</span>
                     </div>
                     <div class="card-exercises">
-                        <button class="card-exercise-btn" data-mode="debate" data-exercise="pre-mortem">Pre-Mortem</button>
-                        <button class="card-exercise-btn" data-mode="debate" data-exercise="devils-advocate">Devil's Advocate</button>
+                        <button class="card-exercise-btn" data-mode="debate" data-exercise="pre-mortem">
+                            <div class="exercise-header">
+                                <span class="exercise-name">Pre-Mortem</span>
+                                <span class="exercise-time">~20 min</span>
+                            </div>
+                            <p class="exercise-desc">Imagine your venture failed. Work backwards to surface the risks you'd miss from an optimistic mindset. Research shows it increases risk identification by 30%.</p>
+                        </button>
+                        <button class="card-exercise-btn" data-mode="debate" data-exercise="devils-advocate">
+                            <div class="exercise-header">
+                                <span class="exercise-name">Devil's Advocate</span>
+                                <span class="exercise-time">~25 min</span>
+                            </div>
+                            <p class="exercise-desc">Stress-test your idea against its sharpest critic. Best used when your team is too aligned — or you need to find the holes before a pitch or major commitment.</p>
+                        </button>
+                        <button class="card-exercise-btn" data-mode="debate" data-exercise="rapid-experiment">
+                            <div class="exercise-header">
+                                <span class="exercise-name">Rapid Experiment</span>
+                                <span class="exercise-time">~20 min</span>
+                            </div>
+                            <p class="exercise-desc">Design the cheapest, fastest test that would kill your riskiest assumption. Validate before you build — the core principle behind Lean Startup.</p>
+                        </button>
                     </div>
                 </div>
 
                 <div class="welcome-card card-framework">
                     <div class="card-header">
-                        <span class="card-mode-name">Build</span>
-                        <span class="card-mode-desc">Shape what comes next</span>
+                        <span class="card-mode-name">Develop</span>
+                        <span class="card-mode-desc">Idea validated? Now structure how you'll build it.</span>
                     </div>
                     <div class="card-exercises">
-                        <button class="card-exercise-btn" data-mode="framework" data-exercise="empathy-map">Empathy Map</button>
-                        <button class="card-exercise-btn" data-mode="framework" data-exercise="lean-canvas">Lean Canvas</button>
-                        <button class="card-exercise-btn" data-mode="framework" data-exercise="effectuation">Effectuation</button>
-                        <button class="card-exercise-btn" data-mode="framework" data-exercise="rapid-experiment">Rapid Experiment</button>
+                        <button class="card-exercise-btn" data-mode="framework" data-exercise="lean-canvas">
+                            <div class="exercise-header">
+                                <span class="exercise-name">Lean Canvas</span>
+                                <span class="exercise-time">~30 min</span>
+                            </div>
+                            <p class="exercise-desc">Your entire business model on one page. Start with the problem, not the solution — then identify which assumptions you're most uncertain about.</p>
+                        </button>
+                        <button class="card-exercise-btn" data-mode="framework" data-exercise="effectuation">
+                            <div class="exercise-header">
+                                <span class="exercise-name">Effectuation</span>
+                                <span class="exercise-time">~20 min</span>
+                            </div>
+                            <p class="exercise-desc">Don't start with a goal — start with what you already have. Expert entrepreneurs build from their own skills, network, and resources. By Saras Sarasvathy.</p>
+                        </button>
+                        <button class="card-exercise-btn" data-mode="framework" data-exercise="analogical">
+                            <div class="exercise-header">
+                                <span class="exercise-name">Analogical Thinking</span>
+                                <span class="exercise-time">~20 min</span>
+                            </div>
+                            <p class="exercise-desc">Borrow solutions from other domains. How did nature solve this? How did another industry handle it? The technique behind many of history's most disruptive innovations — used by IDEO and DARPA.</p>
+                        </button>
                     </div>
                 </div>
 
@@ -82,6 +177,16 @@
                 <img class="report-logo" src="logo.png" alt="Wade Institute">
                 <span>Wade Institute of Entrepreneurship</span>
             </div>
+        </div>
+
+        <!-- Continue to next stage (shown after report) -->
+        <div class="continue-stage hidden" id="continueStage">
+            <button class="continue-stage-btn" id="continueBtn">Continue to next stage →</button>
+        </div>
+
+        <!-- Routing back to tools (shown after Wayde's tool suggestion) -->
+        <div class="routing-back hidden" id="routingBack">
+            <button class="routing-back-btn" id="routingBackBtn">↑ Browse all tools</button>
         </div>
     </main>
 
@@ -117,6 +222,6 @@
         </p>
     </footer>
 
-    <script src="app.js"></script>
+    <script src="app.js?v=7"></script>
 </body>
 </html>

@@ -2,18 +2,31 @@
 const EXERCISE_LABELS = {
     'five-whys': 'Five Whys',
     'hmw': 'How Might We',
+    'jtbd': 'Jobs to Be Done',
+    'scamper': 'SCAMPER',
+    'crazy-8s': 'Crazy 8s',
+    'analogical': 'Analogical Thinking',
     'pre-mortem': 'Pre-Mortem',
     'devils-advocate': "Devil's Advocate",
+    'rapid-experiment': 'Rapid Experiment',
     'empathy-map': 'Empathy Map',
     'lean-canvas': 'Lean Canvas',
-    'effectuation': 'Effectuation',
-    'rapid-experiment': 'Rapid Experiment'
+    'effectuation': 'Effectuation'
 };
 
 const MODE_LABELS = {
     reframe: 'Clarify',
-    debate: 'Test',
-    framework: 'Build'
+    ideate: 'Ideate',
+    debate: 'Validate',
+    framework: 'Develop'
+};
+
+// Next recommended stage after each mode
+const NEXT_STAGE = {
+    reframe:   { mode: 'ideate',     exercise: 'hmw' },
+    ideate:    { mode: 'debate',     exercise: 'pre-mortem' },
+    debate:    { mode: 'framework',  exercise: 'lean-canvas' },
+    framework: null
 };
 
 // === STATE ===
@@ -24,7 +37,9 @@ const state = {
     streaming: false,
     exchangeCount: 0,
     reportGenerated: false,
-    reportText: ''
+    reportText: '',
+    projectContext: [],  // accumulated context from previous stages
+    routing: false       // true when in tool-suggestion mode (no exercise selected)
 };
 
 // === DOM ===
@@ -49,6 +64,10 @@ const reportContent = $('#reportContent');
 const leadModal = $('#leadModal');
 const leadForm = $('#leadForm');
 const leadSubmit = $('#leadSubmit');
+const continueStage = $('#continueStage');
+const continueBtn = $('#continueBtn');
+const routingBack = $('#routingBack');
+const routingBackBtn = $('#routingBackBtn');
 
 // === CARD NAVIGATION ===
 
@@ -67,6 +86,7 @@ function startExercise(mode, exercise) {
     state.exchangeCount = 0;
     state.reportGenerated = false;
     state.reportText = '';
+    state.routing = false;
 
     // Hide welcome, show session bar
     welcome.classList.add('hidden');
@@ -85,6 +105,8 @@ function startExercise(mode, exercise) {
     reportCta.classList.add('hidden');
     reportCard.classList.add('hidden');
     leadModal.classList.add('hidden');
+    continueStage.classList.add('hidden');
+    routingBack.classList.add('hidden');
     inputField.focus();
 }
 
@@ -102,13 +124,56 @@ sessionClose.addEventListener('click', () => {
     welcome.classList.remove('hidden');
     sessionBar.classList.add('hidden');
 
-    // Clear messages, input, and report elements
+    // Clear messages, input, report elements, and project context
     messagesEl.innerHTML = '';
     inputField.value = '';
     modeLabel.textContent = '';
     reportCta.classList.add('hidden');
     reportCard.classList.add('hidden');
     leadModal.classList.add('hidden');
+    continueStage.classList.add('hidden');
+    routingBack.classList.add('hidden');
+    state.projectContext = [];
+    state.routing = false;
+});
+
+// === ROUTING (no tool selected) ===
+
+function startRouting(text) {
+    state.mode = 'routing';
+    state.exercise = 'suggest';
+    state.routing = true;
+    state.messages = [];
+    state.exchangeCount = 0;
+    state.reportGenerated = false;
+    state.reportText = '';
+
+    welcome.classList.add('hidden');
+    routingBack.classList.add('hidden');
+
+    state.messages.push({ role: 'user', content: text });
+    appendMessage('user', text);
+
+    inputField.value = '';
+    inputField.style.height = 'auto';
+
+    streamResponse();
+}
+
+routingBackBtn.addEventListener('click', () => {
+    state.mode = null;
+    state.exercise = null;
+    state.messages = [];
+    state.exchangeCount = 0;
+    state.reportGenerated = false;
+    state.reportText = '';
+    state.routing = false;
+
+    welcome.classList.remove('hidden');
+    messagesEl.innerHTML = '';
+    inputField.value = '';
+    routingBack.classList.add('hidden');
+    chatArea.scrollTop = 0;
 });
 
 // === SEND MESSAGE ===
@@ -116,8 +181,17 @@ sessionClose.addEventListener('click', () => {
 inputForm.addEventListener('submit', (e) => {
     e.preventDefault();
     const text = inputField.value.trim();
-    if (!text || state.streaming || !state.exercise) return;
-    sendMessage(text);
+    if (!text || state.streaming) return;
+    if (!state.exercise) {
+        if (state.routing) {
+            // Continue the routing conversation
+            sendMessage(text);
+        } else {
+            startRouting(text);
+        }
+    } else {
+        sendMessage(text);
+    }
 });
 
 // Auto-resize textarea
@@ -195,7 +269,8 @@ async function streamResponse() {
             body: JSON.stringify({
                 mode: state.mode,
                 exercise: state.exercise,
-                messages: state.messages
+                messages: state.messages,
+                project_context: state.projectContext
             })
         });
 
@@ -253,8 +328,13 @@ async function streamResponse() {
     // Save assistant response
     if (fullText) {
         state.messages.push({ role: 'assistant', content: fullText });
-        state.exchangeCount++;
-        maybeShowReportCta();
+        if (state.routing) {
+            routingBack.classList.remove('hidden');
+            scrollToBottom();
+        } else {
+            state.exchangeCount++;
+            maybeShowReportCta();
+        }
     }
 
     state.streaming = false;
@@ -338,12 +418,38 @@ leadForm.addEventListener('submit', async (e) => {
     leadModal.classList.add('hidden');
     reportContent.innerHTML = renderMarkdown(state.reportText);
     reportCard.classList.remove('hidden');
+
+    // Show continue button if there's a next stage
+    const next = NEXT_STAGE[state.mode];
+    if (next) {
+        const nextModeName = MODE_LABELS[next.mode] || next.mode;
+        const nextExName = EXERCISE_LABELS[next.exercise] || next.exercise;
+        continueBtn.textContent = `Continue to ${nextModeName} — ${nextExName} →`;
+        continueStage.classList.remove('hidden');
+    }
+
     scrollToBottom();
 
     // Reset form
     leadForm.reset();
     leadSubmit.disabled = false;
     leadSubmit.textContent = 'Send me the report';
+});
+
+// === CONTINUE TO NEXT STAGE ===
+
+continueBtn.addEventListener('click', () => {
+    const next = NEXT_STAGE[state.mode];
+    if (!next) return;
+
+    // Save current stage to project context
+    state.projectContext.push({
+        stage: MODE_LABELS[state.mode] || state.mode,
+        exercise: EXERCISE_LABELS[state.exercise] || state.exercise,
+        report: state.reportText
+    });
+
+    startExercise(next.mode, next.exercise);
 });
 
 // === MARKDOWN RENDERER (lightweight) ===
