@@ -594,11 +594,13 @@ def fetch_wade_programs():
 
 # === REPORT GENERATION ===
 
-REPORT_PROMPT = """You are producing an executive coaching summary for a session at the Wade Institute of Entrepreneurship.
+REPORT_PROMPT = """You are producing an innovation coaching summary for a session at the Wade Institute of Entrepreneurship.
 
-Write it the way a senior executive coach writes to a CEO after a deep working session: clear, direct, specific, challenging, warm. No jargon. Respect their intelligence and their time. Use markdown.
+Write it the way a senior innovation coach writes to a founder or leader after a deep working session: clear, direct, specific, challenging, warm. No jargon. Respect their intelligence and their time. Use markdown.
 
-## Session Summary
+Begin the report with the title: # Innovation Coaching Session Summary
+
+## Innovation Coaching Session Summary
 
 ### The Challenge
 2-3 sentences. What the person brought to this session — their situation, problem, or idea.
@@ -822,7 +824,7 @@ def view_shared_report(report_id):
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{entry['exercise']} · Session Report · Wade Institute</title>
+<title>{entry['exercise']} · Innovation Coaching Session Summary · Wade Institute</title>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <style>
 body{{font-family:Georgia,serif;max-width:700px;margin:40px auto;padding:0 20px;color:#1a1a2e;line-height:1.7}}
@@ -838,7 +840,7 @@ a{{color:#ef5a21}}
 </head>
 <body>
 <div class="hd">
-  <h1>Session Report</h1>
+  <h1>Innovation Coaching Session Summary</h1>
   <div class="meta">{entry['exercise']} · {entry['mode']} · {date_str}</div>
 </div>
 <div id="rc"></div>
@@ -869,7 +871,7 @@ def _notify_wade(lead):
 
     # Plain-text fallback
     plain = (
-        f"New Wayde session report.\n\n"
+        f"New Wayde Innovation Coaching Session.\n\n"
         f"Name: {lead['name']}\n"
         f"Email: {lead['email']}\n"
         f"Company: {lead['company']}\n"
@@ -934,7 +936,7 @@ def _notify_wade(lead):
         <td style="padding:8px 12px;">{rating_label}</td>
       </tr>
     </table>
-    <h3 style="font-size:15px;border-bottom:2px solid #ef5a21;padding-bottom:6px;margin-top:0;">Session Report</h3>
+    <h3 style="font-size:15px;border-bottom:2px solid #ef5a21;padding-bottom:6px;margin-top:0;">Innovation Coaching Session Summary</h3>
     <div style="font-family:Georgia,serif;font-size:14px;line-height:1.7;color:#222;">
       {report_html}
     </div>
