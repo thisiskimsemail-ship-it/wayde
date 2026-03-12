@@ -115,6 +115,8 @@ const leadSubmit = $('#leadSubmit');
 const continueStage = $('#continueStage');
 const continueBtn = $('#continueBtn');
 const wadeCta = $('#wadeCta');
+const reportUnlock = $('#reportUnlock');
+const unlockForm = $('#unlockForm');
 const routingBack = $('#routingBack');
 const routingBackBtn = $('#routingBackBtn');
 
@@ -159,14 +161,20 @@ function startExercise(mode, exercise) {
     // Update footer label
     modeLabel.textContent = (EXERCISE_LABELS[exercise] || exercise) + ' · ';
 
-    // Clear messages and hide report elements
+    // Clear messages and hide/reset report elements
     messagesEl.innerHTML = '';
-    reportCta.classList.add('hidden');
     reportCard.classList.add('hidden');
+    reportCard.classList.remove('report-preview');
+    reportUnlock.classList.add('hidden');
     leadModal.classList.add('hidden');
     continueStage.classList.add('hidden');
     wadeCta.classList.add('hidden');
     routingBack.classList.add('hidden');
+
+    // Show report CTA immediately but disabled — enables after first exchange
+    reportCta.classList.remove('hidden');
+    reportCtaBtn.disabled = true;
+    reportCtaBtn.textContent = 'Talk to Wayde to build your report';
 
     if (autoStartMsg) {
         // Use the user's actual description as the first message so Wayde skips
@@ -186,13 +194,18 @@ function startExercise(mode, exercise) {
         }
         // Set a tool-specific placeholder hint
         inputField.placeholder = EXERCISE_HINTS[exercise] || 'Describe your challenge or idea...';
-        inputField.focus();
+
+        // Auto-kickoff: send a synthetic first message so Wayde opens the conversation
+        state.messages = [{ role: 'user', content: 'Please start the session.' }];
+        streamResponse();
     }
 }
 
 // === BACK TO MENU ===
 
 sessionClose.addEventListener('click', () => {
+    if (!window.confirm("End this session? Your conversation won't be saved.")) return;
+
     state.mode = null;
     state.exercise = null;
     state.messages = [];
@@ -206,11 +219,13 @@ sessionClose.addEventListener('click', () => {
 
     // Clear messages, input, report elements, and project context
     messagesEl.innerHTML = '';
-    inputField.value = '';
+    inputField.value = ''; sendBtn.disabled = true;
     inputField.placeholder = 'Describe your challenge or idea...';
     modeLabel.textContent = '';
     reportCta.classList.add('hidden');
     reportCard.classList.add('hidden');
+    reportCard.classList.remove('report-preview');
+    reportUnlock.classList.add('hidden');
     leadModal.classList.add('hidden');
     continueStage.classList.add('hidden');
     wadeCta.classList.add('hidden');
@@ -232,11 +247,12 @@ function startRouting(text) {
 
     welcome.classList.add('hidden');
     routingBack.classList.remove('hidden'); // show subtle back link immediately
+    modeLabel.textContent = 'Finding your tool · ';
 
     state.messages.push({ role: 'user', content: text });
     appendMessage('user', text);
 
-    inputField.value = '';
+    inputField.value = ''; sendBtn.disabled = true;
     inputField.style.height = 'auto';
 
     streamResponse();
@@ -253,8 +269,9 @@ routingBackBtn.addEventListener('click', () => {
 
     welcome.classList.remove('hidden');
     messagesEl.innerHTML = '';
-    inputField.value = '';
+    inputField.value = ''; sendBtn.disabled = true;
     inputField.placeholder = 'Describe your challenge or idea...';
+    modeLabel.textContent = '';
     routingBack.classList.add('hidden');
     chatArea.scrollTop = 0;
 });
@@ -281,7 +298,11 @@ inputForm.addEventListener('submit', (e) => {
 inputField.addEventListener('input', () => {
     inputField.style.height = 'auto';
     inputField.style.height = Math.min(inputField.scrollHeight, 120) + 'px';
+    sendBtn.disabled = !inputField.value.trim();
 });
+
+// Initial state — button disabled until user types
+sendBtn.disabled = true;
 
 // Enter to send, Shift+Enter for newline
 inputField.addEventListener('keydown', (e) => {
@@ -296,7 +317,7 @@ async function sendMessage(text) {
     state.messages.push({ role: 'user', content: text });
     appendMessage('user', text);
 
-    inputField.value = '';
+    inputField.value = ''; sendBtn.disabled = true;
     inputField.style.height = 'auto';
 
     // Stream response
@@ -323,9 +344,9 @@ function scrollToBottom() {
 // === SHOW REPORT CTA ===
 
 function maybeShowReportCta() {
-    if (state.exchangeCount >= 3 && !state.reportGenerated) {
-        reportCta.classList.remove('hidden');
-        scrollToBottom();
+    if (state.exchangeCount >= 1 && !state.reportGenerated) {
+        reportCtaBtn.disabled = false;
+        reportCtaBtn.textContent = 'See your session report →';
     }
 }
 
@@ -478,11 +499,13 @@ reportCtaBtn.addEventListener('click', async () => {
         state.reportText = data.report;
         state.reportGenerated = true;
 
-        // Hide the CTA button
+        // Show partial preview + inline unlock form (no modal gate)
+        reportContent.innerHTML = renderMarkdown(state.reportText);
+        reportCard.classList.remove('hidden');
+        reportCard.classList.add('report-preview');
+        reportUnlock.classList.remove('hidden');
         reportCta.classList.add('hidden');
-
-        // Show the lead capture modal
-        leadModal.classList.remove('hidden');
+        scrollToBottom();
 
     } catch (err) {
         reportCtaBtn.textContent = 'Connection error — try again';
@@ -490,42 +513,11 @@ reportCtaBtn.addEventListener('click', async () => {
     }
 });
 
-leadForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
+// === SHARED LEAD CAPTURE LOGIC ===
 
-    const name = $('#leadName').value.trim();
-    const email = $('#leadEmail').value.trim();
-    const company = $('#leadCompany').value.trim();
-    const role = $('#leadRole').value.trim();
-
-    if (!name || !email) return;
-
-    leadSubmit.disabled = true;
-    leadSubmit.textContent = 'Saving...';
-
-    try {
-        await fetch('/api/lead', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                name,
-                email,
-                company,
-                role,
-                mode: state.mode,
-                exercise: state.exercise,
-                report: state.reportText,
-                messages: state.messages
-            })
-        });
-    } catch (err) {
-        // Still show the report even if lead save fails
-    }
-
-    // Hide modal, show report
-    leadModal.classList.add('hidden');
-    reportContent.innerHTML = renderMarkdown(state.reportText);
-    reportCard.classList.remove('hidden');
+function revealFullReport() {
+    reportCard.classList.remove('report-preview');
+    reportUnlock.classList.add('hidden');
     wadeCta.classList.remove('hidden');
 
     // Show continue button if there's a next stage
@@ -538,11 +530,46 @@ leadForm.addEventListener('submit', async (e) => {
     }
 
     scrollToBottom();
+}
 
-    // Reset form
-    leadForm.reset();
-    leadSubmit.disabled = false;
-    leadSubmit.textContent = 'Send me the report';
+function handleLeadSubmit(nameEl, emailEl, companyEl, roleEl, submitEl) {
+    const name = nameEl.value.trim();
+    const email = emailEl.value.trim();
+    if (!name || !email) return false;
+
+    submitEl.disabled = true;
+
+    fetch('/api/lead', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            name,
+            email,
+            company: companyEl.value.trim(),
+            role: roleEl.value.trim(),
+            mode: state.mode,
+            exercise: state.exercise,
+            report: state.reportText,
+            messages: state.messages
+        })
+    }).catch(() => {}).finally(() => {
+        revealFullReport();
+    });
+
+    return true;
+}
+
+// Inline unlock form (below report preview)
+unlockForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    handleLeadSubmit($('#unlockName'), $('#unlockEmail'), $('#unlockCompany'), $('#unlockRole'), $('#unlockSubmit'));
+});
+
+// Legacy modal form (kept for fallback; no longer primary flow)
+leadForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const ok = handleLeadSubmit($('#leadName'), $('#leadEmail'), $('#leadCompany'), $('#leadRole'), leadSubmit);
+    if (ok) leadModal.classList.add('hidden');
 });
 
 // === CONTINUE TO NEXT STAGE ===

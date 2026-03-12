@@ -180,6 +180,18 @@
             </div>
         </div>
 
+        <!-- Inline unlock form (appears below report preview) -->
+        <div class="report-unlock hidden" id="reportUnlock">
+            <p class="report-unlock-sub">Enter your details to access your full report. A copy will be shared with the Wade team.</p>
+            <form class="lead-form" id="unlockForm">
+                <input type="text" class="lead-input" id="unlockName" placeholder="Name" required>
+                <input type="email" class="lead-input" id="unlockEmail" placeholder="Email" required>
+                <input type="text" class="lead-input" id="unlockCompany" placeholder="Company / Organisation">
+                <input type="text" class="lead-input" id="unlockRole" placeholder="Role">
+                <button type="submit" class="lead-submit" id="unlockSubmit">Unlock my report →</button>
+            </form>
+        </div>
+
         <!-- Continue to next stage (shown after report) -->
         <div class="continue-stage hidden" id="continueStage">
             <button class="continue-stage-btn" id="continueBtn">Continue to next stage →</button>
@@ -228,6 +240,6 @@
         </p>
     </footer>
 
-    <script src="app.js?v=13"></script>
+    <script src="app.js?v=15"></script>
 </body>
 </html>
