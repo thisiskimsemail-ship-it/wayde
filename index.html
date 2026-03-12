@@ -23,6 +23,17 @@
         <button class="session-close" id="sessionClose" title="Back to menu">✕</button>
     </div>
 
+    <!-- Stage progress strip (shown during active session) -->
+    <div class="stage-progress hidden" id="stageProgress">
+        <div class="stage-step" data-stage="reframe"><span class="stage-dot"></span><span class="stage-name">Clarify</span></div>
+        <div class="stage-conn"></div>
+        <div class="stage-step" data-stage="ideate"><span class="stage-dot"></span><span class="stage-name">Ideate</span></div>
+        <div class="stage-conn"></div>
+        <div class="stage-step" data-stage="debate"><span class="stage-dot"></span><span class="stage-name">Validate</span></div>
+        <div class="stage-conn"></div>
+        <div class="stage-step" data-stage="framework"><span class="stage-dot"></span><span class="stage-name">Develop</span></div>
+    </div>
+
     <main class="chat-area" id="chatArea">
         <div class="welcome" id="welcome">
             <h1 class="welcome-title">Meet Wayde</h1>
@@ -36,6 +47,15 @@
                 <span class="guide-item"><span class="guide-signal">Have an idea to stress-test?</span> Go to Validate</span>
                 <span class="guide-sep">·</span>
                 <span class="guide-item"><span class="guide-signal">Ready to structure it?</span> Try Develop</span>
+            </div>
+
+            <!-- Resume banner (shown on load if a saved session exists) -->
+            <div class="resume-banner hidden" id="resumeBanner">
+                <span class="resume-text">Unfinished session: <strong id="resumeLabel"></strong></span>
+                <div class="resume-actions">
+                    <button class="resume-btn" id="resumeBtn">Continue →</button>
+                    <button class="resume-dismiss" id="resumeDismiss">Start fresh</button>
+                </div>
             </div>
 
             <div class="welcome-cards">
@@ -170,6 +190,8 @@
             <div class="report-footer">
                 <img class="report-logo" src="logo.png" alt="Wade Institute">
                 <span>Wade Institute of Entrepreneurship</span>
+                <button class="report-action-btn hidden" id="reportDownloadBtn">↓ Save as PDF</button>
+                <button class="report-action-btn hidden" id="reportShareBtn">Share report →</button>
             </div>
         </div>
 
@@ -238,6 +260,6 @@
         </div>
     </footer>
 
-    <script src="app.js?v=20"></script>
+    <script src="app.js?v=21"></script>
 </body>
 </html>

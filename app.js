@@ -69,6 +69,9 @@ const EXERCISE_HINTS = {
     'analogical':       'e.g. "How might we reduce handoff delays between teams the way Formula 1 does pit stops?"'
 };
 
+// Stage order for progress strip
+const STAGE_ORDER = ['reframe', 'ideate', 'debate', 'framework'];
+
 // Next recommended stage after each mode
 const NEXT_STAGE = {
     reframe:   { mode: 'ideate',     exercise: 'hmw' },
@@ -87,7 +90,8 @@ const state = {
     reportGenerated: false,
     reportText: '',
     projectContext: [],  // accumulated context from previous stages
-    routing: false       // true when in tool-suggestion mode (no exercise selected)
+    routing: false,      // true when in tool-suggestion mode (no exercise selected)
+    rating: null         // thumbs up/down from wrap card
 };
 
 // === DOM ===
@@ -106,6 +110,7 @@ const sessionMode = $('#sessionMode');
 const sessionExercise = $('#sessionExercise');
 const sessionSwap = $('#sessionSwap');
 const sessionClose = $('#sessionClose');
+const stageProgress = $('#stageProgress');
 const reportCta = $('#reportCta');
 const reportCtaBtn = $('#reportCtaBtn');
 const reportCard = $('#reportCard');
@@ -120,6 +125,18 @@ const reportUnlock = $('#reportUnlock');
 const unlockForm = $('#unlockForm');
 const routingBack = $('#routingBack');
 const routingBackBtn = $('#routingBackBtn');
+
+// === STAGE PROGRESS ===
+
+function updateStageProgress(mode) {
+    stageProgress.classList.remove('hidden');
+    stageProgress.dataset.mode = mode;
+    const idx = STAGE_ORDER.indexOf(mode);
+    $$('.stage-step').forEach((step, i) => {
+        step.classList.toggle('active', i === idx);
+        step.classList.toggle('done', i < idx);
+    });
+}
 
 // === CARD NAVIGATION ===
 
@@ -149,6 +166,7 @@ function startExercise(mode, exercise, startMsg = null) {
     state.reportGenerated = false;
     state.reportText = '';
     state.routing = false;
+    state.rating = null;
 
     // Hide welcome, show session bar
     welcome.classList.add('hidden');
@@ -162,6 +180,9 @@ function startExercise(mode, exercise, startMsg = null) {
     // Update footer label
     modeLabel.textContent = (EXERCISE_LABELS[exercise] || exercise) + ' · ';
 
+    // Update stage progress strip
+    updateStageProgress(mode);
+
     // Clear messages and hide/reset report elements
     messagesEl.innerHTML = '';
     reportCard.classList.add('hidden');
@@ -170,6 +191,8 @@ function startExercise(mode, exercise, startMsg = null) {
     leadModal.classList.add('hidden');
     continueStage.classList.add('hidden');
     wadeCta.classList.add('hidden');
+    $('#reportDownloadBtn').classList.add('hidden');
+    $('#reportShareBtn').classList.add('hidden');
     routingBack.classList.add('hidden');
 
     // Show report CTA immediately but disabled — enables after first exchange
@@ -226,7 +249,9 @@ sessionClose.addEventListener('click', () => {
     inputField.value = ''; sendBtn.disabled = true;
     inputField.placeholder = 'Describe your challenge or idea...';
     modeLabel.textContent = '';
+    stageProgress.classList.add('hidden');
     sessionSwap.disabled = true;
+    state.rating = null;
     reportCta.classList.add('hidden');
     reportCard.classList.add('hidden');
     reportCard.classList.remove('report-preview');
@@ -234,9 +259,12 @@ sessionClose.addEventListener('click', () => {
     leadModal.classList.add('hidden');
     continueStage.classList.add('hidden');
     wadeCta.classList.add('hidden');
+    $('#reportDownloadBtn').classList.add('hidden');
+    $('#reportShareBtn').classList.add('hidden');
     routingBack.classList.add('hidden');
     state.projectContext = [];
     state.routing = false;
+    clearSession();
 });
 
 // === SWAP TOOLS ===
@@ -328,6 +356,7 @@ function swapToTool(mode, exercise, swapEl) {
     sessionMode.textContent = MODE_LABELS[mode] || mode;
     sessionExercise.textContent = EXERCISE_LABELS[exercise] || exercise;
     modeLabel.textContent = (EXERCISE_LABELS[exercise] || exercise) + ' · ';
+    updateStageProgress(mode);
 
     // Reset report elements
     reportCard.classList.add('hidden');
@@ -476,6 +505,63 @@ function maybeShowReportCta() {
     }
 }
 
+// === SESSION PERSISTENCE ===
+
+function saveSession() {
+    if (!state.mode || state.mode === 'routing') return;
+    localStorage.setItem('wayde_session', JSON.stringify({
+        mode: state.mode,
+        exercise: state.exercise,
+        messages: state.messages,
+        exchangeCount: state.exchangeCount,
+        reportGenerated: state.reportGenerated,
+        reportText: state.reportText,
+        projectContext: state.projectContext,
+        savedAt: Date.now()
+    }));
+}
+
+function clearSession() {
+    localStorage.removeItem('wayde_session');
+}
+
+function restoreSession(session) {
+    Object.assign(state, {
+        mode: session.mode,
+        exercise: session.exercise,
+        messages: session.messages,
+        exchangeCount: session.exchangeCount,
+        reportGenerated: session.reportGenerated,
+        reportText: session.reportText,
+        projectContext: session.projectContext || [],
+        routing: false,
+        rating: null
+    });
+
+    welcome.classList.add('hidden');
+    sessionBar.classList.remove('hidden');
+    sessionBar.dataset.mode = state.mode;
+    sessionMode.textContent = MODE_LABELS[state.mode] || state.mode;
+    sessionExercise.textContent = EXERCISE_LABELS[state.exercise] || state.exercise;
+    modeLabel.textContent = (EXERCISE_LABELS[state.exercise] || state.exercise) + ' · ';
+    sessionSwap.disabled = state.exchangeCount < 2;
+    reportCta.classList.remove('hidden');
+    updateStageProgress(state.mode);
+
+    // Re-render messages
+    messagesEl.innerHTML = '';
+    state.messages.forEach(m => appendMessage(m.role === 'user' ? 'user' : 'agent', m.content));
+
+    if (state.reportGenerated && state.reportText) {
+        reportContent.innerHTML = renderMarkdown(state.reportText);
+        reportCard.classList.remove('hidden');
+        revealFullReport();
+    } else {
+        maybeShowReportCta();
+    }
+    scrollToBottom();
+}
+
 // === WRAP UP PROMPT ===
 
 function renderWrapPrompt() {
@@ -494,8 +580,22 @@ function renderWrapPrompt() {
 
     wrapDiv.innerHTML = `
         <p class="wrap-prompt-text">This exercise is complete.</p>
+        <div class="wrap-rating">
+            <span class="wrap-rating-label">How did the session go?</span>
+            <button class="wrap-rate-btn" data-rating="up" title="Helpful">👍</button>
+            <button class="wrap-rate-btn" data-rating="down" title="Not helpful">👎</button>
+        </div>
         <div class="wrap-prompt-actions">${actionsHtml}</div>
     `;
+
+    // Wire up rating buttons
+    wrapDiv.querySelectorAll('.wrap-rate-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            state.rating = btn.dataset.rating;
+            wrapDiv.querySelectorAll('.wrap-rate-btn').forEach(b =>
+                b.classList.toggle('selected', b === btn));
+        });
+    });
 
     const continueWrapBtn = wrapDiv.querySelector('.wrap-btn-continue');
     const reportWrapBtn = wrapDiv.querySelector('.wrap-btn-report');
@@ -520,12 +620,15 @@ function renderWrapPrompt() {
             sessionMode.textContent = MODE_LABELS[n.mode] || n.mode;
             sessionExercise.textContent = EXERCISE_LABELS[n.exercise] || n.exercise;
             modeLabel.textContent = (EXERCISE_LABELS[n.exercise] || n.exercise) + ' · ';
+            updateStageProgress(n.mode);
 
             reportCard.classList.add('hidden');
             reportCard.classList.remove('report-preview');
             reportUnlock.classList.add('hidden');
             continueStage.classList.add('hidden');
             wadeCta.classList.add('hidden');
+            $('#reportDownloadBtn').classList.add('hidden');
+            $('#reportShareBtn').classList.add('hidden');
             reportCta.classList.remove('hidden');
             reportCtaBtn.disabled = true;
             reportCtaBtn.textContent = 'Talk to Wayde to build your report';
@@ -685,6 +788,7 @@ async function streamResponse() {
     state.streaming = false;
     sendBtn.disabled = false;
     inputField.focus();
+    saveSession();
 }
 
 // === REPORT GENERATION + LEAD CAPTURE ===
@@ -745,6 +849,11 @@ function revealFullReport() {
         continueStage.classList.remove('hidden');
     }
 
+    // Reveal report action buttons
+    $('#reportDownloadBtn').classList.remove('hidden');
+    $('#reportShareBtn').classList.remove('hidden');
+
+    saveSession();
     scrollToBottom();
 }
 
@@ -766,6 +875,7 @@ function handleLeadSubmit(nameEl, emailEl, companyEl, roleEl, submitEl) {
             mode: state.mode,
             exercise: state.exercise,
             report: state.reportText,
+            rating: state.rating,
             messages: state.messages
         })
     }).catch(() => {}).finally(() => {
@@ -809,6 +919,83 @@ continueBtn.addEventListener('click', () => {
     const bridgeMsg = `I've just finished ${prevExercise} (${prevStage} stage). Please start ${nextExercise}, building directly on what I discovered.`;
     startExercise(next.mode, next.exercise, bridgeMsg);
 });
+
+// === REPORT PDF DOWNLOAD ===
+
+function downloadReport() {
+    const exName = EXERCISE_LABELS[state.exercise] || state.exercise;
+    const mName = MODE_LABELS[state.mode] || state.mode;
+    const date = new Date().toLocaleDateString('en-AU', { year: 'numeric', month: 'long', day: 'numeric' });
+    const html = `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">
+<title>Session Report — ${exName} · Wade Institute</title>
+<style>
+@page{margin:25mm 20mm}
+body{font-family:Georgia,serif;max-width:680px;margin:0 auto;color:#1a1a2e;line-height:1.65;font-size:14px}
+h1,h2,h3{font-family:Arial,sans-serif}
+h1{font-size:22px;color:#12103a;margin-bottom:4px}
+h2{font-size:16px;color:#12103a;border-bottom:1px solid #ddd;padding-bottom:4px;margin-top:2em}
+h3{font-size:14px;color:#333}
+ul{padding-left:20px}li{margin-bottom:4px}p{margin:0 0 0.8em}
+.hd{margin-bottom:2em;padding-bottom:1em;border-bottom:2px solid #ef5a21}
+.meta{font-family:Arial;font-size:12px;color:#666;margin-top:4px}
+.ft{margin-top:3em;padding-top:1em;border-top:1px solid #ddd;font-family:Arial;font-size:11px;color:#999}
+</style>
+</head><body>
+<div class="hd"><h1>Session Report</h1><div class="meta">${mName} · ${exName} · ${date}</div></div>
+${reportContent.innerHTML}
+<div class="ft">Generated by Wayde · Wade Institute of Entrepreneurship · wadeinstitute.org.au</div>
+</body></html>`;
+    const url = URL.createObjectURL(new Blob([html], { type: 'text/html' }));
+    const win = window.open(url, '_blank');
+    if (win) win.addEventListener('load', () => { setTimeout(() => { win.print(); URL.revokeObjectURL(url); }, 400); });
+}
+
+$('#reportDownloadBtn').addEventListener('click', downloadReport);
+
+// === REPORT SHARE LINK ===
+
+async function shareReport() {
+    const btn = $('#reportShareBtn');
+    btn.textContent = 'Generating link...';
+    btn.disabled = true;
+    try {
+        const data = await fetch('/api/share', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ report: state.reportText, mode: state.mode, exercise: state.exercise })
+        }).then(r => r.json());
+        await navigator.clipboard.writeText(window.location.origin + data.url);
+        btn.textContent = 'Link copied! ✓';
+        setTimeout(() => { btn.textContent = 'Share report →'; btn.disabled = false; }, 2500);
+    } catch(e) {
+        btn.textContent = 'Copy failed — try again';
+        btn.disabled = false;
+    }
+}
+
+$('#reportShareBtn').addEventListener('click', shareReport);
+
+// === RESUME SAVED SESSION ===
+
+(function checkSavedSession() {
+    try {
+        const session = JSON.parse(localStorage.getItem('wayde_session'));
+        if (!session?.mode || !session.messages?.length) return;
+        const banner = $('#resumeBanner');
+        $('#resumeLabel').textContent = EXERCISE_LABELS[session.exercise] || session.exercise;
+        banner.classList.remove('hidden');
+        $('#resumeBtn').addEventListener('click', () => {
+            banner.classList.add('hidden');
+            restoreSession(session);
+        });
+        $('#resumeDismiss').addEventListener('click', () => {
+            banner.classList.add('hidden');
+            clearSession();
+        });
+    } catch(e) {
+        clearSession();
+    }
+})();
 
 // === MARKDOWN RENDERER (lightweight) ===
 
