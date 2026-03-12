@@ -40,33 +40,33 @@ const EXERCISE_MODE = {
 // Exercise descriptions (mirror of HTML card text)
 const EXERCISE_DESCS = {
     'five-whys':        'Ask "why?" five times to move past symptoms and find what\'s really causing the problem. From Toyota\'s production system, taught at Harvard Business School.',
-    'jtbd':             'Understand what your customer is actually trying to accomplish. People don\'t buy products — they hire them to make progress. Clayton Christensen\'s framework, core to YC\'s approach.',
+    'jtbd':             'Understand what your customer or user is actually trying to accomplish. People don\'t adopt solutions — they hire them to make progress. Clayton Christensen\'s framework, used across industries from healthcare to education.',
     'empathy-map':      'Deeply understand your user before defining the problem — what they say, think, do, and feel. The gap between those is where the real opportunity lives. Stanford d.school\'s Empathise stage.',
     'hmw':              'Reframe your problem as an opportunity and open up new directions before committing to one. Stanford d.school\'s bridge between defining a problem and generating solutions.',
     'scamper':          'A structured checklist for generating ideas: Substitute, Combine, Adapt, Modify, Put to other uses, Eliminate, Reverse. Alex Osborn\'s creativity method, widely used in product design.',
     'crazy-8s':         'Generate 8 distinct ideas fast. Forces quantity over quality and breaks your fixation on the first "good" idea. The cornerstone of Google Ventures\' Design Sprint methodology.',
-    'pre-mortem':       'Imagine your venture failed. Work backwards to surface the risks you\'d miss from an optimistic mindset. Research shows it increases risk identification by 30%.',
-    'devils-advocate':  'Stress-test your idea against its sharpest critic. Best used when your team is too aligned — or you need to find the holes before a pitch or major commitment.',
+    'pre-mortem':       'Imagine your initiative didn\'t land. Work backwards to surface the risks you\'d miss from an optimistic mindset. Research shows it increases risk identification by 30%.',
+    'devils-advocate':  'Stress-test your idea against its sharpest critic. Best used when your team is too aligned — or you need to find the holes before a major decision or investment of resources.',
     'rapid-experiment': 'Design the cheapest, fastest test that would kill your riskiest assumption. Validate before you build — the core principle behind Lean Startup.',
-    'lean-canvas':      'Your entire business model on one page. Start with the problem, not the solution — then identify which assumptions you\'re most uncertain about.',
+    'lean-canvas':      'Map the key elements of your initiative on one page. Start with the problem, not the solution — then surface the assumptions you\'re least certain about.',
     'effectuation':     'Don\'t start with a goal — start with what you already have. Expert entrepreneurs build from their own skills, network, and resources. By Saras Sarasvathy.',
     'analogical':       'Borrow solutions from other domains. How did nature solve this? How did another industry handle it? The technique behind many of history\'s most disruptive innovations — used by IDEO and DARPA.'
 };
 
 // Suggested prompt framings shown as input placeholder
 const EXERCISE_HINTS = {
-    'five-whys':        'e.g. "Our sign-up rate drops off sharply after the first week"',
-    'jtbd':             'e.g. "I\'m building a scheduling tool for freelancers"',
-    'empathy-map':      'e.g. "My user is a first-time founder looking for their first customers"',
-    'hmw':              'e.g. "People try our product but don\'t convert to paid"',
-    'scamper':          'e.g. "I have an idea for a subscription meal kit for athletes"',
-    'crazy-8s':         'e.g. "I want to redesign the onboarding flow for a B2B SaaS"',
-    'pre-mortem':       'e.g. "We\'re about to launch a marketplace for local tradespeople"',
-    'devils-advocate':  'e.g. "I\'m building an AI hiring assistant for small businesses"',
-    'rapid-experiment': 'e.g. "I think founders will pay for a curated co-founder matching service"',
-    'lean-canvas':      'e.g. "I\'m building a platform connecting mentors with early-stage founders"',
-    'effectuation':     'e.g. "I\'m a designer with a strong network in healthcare — not sure where to start"',
-    'analogical':       'e.g. "I\'m trying to solve the cold-start problem for a two-sided marketplace"'
+    'five-whys':        'e.g. "Our team keeps missing deadlines and no one really knows why"',
+    'jtbd':             'e.g. "I\'m redesigning our internal onboarding process for new staff"',
+    'empathy-map':      'e.g. "My stakeholder is a department head who keeps resisting the change we\'re proposing"',
+    'hmw':              'e.g. "People in our organisation aren\'t adopting the new process we rolled out"',
+    'scamper':          'e.g. "I want to reinvent how we run our quarterly planning meetings"',
+    'crazy-8s':         'e.g. "I need fresh ideas for improving collaboration between two teams that don\'t talk"',
+    'pre-mortem':       'e.g. "We\'re about to roll out a new programme across the whole organisation"',
+    'devils-advocate':  'e.g. "We\'re proposing a major shift in how we deliver services to clients"',
+    'rapid-experiment': 'e.g. "I think our clients would value a monthly insight briefing — but I\'m not sure"',
+    'lean-canvas':      'e.g. "I\'m developing a new service offering within our division"',
+    'effectuation':     'e.g. "I have deep expertise in policy and a strong network in government — where do I start?"',
+    'analogical':       'e.g. "How might we reduce handoff delays between teams the way Formula 1 does pit stops?"'
 };
 
 // Next recommended stage after each mode
