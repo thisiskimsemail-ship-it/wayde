@@ -437,10 +437,12 @@ def chat():
             for ctx in project_context
         ])
         system_prompt += (
-            "\n\n---\n\n## Previous Session Context\n\n"
-            "This participant has completed the following thinking exercises earlier in their session. "
-            "Use this as silent background context to make your coaching more relevant and connected — "
-            "reference it only if directly useful, and begin the new exercise fresh.\n\n"
+            "\n\n---\n\n## Previous Session Work\n\n"
+            "This participant has just completed the following thinking exercises and is continuing their session. "
+            "When you open this new exercise, explicitly bridge from their previous work: "
+            "name the specific insights or discoveries they made, reframe them in terms of this new exercise, "
+            "and show how this next stage builds directly on what they uncovered. "
+            "Do NOT ask them to describe their challenge from scratch — you already know it.\n\n"
             + context_sections
         )
 

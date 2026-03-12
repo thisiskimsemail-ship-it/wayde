@@ -131,11 +131,11 @@ $$('.card-exercise-btn').forEach(btn => {
     });
 });
 
-function startExercise(mode, exercise) {
+function startExercise(mode, exercise, startMsg = null) {
     // If transitioning from routing, use the user's own description as the exercise kickoff
     // so Wayde can respond in context without asking them to repeat themselves
-    let autoStartMsg = null;
-    if (state.routing && state.messages.length > 0) {
+    let autoStartMsg = startMsg;
+    if (!autoStartMsg && state.routing && state.messages.length > 0) {
         autoStartMsg = state.messages
             .filter(m => m.role === 'user')
             .map(m => m.content)
@@ -704,14 +704,20 @@ continueBtn.addEventListener('click', () => {
     const next = NEXT_STAGE[state.mode];
     if (!next) return;
 
+    const prevStage = MODE_LABELS[state.mode] || state.mode;
+    const prevExercise = EXERCISE_LABELS[state.exercise] || state.exercise;
+    const nextExercise = EXERCISE_LABELS[next.exercise] || next.exercise;
+
     // Save current stage to project context
     state.projectContext.push({
-        stage: MODE_LABELS[state.mode] || state.mode,
-        exercise: EXERCISE_LABELS[state.exercise] || state.exercise,
+        stage: prevStage,
+        exercise: prevExercise,
         report: state.reportText
     });
 
-    startExercise(next.mode, next.exercise);
+    // Bridging message so Wayde connects previous findings to the new exercise
+    const bridgeMsg = `I've just finished ${prevExercise} (${prevStage} stage). Please start ${nextExercise}, building directly on what I discovered.`;
+    startExercise(next.mode, next.exercise, bridgeMsg);
 });
 
 // === MARKDOWN RENDERER (lightweight) ===
