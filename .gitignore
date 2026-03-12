@@ -2,3 +2,5 @@
 __pycache__/
 *.pyc
 leads.json
+shared_reports.json
+.claude/
