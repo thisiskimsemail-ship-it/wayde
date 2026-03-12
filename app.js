@@ -88,6 +88,14 @@ const STAGE_DEFAULT = {
     framework: 'lean-canvas'
 };
 
+// All exercises grouped by stage (for the within-stage tool picker)
+const TOOLS_BY_MODE = {
+    reframe:   ['five-whys', 'jtbd', 'empathy-map'],
+    ideate:    ['hmw', 'scamper', 'crazy-8s'],
+    debate:    ['pre-mortem', 'devils-advocate', 'rapid-experiment'],
+    framework: ['lean-canvas', 'effectuation', 'analogical']
+};
+
 // === STATE ===
 const state = {
     mode: null,
@@ -118,6 +126,8 @@ const sessionMode = $('#sessionMode');
 const sessionExercise = $('#sessionExercise');
 const sessionClose = $('#sessionClose');
 const stageProgress = $('#stageProgress');
+const toolPickerBtn = $('#toolPickerBtn');
+const toolPickerMenu = $('#toolPickerMenu');
 const reportCta = $('#reportCta');
 const reportCtaBtn = $('#reportCtaBtn');
 const reportCard = $('#reportCard');
@@ -142,6 +152,7 @@ function updateStageProgress(mode) {
         step.classList.toggle('done', i < idx);
         step.classList.toggle('clickable', i !== idx && canNav);
         step.onclick = (i !== idx && canNav) ? () => navigateToStage(STAGE_ORDER[i]) : null;
+        step.title = (i !== idx && canNav) ? `Go to ${MODE_LABELS[STAGE_ORDER[i]]}` : '';
     });
 }
 
@@ -162,6 +173,29 @@ function navigateToStage(targetMode) {
         swapToTool(targetMode, targetExercise, null);
     }
 }
+
+// === TOOL PICKER ===
+
+toolPickerBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (toolPickerBtn.disabled) return;
+    const tools = (TOOLS_BY_MODE[state.mode] || []).filter(t => t !== state.exercise);
+    toolPickerMenu.innerHTML = tools
+        .map(t => `<button class="tool-picker-item" data-exercise="${t}">${EXERCISE_LABELS[t]}</button>`)
+        .join('');
+    toolPickerMenu.querySelectorAll('.tool-picker-item').forEach(btn => {
+        btn.addEventListener('click', () => {
+            toolPickerMenu.classList.add('hidden');
+            swapToTool(state.mode, btn.dataset.exercise, null);
+        });
+    });
+    toolPickerMenu.classList.toggle('hidden');
+});
+
+// Close picker when clicking anywhere outside it
+document.addEventListener('click', () => {
+    toolPickerMenu.classList.add('hidden');
+});
 
 // === CARD NAVIGATION ===
 
@@ -207,6 +241,10 @@ function startExercise(mode, exercise, startMsg = null) {
 
     // Update stage progress strip
     updateStageProgress(mode);
+
+    // Reset tool picker (re-enabled after first exchange)
+    toolPickerBtn.disabled = true;
+    toolPickerMenu.classList.add('hidden');
 
     // Clear messages and hide/reset report elements
     messagesEl.innerHTML = '';
@@ -271,6 +309,8 @@ sessionClose.addEventListener('click', () => {
     inputField.placeholder = 'Describe your challenge or idea...';
     modeLabel.textContent = '';
     state.rating = null;
+    toolPickerBtn.disabled = true;
+    toolPickerMenu.classList.add('hidden');
     reportCta.classList.add('hidden');
     reportCard.classList.add('hidden');
     reportCard.classList.remove('report-preview');
@@ -304,6 +344,10 @@ function swapToTool(mode, exercise, swapEl) {
     sessionExercise.textContent = EXERCISE_LABELS[exercise] || exercise;
     modeLabel.textContent = (EXERCISE_LABELS[exercise] || exercise) + ' · ';
     updateStageProgress(mode);
+
+    // Reset tool picker
+    toolPickerBtn.disabled = true;
+    toolPickerMenu.classList.add('hidden');
 
     // Reset report elements
     reportCard.classList.add('hidden');
@@ -441,8 +485,10 @@ function maybeShowReportCta() {
     if (state.exchangeCount >= 1 && !state.reportGenerated) {
         reportCtaBtn.disabled = false;
         reportCtaBtn.textContent = 'See your session report →';
+        // Enable within-stage tool picker after first real exchange
+        toolPickerBtn.disabled = false;
     }
-    // Unlock stage dot navigation after first real exchange
+    // Unlock stage dot navigation after second real exchange
     if (state.exchangeCount >= 2) {
         updateStageProgress(state.mode);
     }
@@ -489,6 +535,8 @@ function restoreSession(session) {
     modeLabel.textContent = (EXERCISE_LABELS[state.exercise] || state.exercise) + ' · ';
     reportCta.classList.remove('hidden');
     updateStageProgress(state.mode);
+    // Restore tool picker state
+    toolPickerBtn.disabled = state.exchangeCount < 1;
 
     // Re-render messages
     messagesEl.innerHTML = '';

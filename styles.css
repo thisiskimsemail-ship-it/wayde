@@ -167,6 +167,72 @@ body {
 #stageProgress[data-mode="debate"]    .stage-step.active .stage-dot { background: var(--teal); }
 #stageProgress[data-mode="framework"] .stage-step.active .stage-dot { background: var(--pink); }
 
+/* === TOOL PICKER === */
+.tool-picker {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+}
+
+.tool-picker-btn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 0.6rem;
+    line-height: 1;
+    padding: 0 0.1rem;
+    cursor: default;
+    opacity: 0.4;
+    transition: all 0.2s;
+}
+
+.tool-picker-btn:not(:disabled) {
+    cursor: pointer;
+    opacity: 0.7;
+}
+
+.tool-picker-btn:not(:disabled):hover {
+    opacity: 1;
+    color: var(--text);
+}
+
+.tool-picker-menu {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    background: #1c1a54;
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 8px;
+    padding: 0.3rem;
+    z-index: 200;
+    min-width: 190px;
+    box-shadow: 0 8px 28px rgba(0,0,0,0.5);
+    animation: fadeIn 0.12s ease;
+}
+
+.tool-picker-menu.hidden { display: none; }
+
+.tool-picker-item {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: none;
+    color: var(--text-dim);
+    font-family: var(--font);
+    font-size: 0.82rem;
+    padding: 0.4rem 0.65rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.tool-picker-item:hover {
+    background: rgba(255,255,255,0.07);
+    color: var(--text);
+}
+
 /* === CHAT AREA === */
 .chat-area {
     flex: 1;

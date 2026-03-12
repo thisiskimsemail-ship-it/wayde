@@ -18,7 +18,11 @@
     <div class="session-bar hidden" id="sessionBar">
         <span class="session-mode" id="sessionMode">Clarify</span>
         <span class="session-sep">›</span>
-        <span class="session-exercise" id="sessionExercise">Five Whys</span>
+        <span class="tool-picker" id="toolPicker">
+            <span class="session-exercise" id="sessionExercise">Five Whys</span>
+            <button class="tool-picker-btn" id="toolPickerBtn" title="Switch tool" disabled>▾</button>
+            <div class="tool-picker-menu hidden" id="toolPickerMenu"></div>
+        </span>
         <div class="stage-progress" id="stageProgress">
             <div class="stage-step" data-stage="reframe"><span class="stage-dot"></span><span class="stage-name">Clarify</span></div>
             <div class="stage-conn"></div>
@@ -250,6 +254,6 @@
         </div>
     </footer>
 
-    <script src="app.js?v=22"></script>
+    <script src="app.js?v=23"></script>
 </body>
 </html>
