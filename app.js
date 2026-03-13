@@ -146,13 +146,12 @@ const routingBackBtn = $('#routingBackBtn');
 function updateStageProgress(mode) {
     stageProgress.dataset.mode = mode;
     const idx = STAGE_ORDER.indexOf(mode);
-    const canNav = state.exchangeCount >= 2;
     $$('.stage-step').forEach((step, i) => {
         step.classList.toggle('active', i === idx);
         step.classList.toggle('done', i < idx);
-        step.classList.toggle('clickable', i !== idx && canNav);
-        step.onclick = (i !== idx && canNav) ? () => navigateToStage(STAGE_ORDER[i]) : null;
-        step.title = (i !== idx && canNav) ? `Go to ${MODE_LABELS[STAGE_ORDER[i]]}` : '';
+        step.classList.toggle('clickable', i !== idx);
+        step.onclick = (i !== idx) ? () => navigateToStage(STAGE_ORDER[i]) : null;
+        step.title = (i !== idx) ? `Go to ${MODE_LABELS[STAGE_ORDER[i]]}` : '';
     });
 }
 
