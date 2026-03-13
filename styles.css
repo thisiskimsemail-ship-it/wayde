@@ -39,6 +39,19 @@ body {
     overflow: hidden;
 }
 
+/* Wade Institute polygon mark â subtle repeating background texture */
+body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='312' viewBox='-40 -40 226 232'%3E%3Cpolygon points='87.8,13.9 13.4,13.9 13.4,33.3 18,33.3 18,18.5 85.8,18.5 129.6,66.4 129.6,134.7 61.4,134.7 18,87.6 18,81.6 13.4,81.6 13.4,89.3 59.5,139.2 134.2,139.2 134.2,64.6' fill='none' stroke='%23ef5a21' stroke-width='1'/%3E%3C/svg%3E");
+    background-size: 300px 312px;
+    opacity: 0.03;
+    animation: wadeFloat 22s ease-in-out infinite;
+}
+
 /* === HEADER === */
 .header {
     padding: 1rem 1.5rem;
@@ -132,7 +145,7 @@ body {
     transition: background 0.2s, border-color 0.2s;
 }
 
-/* Dots gone — color is the indicator */
+/* Dots gone â color is the indicator */
 .stage-dot { display: none; }
 
 /* Stage names: bold mono, home-page card-header style */
@@ -164,14 +177,14 @@ body {
 .stage-step.done .stage-name { opacity: 0.5; }
 
 /* Active step: full color + subtle card background matching home page cards */
-.stage-step.active[data-stage="reframe"]   { background: rgba(239,90,33,0.1);   border-color: rgba(239,90,33,0.2);   }
-.stage-step.active[data-stage="ideate"]    { background: rgba(155,109,255,0.1); border-color: rgba(155,109,255,0.2); }
-.stage-step.active[data-stage="debate"]    { background: rgba(38,189,190,0.1);  border-color: rgba(38,189,190,0.2);  }
-.stage-step.active[data-stage="framework"] { background: rgba(236,54,147,0.1);  border-color: rgba(236,54,147,0.2);  }
+.stage-step.active[data-stage="reframe"]   { background: rgba(239,90,33,0.1);   border-color: rgba(239,90,33,0.2);   --stage-pulse-color: rgba(239,90,33,0.22);   animation: stagePulse 3s ease-in-out infinite; }
+.stage-step.active[data-stage="ideate"]    { background: rgba(155,109,255,0.1); border-color: rgba(155,109,255,0.2); --stage-pulse-color: rgba(155,109,255,0.22); animation: stagePulse 3s ease-in-out infinite; }
+.stage-step.active[data-stage="debate"]    { background: rgba(38,189,190,0.1);  border-color: rgba(38,189,190,0.2);  --stage-pulse-color: rgba(38,189,190,0.22);  animation: stagePulse 3s ease-in-out infinite; }
+.stage-step.active[data-stage="framework"] { background: rgba(236,54,147,0.1);  border-color: rgba(236,54,147,0.2);  --stage-pulse-color: rgba(236,54,147,0.22);  animation: stagePulse 3s ease-in-out infinite; }
 
 .stage-step.active .stage-name { opacity: 1; }
 
-/* All steps open a picker — always pointer, hover tint in stage color */
+/* All steps open a picker â always pointer, hover tint in stage color */
 .stage-step { cursor: pointer; }
 .stage-step[data-stage="reframe"]:hover   { background: rgba(239,90,33,0.06);   }
 .stage-step[data-stage="ideate"]:hover    { background: rgba(155,109,255,0.06); }
@@ -191,14 +204,14 @@ body {
     opacity: 0.45;
     transition: opacity 0.2s;
 }
-.stage-tool::after { content: ' ▾'; }
+.stage-tool::after { content: ' â¾'; }
 
 .stage-step[data-stage="reframe"]   .stage-tool { color: var(--orange); }
 .stage-step[data-stage="ideate"]    .stage-tool { color: var(--purple); }
 .stage-step[data-stage="debate"]    .stage-tool { color: var(--teal);   }
 .stage-step[data-stage="framework"] .stage-tool { color: var(--pink);   }
 
-/* Once picker is enabled — active step becomes a clickable trigger */
+/* Once picker is enabled â active step becomes a clickable trigger */
 #stageProgress.tool-enabled .stage-step.active { cursor: pointer; }
 #stageProgress.tool-enabled .stage-step.active .stage-tool { opacity: 0.8; }
 #stageProgress.tool-enabled .stage-step.active:hover .stage-tool { opacity: 1; }
@@ -245,7 +258,8 @@ body {
     z-index: 200;
     min-width: 190px;
     box-shadow: 0 8px 28px rgba(0,0,0,0.5);
-    animation: fadeIn 0.12s ease;
+    animation: pickerOpen 0.15s ease both;
+    transform-origin: top center;
 }
 
 .tool-picker-menu.hidden { display: none; }
@@ -276,7 +290,7 @@ body {
     font-weight: 600;
 }
 .tool-picker-current::after {
-    content: ' ·';
+    content: ' Â·';
     color: var(--text-muted);
     font-weight: 400;
 }
@@ -370,6 +384,21 @@ body {
     min-height: 60vh;
     text-align: center;
     padding: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Wade diagonal accent â top-right corner, follows polygon's signature diagonal */
+.welcome::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 4rem;
+    width: 1px;
+    height: 35%;
+    background: linear-gradient(to bottom, transparent, rgba(239,90,33,0.18), transparent);
+    transform: skewX(-18deg);
+    pointer-events: none;
 }
 
 .welcome.hidden { display: none; }
@@ -387,11 +416,13 @@ body {
     font-weight: 600;
     margin-bottom: 0.3rem;
     color: var(--text);
+    animation: heroFloat 0.6s ease both;
 }
 
 .welcome-sub {
     font-size: 1.1rem;
     color: var(--orange);
+    animation: heroFloat 0.6s 0.1s ease both;
     font-weight: 500;
     margin-bottom: 1rem;
 }
@@ -402,6 +433,7 @@ body {
     max-width: 460px;
     line-height: 1.6;
     margin-bottom: 1.5rem;
+    animation: heroFloat 0.6s 0.2s ease both;
 }
 
 /* === SITUATIONAL GUIDE === */
@@ -414,6 +446,7 @@ body {
     margin-bottom: 2rem;
     font-size: 0.78rem;
     color: var(--text-dim);
+    animation: heroFloat 0.6s 0.3s ease both;
 }
 
 .guide-item {
@@ -451,8 +484,14 @@ body {
     min-width: 240px;
     max-width: 300px;
     flex: 1;
-    transition: border-color 0.2s;
+    transition: border-color 0.25s, box-shadow 0.25s;
+    animation: cardReveal 0.5s ease both;
 }
+
+.welcome-card:nth-child(1) { animation-delay: 0.35s; }
+.welcome-card:nth-child(2) { animation-delay: 0.45s; }
+.welcome-card:nth-child(3) { animation-delay: 0.55s; }
+.welcome-card:nth-child(4) { animation-delay: 0.65s; }
 
 .welcome-card:hover {
     border-color: rgba(255,255,255,0.15);
@@ -499,7 +538,8 @@ body {
     border-radius: 5px;
     cursor: pointer;
     text-align: left;
-    transition: all 0.2s;
+    transition: all 0.2s ease;
+    transform: translateY(0);
 }
 
 .exercise-header {
@@ -543,6 +583,7 @@ body {
 .card-exercise-btn:hover {
     border-color: rgba(255,255,255,0.2);
     background: rgba(255,255,255,0.06);
+    transform: translateY(-1px);
 }
 
 .card-exercise-btn:hover .exercise-desc {
@@ -555,36 +596,36 @@ body {
 .card-reframe .card-exercise-btn:hover {
     border-color: rgba(239, 90, 33, 0.35);
     background: rgba(239, 90, 33, 0.07);
+    box-shadow: 0 4px 16px rgba(239,90,33,0.12);
 }
-
 .card-reframe .card-exercise-btn:hover .exercise-name { color: var(--orange); }
 
 .card-ideate .card-exercise-btn:hover {
     border-color: rgba(155, 109, 255, 0.35);
     background: rgba(155, 109, 255, 0.07);
+    box-shadow: 0 4px 16px rgba(155,109,255,0.12);
 }
-
 .card-ideate .card-exercise-btn:hover .exercise-name { color: var(--purple); }
 
 .card-debate .card-exercise-btn:hover {
     border-color: rgba(38, 189, 190, 0.35);
     background: rgba(38, 189, 190, 0.07);
+    box-shadow: 0 4px 16px rgba(38,189,190,0.12);
 }
-
 .card-debate .card-exercise-btn:hover .exercise-name { color: var(--teal); }
 
 .card-framework .card-exercise-btn:hover {
     border-color: rgba(236, 54, 147, 0.35);
     background: rgba(236, 54, 147, 0.07);
+    box-shadow: 0 4px 16px rgba(236,54,147,0.12);
 }
-
 .card-framework .card-exercise-btn:hover .exercise-name { color: var(--pink); }
 
 /* === EXERCISE INTRO CARD === */
 .msg-intro {
     align-self: stretch;
     max-width: 100%;
-    border-left: 2px solid rgba(255,255,255,0.15);
+    border-left: 3px solid rgba(255,255,255,0.15);
     padding: 0.7rem 0.9rem;
     font-size: 0.8rem;
     color: var(--text-muted);
@@ -599,10 +640,10 @@ body {
     margin-bottom: 0.3rem;
 }
 
-.msg-intro[data-mode="reframe"] { border-left-color: var(--orange); }
-.msg-intro[data-mode="ideate"]  { border-left-color: var(--purple); }
-.msg-intro[data-mode="debate"]  { border-left-color: var(--teal); }
-.msg-intro[data-mode="framework"] { border-left-color: var(--pink); }
+.msg-intro[data-mode="reframe"]   { border-left-color: var(--orange); animation: fadeIn 0.3s ease, borderGlow 3s 0.3s ease-in-out infinite; }
+.msg-intro[data-mode="ideate"]    { border-left-color: var(--purple); animation: fadeIn 0.3s ease, borderGlow 3s 0.3s ease-in-out infinite; }
+.msg-intro[data-mode="debate"]    { border-left-color: var(--teal);   animation: fadeIn 0.3s ease, borderGlow 3s 0.3s ease-in-out infinite; }
+.msg-intro[data-mode="framework"] { border-left-color: var(--pink);   animation: fadeIn 0.3s ease, borderGlow 3s 0.3s ease-in-out infinite; }
 
 .msg-intro-label {
     font-family: var(--mono);
@@ -618,19 +659,34 @@ body {
 .msg-intro[data-mode="debate"]  .msg-intro-label { color: var(--teal); }
 .msg-intro[data-mode="framework"] .msg-intro-label { color: var(--pink); }
 
-/* Inline exercise section break — same style but not sticky, with a top separator */
+/* Inline exercise section break â same style but not sticky, with a top separator */
 .msg-intro-break {
     align-self: stretch;
     max-width: 100%;
-    border-left: 2px solid rgba(255,255,255,0.15);
+    border-left: 3px solid rgba(255,255,255,0.15);
     padding: 0.7rem 0.9rem;
     font-size: 0.8rem;
     color: var(--text-muted);
     line-height: 1.55;
     animation: fadeIn 0.3s ease;
-    margin-top: 1.5rem;
+    margin-top: 2rem;
     border-top: 1px solid rgba(255,255,255,0.05);
-    padding-top: 1.2rem;
+    padding-top: 1.4rem;
+    position: relative;
+}
+
+/* Wade diamond accent above section breaks */
+.msg-intro-break::before {
+    content: 'â';
+    position: absolute;
+    top: -0.7rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.45rem;
+    color: var(--text-muted);
+    opacity: 0.35;
+    background: var(--bg);
+    padding: 0 0.5rem;
 }
 .msg-intro-break[data-mode="reframe"] { border-left-color: var(--orange); }
 .msg-intro-break[data-mode="ideate"]  { border-left-color: var(--purple); }
@@ -662,6 +718,44 @@ body {
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(6px); }
     to { opacity: 1; transform: translateY(0); }
+}
+
+/* === WADE BRAND ANIMATIONS === */
+
+/* Slow diagonal drift â follows the Wade polygon's signature angle */
+@keyframes wadeFloat {
+    0%, 100% { transform: translate(0, 0); }
+    50%       { transform: translate(6px, -10px); }
+}
+
+/* Staggered card entrance */
+@keyframes cardReveal {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Active stage step â gentle stage-color pulse */
+@keyframes stagePulse {
+    0%, 100% { box-shadow: 0 0 0 0 transparent; }
+    50%       { box-shadow: 0 0 0 4px var(--stage-pulse-color, rgba(239,90,33,0.2)); }
+}
+
+/* Intro card left border shimmer */
+@keyframes borderGlow {
+    0%, 100% { opacity: 0.5; }
+    50%       { opacity: 1; }
+}
+
+/* Welcome hero text entrance */
+@keyframes heroFloat {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Tool picker open */
+@keyframes pickerOpen {
+    from { opacity: 0; transform: scale(0.95) translateY(-4px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
 }
 
 .msg-user {
@@ -786,7 +880,15 @@ body {
 
 .input-field:focus {
     border-color: rgba(255,255,255,0.25);
+    box-shadow: 0 0 0 3px rgba(239,90,33,0.07);
+    outline: none;
 }
+
+/* Stage-colored focus glow â driven by data-mode on body (set by updateStageProgress) */
+body[data-mode="reframe"]   .input-field:focus { box-shadow: 0 0 0 3px rgba(239,90,33,0.1);   border-color: rgba(239,90,33,0.4); }
+body[data-mode="ideate"]    .input-field:focus { box-shadow: 0 0 0 3px rgba(155,109,255,0.1); border-color: rgba(155,109,255,0.4); }
+body[data-mode="debate"]    .input-field:focus { box-shadow: 0 0 0 3px rgba(38,189,190,0.1);  border-color: rgba(38,189,190,0.4); }
+body[data-mode="framework"] .input-field:focus { box-shadow: 0 0 0 3px rgba(236,54,147,0.1);  border-color: rgba(236,54,147,0.4); }
 
 .input-field::placeholder {
     color: var(--text-muted);
@@ -806,7 +908,9 @@ body {
     flex-shrink: 0;
 }
 
-.send-btn:hover { opacity: 0.85; }
+.send-btn { transition: opacity 0.2s, transform 0.15s ease; }
+.send-btn:hover:not(:disabled) { opacity: 1; transform: scale(1.07); }
+.send-btn:active:not(:disabled) { transform: scale(0.96); }
 .send-btn:disabled { opacity: 0.3; cursor: not-allowed; }
 
 .input-hint {
@@ -1229,7 +1333,7 @@ body {
 
 .report-card.hidden { display: none; }
 
-/* Preview state — fade out after 280px */
+/* Preview state â fade out after 280px */
 .report-card.report-preview {
     border-radius: 10px 10px 0 0;
     border-bottom: none;
@@ -1312,6 +1416,28 @@ body {
 .report-content p:first-child { margin-top: 0; }
 .report-content p:last-child { margin-bottom: 0; }
 
+.report-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    margin-bottom: 1.2rem;
+}
+
+.report-logo-top {
+    height: 48px;
+    width: auto;
+}
+
+.report-meta {
+    font-size: 0.72rem;
+    font-family: var(--mono);
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
 .report-footer {
     display: flex;
     align-items: center;
@@ -1328,6 +1454,14 @@ body {
     height: 20px;
     width: auto;
     opacity: 0.5;
+}
+
+.report-disclaimer {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    font-family: var(--mono);
+    opacity: 0.6;
+    margin-left: auto;
 }
 
 /* PDF / Share buttons in report footer */
@@ -1376,7 +1510,7 @@ body {
     }
     .guide-sep { display: none; }
 
-    /* Home stage cards — single-card horizontal scroll */
+    /* Home stage cards â single-card horizontal scroll */
     .welcome-cards {
         width: 100%;
         max-width: 100%;
@@ -1399,7 +1533,7 @@ body {
         scroll-snap-align: start;
     }
 
-    /* Stage progress bar — compress to fit 4 stages */
+    /* Stage progress bar â compress to fit 4 stages */
     .session-bar { padding: 0.4rem 0.75rem; }
     .stage-conn { display: none; }
     .stage-step { padding: 0.25rem 0.5rem; }
