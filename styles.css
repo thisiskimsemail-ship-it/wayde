@@ -65,6 +65,7 @@ body {
 }
 
 .session-bar.hidden { display: none; }
+.js-state { display: none; }
 
 .session-mode {
     font-family: var(--mono);
@@ -128,6 +129,7 @@ body {
     flex-direction: column;
     align-items: center;
     gap: 0.25rem;
+    position: relative;
 }
 
 .stage-dot {
@@ -161,6 +163,26 @@ body {
 .stage-step.clickable { cursor: pointer; }
 .stage-step.clickable:hover .stage-dot { opacity: 1; transform: scale(1.3); }
 .stage-step.clickable:hover .stage-name { color: var(--text-dim); }
+
+/* Tool label shown under the active stage step */
+.stage-tool {
+    font-size: 0.58rem;
+    color: var(--text-muted);
+    font-family: var(--font);
+    white-space: nowrap;
+    opacity: 0.45;
+    transition: color 0.2s, opacity 0.2s;
+    padding: 0 0.15rem;
+}
+.stage-tool::after { content: ' ▾'; }
+
+/* Once picker is enabled (after first exchange) — active step becomes a visible trigger */
+#stageProgress.tool-enabled .stage-step.active { cursor: pointer; }
+#stageProgress.tool-enabled .stage-step.active .stage-tool {
+    color: var(--text-dim);
+    opacity: 1;
+}
+#stageProgress.tool-enabled .stage-step.active:hover .stage-tool { color: var(--text); }
 
 #stageProgress[data-mode="reframe"]   .stage-step.active .stage-dot { background: var(--orange); }
 #stageProgress[data-mode="ideate"]    .stage-step.active .stage-dot { background: var(--purple); }
@@ -199,8 +221,9 @@ body {
 
 .tool-picker-menu {
     position: absolute;
-    top: calc(100% + 6px);
-    left: 0;
+    top: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
     background: #1c1a54;
     border: 1px solid rgba(255,255,255,0.12);
     border-radius: 8px;

@@ -14,15 +14,13 @@
         <img class="logo" src="logo.png" alt="Wade Institute">
     </header>
 
-    <!-- Active session bar with inline stage progress (hidden until an exercise is selected) -->
+    <!-- Active session bar (hidden until an exercise is selected) -->
     <div class="session-bar hidden" id="sessionBar">
-        <span class="session-mode" id="sessionMode">Clarify</span>
-        <span class="session-sep">›</span>
-        <span class="tool-picker" id="toolPicker">
-            <span class="session-exercise" id="sessionExercise">Five Whys</span>
-            <button class="tool-picker-btn" id="toolPickerBtn" title="Switch tool" disabled>▾</button>
-            <div class="tool-picker-menu hidden" id="toolPickerMenu"></div>
-        </span>
+        <!-- JS state refs — not displayed -->
+        <span class="js-state" id="sessionMode"></span>
+        <span class="js-state" id="sessionExercise"></span>
+        <button class="js-state" id="toolPickerBtn" disabled></button>
+        <!-- Stage nav — takes full width; active stage shows current tool + acts as picker -->
         <div class="stage-progress" id="stageProgress">
             <div class="stage-step" data-stage="reframe"><span class="stage-dot"></span><span class="stage-name">Clarify</span></div>
             <div class="stage-conn"></div>
@@ -31,6 +29,7 @@
             <div class="stage-step" data-stage="debate"><span class="stage-dot"></span><span class="stage-name">Validate</span></div>
             <div class="stage-conn"></div>
             <div class="stage-step" data-stage="framework"><span class="stage-dot"></span><span class="stage-name">Develop</span></div>
+            <div class="tool-picker-menu hidden" id="toolPickerMenu"></div>
         </div>
         <button class="session-close" id="sessionClose" title="Back to menu">✕</button>
     </div>
@@ -254,6 +253,6 @@
         </div>
     </footer>
 
-    <script src="app.js?v=27"></script>
+    <script src="app.js?v=28"></script>
 </body>
 </html>

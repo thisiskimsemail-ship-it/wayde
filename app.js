@@ -152,6 +152,17 @@ function updateStageProgress(mode) {
         step.classList.toggle('clickable', i !== idx);
         step.onclick = (i !== idx) ? () => navigateToStage(STAGE_ORDER[i]) : null;
         step.title = (i !== idx) ? `Go to ${MODE_LABELS[STAGE_ORDER[i]]}` : '';
+        // Remove any previous tool label
+        step.querySelector('.stage-tool')?.remove();
+        if (i === idx) {
+            // Show current tool name under the active stage dot
+            const toolEl = document.createElement('span');
+            toolEl.className = 'stage-tool';
+            toolEl.textContent = EXERCISE_LABELS[state.exercise] || state.exercise;
+            step.appendChild(toolEl);
+            // Anchor the dropdown to the active step
+            step.appendChild(toolPickerMenu);
+        }
     });
 }
 
@@ -175,7 +186,15 @@ function navigateToStage(targetMode) {
 
 // === TOOL PICKER ===
 
-toolPickerBtn.addEventListener('click', (e) => {
+function setPickerEnabled(enabled) {
+    toolPickerBtn.disabled = !enabled;
+    stageProgress.classList.toggle('tool-enabled', enabled);
+}
+
+// Clicking the active stage step opens the tool picker
+stageProgress.addEventListener('click', (e) => {
+    const activeStep = stageProgress.querySelector('.stage-step.active');
+    if (!activeStep || !activeStep.contains(e.target)) return;
     e.stopPropagation();
     if (toolPickerBtn.disabled) return;
     const tools = (TOOLS_BY_MODE[state.mode] || []).filter(t => t !== state.exercise);
@@ -242,7 +261,7 @@ function startExercise(mode, exercise, startMsg = null) {
     updateStageProgress(mode);
 
     // Reset tool picker (re-enabled after first exchange)
-    toolPickerBtn.disabled = true;
+    setPickerEnabled(false);
     toolPickerMenu.classList.add('hidden');
 
     // Clear messages and hide/reset report elements
@@ -308,7 +327,7 @@ sessionClose.addEventListener('click', () => {
     inputField.placeholder = 'Describe your challenge or idea...';
     modeLabel.textContent = '';
     state.rating = null;
-    toolPickerBtn.disabled = true;
+    setPickerEnabled(false);
     toolPickerMenu.classList.add('hidden');
     reportCta.classList.add('hidden');
     reportCard.classList.add('hidden');
@@ -345,7 +364,7 @@ function swapToTool(mode, exercise, swapEl) {
     updateStageProgress(mode);
 
     // Reset tool picker
-    toolPickerBtn.disabled = true;
+    setPickerEnabled(false);
     toolPickerMenu.classList.add('hidden');
 
     // Reset report elements
@@ -485,12 +504,10 @@ function maybeShowReportCta() {
         reportCtaBtn.disabled = false;
         reportCtaBtn.textContent = 'Access your Innovation Coaching Session report →';
         // Enable within-stage tool picker after first real exchange
-        toolPickerBtn.disabled = false;
+        setPickerEnabled(true);
     }
-    // Unlock stage dot navigation after second real exchange
-    if (state.exchangeCount >= 2) {
-        updateStageProgress(state.mode);
-    }
+    // Refresh stage bar so tool label reflects current exercise
+    updateStageProgress(state.mode);
 }
 
 // === SESSION PERSISTENCE ===
@@ -535,7 +552,7 @@ function restoreSession(session) {
     reportCta.classList.remove('hidden');
     updateStageProgress(state.mode);
     // Restore tool picker state
-    toolPickerBtn.disabled = state.exchangeCount < 1;
+    setPickerEnabled(state.exchangeCount >= 1);
 
     // Re-render messages
     messagesEl.innerHTML = '';
