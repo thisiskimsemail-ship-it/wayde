@@ -486,6 +486,16 @@ def chat():
             + context_sections
         )
 
+    # Push harder mode — more Socratic, less cushioning
+    push_harder = data.get('push_harder', False)
+    if push_harder:
+        system_prompt += (
+            "\n\n---\n\nPUSH HARDER MODE (user-requested): Shift to a more challenging, Socratic style. "
+            "Be more direct. Push back on easy answers. Name contradictions. Ask harder follow-up questions. "
+            "Surface assumptions the user hasn't examined. Don't soften the truth — be respectful but rigorous. "
+            "Prioritise intellectual honesty over comfort. Still warm, never harsh."
+        )
+
     # Inject live Wade programs/events so Claude can reference them in conversation
     live_programs = fetch_wade_programs()
     if live_programs:
@@ -643,6 +653,9 @@ Begin the report with the title: # Innovation Coaching Session Summary
 
 ### What Emerged
 3-5 key insights from the conversation. Be specific — reference what the user actually said or discovered. Not generic advice. Each insight in 1-3 sentences.
+
+### Key Moments
+2-3 direct quotes from the user — the most revealing, surprising, or insight-rich things they said. Use their exact words in quotation marks. Follow each with one sentence explaining what makes it significant. These should feel like real highlights, not paraphrases.
 
 ### Questions Worth Sitting With
 2-3 open, provocative questions that the session surfaced but didn't fully resolve. These are outlier areas, blind spots, or tensions worth returning to. Not rhetorical — genuinely challenging. One sentence each.
