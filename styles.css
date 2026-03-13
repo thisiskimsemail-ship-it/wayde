@@ -587,6 +587,29 @@ body {
 .msg-intro[data-mode="debate"]  .msg-intro-label { color: var(--teal); }
 .msg-intro[data-mode="framework"] .msg-intro-label { color: var(--pink); }
 
+/* Inline exercise section break — same style but not sticky, with a top separator */
+.msg-intro-break {
+    align-self: stretch;
+    max-width: 100%;
+    border-left: 2px solid rgba(255,255,255,0.15);
+    padding: 0.7rem 0.9rem;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    line-height: 1.55;
+    animation: fadeIn 0.3s ease;
+    margin-top: 1.5rem;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    padding-top: 1.2rem;
+}
+.msg-intro-break[data-mode="reframe"] { border-left-color: var(--orange); }
+.msg-intro-break[data-mode="ideate"]  { border-left-color: var(--purple); }
+.msg-intro-break[data-mode="debate"]  { border-left-color: var(--teal); }
+.msg-intro-break[data-mode="framework"] { border-left-color: var(--pink); }
+.msg-intro-break[data-mode="reframe"] .msg-intro-label { color: var(--orange); }
+.msg-intro-break[data-mode="ideate"]  .msg-intro-label { color: var(--purple); }
+.msg-intro-break[data-mode="debate"]  .msg-intro-label { color: var(--teal); }
+.msg-intro-break[data-mode="framework"] .msg-intro-label { color: var(--pink); }
+
 /* === MESSAGES === */
 .messages {
     max-width: 800px;

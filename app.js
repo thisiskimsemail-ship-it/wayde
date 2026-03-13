@@ -379,8 +379,25 @@ function swapToTool(mode, exercise, swapEl) {
     // Remove swap suggestion card from chat
     if (swapEl) swapEl.remove();
 
-    // Carry all prior messages across, add a bridging message
     const exerciseName = EXERCISE_LABELS[exercise] || exercise;
+
+    // Update the sticky exercise intro card at the top
+    const exerciseDesc = EXERCISE_DESCS[exercise] || '';
+    const introHTML = `<div class="msg-intro-label">${exerciseName}</div>${exerciseDesc}`;
+    const stickyIntro = messagesEl.querySelector('.msg-intro');
+    if (stickyIntro) {
+        stickyIntro.dataset.mode = mode;
+        stickyIntro.innerHTML = introHTML;
+    }
+
+    // Insert a section break in the chat to signal the new exercise
+    const breakEl = document.createElement('div');
+    breakEl.className = 'msg-intro-break';
+    breakEl.dataset.mode = mode;
+    breakEl.innerHTML = introHTML;
+    messagesEl.appendChild(breakEl);
+
+    // Carry all prior messages across, add a bridging message
     state.messages = [
         ...previousMessages,
         { role: 'user', content: `Let's switch to ${exerciseName}. Pick up from what we've covered and start this exercise.` }
@@ -554,9 +571,35 @@ function restoreSession(session) {
     // Restore tool picker state
     setPickerEnabled(state.exchangeCount >= 1);
 
-    // Re-render messages
+    // Re-render messages — synthetic swap messages become section breaks, not bubbles
     messagesEl.innerHTML = '';
-    state.messages.forEach(m => appendMessage(m.role === 'user' ? 'user' : 'agent', m.content));
+    // Add sticky intro for the current exercise at the top
+    const restoreDesc = EXERCISE_DESCS[state.exercise] || '';
+    const restoreIntro = document.createElement('div');
+    restoreIntro.className = 'msg-intro';
+    restoreIntro.dataset.mode = state.mode;
+    restoreIntro.innerHTML = `<div class="msg-intro-label">${EXERCISE_LABELS[state.exercise] || state.exercise}</div>${restoreDesc}`;
+    messagesEl.appendChild(restoreIntro);
+
+    const SWAP_PREFIX = "Let's switch to ";
+    state.messages.forEach(m => {
+        if (m.role === 'user' && m.content.startsWith(SWAP_PREFIX)) {
+            // Synthetic swap message — render as inline section break
+            const swappedName = m.content.slice(SWAP_PREFIX.length).split('.')[0];
+            const exerciseKey = Object.entries(EXERCISE_LABELS).find(([, v]) => v === swappedName)?.[0];
+            const swapMode = exerciseKey?.split(':')?.[0];
+            const desc = exerciseKey ? (EXERCISE_DESCS[exerciseKey] || '') : '';
+            const breakEl = document.createElement('div');
+            breakEl.className = 'msg-intro-break';
+            if (swapMode) breakEl.dataset.mode = swapMode;
+            breakEl.innerHTML = `<div class="msg-intro-label">${swappedName}</div>${desc}`;
+            messagesEl.appendChild(breakEl);
+        } else if (m.role === 'user' && m.content === 'Please start the session.') {
+            // Skip synthetic kickoff — Wayde's opening response is enough
+        } else {
+            appendMessage(m.role === 'user' ? 'user' : 'agent', m.content);
+        }
+    });
 
     if (state.reportGenerated && state.reportText) {
         reportContent.innerHTML = renderMarkdown(state.reportText);
