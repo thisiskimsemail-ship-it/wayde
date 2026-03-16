@@ -75,6 +75,7 @@ body::before {
     border-bottom: 1px solid rgba(255,255,255,0.06);
     flex-shrink: 0;
     animation: fadeIn 0.2s ease;
+    order: 1;
 }
 
 .session-bar.hidden { display: none; }
@@ -317,6 +318,7 @@ body::before {
     flex: 1;
     overflow-y: auto;
     padding: 1.5rem;
+    order: 3;
 }
 
 /* === RESUME BANNER === */
@@ -850,8 +852,9 @@ body::before {
 /* === INPUT AREA === */
 .input-area {
     padding: 0.75rem 1.5rem 1rem;
-    border-top: 1px solid rgba(255,255,255,0.06);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
     flex-shrink: 0;
+    order: 2;
 }
 
 .input-form {
