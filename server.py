@@ -26,7 +26,11 @@ Rigorous, practical, confident, inclusive, curious, optimistic — and genuinely
 
 Be warm. Acknowledge what someone is dealing with. Show genuine enthusiasm when an insight lands. Use light humour where it fits naturally — never forced. Make people feel capable and supported, not evaluated. Short sentences. One idea per sentence. Active voice. Concrete examples, not abstractions.
 
-NAMING
+NAMING — CRITICAL
+Your name is WAiDE — always spelled EXACTLY this way: capital W, lowercase a, capital i, capital D, capital E. This is not a typo — it is a deliberate brand name.
+NEVER write "Wayde", "Waide", "WADE", "Wade" or any other variation when referring to yourself.
+When introducing yourself: say "I'm WAiDE" — never "I'm Wayde".
+When the user's report or summary mentions the tool: write "WAiDE", never "Wayde".
 Say "Wade Institute of Entrepreneurship" on first reference, "Wade Institute" after that. Never "The Wade Institute", "The Wade" or "Wade" alone.
 
 COMMUNITY LANGUAGE
@@ -880,11 +884,11 @@ body{{font-family:Georgia,serif;max-width:700px;margin:40px auto;padding:0 20px;
 h1,h2,h3{{font-family:Arial,sans-serif}}
 h2{{border-bottom:1px solid #ddd;padding-bottom:4px;margin-top:2em}}
 h3{{font-size:1.05em;color:#333}}
-.hd{{padding-bottom:1em;border-bottom:2px solid #ef5a21;margin-bottom:2em}}
+.hd{{padding-bottom:1em;border-bottom:2px solid #F15A22;margin-bottom:2em}}
 .meta{{color:#666;font-size:13px;font-family:Arial;margin-top:4px}}
 ul{{padding-left:20px}} li{{margin-bottom:4px}} p{{margin:0 0 0.8em}}
 .ft{{margin-top:3em;padding-top:1em;border-top:1px solid #ddd;font-size:12px;color:#999;font-family:Arial}}
-a{{color:#ef5a21}}
+a{{color:#F15A22}}
 </style>
 </head>
 <body>
@@ -950,7 +954,7 @@ def _notify_wade(lead):
 <html>
 <head><meta charset="UTF-8"></head>
 <body style="font-family:Arial,sans-serif;max-width:680px;margin:0 auto;padding:20px;color:#1a1a2e;">
-  <div style="background:#ef5a21;padding:20px 24px;border-radius:6px 6px 0 0;">
+  <div style="background:#F15A22;padding:20px 24px;border-radius:6px 6px 0 0;">
     <h2 style="margin:0;color:#fff;font-size:18px;">New WAiDE Session</h2>
     <p style="margin:4px 0 0;color:rgba(255,255,255,0.85);font-size:13px;">Wade Institute of Entrepreneurship</p>
   </div>
@@ -962,7 +966,7 @@ def _notify_wade(lead):
       </tr>
       <tr>
         <td style="padding:8px 12px;font-weight:bold;border-bottom:1px solid #eee;">Email</td>
-        <td style="padding:8px 12px;border-bottom:1px solid #eee;"><a href="mailto:{lead['email']}" style="color:#ef5a21;">{lead['email']}</a></td>
+        <td style="padding:8px 12px;border-bottom:1px solid #eee;"><a href="mailto:{lead['email']}" style="color:#F15A22;">{lead['email']}</a></td>
       </tr>
       <tr style="background:#f8f8f8;">
         <td style="padding:8px 12px;font-weight:bold;border-bottom:1px solid #eee;">Company</td>
@@ -985,13 +989,13 @@ def _notify_wade(lead):
         <td style="padding:8px 12px;">{rating_label}</td>
       </tr>
     </table>
-    <h3 style="font-size:15px;border-bottom:2px solid #ef5a21;padding-bottom:6px;margin-top:0;">Innovation Coaching Session Summary</h3>
+    <h3 style="font-size:15px;border-bottom:2px solid #F15A22;padding-bottom:6px;margin-top:0;">Innovation Coaching Session Summary</h3>
     <div style="font-family:Georgia,serif;font-size:14px;line-height:1.7;color:#222;">
       {report_html}
     </div>
   </div>
   <p style="text-align:center;font-size:11px;color:#999;margin-top:16px;">
-    WAiDE Coaching Tool &middot; <a href="https://wadeinstitute.org.au" style="color:#ef5a21;">wadeinstitute.org.au</a>
+    WAiDE AI Coaching Tool &middot; <a href="https://wadeinstitute.org.au" style="color:#F15A22;">wadeinstitute.org.au</a>
   </p>
 </body>
 </html>"""

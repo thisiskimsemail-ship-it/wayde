@@ -1,3 +1,101 @@
+// === THEME TOGGLE ===
+(function() {
+    const saved = localStorage.getItem('waide_theme') || 'dark';
+    if (saved === 'light') document.documentElement.setAttribute('data-theme', 'light');
+    document.addEventListener('DOMContentLoaded', () => {
+        const btn = document.getElementById('themeToggle');
+        if (!btn) return;
+        const icon = btn.querySelector('.theme-icon');
+        icon.textContent = (localStorage.getItem('waide_theme') || 'dark') === 'light' ? '☾' : '☀';
+        btn.addEventListener('click', () => {
+            const next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('waide_theme', next);
+            icon.textContent = next === 'light' ? '☾' : '☀';
+        });
+    });
+})();
+
+// === LOGO → HOME ===
+document.addEventListener('DOMContentLoaded', () => {
+    const logo = document.querySelector('.logo');
+    if (logo) {
+        logo.style.cursor = 'pointer';
+        logo.addEventListener('click', () => {
+            if (typeof forceCloseSession === 'function') forceCloseSession();
+        });
+    }
+});
+
+// === VOICE INPUT ===
+document.addEventListener('DOMContentLoaded', () => {
+    const micBtn = document.getElementById('micBtn');
+    const inputField = document.getElementById('inputField');
+    if (!micBtn || !inputField) return;
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) { micBtn.classList.add('unsupported'); return; }
+
+    const recognition = new SpeechRecognition();
+    recognition.continuous = false;
+    recognition.interimResults = true;
+    recognition.lang = 'en-AU';
+
+    let isRecording = false;
+    let baseText = '';
+
+    micBtn.addEventListener('click', () => {
+        if (isRecording) {
+            recognition.stop();
+        } else {
+            baseText = inputField.value;
+            recognition.start();
+        }
+    });
+
+    recognition.onstart = () => {
+        isRecording = true;
+        micBtn.classList.add('recording');
+        micBtn.setAttribute('aria-label', 'Stop recording');
+    };
+
+    recognition.onresult = (e) => {
+        const transcript = Array.from(e.results).map(r => r[0].transcript).join('');
+        inputField.value = baseText + (baseText && !baseText.endsWith(' ') ? ' ' : '') + transcript;
+        inputField.dispatchEvent(new Event('input'));
+    };
+
+    recognition.onend = () => {
+        isRecording = false;
+        micBtn.classList.remove('recording');
+        micBtn.setAttribute('aria-label', 'Voice input');
+        inputField.focus();
+    };
+
+    recognition.onerror = (e) => {
+        if (e.error !== 'aborted') console.warn('Speech recognition error:', e.error);
+        isRecording = false;
+        micBtn.classList.remove('recording');
+        micBtn.setAttribute('aria-label', 'Voice input');
+    };
+});
+
+// === TOOLBOX TOGGLE (mobile only) ===
+document.addEventListener('DOMContentLoaded', () => {
+    const heading = document.getElementById('cardsHeading');
+    const cards = document.querySelector('.welcome-cards');
+    if (!heading || !cards) return;
+    function isMobile() { return window.innerWidth <= 640; }
+    if (isMobile()) cards.classList.add('cards-collapsed');
+    heading.addEventListener('click', () => {
+        if (!isMobile()) return;
+        cards.classList.toggle('cards-collapsed');
+    });
+    window.addEventListener('resize', () => {
+        if (!isMobile()) cards.classList.remove('cards-collapsed');
+    });
+});
+
 // === EXERCISE LABELS ===
 const EXERCISE_LABELS = {
     'five-whys': 'Five Whys',
@@ -186,8 +284,8 @@ function renderSessionActions() {
         streamResponse();
     });
 
-    actionsDiv.appendChild(challengeBtn);
     actionsDiv.appendChild(helpBtn);
+    actionsDiv.appendChild(challengeBtn);
     messagesEl.appendChild(actionsDiv);
     scrollToBottom();
 }
@@ -282,7 +380,7 @@ function openStagePickerForStep(stepEl) {
     toolPickerMenu.classList.remove('hidden');
 }
 
-// Ask Wayde to recommend a tool for the given stage
+// Ask WAiDE to recommend a tool for the given stage
 function helpMeChooseForStage(mode) {
     const stageName = MODE_LABELS[mode] || mode;
     const toolNames = (TOOLS_BY_MODE[mode] || []).map(t => EXERCISE_LABELS[t] || t).join(', ');
@@ -337,7 +435,7 @@ $$('.card-exercise-btn').forEach(btn => {
 
 function startExercise(mode, exercise, startMsg = null) {
     // If transitioning from routing, use the user's own description as the exercise kickoff
-    // so Wayde can respond in context without asking them to repeat themselves
+    // so WAiDE can respond in context without asking them to repeat themselves
     let autoStartMsg = startMsg;
     if (!autoStartMsg && state.routing && state.messages.length > 0) {
         autoStartMsg = state.messages
@@ -381,7 +479,6 @@ function startExercise(mode, exercise, startMsg = null) {
     reportCard.classList.remove('report-preview');
     reportUnlock.classList.add('hidden');
     leadModal.classList.add('hidden');
-    wadeCta.classList.add('hidden');
     $('#reportDownloadBtn').classList.add('hidden');
     $('#reportShareBtn').classList.add('hidden');
     routingBack.classList.add('hidden');
@@ -389,10 +486,10 @@ function startExercise(mode, exercise, startMsg = null) {
     // Show report CTA immediately but disabled — enables after first exchange
     reportCta.classList.remove('hidden');
     reportCtaBtn.disabled = true;
-    reportCtaBtn.textContent = 'Talk to Wayde to build your report';
+    reportCtaBtn.textContent = 'Talk to WAiDE to build your report';
 
     if (autoStartMsg) {
-        // Use the user's actual description as the first message so Wayde skips
+        // Use the user's actual description as the first message so WAiDE skips
         // "what are you working on?" and responds directly in context
         appendMessage('user', autoStartMsg);
         state.messages = [{ role: 'user', content: autoStartMsg }];
@@ -410,7 +507,7 @@ function startExercise(mode, exercise, startMsg = null) {
         // Set a tool-specific placeholder hint
         inputField.placeholder = EXERCISE_HINTS[exercise] || 'Describe your challenge or idea...';
 
-        // Auto-kickoff: send a synthetic first message so Wayde opens the conversation
+        // Auto-kickoff: send a synthetic first message so WAiDE opens the conversation
         state.messages = [{ role: 'user', content: 'Please start the session.' }];
         streamResponse();
     }
@@ -442,7 +539,7 @@ function forceCloseSession() {
     reportCard.classList.remove('report-preview');
     reportUnlock.classList.add('hidden');
     leadModal.classList.add('hidden');
-    wadeCta.classList.add('hidden');
+
     $('#reportDownloadBtn').classList.add('hidden');
     $('#reportShareBtn').classList.add('hidden');
     routingBack.classList.add('hidden');
@@ -483,7 +580,7 @@ sessionClose.addEventListener('click', () => {
     reportCard.classList.remove('report-preview');
     reportUnlock.classList.add('hidden');
     leadModal.classList.add('hidden');
-    wadeCta.classList.add('hidden');
+
     $('#reportDownloadBtn').classList.add('hidden');
     $('#reportShareBtn').classList.add('hidden');
     routingBack.classList.add('hidden');
@@ -520,10 +617,10 @@ function swapToTool(mode, exercise, swapEl) {
     reportCard.classList.add('hidden');
     reportCard.classList.remove('report-preview');
     reportUnlock.classList.add('hidden');
-    wadeCta.classList.add('hidden');
+
     reportCta.classList.remove('hidden');
     reportCtaBtn.disabled = true;
-    reportCtaBtn.textContent = 'Talk to Wayde to build your report';
+    reportCtaBtn.textContent = 'Talk to WAiDE to build your report';
 
     // Remove swap suggestion card from chat
     if (swapEl) swapEl.remove();
@@ -552,7 +649,7 @@ function swapToTool(mode, exercise, swapEl) {
         { role: 'user', content: `Let's switch to ${exerciseName}. Pick up from what we've covered and start this exercise.` }
     ];
 
-    // Stream Wayde's response with the new tool's system prompt
+    // Stream WAiDE's response with the new tool's system prompt
     streamResponse();
 }
 
@@ -682,7 +779,7 @@ function maybeShowReportCta() {
 
 function saveSession() {
     if (!state.mode || state.mode === 'routing') return;
-    localStorage.setItem('wayde_session', JSON.stringify({
+    localStorage.setItem('waide_session', JSON.stringify({
         mode: state.mode,
         exercise: state.exercise,
         messages: state.messages,
@@ -695,7 +792,7 @@ function saveSession() {
 }
 
 function clearSession() {
-    localStorage.removeItem('wayde_session');
+    localStorage.removeItem('waide_session');
 }
 
 function restoreSession(session) {
@@ -747,7 +844,7 @@ function restoreSession(session) {
             breakEl.innerHTML = `<div class="msg-intro-label">${swappedName}</div>${desc}`;
             messagesEl.appendChild(breakEl);
         } else if (m.role === 'user' && m.content === 'Please start the session.') {
-            // Skip synthetic kickoff — Wayde's opening response is enough
+            // Skip synthetic kickoff — WAiDE's opening response is enough
         } else {
             appendMessage(m.role === 'user' ? 'user' : 'agent', m.content);
         }
@@ -943,7 +1040,7 @@ async function streamResponse() {
         state.messages.push({ role: 'assistant', content: fullText });
 
         if (state.routing) {
-            // Render inline tool suggestion buttons if Wayde recommended any
+            // Render inline tool suggestion buttons if WAiDE recommended any
             if (suggestedKeys.length > 0) {
                 const suggestDiv = document.createElement('div');
                 suggestDiv.className = 'routing-suggestions';
@@ -961,7 +1058,7 @@ async function streamResponse() {
         } else {
             state.exchangeCount++;
             maybeShowReportCta();
-            // Show wrap-up card if Wayde signalled the exercise is complete
+            // Show wrap-up card if WAiDE signalled the exercise is complete
             if (wrapSignaled && !state.reportGenerated) {
                 renderWrapPrompt();
             }
@@ -1024,7 +1121,7 @@ function revealFullReport() {
     reportCard.classList.remove('report-preview');
     reportUnlock.classList.add('hidden');
     reportCta.classList.add('hidden'); // hide footer CTA — report is now visible
-    wadeCta.classList.remove('hidden');
+
 
     // Reveal report action buttons
     $('#reportDownloadBtn').classList.remove('hidden');
@@ -1101,7 +1198,7 @@ ul{padding-left:20px}li{margin-bottom:4px}p{margin:0 0 0.8em}
 </head><body>
 <div class="hd"><h1>Innovation Coaching Session Summary</h1><div class="meta">${mName} · ${exName} · ${date}</div></div>
 ${reportContent.innerHTML}
-<div class="ft">Generated by Wayde · Wade Institute of Entrepreneurship · wadeinstitute.org.au</div>
+<div class="ft">Generated by WAiDE · Wade Institute of Entrepreneurship · wadeinstitute.org.au</div>
 </body></html>`;
     const url = URL.createObjectURL(new Blob([html], { type: 'text/html' }));
     const win = window.open(url, '_blank');
@@ -1199,7 +1296,7 @@ moveInputToWelcome();
 
 (function checkSavedSession() {
     try {
-        const session = JSON.parse(localStorage.getItem('wayde_session'));
+        const session = JSON.parse(localStorage.getItem('waide_session'));
         if (!session?.mode || !session.messages?.length) return;
         const banner = $('#resumeBanner');
         $('#resumeLabel').textContent = EXERCISE_LABELS[session.exercise] || session.exercise;
