@@ -107,7 +107,8 @@ const state = {
     reportText: '',
     projectContext: [],  // accumulated context from previous stages
     routing: false,      // true when in tool-suggestion mode (no exercise selected)
-    rating: null         // thumbs up/down from wrap card
+    rating: null,        // thumbs up/down from wrap card
+    pushHarder: false    // more Socratic coaching mode
 };
 
 // === DOM ===
@@ -304,10 +305,11 @@ function startExercise(mode, exercise, startMsg = null) {
     state.routing = false;
     state.rating = null;
 
-    // Hide welcome, show session bar
+    // Hide welcome, show session bar + push harder toggle
     welcome.classList.add('hidden');
     sessionBar.classList.remove('hidden');
     sessionBar.dataset.mode = mode;
+    pushHarderBtn?.classList.remove('hidden');
 
     // Update session bar text
     sessionMode.textContent = MODE_LABELS[mode] || mode;
@@ -395,6 +397,10 @@ function forceCloseSession() {
     routingBack.classList.add('hidden');
     state.projectContext = [];
     state.routing = false;
+    state.pushHarder = false;
+    pushHarderBtn?.classList.add('hidden');
+    pushHarderBtn?.classList.remove('active');
+    $('#nextExercisePanel')?.remove();
     clearSession();
 }
 
@@ -434,7 +440,7 @@ sessionClose.addEventListener('click', () => {
     clearSession();
 });
 
-// === SWAPTOOLS ===
+// === SWAP TOOLS ===
 
 function swapToTool(mode, exercise, swapEl) {
     // Preserve conversation history
@@ -509,7 +515,7 @@ function startRouting(text) {
     state.reportGenerated = false;
     state.reportText = '';
 
-     welcome.classList.add('hidden');
+    welcome.classList.add('hidden');
     routingBack.classList.remove('hidden'); // show subtle back link immediately
     modeLabel.textContent = 'Finding your tool · ';
 
@@ -654,6 +660,7 @@ function restoreSession(session) {
     welcome.classList.add('hidden');
     sessionBar.classList.remove('hidden');
     sessionBar.dataset.mode = state.mode;
+    pushHarderBtn?.classList.remove('hidden');
     sessionMode.textContent = MODE_LABELS[state.mode] || state.mode;
     sessionExercise.textContent = EXERCISE_LABELS[state.exercise] || state.exercise;
     modeLabel.textContent = (EXERCISE_LABELS[state.exercise] || state.exercise) + ' · ';
@@ -715,7 +722,7 @@ function renderWrapPrompt() {
     if (next) {
         const nextModeName = MODE_LABELS[next.mode] || next.mode;
         const nextExName = EXERCISE_LABELS[next.exercise] || next.exercise;
-        actionsHtml += `<button class="wrap-btn wrap-btn-continue">Continue to ${nextModeName} — ${nextExName} →</button>`;
+        actionsHtml += `<button class="wrap-btn wrap-btn-continue">Continue to ${nextModeName} �4 ${nextExName} →</button>`;
     }
     actionsHtml += '<button class="wrap-btn wrap-btn-report">Access your Innovation Coaching Session report →</button>';
 
@@ -785,7 +792,8 @@ async function streamResponse() {
                 mode: state.mode,
                 exercise: state.exercise,
                 messages: state.messages,
-                project_context: state.projectContext
+                project_context: state.projectContext,
+                push_harder: state.pushHarder
             })
         });
 
@@ -964,6 +972,9 @@ function revealFullReport() {
     $('#reportDownloadBtn').classList.remove('hidden');
     $('#reportShareBtn').classList.remove('hidden');
 
+    // Show next exercise recommendation
+    renderNextExercisePanel();
+
     saveSession();
     scrollToBottom();
 }
@@ -1078,6 +1089,62 @@ function populateReportMeta() {
 $('#reportNewSessionBtn')?.addEventListener('click', () => {
     forceCloseSession();
 });
+
+// === PUSH HARDER TOGGLE ===
+
+const pushHarderBtn = $('#pushHarderBtn');
+if (pushHarderBtn) {
+    pushHarderBtn.addEventListener('click', () => {
+        state.pushHarder = !state.pushHarder;
+        pushHarderBtn.classList.toggle('active', state.pushHarder);
+        pushHarderBtn.title = state.pushHarder
+            ? 'Challenge mode on — Wayde will push back harder'
+            : 'Switch to a more challenging, Socratic coaching style';
+    });
+}
+
+// === NEXT EXERCISE PANEL (shown after full report revealed) ===
+
+function renderNextExercisePanel() {
+    const next = NEXT_STAGE[state.mode];
+    if (!next) return; // Develop is the last stage
+    if ($('#nextExercisePanel')) return; // already shown
+
+    const panel = document.createElement('div');
+    panel.id = 'nextExercisePanel';
+    panel.className = 'next-exercise-panel';
+    const nextModeName = MODE_LABELS[next.mode] || next.mode;
+    const nextExName = EXERCISE_LABELS[next.exercise] || next.exercise;
+    const modeColor = next.mode; // reframe/ideate/debate/framework
+
+    panel.innerHTML = `
+        <div class="next-exercise-label">Ready to keep going?</div>
+        <div class="next-exercise-stage mode-${modeColor}">${nextModeName}</div>
+        <div class="next-exercise-name">${nextExName}</div>
+        <p class="next-exercise-desc">${EXERCISE_DESCS[next.exercise] || ''}</p>
+        <button class="next-exercise-btn next-exercise-btn-${modeColor}" id="nextExerciseBtn">Start ${nextExName} →</button>
+    `;
+
+    reportCard.insertAdjacentElement('afterend', panel);
+
+    panel.querySelector('#nextExerciseBtn').addEventListener('click', () => {
+        panel.remove();
+        navigateToStage(next.mode, next.exercise);
+    });
+}
+
+// === URL QUICK-START (?exercise=empathy-map) ===
+
+(function checkUrlParams() {
+    try {
+        const params = new URLSearchParams(window.location.search);
+        const exerciseKey = params.get('exercise');
+        if (exerciseKey && EXERCISE_MODE[exerciseKey]) {
+            const mode = EXERCISE_MODE[exerciseKey];
+            setTimeout(() => startExercise(mode, exerciseKey), 150);
+        }
+    } catch(e) {}
+})();
 
 // === RESUME SAVED SESSION ===
 
