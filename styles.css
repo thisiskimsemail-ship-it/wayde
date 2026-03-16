@@ -403,10 +403,10 @@ body {
 .welcome.hidden { display: none; }
 
 .welcome-tagline {
-    font-size: 1.1875rem;
+    font-size: 0.9rem;
     color: var(--text-dim);
-    max-width: 480px;
-    line-height: 1.35;
+    max-width: 560px;
+    line-height: 1.6;
     margin-bottom: 2rem;
 }
 
