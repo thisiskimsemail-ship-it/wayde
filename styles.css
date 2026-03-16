@@ -39,7 +39,7 @@ body {
     overflow: hidden;
 }
 
-/* Wade Institute polygon mark â subtle repeating background texture */
+/* Wade Institute polygon mark — subtle repeating background texture */
 body::before {
     content: '';
     position: fixed;
@@ -145,7 +145,7 @@ body::before {
     transition: background 0.2s, border-color 0.2s;
 }
 
-/* Dots gone â color is the indicator */
+/* Dots gone — color is the indicator */
 .stage-dot { display: none; }
 
 /* Stage names: bold mono, home-page card-header style */
@@ -184,7 +184,7 @@ body::before {
 
 .stage-step.active .stage-name { opacity: 1; }
 
-/* All steps open a picker â always pointer, hover tint in stage color */
+/* All steps open a picker — always pointer, hover tint in stage color */
 .stage-step { cursor: pointer; }
 .stage-step[data-stage="reframe"]:hover   { background: rgba(239,90,33,0.06);   }
 .stage-step[data-stage="ideate"]:hover    { background: rgba(155,109,255,0.06); }
@@ -204,14 +204,14 @@ body::before {
     opacity: 0.45;
     transition: opacity 0.2s;
 }
-.stage-tool::after { content: ' â¾'; }
+.stage-tool::after { content: ' ▾'; }
 
 .stage-step[data-stage="reframe"]   .stage-tool { color: var(--orange); }
 .stage-step[data-stage="ideate"]    .stage-tool { color: var(--purple); }
 .stage-step[data-stage="debate"]    .stage-tool { color: var(--teal);   }
 .stage-step[data-stage="framework"] .stage-tool { color: var(--pink);   }
 
-/* Once picker is enabled â active step becomes a clickable trigger */
+/* Once picker is enabled — active step becomes a clickable trigger */
 #stageProgress.tool-enabled .stage-step.active { cursor: pointer; }
 #stageProgress.tool-enabled .stage-step.active .stage-tool { opacity: 0.8; }
 #stageProgress.tool-enabled .stage-step.active:hover .stage-tool { opacity: 1; }
@@ -290,7 +290,7 @@ body::before {
     font-weight: 600;
 }
 .tool-picker-current::after {
-    content: ' Â·';
+    content: ' ·';
     color: var(--text-muted);
     font-weight: 400;
 }
@@ -388,7 +388,7 @@ body::before {
     overflow: hidden;
 }
 
-/* Wade diagonal accent â top-right corner, follows polygon's signature diagonal */
+/* Wade diagonal accent — top-right corner, follows polygon's signature diagonal */
 .welcome::after {
     content: '';
     position: absolute;
@@ -464,7 +464,7 @@ body::before {
     color: var(--text-muted);
 }
 
-/* === WELCOME CARDS === */
+/* === WECCMME CARDS === */
 .welcome-cards {
     display: flex;
     gap: 1.2rem;
@@ -659,7 +659,7 @@ body::before {
 .msg-intro[data-mode="debate"]  .msg-intro-label { color: var(--teal); }
 .msg-intro[data-mode="framework"] .msg-intro-label { color: var(--pink); }
 
-/* Inline exercise section break â same style but not sticky, with a top separator */
+/* Inline exercise section break — same style but not sticky, with a top separator */
 .msg-intro-break {
     align-self: stretch;
     max-width: 100%;
@@ -677,7 +677,7 @@ body::before {
 
 /* Wade diamond accent above section breaks */
 .msg-intro-break::before {
-    content: 'â';
+    content: '◆';
     position: absolute;
     top: -0.7rem;
     left: 50%;
@@ -722,7 +722,7 @@ body::before {
 
 /* === WADE BRAND ANIMATIONS === */
 
-/* Slow diagonal drift â follows the Wade polygon's signature angle */
+/* Slow diagonal drift — follows the Wade polygon's signature angle */
 @keyframes wadeFloat {
     0%, 100% { transform: translate(0, 0); }
     50%       { transform: translate(6px, -10px); }
@@ -734,7 +734,7 @@ body::before {
     to   { opacity: 1; transform: translateY(0); }
 }
 
-/* Active stage step â gentle stage-color pulse */
+/* Active stage step — gentle stage-color pulse */
 @keyframes stagePulse {
     0%, 100% { box-shadow: 0 0 0 0 transparent; }
     50%       { box-shadow: 0 0 0 4px var(--stage-pulse-color, rgba(239,90,33,0.2)); }
@@ -884,7 +884,7 @@ body::before {
     outline: none;
 }
 
-/* Stage-colored focus glow â driven by data-mode on body (set by updateStageProgress) */
+/* Stage-colored focus glow — driven by data-mode on body (set by updateStageProgress) */
 body[data-mode="reframe"]   .input-field:focus { box-shadow: 0 0 0 3px rgba(239,90,33,0.1);   border-color: rgba(239,90,33,0.4); }
 body[data-mode="ideate"]    .input-field:focus { box-shadow: 0 0 0 3px rgba(155,109,255,0.1); border-color: rgba(155,109,255,0.4); }
 body[data-mode="debate"]    .input-field:focus { box-shadow: 0 0 0 3px rgba(38,189,190,0.1);  border-color: rgba(38,189,190,0.4); }
@@ -1333,7 +1333,7 @@ body[data-mode="framework"] .input-field:focus { box-shadow: 0 0 0 3px rgba(236,
 
 .report-card.hidden { display: none; }
 
-/* Preview state â fade out after 280px */
+/* Preview state — fade out after 280px */
 .report-card.report-preview {
     border-radius: 10px 10px 0 0;
     border-bottom: none;
@@ -1510,7 +1510,7 @@ body[data-mode="framework"] .input-field:focus { box-shadow: 0 0 0 3px rgba(236,
     }
     .guide-sep { display: none; }
 
-    /* Home stage cards â single-card horizontal scroll */
+    /* Home stage cards — single-card horizontal scroll */
     .welcome-cards {
         width: 100%;
         max-width: 100%;
@@ -1533,7 +1533,7 @@ body[data-mode="framework"] .input-field:focus { box-shadow: 0 0 0 3px rgba(236,
         scroll-snap-align: start;
     }
 
-    /* Stage progress bar â compress to fit 4 stages */
+    /* Stage progress bar — compress to fit 4 stages */
     .session-bar { padding: 0.4rem 0.75rem; }
     .stage-conn { display: none; }
     .stage-step { padding: 0.25rem 0.5rem; }
@@ -1554,3 +1554,107 @@ body[data-mode="framework"] .input-field:focus { box-shadow: 0 0 0 3px rgba(236,
     .report-card { padding: 1rem; margin: 0.75rem auto 0; }
     .report-card .report-footer { flex-direction: column; align-items: flex-start; gap: 0.4rem; }
 }
+
+/* === PUSH HARDER TOGGLE === */
+
+.input-hint-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+}
+
+.push-harder-btn {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 5px;
+    padding: 0.28rem 0.65rem;
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s;
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+
+.push-harder-btn:hover {
+    border-color: rgba(255,255,255,0.25);
+    color: var(--text-dim);
+}
+
+.push-harder-btn.active {
+    border-color: rgba(239,90,33,0.5);
+    color: var(--orange);
+    background: rgba(239,90,33,0.08);
+}
+
+/* === NEXT EXERCISE PANEL === */
+
+.next-exercise-panel {
+    max-width: 800px;
+    margin: 1rem auto 0;
+    padding: 1.2rem 1.5rem;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px;
+    background: rgba(255,255,255,0.02);
+    animation: fadeIn 0.4s ease;
+}
+
+.next-exercise-label {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    margin-bottom: 0.6rem;
+}
+
+.next-exercise-stage {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.2rem;
+}
+
+.next-exercise-stage.mode-reframe   { color: var(--orange); }
+.next-exercise-stage.mode-ideate    { color: var(--purple); }
+.next-exercise-stage.mode-debate    { color: var(--teal); }
+.next-exercise-stage.mode-framework { color: var(--pink); }
+
+.next-exercise-name {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 0.4rem;
+}
+
+.next-exercise-desc {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+    margin: 0 0 1rem;
+}
+
+.next-exercise-btn {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 8px;
+    padding: 0.5rem 1.2rem;
+    font-family: var(--font);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.next-exercise-btn:hover                   { border-color: rgba(255,255,255,0.35); color: var(--text); }
+.next-exercise-btn-ideate:hover            { border-color: rgba(155,109,255,0.5); color: var(--purple); }
+.next-exercise-btn-debate:hover            { border-color: rgba(38,189,190,0.5);  color: var(--teal); }
+.next-exercise-btn-framework:hover         { border-color: rgba(236,54,147,0.5);  color: var(--pink); }
