@@ -310,7 +310,12 @@ body {
     flex: 1;
     overflow-y: auto;
     padding: 1.5rem;
-    padding-bottom: 6rem; /* clearance for fixed prompt bar */
+    padding-bottom: 6rem; /* clearance for fixed prompt bar during sessions */
+}
+
+/* Welcome state: input is inline so no extra bottom padding needed */
+.chat-area:has(.welcome .input-area) {
+    padding-bottom: 1.5rem;
 }
 
 /* === RESUME BANNER === */
@@ -843,18 +848,23 @@ body {
 
 /* === INPUT AREA === */
 .input-area {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 200;
     padding: 0.75rem 1.5rem 1rem;
     border-top: 1px solid rgba(255,255,255,0.06);
     background: var(--bg);
 }
 
-/* Input embedded inside welcome (home page) — no border, constrained width */
+/* Fixed at viewport bottom during sessions (when moved to body by JS) */
+body > .input-area {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 200;
+}
+
+/* Input embedded inside welcome (home page) — inline, no border, constrained width */
 .welcome .input-area {
+    position: relative;
     border-top: none;
     padding: 0.25rem 0 1.5rem;
     width: 100%;
