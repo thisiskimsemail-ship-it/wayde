@@ -141,6 +141,56 @@ const reportUnlock = $('#reportUnlock');
 const unlockForm = $('#unlockForm');
 const routingBack = $('#routingBack');
 const routingBackBtn = $('#routingBackBtn');
+const inputArea = document.querySelector('.input-area');
+
+// Move input box into welcome (between tagline and cards) or back to body (session)
+function moveInputToWelcome() {
+    const cards = welcome.querySelector('.welcome-cards');
+    if (cards && inputArea && inputArea.parentElement !== welcome) {
+        welcome.insertBefore(inputArea, cards);
+    }
+}
+
+function moveInputToSession() {
+    if (inputArea && inputArea.parentElement !== document.body) {
+        document.body.appendChild(inputArea);
+    }
+}
+
+// Render "Challenge me" + "Help me" buttons after each AI response
+function renderSessionActions() {
+    if (!state.mode || state.routing || state.reportGenerated) return;
+    $('.session-actions')?.remove();
+
+    const actionsDiv = document.createElement('div');
+    actionsDiv.className = 'session-actions';
+
+    const challengeBtn = document.createElement('button');
+    challengeBtn.className = 'session-action-btn challenge-btn' + (state.pushHarder ? ' active' : '');
+    challengeBtn.textContent = state.pushHarder ? 'Challenge mode on' : 'Challenge me';
+    challengeBtn.addEventListener('click', () => {
+        state.pushHarder = !state.pushHarder;
+        challengeBtn.classList.toggle('active', state.pushHarder);
+        challengeBtn.textContent = state.pushHarder ? 'Challenge mode on' : 'Challenge me';
+    });
+
+    const helpBtn = document.createElement('button');
+    helpBtn.className = 'session-action-btn help-btn';
+    helpBtn.textContent = 'Help me';
+    helpBtn.addEventListener('click', () => {
+        if (state.streaming) return;
+        const helpMsg = "I'm feeling a bit stuck. Can you give me a nudge — maybe a tip, a prompt, or an example to help me move forward?";
+        actionsDiv.remove();
+        appendMessage('user', helpMsg);
+        state.messages.push({ role: 'user', content: helpMsg });
+        streamResponse();
+    });
+
+    actionsDiv.appendChild(challengeBtn);
+    actionsDiv.appendChild(helpBtn);
+    messagesEl.appendChild(actionsDiv);
+    scrollToBottom();
+}
 
 // === STAGE PROGRESS ===
 
@@ -305,11 +355,11 @@ function startExercise(mode, exercise, startMsg = null) {
     state.routing = false;
     state.rating = null;
 
-    // Hide welcome, show session bar + push harder toggle
+    // Hide welcome, move input to session, show session bar
     welcome.classList.add('hidden');
+    moveInputToSession();
     sessionBar.classList.remove('hidden');
     sessionBar.dataset.mode = mode;
-    pushHarderBtn?.classList.remove('hidden');
 
     // Update session bar text
     sessionMode.textContent = MODE_LABELS[mode] || mode;
@@ -339,7 +389,7 @@ function startExercise(mode, exercise, startMsg = null) {
     // Show report CTA immediately but disabled — enables after first exchange
     reportCta.classList.remove('hidden');
     reportCtaBtn.disabled = true;
-    reportCtaBtn.textContent = 'Talk to WAiDE to build your report';
+    reportCtaBtn.textContent = 'Talk to Wayde to build your report';
 
     if (autoStartMsg) {
         // Use the user's actual description as the first message so Wayde skips
@@ -376,6 +426,7 @@ function forceCloseSession() {
     state.reportGenerated = false;
     state.reportText = '';
     welcome.classList.remove('hidden');
+    moveInputToWelcome();
     sessionBar.classList.add('hidden');
     messagesEl.innerHTML = '';
     inputField.value = '';
@@ -398,8 +449,7 @@ function forceCloseSession() {
     state.projectContext = [];
     state.routing = false;
     state.pushHarder = false;
-    pushHarderBtn?.classList.add('hidden');
-    pushHarderBtn?.classList.remove('active');
+    $('.session-actions')?.remove();
     $('#nextExercisePanel')?.remove();
     clearSession();
 }
@@ -414,8 +464,9 @@ sessionClose.addEventListener('click', () => {
     state.reportGenerated = false;
     state.reportText = '';
 
-    // Show welcome, hide session bar
+    // Show welcome, move input back, hide session bar
     welcome.classList.remove('hidden');
+    moveInputToWelcome();
     sessionBar.classList.add('hidden');
 
     // Clear messages, input, report elements, and project context
@@ -424,6 +475,7 @@ sessionClose.addEventListener('click', () => {
     inputField.placeholder = 'Describe your challenge or idea...';
     modeLabel.textContent = '';
     state.rating = null;
+    state.pushHarder = false;
     setPickerEnabled(false);
     toolPickerMenu.classList.add('hidden');
     reportCta.classList.add('hidden');
@@ -471,7 +523,7 @@ function swapToTool(mode, exercise, swapEl) {
     wadeCta.classList.add('hidden');
     reportCta.classList.remove('hidden');
     reportCtaBtn.disabled = true;
-    reportCtaBtn.textContent = 'Talk to WAiDE to build your report';
+    reportCtaBtn.textContent = 'Talk to Wayde to build your report';
 
     // Remove swap suggestion card from chat
     if (swapEl) swapEl.remove();
@@ -516,6 +568,7 @@ function startRouting(text) {
     state.reportText = '';
 
     welcome.classList.add('hidden');
+    moveInputToSession();
     routingBack.classList.remove('hidden'); // show subtle back link immediately
     modeLabel.textContent = 'Finding your tool · ';
 
@@ -538,6 +591,7 @@ routingBackBtn.addEventListener('click', () => {
     state.routing = false;
 
     welcome.classList.remove('hidden');
+    moveInputToWelcome();
     messagesEl.innerHTML = '';
     inputField.value = ''; sendBtn.disabled = true;
     inputField.placeholder = 'Describe your challenge or idea...';
@@ -658,9 +712,9 @@ function restoreSession(session) {
     });
 
     welcome.classList.add('hidden');
+    moveInputToSession();
     sessionBar.classList.remove('hidden');
     sessionBar.dataset.mode = state.mode;
-    pushHarderBtn?.classList.remove('hidden');
     sessionMode.textContent = MODE_LABELS[state.mode] || state.mode;
     sessionExercise.textContent = EXERCISE_LABELS[state.exercise] || state.exercise;
     modeLabel.textContent = (EXERCISE_LABELS[state.exercise] || state.exercise) + ' · ';
@@ -722,7 +776,7 @@ function renderWrapPrompt() {
     if (next) {
         const nextModeName = MODE_LABELS[next.mode] || next.mode;
         const nextExName = EXERCISE_LABELS[next.exercise] || next.exercise;
-        actionsHtml += `<button class="wrap-btn wrap-btn-continue">Continue to ${nextModeName} �4 ${nextExName} →</button>`;
+        actionsHtml += `<button class="wrap-btn wrap-btn-continue">Continue to ${nextModeName} — ${nextExName} →</button>`;
     }
     actionsHtml += '<button class="wrap-btn wrap-btn-report">Access your Innovation Coaching Session report →</button>';
 
@@ -773,6 +827,9 @@ function renderWrapPrompt() {
 async function streamResponse() {
     state.streaming = true;
     sendBtn.disabled = true;
+
+    // Remove session-actions while a response is being generated
+    $('.session-actions')?.remove();
 
     // Add typing indicator
     const typing = document.createElement('div');
@@ -914,6 +971,7 @@ async function streamResponse() {
     state.streaming = false;
     sendBtn.disabled = false;
     inputField.focus();
+    renderSessionActions();
     saveSession();
 }
 
@@ -1043,7 +1101,7 @@ ul{padding-left:20px}li{margin-bottom:4px}p{margin:0 0 0.8em}
 </head><body>
 <div class="hd"><h1>Innovation Coaching Session Summary</h1><div class="meta">${mName} · ${exName} · ${date}</div></div>
 ${reportContent.innerHTML}
-<div class="ft">Generated by WAiDE · Wade Institute of Entrepreneurship · wadeinstitute.org.au</div>
+<div class="ft">Generated by Wayde · Wade Institute of Entrepreneurship · wadeinstitute.org.au</div>
 </body></html>`;
     const url = URL.createObjectURL(new Blob([html], { type: 'text/html' }));
     const win = window.open(url, '_blank');
@@ -1090,19 +1148,6 @@ $('#reportNewSessionBtn')?.addEventListener('click', () => {
     forceCloseSession();
 });
 
-// === PUSH HARDER TOGGLE ===
-
-const pushHarderBtn = $('#pushHarderBtn');
-if (pushHarderBtn) {
-    pushHarderBtn.addEventListener('click', () => {
-        state.pushHarder = !state.pushHarder;
-        pushHarderBtn.classList.toggle('active', state.pushHarder);
-        pushHarderBtn.title = state.pushHarder
-            ? 'Challenge mode on — WAiDE will push back harder'
-            : 'Switch to a more challenging, Socratic coaching style';
-    });
-}
-
 // === NEXT EXERCISE PANEL (shown after full report revealed) ===
 
 function renderNextExercisePanel() {
@@ -1132,6 +1177,10 @@ function renderNextExercisePanel() {
         navigateToStage(next.mode, next.exercise);
     });
 }
+
+// === PAGE LOAD INIT ===
+// Place input box inside welcome (between tagline and cards) on initial load
+moveInputToWelcome();
 
 // === URL QUICK-START (?exercise=empathy-map) ===
 

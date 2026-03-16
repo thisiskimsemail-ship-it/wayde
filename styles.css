@@ -27,7 +27,7 @@
     --mono: 'Space Mono', monospace;
 }
 
-html { font-size: 16px; }
+html { font-size: 28px; }
 
 body {
     background: var(--bg);
@@ -37,19 +37,6 @@ body {
     display: flex;
     flex-direction: column;
     overflow: hidden;
-}
-
-/* Wade Institute polygon mark — subtle repeating background texture */
-body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: 0;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='312' viewBox='-40 -40 226 232'%3E%3Cpolygon points='87.8,13.9 13.4,13.9 13.4,33.3 18,33.3 18,18.5 85.8,18.5 129.6,66.4 129.6,134.7 61.4,134.7 18,87.6 18,81.6 13.4,81.6 13.4,89.3 59.5,139.2 134.2,139.2 134.2,64.6' fill='none' stroke='%23ef5a21' stroke-width='1'/%3E%3C/svg%3E");
-    background-size: 300px 312px;
-    opacity: 0.03;
-    animation: wadeFloat 22s ease-in-out infinite;
 }
 
 /* === HEADER === */
@@ -75,7 +62,6 @@ body::before {
     border-bottom: 1px solid rgba(255,255,255,0.06);
     flex-shrink: 0;
     animation: fadeIn 0.2s ease;
-    order: 1;
 }
 
 .session-bar.hidden { display: none; }
@@ -83,7 +69,7 @@ body::before {
 
 .session-mode {
     font-family: var(--mono);
-    font-size: 0.7rem;
+    font-size: 1.225rem;
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -91,11 +77,11 @@ body::before {
 
 .session-sep {
     color: var(--text-muted);
-    font-size: 0.8rem;
+    font-size: 1.4rem;
 }
 
 .session-exercise {
-    font-size: 0.8rem;
+    font-size: 1.4rem;
     font-weight: 500;
     color: var(--text-dim);
 }
@@ -104,7 +90,7 @@ body::before {
     background: none;
     border: 1px solid rgba(255,255,255,0.1);
     color: var(--text-muted);
-    font-size: 0.7rem;
+    font-size: 1.225rem;
     width: 22px;
     height: 22px;
     border-radius: 4px;
@@ -152,7 +138,7 @@ body::before {
 /* Stage names: bold mono, home-page card-header style */
 .stage-name {
     font-family: var(--mono);
-    font-size: 0.65rem;
+    font-size: 1.1375rem;
     font-weight: 700;
     letter-spacing: 0.1em;
     text-transform: uppercase;
@@ -199,7 +185,7 @@ body::before {
 
 /* Tool label: matches active stage color */
 .stage-tool {
-    font-size: 0.57rem;
+    font-size: 0.9975rem;
     font-family: var(--font);
     white-space: nowrap;
     opacity: 0.45;
@@ -229,7 +215,7 @@ body::before {
     background: none;
     border: none;
     color: var(--text-muted);
-    font-size: 0.6rem;
+    font-size: 1.05rem;
     line-height: 1;
     padding: 0 0.1rem;
     cursor: default;
@@ -273,7 +259,7 @@ body::before {
     border: none;
     color: var(--text-dim);
     font-family: var(--font);
-    font-size: 0.82rem;
+    font-size: 1.435rem;
     padding: 0.4rem 0.65rem;
     border-radius: 5px;
     cursor: pointer;
@@ -306,7 +292,7 @@ body::before {
 /* Help me choose button */
 .tool-picker-help {
     color: var(--text-muted);
-    font-size: 0.78rem;
+    font-size: 1.365rem;
 }
 .tool-picker-help:hover {
     color: var(--text);
@@ -318,7 +304,6 @@ body::before {
     flex: 1;
     overflow-y: auto;
     padding: 1.5rem;
-    order: 3;
 }
 
 /* === RESUME BANNER === */
@@ -343,7 +328,7 @@ body::before {
 .resume-banner.hidden { display: none; }
 
 .resume-text {
-    font-size: 0.75rem;
+    font-size: 1.3125rem;
     color: var(--text-dim);
     white-space: nowrap;
 }
@@ -354,7 +339,7 @@ body::before {
     border-radius: 999px;
     color: white;
     font-family: var(--font);
-    font-size: 0.72rem;
+    font-size: 1.26rem;
     font-weight: 600;
     padding: 0.28rem 0.75rem;
     cursor: pointer;
@@ -368,7 +353,7 @@ body::before {
     background: none;
     border: none;
     color: var(--text-muted);
-    font-size: 0.65rem;
+    font-size: 1.1375rem;
     padding: 0.2rem 0.35rem;
     cursor: pointer;
     transition: color 0.2s;
@@ -406,7 +391,7 @@ body::before {
 .welcome.hidden { display: none; }
 
 .welcome-tagline {
-    font-size: 0.95rem;
+    font-size: 1.6625rem;
     color: var(--text-dim);
     max-width: 480px;
     line-height: 1.6;
@@ -414,7 +399,7 @@ body::before {
 }
 
 .welcome-title {
-    font-size: 2.2rem;
+    font-size: 3.85rem;
     font-weight: 600;
     margin-bottom: 0.3rem;
     color: var(--text);
@@ -422,7 +407,7 @@ body::before {
 }
 
 .welcome-sub {
-    font-size: 1.1rem;
+    font-size: 1.925rem;
     color: var(--orange);
     animation: heroFloat 0.6s 0.1s ease both;
     font-weight: 500;
@@ -430,7 +415,7 @@ body::before {
 }
 
 .welcome-intro {
-    font-size: 0.9rem;
+    font-size: 1.575rem;
     color: var(--text-dim);
     max-width: 460px;
     line-height: 1.6;
@@ -446,7 +431,7 @@ body::before {
     flex-wrap: wrap;
     justify-content: center;
     margin-bottom: 2rem;
-    font-size: 0.78rem;
+    font-size: 1.365rem;
     color: var(--text-dim);
     animation: heroFloat 0.6s 0.3s ease both;
 }
@@ -466,7 +451,7 @@ body::before {
     color: var(--text-muted);
 }
 
-/* === WECCMME CARDS === */
+/* === WELCOME CARDS === */
 .welcome-cards {
     display: flex;
     gap: 1.2rem;
@@ -509,7 +494,7 @@ body::before {
 
 .card-mode-name {
     font-family: var(--mono);
-    font-size: 0.7rem;
+    font-size: 1.225rem;
     font-weight: 700;
     letter-spacing: 0.1em;
     text-transform: uppercase;
@@ -521,7 +506,7 @@ body::before {
 .card-framework .card-mode-name { color: var(--pink); }
 
 .card-mode-desc {
-    font-size: 0.75rem;
+    font-size: 1.3125rem;
     color: var(--text-muted);
     line-height: 1.35;
 }
@@ -553,7 +538,7 @@ body::before {
 }
 
 .exercise-name {
-    font-size: 0.83rem;
+    font-size: 1.4525rem;
     font-weight: 600;
     color: var(--text-dim);
     transition: color 0.2s;
@@ -561,7 +546,7 @@ body::before {
 
 .exercise-time {
     font-family: var(--mono);
-    font-size: 0.6rem;
+    font-size: 1.05rem;
     color: var(--text-muted);
     background: rgba(255,255,255,0.05);
     padding: 0.1rem 0.4rem;
@@ -571,7 +556,7 @@ body::before {
 }
 
 .exercise-desc {
-    font-size: 0.74rem;
+    font-size: 1.295rem;
     color: var(--text-muted);
     line-height: 1.45;
     font-weight: 400;
@@ -629,7 +614,7 @@ body::before {
     max-width: 100%;
     border-left: 3px solid rgba(255,255,255,0.15);
     padding: 0.7rem 0.9rem;
-    font-size: 0.8rem;
+    font-size: 1.4rem;
     color: var(--text-muted);
     line-height: 1.55;
     animation: fadeIn 0.3s ease;
@@ -649,7 +634,7 @@ body::before {
 
 .msg-intro-label {
     font-family: var(--mono);
-    font-size: 0.62rem;
+    font-size: 1.085rem;
     text-transform: uppercase;
     letter-spacing: 0.1em;
     color: var(--text-muted);
@@ -667,7 +652,7 @@ body::before {
     max-width: 100%;
     border-left: 3px solid rgba(255,255,255,0.15);
     padding: 0.7rem 0.9rem;
-    font-size: 0.8rem;
+    font-size: 1.4rem;
     color: var(--text-muted);
     line-height: 1.55;
     animation: fadeIn 0.3s ease;
@@ -684,7 +669,7 @@ body::before {
     top: -0.7rem;
     left: 50%;
     transform: translateX(-50%);
-    font-size: 0.45rem;
+    font-size: 0.7875rem;
     color: var(--text-muted);
     opacity: 0.35;
     background: var(--bg);
@@ -711,7 +696,7 @@ body::before {
 .msg {
     padding: 0.8rem 1rem;
     border-radius: 8px;
-    font-size: 0.9rem;
+    font-size: 1.575rem;
     line-height: 1.65;
     max-width: 85%;
     animation: fadeIn 0.2s ease;
@@ -776,7 +761,7 @@ body::before {
 
 /* Markdown inside agent messages */
 .msg-agent h2 {
-    font-size: 1rem;
+    font-size: 1.75rem;
     font-weight: 600;
     color: var(--text);
     margin: 1rem 0 0.4rem;
@@ -785,7 +770,7 @@ body::before {
 .msg-agent h2:first-child { margin-top: 0; }
 
 .msg-agent h3 {
-    font-size: 0.9rem;
+    font-size: 1.575rem;
     font-weight: 600;
     color: var(--text);
     margin: 0.8rem 0 0.3rem;
@@ -819,7 +804,7 @@ body::before {
 
 .msg-agent code {
     font-family: var(--mono);
-    font-size: 0.8rem;
+    font-size: 1.4rem;
     background: rgba(255,255,255,0.06);
     padding: 0.1rem 0.3rem;
     border-radius: 3px;
@@ -852,9 +837,17 @@ body::before {
 /* === INPUT AREA === */
 .input-area {
     padding: 0.75rem 1.5rem 1rem;
-    border-bottom: 1px solid rgba(255,255,255,0.06);
+    border-top: 1px solid rgba(255,255,255,0.06);
     flex-shrink: 0;
-    order: 2;
+}
+
+/* Input embedded inside welcome (home page) — no border, constrained width */
+.welcome .input-area {
+    border-top: none;
+    padding: 0.25rem 0 1.5rem;
+    width: 100%;
+    max-width: 580px;
+    align-self: center;
 }
 
 .input-form {
@@ -873,7 +866,7 @@ body::before {
     padding: 0.65rem 0.9rem;
     color: var(--text);
     font-family: var(--font);
-    font-size: 0.9rem;
+    font-size: 1.575rem;
     line-height: 1.4;
     resize: none;
     outline: none;
@@ -919,7 +912,7 @@ body[data-mode="framework"] .input-field:focus { box-shadow: 0 0 0 3px rgba(236,
 .input-hint {
     max-width: 800px;
     margin: 0.4rem auto 0;
-    font-size: 0.65rem;
+    font-size: 1.1375rem;
     color: var(--text-muted);
     font-family: var(--mono);
     display: flex;
@@ -941,7 +934,7 @@ body[data-mode="framework"] .input-field:focus { box-shadow: 0 0 0 3px rgba(236,
     border: none;
     padding: 0;
     font-family: var(--mono);
-    font-size: 0.65rem;
+    font-size: 1.1375rem;
     font-weight: 700;
     letter-spacing: 0.06em;
     text-transform: uppercase;
@@ -974,7 +967,7 @@ body[data-mode="framework"] .input-field:focus { box-shadow: 0 0 0 3px rgba(236,
 .wade-cta.hidden { display: none; }
 
 .wade-cta-text {
-    font-size: 0.88rem;
+    font-size: 1.54rem;
     color: var(--text-dim);
     margin-bottom: 0.75rem;
 }
@@ -987,7 +980,7 @@ body[data-mode="framework"] .input-field:focus { box-shadow: 0 0 0 3px rgba(236,
     padding: 0.6rem 1.3rem;
     color: var(--text-dim);
     font-family: var(--font);
-    font-size: 0.88rem;
+    font-size: 1.54rem;
     font-weight: 600;
     text-decoration: none;
     transition: all 0.2s;
@@ -999,7 +992,7 @@ body[data-mode="framework"] .input-field:focus { box-shadow: 0 0 0 3px rgba(236,
 }
 
 .report-copy-notice {
-    font-size: 0.65rem;
+    font-size: 1.1375rem;
     color: var(--text-muted);
     font-style: italic;
     margin-left: auto;
@@ -1021,7 +1014,7 @@ body[data-mode="framework"] .input-field:focus { box-shadow: 0 0 0 3px rgba(236,
     border-radius: 8px;
     padding: 0.5rem 1rem;
     font-family: var(--font);
-    font-size: 0.85rem;
+    font-size: 1.4875rem;
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s;
@@ -1049,7 +1042,7 @@ body[data-mode="framework"] .input-field:focus { box-shadow: 0 0 0 3px rgba(236,
 }
 
 .swap-transition {
-    font-size: 0.85rem;
+    font-size: 1.4875rem;
     color: var(--text-dim);
     margin-bottom: 0.75rem;
     font-style: italic;
@@ -1081,7 +1074,7 @@ body[data-mode="framework"] .input-field:focus { box-shadow: 0 0 0 3px rgba(236,
 .swap-suggest-stage {
     display: block;
     font-family: var(--mono);
-    font-size: 0.6rem;
+    font-size: 1.05rem;
     font-weight: 700;
     letter-spacing: 0.07em;
     text-transform: uppercase;
@@ -1091,13 +1084,13 @@ body[data-mode="framework"] .input-field:focus { box-shadow: 0 0 0 3px rgba(236,
 .swap-suggest-name {
     display: block;
     font-weight: 600;
-    font-size: 0.9rem;
+    font-size: 1.575rem;
     margin-bottom: 0.35rem;
 }
 
 .swap-suggest-reason {
     display: block;
-    font-size: 0.78rem;
+    font-size: 1.365rem;
     color: var(--text-dim);
     line-height: 1.45;
 }
@@ -1131,7 +1124,7 @@ body[data-mode="framework"] .input-field:focus { box-shadow: 0 0 0 3px rgba(236,
 }
 
 .wrap-prompt-text {
-    font-size: 0.85rem;
+    font-size: 1.4875rem;
     color: var(--text-dim);
     margin: 0 0 0.75rem;
 }
@@ -1148,7 +1141,7 @@ body[data-mode="framework"] .input-field:focus { box-shadow: 0 0 0 3px rgba(236,
     border-radius: 8px;
     color: var(--text-dim);
     font-family: var(--font);
-    font-size: 0.83rem;
+    font-size: 1.4525rem;
     font-weight: 500;
     padding: 0.5rem 1rem;
     cursor: pointer;
@@ -1179,7 +1172,7 @@ body[data-mode="framework"] .input-field:focus { box-shadow: 0 0 0 3px rgba(236,
 }
 
 .wrap-rating-label {
-    font-size: 0.78rem;
+    font-size: 1.365rem;
     color: var(--text-muted);
 }
 
@@ -1187,7 +1180,7 @@ body[data-mode="framework"] .input-field:focus { box-shadow: 0 0 0 3px rgba(236,
     background: none;
     border: 1px solid rgba(255,255,255,0.1);
     border-radius: 6px;
-    font-size: 1rem;
+    font-size: 1.75rem;
     padding: 0.2rem 0.5rem;
     cursor: pointer;
     transition: all 0.2s;
@@ -1215,7 +1208,7 @@ body[data-mode="framework"] .input-field:focus { box-shadow: 0 0 0 3px rgba(236,
     padding: 0.65rem 1.4rem;
     color: var(--text-dim);
     font-family: var(--font);
-    font-size: 0.88rem;
+    font-size: 1.54rem;
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s;
@@ -1259,14 +1252,14 @@ body[data-mode="framework"] .input-field:focus { box-shadow: 0 0 0 3px rgba(236,
 }
 
 .lead-modal-title {
-    font-size: 1.3rem;
+    font-size: 2.275rem;
     font-weight: 600;
     color: var(--text);
     margin-bottom: 0.4rem;
 }
 
 .lead-modal-sub {
-    font-size: 0.85rem;
+    font-size: 1.4875rem;
     color: var(--text-dim);
     line-height: 1.5;
     margin-bottom: 1.5rem;
@@ -1285,7 +1278,7 @@ body[data-mode="framework"] .input-field:focus { box-shadow: 0 0 0 3px rgba(236,
     padding: 0.6rem 0.8rem;
     color: var(--text);
     font-family: var(--font);
-    font-size: 0.85rem;
+    font-size: 1.4875rem;
     outline: none;
     transition: border-color 0.2s;
 }
@@ -1305,7 +1298,7 @@ body[data-mode="framework"] .input-field:focus { box-shadow: 0 0 0 3px rgba(236,
     padding: 0.7rem;
     color: white;
     font-family: var(--font);
-    font-size: 0.9rem;
+    font-size: 1.575rem;
     font-weight: 600;
     cursor: pointer;
     margin-top: 0.3rem;
@@ -1316,7 +1309,7 @@ body[data-mode="framework"] .input-field:focus { box-shadow: 0 0 0 3px rgba(236,
 .lead-submit:disabled { opacity: 0.5; cursor: not-allowed; }
 
 .lead-disclaimer {
-    font-size: 0.7rem;
+    font-size: 1.225rem;
     color: var(--text-muted);
     text-align: center;
     margin-top: 1rem;
@@ -1364,7 +1357,7 @@ body[data-mode="framework"] .input-field:focus { box-shadow: 0 0 0 3px rgba(236,
 .report-unlock.hidden { display: none; }
 
 .report-unlock-sub {
-    font-size: 0.85rem;
+    font-size: 1.4875rem;
     color: var(--text-dim);
     margin-bottom: 1rem;
     line-height: 1.5;
@@ -1372,13 +1365,13 @@ body[data-mode="framework"] .input-field:focus { box-shadow: 0 0 0 3px rgba(236,
 }
 
 .report-content {
-    font-size: 0.9rem;
+    font-size: 1.575rem;
     line-height: 1.7;
     color: var(--text-dim);
 }
 
 .report-content h2 {
-    font-size: 1.1rem;
+    font-size: 1.925rem;
     font-weight: 600;
     color: var(--orange);
     margin: 1.2rem 0 0.5rem;
@@ -1387,7 +1380,7 @@ body[data-mode="framework"] .input-field:focus { box-shadow: 0 0 0 3px rgba(236,
 .report-content h2:first-child { margin-top: 0; }
 
 .report-content h3 {
-    font-size: 0.95rem;
+    font-size: 1.6625rem;
     font-weight: 600;
     color: var(--text);
     margin: 1rem 0 0.3rem;
@@ -1434,7 +1427,7 @@ body[data-mode="framework"] .input-field:focus { box-shadow: 0 0 0 3px rgba(236,
 }
 
 .report-meta {
-    font-size: 0.72rem;
+    font-size: 1.26rem;
     font-family: var(--mono);
     color: var(--text-muted);
     text-transform: uppercase;
@@ -1448,7 +1441,7 @@ body[data-mode="framework"] .input-field:focus { box-shadow: 0 0 0 3px rgba(236,
     margin-top: 1.5rem;
     padding-top: 1rem;
     border-top: 1px solid rgba(255,255,255,0.06);
-    font-size: 0.7rem;
+    font-size: 1.225rem;
     color: var(--text-muted);
     font-family: var(--mono);
 }
@@ -1460,7 +1453,7 @@ body[data-mode="framework"] .input-field:focus { box-shadow: 0 0 0 3px rgba(236,
 }
 
 .report-disclaimer {
-    font-size: 0.65rem;
+    font-size: 1.1375rem;
     color: var(--text-muted);
     font-family: var(--mono);
     opacity: 0.6;
@@ -1476,7 +1469,7 @@ body[data-mode="framework"] .input-field:focus { box-shadow: 0 0 0 3px rgba(236,
     border-radius: 6px;
     color: var(--text-muted);
     font-family: var(--font);
-    font-size: 0.72rem;
+    font-size: 1.26rem;
     padding: 0.28rem 0.7rem;
     cursor: pointer;
     transition: all 0.2s;
@@ -1502,14 +1495,14 @@ body[data-mode="framework"] .input-field:focus { box-shadow: 0 0 0 3px rgba(236,
 
     /* Welcome screen */
     .welcome { padding: 1.25rem 1rem; min-height: auto; }
-    .welcome-title { font-size: 1.5rem; }
+    .welcome-title { font-size: 2.625rem; }
     .welcome-intro { margin-bottom: 0.75rem; }
 
     .welcome-guide {
         flex-direction: column;
         gap: 0.35rem;
         margin-bottom: 1.25rem;
-        font-size: 0.8rem;
+        font-size: 1.4rem;
     }
     .guide-sep { display: none; }
 
@@ -1540,14 +1533,14 @@ body[data-mode="framework"] .input-field:focus { box-shadow: 0 0 0 3px rgba(236,
     .session-bar { padding: 0.4rem 0.75rem; }
     .stage-conn { display: none; }
     .stage-step { padding: 0.25rem 0.5rem; }
-    .stage-name { font-size: 0.55rem; letter-spacing: 0.05em; }
-    .stage-tool { font-size: 0.48rem; }
+    .stage-name { font-size: 0.9625rem; letter-spacing: 0.05em; }
+    .stage-tool { font-size: 0.84rem; }
     .session-close { margin-left: 0.25rem; }
 
     /* Session intro card */
     .msg-intro { padding: 0.6rem 0.9rem; }
-    .msg-intro-title { font-size: 0.65rem; }
-    .msg-intro-body { font-size: 0.8rem; }
+    .msg-intro-title { font-size: 1.1375rem; }
+    .msg-intro-body { font-size: 1.4rem; }
 
     /* Messages */
     .msg { max-width: 95%; }
@@ -1567,29 +1560,37 @@ body[data-mode="framework"] .input-field:focus { box-shadow: 0 0 0 3px rgba(236,
     flex-shrink: 0;
 }
 
-.push-harder-btn {
+/* === SESSION ACTIONS (Challenge me / Help me — appear after each AI response) === */
+
+.session-actions {
+    display: flex;
+    gap: 0.5rem;
+    padding: 0.75rem 0 0.25rem;
+    align-items: center;
+}
+
+.session-action-btn {
     background: transparent;
     border: 1px solid rgba(255,255,255,0.12);
     border-radius: 5px;
     padding: 0.28rem 0.65rem;
     font-family: var(--mono);
-    font-size: 0.6rem;
+    font-size: 1.05rem;
     font-weight: 700;
     letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--text-muted);
     cursor: pointer;
     transition: all 0.2s;
-    flex-shrink: 0;
     white-space: nowrap;
 }
 
-.push-harder-btn:hover {
+.session-action-btn:hover {
     border-color: rgba(255,255,255,0.25);
     color: var(--text-dim);
 }
 
-.push-harder-btn.active {
+.challenge-btn.active {
     border-color: rgba(239,90,33,0.5);
     color: var(--orange);
     background: rgba(239,90,33,0.08);
@@ -1609,7 +1610,7 @@ body[data-mode="framework"] .input-field:focus { box-shadow: 0 0 0 3px rgba(236,
 
 .next-exercise-label {
     font-family: var(--mono);
-    font-size: 0.6rem;
+    font-size: 1.05rem;
     text-transform: uppercase;
     letter-spacing: 0.1em;
     color: var(--text-muted);
@@ -1618,7 +1619,7 @@ body[data-mode="framework"] .input-field:focus { box-shadow: 0 0 0 3px rgba(236,
 
 .next-exercise-stage {
     font-family: var(--mono);
-    font-size: 0.62rem;
+    font-size: 1.085rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.08em;
@@ -1631,14 +1632,14 @@ body[data-mode="framework"] .input-field:focus { box-shadow: 0 0 0 3px rgba(236,
 .next-exercise-stage.mode-framework { color: var(--pink); }
 
 .next-exercise-name {
-    font-size: 1rem;
+    font-size: 1.75rem;
     font-weight: 600;
     color: var(--text);
     margin-bottom: 0.4rem;
 }
 
 .next-exercise-desc {
-    font-size: 0.78rem;
+    font-size: 1.365rem;
     color: var(--text-muted);
     line-height: 1.5;
     margin: 0 0 1rem;
@@ -1650,7 +1651,7 @@ body[data-mode="framework"] .input-field:focus { box-shadow: 0 0 0 3px rgba(236,
     border-radius: 8px;
     padding: 0.5rem 1.2rem;
     font-family: var(--font);
-    font-size: 0.85rem;
+    font-size: 1.4875rem;
     font-weight: 600;
     color: var(--text-dim);
     cursor: pointer;
