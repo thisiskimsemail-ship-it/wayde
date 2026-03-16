@@ -243,9 +243,10 @@ const inputArea = document.querySelector('.input-area');
 
 // Move input box into welcome (between tagline and cards) or back to body (session)
 function moveInputToWelcome() {
-    const cards = welcome.querySelector('.welcome-cards');
-    if (cards && inputArea && inputArea.parentElement !== welcome) {
-        welcome.insertBefore(inputArea, cards);
+    const resumeBanner = welcome.querySelector('#resumeBanner');
+    const anchor = resumeBanner || welcome.querySelector('.welcome-cards');
+    if (anchor && inputArea && inputArea.parentElement !== welcome) {
+        welcome.insertBefore(inputArea, anchor);
     }
 }
 

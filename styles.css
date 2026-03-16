@@ -321,12 +321,9 @@ body {
 /* === RESUME BANNER === */
 
 .resume-banner {
-    position: fixed;
-    top: 1rem;
-    right: 1rem;
-    z-index: 50;
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 0.5rem;
     padding: 0.4rem 0.5rem 0.4rem 0.85rem;
     background: rgba(18, 16, 58, 0.92);
@@ -335,6 +332,8 @@ body {
     backdrop-filter: blur(10px);
     box-shadow: 0 4px 20px rgba(0,0,0,0.35);
     animation: fadeIn 0.3s ease;
+    width: fit-content;
+    margin: 0.75rem auto 0;
 }
 
 .resume-banner.hidden { display: none; }
