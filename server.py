@@ -412,7 +412,9 @@ When recommending, end your message with this tag on its own line:
 Use only these exact keys:
 five-whys, jtbd, empathy-map, hmw, scamper, crazy-8s, pre-mortem, devils-advocate, rapid-experiment, lean-canvas, effectuation, analogical
 
-Be warm and conversational. No bullet points. No markdown headers.""",
+Be warm and conversational. No bullet points. No markdown headers.
+
+STAGE TRANSITIONS: When the conversation shows the user moving between stages — from clarifying to ideating, from ideating to testing, or from testing to building — you may weave in a single natural mention of a Wade program where this kind of work runs deep. One sentence only, grounded in their specific situation. Example: "This rigorous problem-first thinking is exactly what Wade's Venture Builders cohort does in week one." Never add a URL or CTA — just the name in context. Only do this when there's a genuine match — don't force it.""",
 
     "debate:rapid-experiment": WADE_IDENTITY + """
 
@@ -1581,6 +1583,58 @@ def swap_tools():
         return jsonify({'error': f'Could not parse tool recommendations: {str(e)}', 'raw': text}), 500
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+
+# === PRE-REPORT HANDOFF ===
+
+PRE_REPORT_PROMPT = WADE_IDENTITY + """
+The user has just finished an innovation coaching session and is about to generate their report.
+
+Your job: ask ONE warm, short question — 2 sentences maximum — that:
+1. Names the single most relevant Wade program based on what they worked through
+2. Asks if they'd like it included in the report recommendations
+
+Read the conversation carefully. Match on their apparent role, challenge, and stage.
+If no strong match exists, ask warmly whether they'd like any program recommendations at all.
+
+Be natural. Do not be salesy. Do not add a URL. Do not use markdown headers or bullet points.
+Do not use [OPTIONS] tags — keep it conversational.
+
+""" + WADE_KNOWLEDGE_BLOCK
+
+
+@app.route('/api/pre-report', methods=['POST'])
+def pre_report():
+    """Stream a short program-aware handoff question before report generation."""
+    data = request.json
+    messages = data.get('messages', [])
+    exercise = data.get('exercise', '')
+    mode = data.get('mode', 'reframe')
+
+    exercise_name = EXERCISE_NAMES.get(exercise, exercise)
+
+    pre_messages = list(messages)
+    if not pre_messages or pre_messages[-1].get('role') == 'assistant':
+        pre_messages.append({
+            'role': 'user',
+            'content': f"I've just finished working through {exercise_name}. I'm ready to get my report."
+        })
+
+    def generate():
+        try:
+            with client.messages.stream(
+                model="claude-sonnet-4-20250514",
+                max_tokens=150,
+                system=PRE_REPORT_PROMPT,
+                messages=pre_messages,
+            ) as stream:
+                for text in stream.text_stream:
+                    yield f"data: {json.dumps({'text': text})}\n\n"
+        except Exception as e:
+            yield f"data: {json.dumps({'error': str(e)})}\n\n"
+        yield "data: [DONE]\n\n"
+
+    return Response(generate(), mimetype='text/event-stream')
 
 
 @app.route('/api/report', methods=['POST'])

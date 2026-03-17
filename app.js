@@ -227,7 +227,8 @@ const state = {
     projectContext: [],  // accumulated context from previous stages
     routing: false,      // true when in tool-suggestion mode (no exercise selected)
     rating: null,        // thumbs up/down from wrap card
-    pushHarder: false    // more Socratic coaching mode
+    pushHarder: false,   // more Socratic coaching mode
+    preReportAsked: false // true after pre-report handoff question has been shown
 };
 
 // === DOM ===
@@ -474,6 +475,7 @@ function startExercise(mode, exercise, startMsg = null) {
     state.reportText = '';
     state.routing = false;
     state.rating = null;
+    state.preReportAsked = false;
 
     // Hide welcome, move input to session, show session bar
     welcome.classList.add('hidden');
@@ -1123,7 +1125,7 @@ async function streamResponse() {
 
 // === REPORT GENERATION + LEAD CAPTURE ===
 
-reportCtaBtn.addEventListener('click', async () => {
+async function generateReport() {
     reportCtaBtn.disabled = true;
     reportCtaBtn.textContent = 'Generating report...';
 
@@ -1162,6 +1164,85 @@ reportCtaBtn.addEventListener('click', async () => {
         reportCtaBtn.textContent = 'Connection error — try again';
         reportCtaBtn.disabled = false;
     }
+}
+
+reportCtaBtn.addEventListener('click', async () => {
+    // Option C: pre-report handoff — ask about a relevant Wade program on first click
+    // Skip if session is very short (< 3 exchanges) or already asked
+    if (!state.preReportAsked && state.exchangeCount >= 3) {
+        state.preReportAsked = true;
+        reportCtaBtn.disabled = true;
+        reportCtaBtn.textContent = 'One moment...';
+
+        let fullText = '';
+        let agentDiv = null;
+
+        // Show typing indicator
+        const typing = document.createElement('div');
+        typing.className = 'typing';
+        typing.innerHTML = '<span></span><span></span><span></span>';
+        messagesEl.appendChild(typing);
+        scrollToBottom();
+
+        try {
+            const res = await fetch('/api/pre-report', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    mode: state.mode,
+                    exercise: state.exercise,
+                    messages: state.messages
+                })
+            });
+
+            const reader = res.body.getReader();
+            const decoder = new TextDecoder();
+            let buffer = '';
+
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+                buffer += decoder.decode(value, { stream: true });
+                const lines = buffer.split('\n');
+                buffer = lines.pop();
+
+                for (const line of lines) {
+                    if (!line.startsWith('data: ')) continue;
+                    const raw = line.slice(6);
+                    if (raw === '[DONE]') continue;
+                    try {
+                        const parsed = JSON.parse(raw);
+                        if (parsed.text) {
+                            if (!agentDiv) {
+                                typing.remove();
+                                agentDiv = document.createElement('div');
+                                agentDiv.className = 'msg msg-agent';
+                                messagesEl.appendChild(agentDiv);
+                            }
+                            fullText += parsed.text;
+                            agentDiv.innerHTML = renderMarkdown(fullText);
+                            scrollToBottom();
+                        }
+                    } catch (e) { /* skip malformed */ }
+                }
+            }
+        } catch (err) {
+            typing.remove();
+        }
+
+        // Add to conversation so it's included in the report context
+        if (fullText) {
+            state.messages.push({ role: 'assistant', content: fullText });
+        }
+
+        // Re-enable button — next click generates the report
+        reportCtaBtn.disabled = false;
+        reportCtaBtn.textContent = 'Generate my report →';
+        scrollToBottom();
+        return;
+    }
+
+    generateReport();
 });
 
 // === SHARED LEAD CAPTURE LOGIC ===
