@@ -1019,6 +1019,188 @@ WADE_PROGRAMS = [
     },
 ]
 
+WADE_PEOPLE = [
+    # --- ENTREPRENEURS & FOUNDERS ---
+    {
+        "name": "Leigh Jasper",
+        "role": "Co-founder, Aconex (acquired by Oracle for $1.6B); Chair, LaunchVic",
+        "expertise": ["SaaS", "resilience", "mistakes", "angel investing", "venture building", "scaling"],
+        "url": "https://wadeinstitute.org.au/making-mistakes-and-staying-humble-lessons-from-leigh-jasper/",
+        "hook": "Built one of Australia's landmark SaaS exits and models intellectual humility: 'I've made heaps of mistakes and I'm going to keep making them.'",
+    },
+    {
+        "name": "Cyan Ta'eed",
+        "role": "Co-founder, Envato; 2015 EY Australian Entrepreneur of the Year",
+        "expertise": ["marketplace platforms", "scaling", "creative economy", "female entrepreneurship"],
+        "url": "https://wadeinstitute.org.au/11-years-to-build-an-overnight-success-cyan-taeed-envato/",
+        "hook": "Took 11 years to build what looked like an overnight success — a marketplace for creative assets that transformed the global design economy.",
+    },
+    {
+        "name": "Margie Moroney",
+        "role": "Founder, HOLOS Luxury Knitwear; former investment banker; started at 52",
+        "expertise": ["second-act entrepreneurship", "career reinvention", "sustainable fashion", "courage"],
+        "url": "https://wadeinstitute.org.au/starting-a-business-after-a-full-career-and-kids-margie-moroney-holos-knitwear/",
+        "hook": "Launched a luxury fashion brand after a full banking career and raising kids — 'Courage is essential. For me, it was an incremental road towards courage.'",
+    },
+    {
+        "name": "Laura Youngson",
+        "role": "Co-founder, Ida Sports (football boots for women); Master of Entrepreneurship alumna (2017)",
+        "expertise": ["social enterprise", "gender equality", "product design", "purpose-driven business"],
+        "url": "https://wadeinstitute.org.au/laura-youngson-is-changing-the-game-for-women-in-sport/",
+        "hook": "Set two Guinness World Records and opened a flagship store on London's Regent Street — starting from a simple question: why don't boots fit women properly?",
+    },
+    {
+        "name": "Karolina Petkovic",
+        "role": "Research Scientist, CSIRO; Founder, Iron WoMan; Master of Entrepreneurship alumna (2020)",
+        "expertise": ["science commercialisation", "health tech", "women's health", "research-to-market"],
+        "url": "https://wadeinstitute.org.au/when-science-meets-business-from-innovation-to-enterprise/",
+        "hook": "Developed an at-home iron deficiency test using saliva instead of blood — 'Wade was a playground for connecting science and business.'",
+    },
+    {
+        "name": "Sangeeta Mulchandani",
+        "role": "Director, Jumpstart Studio; Co-founder, Press Play Ventures; author of Start Right",
+        "expertise": ["female founders", "pre-accelerator programs", "founder coaching", "reinvention", "career change"],
+        "url": "https://wadeinstitute.org.au/the-argument-for-reinvention/",
+        "hook": "Third-generation entrepreneur who moved from ANZ Bank to supporting 250 founders annually — aiming to empower one million entrepreneurs globally.",
+    },
+    {
+        "name": "Aaron Batalion",
+        "role": "Co-founder, LivingSocial (80M+ consumers); former Partner, Lightspeed Venture Partners",
+        "expertise": ["marketplace platforms", "consumer tech", "founder-to-investor transition", "focus"],
+        "url": "https://wadeinstitute.org.au/making-the-transition-from-builder-to-backer/",
+        "hook": "Built LivingSocial to 80M users across 25 countries, then stepped back — 'Focus is everything' is his message to founders now.",
+    },
+    {
+        "name": "Christian Bien",
+        "role": "Founder, Elucidate (82,000 users globally); Westpac Future Leaders Scholar; Master of Entrepreneurship student",
+        "expertise": ["edtech", "social enterprise", "student innovation", "e-learning"],
+        "url": "https://wadeinstitute.org.au/levelling-the-educational-playing-field-one-online-lesson-at-a-time/",
+        "hook": "'What if the cure for cancer was trapped in the mind of a child living in poverty?' — built a free e-learning platform serving 82,000 users worldwide.",
+    },
+    {
+        "name": "Annie Zhou",
+        "role": "Founder, Brighter Futures Youth Podcast (50,000+ listeners); author, Money Made Simple",
+        "expertise": ["youth entrepreneurship", "podcasting", "financial literacy", "just start"],
+        "url": "https://wadeinstitute.org.au/just-start-now-how-annie-zhou-turned-a-school-project-into-a-platform-for-youth-voice/",
+        "hook": "'You don't need anyone's permission to start. Just start now.' — built a 50,000-listener podcast while still in Year 12.",
+    },
+    # --- VC INVESTORS ---
+    {
+        "name": "Pedram Mokrian",
+        "role": "Adjunct Professor, Stanford; VC Catalyst Lead Facilitator; CEO, Innovera",
+        "expertise": ["corporate innovation", "venture capital", "VC maths", "investment strategy"],
+        "url": "https://wadeinstitute.org.au/from-chaos-to-control-putting-a-framework-around-corporate-innovation-with-pedram-mokrian/",
+        "hook": "Argues corporate innovation needs the same discipline as venture — measurable, budget-conscious, and systematic, not just 'Mad Men-era conversations.'",
+    },
+    {
+        "name": "Rachael Neumann",
+        "role": "Co-Founding Partner, Flying Fox Ventures; VC Catalyst Founding Lead Facilitator",
+        "expertise": ["early-stage investing", "Australian founders", "deep human problems", "ecosystem building"],
+        "url": "https://wadeinstitute.org.au/investing-in-deep-human-fundamentals-meet-rachael-neumann-vc-catalyst-lead-facilitator/",
+        "hook": "Believes the industry 'reinvents itself every six to twelve months' — backs founders solving deep human fundamentals, not surface-level problems.",
+    },
+    {
+        "name": "Lauren Capelin",
+        "role": "VC Catalyst Lead Facilitator; Business Development Manager, AWS Startups ANZ",
+        "expertise": ["generative AI", "web3", "fintech", "early-stage investing", "Australian VC ecosystem"],
+        "url": "https://wadeinstitute.org.au/plying-our-own-path-how-australia-is-rewriting-the-venture-capital-playbook/",
+        "hook": "Observes that Australia was 'definitely risk averse' in VC — and is watching that change fundamentally in real time.",
+    },
+    {
+        "name": "Rachel Yang",
+        "role": "Partner, Giant Leap (Australia's first VC dedicated to impact investing)",
+        "expertise": ["impact investing", "climate", "health", "education", "women's empowerment"],
+        "url": "https://wadeinstitute.org.au/solving-the-worlds-most-pressing-problems-with-giant-leap-partner-rachel-yang/",
+        "hook": "Backs mission-driven founders solving the world's most pressing problems — across climate, health, and social empowerment.",
+    },
+    {
+        "name": "Rayn Ong",
+        "role": "Partner, Archangel Ventures; 100+ angel investments; AFR Young Rich List 2022",
+        "expertise": ["angel investing", "SaaS", "deep tech", "founder coaching"],
+        "url": "https://wadeinstitute.org.au/founders-take-wisdom-from-the-wiggles-rayn-ong/",
+        "hook": "Portfolio includes Morse Micro, Eucalyptus, and HappyCo — all valued over $100M. Advises founders to 'take wisdom from The Wiggles' on consistency.",
+    },
+    {
+        "name": "Jodie Imam",
+        "role": "Co-founder/Co-CEO, Tractor Ventures; VC Catalyst alumna",
+        "expertise": ["revenue-based financing", "female founders", "startup investing", "imposter syndrome"],
+        "url": "https://wadeinstitute.org.au/shaking-off-imposter-syndrome-to-invest-in-profitable-founders/",
+        "hook": "Felt 'like an imposter' at VC Catalyst — now runs a fund committed to 50% female-led portfolio companies.",
+    },
+    {
+        "name": "Rick Baker",
+        "role": "Co-founder, Blackbird Ventures",
+        "expertise": ["VC fund building", "Australian tech ecosystem", "storytelling", "conviction investing"],
+        "url": "https://wadeinstitute.org.au/the-muscle-weve-built-lessons-from-a-decade-of-belief-in-australian-venture/",
+        "hook": "Conducted 500 coffee meetings in 2011 to pitch Blackbird's first fund — 'Storytelling built this industry.'",
+    },
+    {
+        "name": "Dr Kate Cornick",
+        "role": "CEO, LaunchVic; VC Catalyst alumna; former founder and academic",
+        "expertise": ["startup ecosystem", "government innovation policy", "angel investing", "ecosystem building"],
+        "url": "https://wadeinstitute.org.au/continued-investment-into-an-innovation-ecosystem-launchvic-ceo-dr-kate-cornick/",
+        "hook": "'Ten years ago, there was a brain drain to Silicon Valley — you don't hear that as much now.' Has spent a decade building the Australian startup ecosystem.",
+    },
+    {
+        "name": "Paul Naphtali",
+        "role": "Co-Founder and Managing Partner, rampersand; VC Catalyst speaker",
+        "expertise": ["early-stage VC", "Australian startup investing", "fund strategy"],
+        "url": "https://wadeinstitute.org.au/programs/investors/vc-catalyst/",
+        "hook": "Co-leads rampersand, one of Australia's most active early-stage funds backing the next generation of category-defining companies.",
+    },
+    {
+        "name": "Sarah Nolet",
+        "role": "CEO, Tenacious Ventures Group; Ag Ventures facilitator",
+        "expertise": ["AgTech", "agrifood tech investing", "investment thesis", "rural innovation"],
+        "url": "https://wadeinstitute.org.au/tenacious-ventures-transforming-agriculture-through-innovation-and-investment/",
+        "hook": "'A well-crafted investment thesis is more than a strategy — it's the foundation of your sourcing, co-investment relationships, and value-add.'",
+    },
+    # --- WADE LEADERSHIP & FACULTY ---
+    {
+        "name": "Jessica Christiansen-Franks",
+        "role": "Director, Wade Institute; Co-founder, Neighbourlytics",
+        "expertise": ["urban tech", "data analytics", "social impact", "human-centered design", "entrepreneurship education"],
+        "url": "https://wadeinstitute.org.au/meet-jessica-christiansen-franks-wades-new-director/",
+        "hook": "Startup founder turned institute director — 'inspired by Wade's mission from afar for years' before joining to lead it.",
+    },
+    {
+        "name": "Prof Colin McLeod",
+        "role": "VC Catalyst Lead Academic; Professor, Melbourne Business School; Executive Director, Melbourne Entrepreneurial Centre",
+        "expertise": ["venture capital education", "startup investing", "entrepreneurship"],
+        "url": "https://wadeinstitute.org.au/welcoming-new-facilitators-to-vc-catalyst/",
+        "hook": "Described by VC Catalyst participants as 'transformative' — an investor, educator, and director of six early-stage companies.",
+    },
+    {
+        "name": "Peter Wade",
+        "role": "Benefactor, Wade Institute; Founder, Travelbag; part of founding group, Intrepid and Flight Centre",
+        "expertise": ["entrepreneurship", "travel", "education philanthropy", "founder mindset"],
+        "url": "https://wadeinstitute.org.au/we-have-to-increase-the-rate-of-startup-success-peter-wade-entrepreneur/",
+        "hook": "'Got frustrated giving it my all but having to bend to institutional rules' — founded the institute to change the culture of entrepreneurship in Australia.",
+    },
+    {
+        "name": "Dan Madhavan",
+        "role": "Founding Partner, Ecotone Partners; VC Catalyst Facilitator; former CEO, Impact Investment Group",
+        "expertise": ["impact investing", "sustainable finance", "ESG", "social enterprise"],
+        "url": "https://wadeinstitute.org.au/welcoming-new-facilitators-to-vc-catalyst/",
+        "hook": "Dedicated to 'using business and finance to create a sustainable and equitable future' — 13 years at Goldman Sachs before pivoting to impact.",
+    },
+    {
+        "name": "Tick Jiang",
+        "role": "Entrepreneur in Residence, Wade Institute; Founder, NUVC.ai; VC Catalyst alumna (2023)",
+        "expertise": ["AI", "angel investing", "diverse founder funding", "portfolio management"],
+        "url": "https://wadeinstitute.org.au/closing-the-funding-gap-and-commercialising-ai-with-tick-jiang/",
+        "hook": "'Emotion is so important. It's not just the business; it is about the story.' — using AI to close the funding gap for diverse founders.",
+    },
+    {
+        "name": "Nicole Gibson",
+        "role": "CEO and Founder, InTruth Technologies; former Federal Mental Health Commissioner",
+        "expertise": ["health tech", "wearables", "emotion tracking", "empathy", "mental health"],
+        "url": "https://wadeinstitute.org.au/mixing-innovation-with-empathy/",
+        "hook": "Building the world's first software to track emotions through consumer-grade wearables — 'emotions drive 80% of our decision-making.'",
+    },
+]
+
+
 def build_wade_knowledge_block():
     articles_text = "\n".join(
         f'- [{a["title"]}]({a["url"]}) — {", ".join(a["categories"])}'
@@ -1028,12 +1210,19 @@ def build_wade_knowledge_block():
         f'- [{p["name"]}]({p["url"]}) ({p["format"]}): {p["description"]}'
         for p in WADE_PROGRAMS
     )
+    people_text = "\n".join(
+        f'- **{p["name"]}** ({p["role"]}): {p["hook"]} [{p["name"]}]({p["url"]})'
+        for p in WADE_PEOPLE
+    )
     return f"""
 WADE COMMUNITY ARTICLES (use these for Suggested Reading):
 {articles_text}
 
 WADE PROGRAMS (use these for Recommended Courses):
 {programs_text}
+
+WADE COMMUNITY PEOPLE (use these for From the Wade Community):
+{people_text}
 """
 
 WADE_KNOWLEDGE_BLOCK = build_wade_knowledge_block()
@@ -1066,6 +1255,9 @@ Begin the report with the title: # Innovation Coaching Session Summary
 - At least one hands-on, market-facing action (a real customer conversation, a cheap prototype, a live test — something that generates external signal, not just internal thinking)
 - At least one network-building action (a specific type of person to find, a community to join, an event to attend, a mentor to seek out)
 - The remaining steps should be equally concrete and time-bound
+
+### From the Wade Community
+Recommend 1-2 people from the Wade community list provided — alumni, faculty, or speakers — whose experience is most directly relevant to this person's challenge. One sentence per person explaining the connection. Render each as a markdown link using their article URL. Only include people with a genuine thematic match.
 
 ### Suggested Reading
 Recommend 1-2 of the most relevant Wade community articles from the list provided. One sentence explaining why each fits this session. Always render as markdown links. Only recommend articles that are genuinely relevant to what this person is working on.
