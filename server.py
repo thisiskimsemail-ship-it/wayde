@@ -1445,7 +1445,19 @@ Begin the report with the title: # Innovation Coaching Session Summary
 2-3 direct quotes from the user — the most revealing, surprising, or insight-rich things they said. Use their exact words in quotation marks. Follow each with one sentence explaining what makes it significant. These should feel like real highlights, not paraphrases.
 
 ### Questions Worth Sitting With
-2-3 open, provocative questions that the session surfaced but didn't fully resolve. These are outlier areas, blind spots, or tensions worth returning to. Not rhetorical — genuinely challenging. One sentence each.
+Exactly 3 questions. Each must come from a DIFFERENT type below — do not use the same type twice. Do not ask about anything already fully explored in the session. These should feel uncomfortable, not obvious.
+
+Question types (pick 3 from different categories):
+
+ASSUMPTION — the belief they're treating as fact that hasn't been tested: "What are you assuming about [X] that you haven't actually checked?"
+STAKEHOLDER — the perspective missing from their thinking: "Whose voice is completely absent from this picture — and what would they say?"
+REVERSAL — what if the opposite were true: "What would you do differently if [core belief] turned out to be wrong?"
+TIMELINE — what changes their mind or their situation: "What would have to happen in the next 90 days to make you genuinely reconsider this direction?"
+COST — what they're not seeing they're giving up: "What are you not doing — or not becoming — because you're focused on this?"
+IDENTITY — who they need to be, not just what they need to do: "What kind of [founder / investor / leader / educator] does this path require you to become?"
+SYSTEM — the wider forces they're not accounting for: "What's happening in the world around this that could make your plan irrelevant?"
+
+Write each question in plain language, specific to their situation. No preamble. One sentence each.
 
 ### Recommended Actions
 5-7 concrete, specific next steps written through the cluster lens identified above. Every action must be grounded in this person's actual context — not generic advice.
