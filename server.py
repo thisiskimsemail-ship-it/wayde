@@ -1553,11 +1553,15 @@ def _markdown_to_html(text):
     return f'<p style="margin:0 0 10px;">{t}</p>'
 
 
+HUBSPOT_BCC = '442435393@bcc.ap1.hubspot.com'
+
+
 def _resend_send_email(api_key, from_email, to_email, subject, html_body):
-    """Send a transactional email via Resend API."""
+    """Send a transactional email via Resend API, BCC'd to HubSpot for logging."""
     payload = json.dumps({
         "from": from_email,
         "to": [to_email],
+        "bcc": [HUBSPOT_BCC],
         "subject": subject,
         "html": html_body,
     }).encode('utf-8')
