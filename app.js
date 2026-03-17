@@ -794,7 +794,7 @@ function scrollToBottom() {
 // === SHOW REPORT CTA ===
 
 function maybeShowReportCta() {
-    if (state.exchangeCount >= 1 && !state.reportGenerated) {
+    if (state.exchangeCount >= 3 && !state.reportGenerated) {
         reportCtaBtn.disabled = false;
         reportCtaBtn.textContent = 'Access your Innovation Coaching Session report →';
         // Enable within-stage tool picker after first real exchange
