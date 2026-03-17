@@ -1578,6 +1578,39 @@ def _resend_send_email(api_key, from_email, to_email, subject, html_body):
         return resp.status
 
 
+def _tags_html(tags):
+    """Render insight tags as a compact pill block for the Wade notification email."""
+    if not tags:
+        return ''
+    LABELS = {
+        'challenge_category': 'Challenge',
+        'industry':           'Industry',
+        'venture_stage':      'Stage',
+        'primary_barrier':    'Barrier',
+        'sentiment':          'Sentiment',
+    }
+    pills = ''.join(
+        f'<span style="display:inline-block;margin:3px 4px 3px 0;padding:3px 10px;'
+        f'border-radius:20px;font-size:11px;font-weight:bold;background:#fff3ee;'
+        f'color:#F15A22;border:1px solid #F15A22;">'
+        f'{LABELS.get(k, k)}: {v}</span>'
+        for k, v in tags.items() if k != 'key_insight' and v
+    )
+    insight = tags.get('key_insight', '')
+    insight_block = (
+        f'<p style="font-size:12.5px;font-style:italic;color:#444;margin:10px 0 0;'
+        f'padding:10px 14px;background:#f9f9f9;border-left:3px solid #F15A22;">'
+        f'"{insight}"</p>'
+    ) if insight else ''
+    return (
+        f'<div style="margin-bottom:20px;padding:14px;background:#fff8f5;'
+        f'border-radius:5px;border:1px solid #ffe0d0;">'
+        f'<p style="font-size:9px;font-weight:bold;letter-spacing:0.1em;'
+        f'text-transform:uppercase;color:#F15A22;margin:0 0 8px;">Session Insights</p>'
+        f'{pills}{insight_block}</div>'
+    )
+
+
 def _notify_wade(lead):
     """Email Wade and send user a copy of their report via Resend. Silent no-op if not configured."""
     resend_key  = os.environ.get('RESEND_API_KEY')
@@ -1607,6 +1640,7 @@ def _notify_wade(lead):
       <tr><td style="padding:7px 12px;font-weight:bold;border-bottom:1px solid #eee;">Exercise</td><td style="padding:7px 12px;border-bottom:1px solid #eee;">{lead['exercise']}</td></tr>
       <tr style="background:#f8f8f8;"><td style="padding:7px 12px;font-weight:bold;">Rating</td><td style="padding:7px 12px;">{rating_label}</td></tr>
     </table>
+    {_tags_html(lead.get('tags', {}))}
     <div style="font-family:Georgia,serif;font-size:13.5px;line-height:1.7;color:#222;">{report_html}</div>
   </div>
   <p style="text-align:center;font-size:11px;color:#aaa;margin-top:14px;">WAiDE &middot; <a href="https://wadeinstitute.org.au" style="color:#F15A22;">wadeinstitute.org.au</a></p>
@@ -1651,6 +1685,49 @@ def _notify_wade(lead):
     except Exception:
         pass
 
+def _tag_session(report, messages, exercise, mode):
+    """Extract structured insight tags from a session using Claude Haiku."""
+    conversation = '\n'.join(
+        f"{m['role'].upper()}: {m['content'][:300]}"
+        for m in messages[-20:]  # last 20 messages is plenty
+        if isinstance(m.get('content'), str)
+    )
+    prompt = f"""Analyse this WAiDE innovation coaching session and return a JSON object with exactly these fields:
+
+{{
+  "challenge_category": one of: "Product/Service Design" | "Business Model" | "Customer Understanding" | "Team & Culture" | "Strategy & Direction" | "Process & Operations" | "Market Entry" | "Funding & Resources" | "Other",
+  "industry": short sector label e.g. "HealthTech", "Education", "Professional Services", "Retail", "Fintech", "Not-for-profit", "Government", "Unknown",
+  "venture_stage": one of: "Idea/Concept" | "Early Stage" | "Growth" | "Corporate Innovation" | "Transformation" | "Unknown",
+  "primary_barrier": one of: "Market Uncertainty" | "Resource Constraints" | "Internal Buy-in" | "Technical Complexity" | "Customer Access" | "Competitive Pressure" | "Team Capability" | "Other",
+  "sentiment": one of: "Energised" | "Stuck" | "Anxious" | "Motivated" | "Uncertain" | "Frustrated",
+  "key_insight": one sentence capturing the single most important insight from this session
+}}
+
+Exercise: {exercise} | Stage: {mode}
+
+Conversation excerpt:
+{conversation}
+
+Report summary:
+{report[:1500]}
+
+Return ONLY the JSON object, no other text."""
+
+    try:
+        response = client.messages.create(
+            model="claude-haiku-4-5-20251001",
+            max_tokens=300,
+            messages=[{'role': 'user', 'content': prompt}],
+        )
+        raw = ''
+        for block in response.content:
+            if hasattr(block, 'text'):
+                raw += block.text
+        return json.loads(raw.strip())
+    except Exception:
+        return {}
+
+
 @app.route('/api/lead', methods=['POST'])
 def capture_lead():
     data = request.json
@@ -1667,6 +1744,16 @@ def capture_lead():
         'rating': data.get('rating', None),
         'messages': data.get('messages', [])
     }
+
+    # Extract insight tags
+    try:
+        tags = _tag_session(
+            lead['report'], lead['messages'],
+            lead['exercise'], lead['mode']
+        )
+        lead['tags'] = tags
+    except Exception:
+        lead['tags'] = {}
 
     # Load existing leads or create new list
     leads = []
