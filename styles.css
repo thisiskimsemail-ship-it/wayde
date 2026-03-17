@@ -477,9 +477,8 @@ body {
 
 .cards-sub {
     grid-column: 1 / -1;
-    width: 100%;
+    justify-self: center;
     max-width: 660px;
-    margin: 0 auto;
     text-align: center;
     font-size: 0.9rem;
     color: var(--text-dim);
