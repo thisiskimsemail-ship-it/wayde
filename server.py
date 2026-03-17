@@ -1087,6 +1087,10 @@ WADE_PEOPLE = [
         "expertise": ["SaaS", "resilience", "mistakes", "angel investing", "venture building", "scaling"],
         "url": "https://wadeinstitute.org.au/making-mistakes-and-staying-humble-lessons-from-leigh-jasper/",
         "hook": "Built one of Australia's landmark SaaS exits and models intellectual humility: 'I've made heaps of mistakes and I'm going to keep making them.'",
+        "cluster": "innovator",
+        "match_roles": ["founder", "CEO", "co-founder", "startup", "scale-up", "SaaS"],
+        "match_challenges": ["scaling", "resilience", "dealing with failure", "SaaS growth", "building culture", "venture building", "angel investing"],
+        "match_when": "User is a founder navigating scaling challenges, setbacks, or building a tech/SaaS product and needs a model of resilient, humble leadership.",
     },
     {
         "name": "Cyan Ta'eed",
@@ -1094,6 +1098,10 @@ WADE_PEOPLE = [
         "expertise": ["marketplace platforms", "scaling", "creative economy", "female entrepreneurship"],
         "url": "https://wadeinstitute.org.au/11-years-to-build-an-overnight-success-cyan-taeed-envato/",
         "hook": "Took 11 years to build what looked like an overnight success — a marketplace for creative assets that transformed the global design economy.",
+        "cluster": "innovator",
+        "match_roles": ["founder", "co-founder", "CEO", "platform builder", "marketplace", "creative"],
+        "match_challenges": ["marketplace", "platform business", "creative economy", "community building", "long game", "scaling", "bootstrapping"],
+        "match_when": "User is building a platform or marketplace and wrestling with the slow, unglamorous path between starting and scale.",
     },
     {
         "name": "Margie Moroney",
@@ -1101,6 +1109,10 @@ WADE_PEOPLE = [
         "expertise": ["second-act entrepreneurship", "career reinvention", "sustainable fashion", "courage"],
         "url": "https://wadeinstitute.org.au/starting-a-business-after-a-full-career-and-kids-margie-moroney-holos-knitwear/",
         "hook": "Launched a luxury fashion brand after a full banking career and raising kids — 'Courage is essential. For me, it was an incremental road towards courage.'",
+        "cluster": "innovator",
+        "match_roles": ["career changer", "senior professional", "mid-career", "executive", "banker", "reinvention"],
+        "match_challenges": ["reinvention", "starting later in life", "first venture", "courage", "career change", "leaving corporate", "identity shift"],
+        "match_when": "User is mid-career or later, questioning whether it's too late to start, or making a significant identity transition into entrepreneurship.",
     },
     {
         "name": "Laura Youngson",
@@ -1108,6 +1120,10 @@ WADE_PEOPLE = [
         "expertise": ["social enterprise", "gender equality", "product design", "purpose-driven business"],
         "url": "https://wadeinstitute.org.au/laura-youngson-is-changing-the-game-for-women-in-sport/",
         "hook": "Set two Guinness World Records and opened a flagship store on London's Regent Street — starting from a simple question: why don't boots fit women properly?",
+        "cluster": "innovator",
+        "match_roles": ["founder", "social entrepreneur", "product designer", "mission-driven founder", "purpose-led"],
+        "match_challenges": ["purpose-driven business", "underserved market", "gender equity", "product design", "social enterprise", "mission and commercial tension"],
+        "match_when": "User is building a mission-driven or purpose-led product and navigating the tension between social impact and commercial viability.",
     },
     {
         "name": "Karolina Petkovic",
@@ -1115,6 +1131,10 @@ WADE_PEOPLE = [
         "expertise": ["science commercialisation", "health tech", "women's health", "research-to-market"],
         "url": "https://wadeinstitute.org.au/when-science-meets-business-from-innovation-to-enterprise/",
         "hook": "Developed an at-home iron deficiency test using saliva instead of blood — 'Wade was a playground for connecting science and business.'",
+        "cluster": "innovator",
+        "match_roles": ["researcher", "scientist", "academic", "CSIRO", "university", "R&D", "health tech founder"],
+        "match_challenges": ["commercialisation", "research to market", "IP", "health tech", "translating research", "science-based venture", "university spinout"],
+        "match_when": "User has a research or scientific background and is trying to commercialise an idea or bridge the gap between science and business.",
     },
     {
         "name": "Sangeeta Mulchandani",
@@ -1122,6 +1142,10 @@ WADE_PEOPLE = [
         "expertise": ["female founders", "pre-accelerator programs", "founder coaching", "reinvention", "career change"],
         "url": "https://wadeinstitute.org.au/the-argument-for-reinvention/",
         "hook": "Third-generation entrepreneur who moved from ANZ Bank to supporting 250 founders annually — aiming to empower one million entrepreneurs globally.",
+        "cluster": "innovator",
+        "match_roles": ["aspiring founder", "early-stage founder", "career changer", "female founder", "first-time founder"],
+        "match_challenges": ["getting started", "finding confidence", "first venture", "reinvention", "founder coaching", "overcoming hesitation"],
+        "match_when": "User is at the very beginning of their entrepreneurial journey, lacks confidence, or is in the process of reinventing themselves professionally.",
     },
     {
         "name": "Aaron Batalion",
@@ -1129,6 +1153,10 @@ WADE_PEOPLE = [
         "expertise": ["marketplace platforms", "consumer tech", "founder-to-investor transition", "focus"],
         "url": "https://wadeinstitute.org.au/making-the-transition-from-builder-to-backer/",
         "hook": "Built LivingSocial to 80M users across 25 countries, then stepped back — 'Focus is everything' is his message to founders now.",
+        "cluster": "innovator",
+        "match_roles": ["founder", "serial entrepreneur", "scaling CEO", "founder-to-investor"],
+        "match_challenges": ["focus", "too many opportunities", "scaling consumer product", "marketplace growth", "what to do next", "founder transition"],
+        "match_when": "User is a scaling founder struggling with focus and prioritisation, or a founder thinking about transitioning from operator to investor.",
     },
     {
         "name": "Christian Bien",
@@ -1136,6 +1164,10 @@ WADE_PEOPLE = [
         "expertise": ["edtech", "social enterprise", "student innovation", "e-learning"],
         "url": "https://wadeinstitute.org.au/levelling-the-educational-playing-field-one-online-lesson-at-a-time/",
         "hook": "'What if the cure for cancer was trapped in the mind of a child living in poverty?' — built a free e-learning platform serving 82,000 users worldwide.",
+        "cluster": "innovator",
+        "match_roles": ["edtech founder", "student", "young founder", "social enterprise founder"],
+        "match_challenges": ["edtech", "social impact", "free product model", "education equity", "student innovation", "big ambition with limited resources"],
+        "match_when": "User is building in education or social impact, or is an early-stage founder with ambitious goals and limited resources who needs proof that scale is possible.",
     },
     {
         "name": "Annie Zhou",
@@ -1143,6 +1175,10 @@ WADE_PEOPLE = [
         "expertise": ["youth entrepreneurship", "podcasting", "financial literacy", "just start"],
         "url": "https://wadeinstitute.org.au/just-start-now-how-annie-zhou-turned-a-school-project-into-a-platform-for-youth-voice/",
         "hook": "'You don't need anyone's permission to start. Just start now.' — built a 50,000-listener podcast while still in Year 12.",
+        "cluster": "innovator",
+        "match_roles": ["young founder", "student", "content creator", "media founder", "aspiring entrepreneur"],
+        "match_challenges": ["getting started", "fear of starting", "youth entrepreneurship", "content business", "podcasting", "waiting for permission"],
+        "match_when": "User is hesitant to start, feels too young or inexperienced, or is building a content, media, or community-driven venture.",
     },
     # --- VC INVESTORS ---
     {
@@ -1151,6 +1187,10 @@ WADE_PEOPLE = [
         "expertise": ["corporate innovation", "venture capital", "VC maths", "investment strategy"],
         "url": "https://wadeinstitute.org.au/from-chaos-to-control-putting-a-framework-around-corporate-innovation-with-pedram-mokrian/",
         "hook": "Argues corporate innovation needs the same discipline as venture — measurable, budget-conscious, and systematic, not just 'Mad Men-era conversations.'",
+        "cluster": "investor",
+        "match_roles": ["investor", "corporate venture", "innovation lead", "VC", "corporate innovator", "R&D director"],
+        "match_challenges": ["corporate innovation discipline", "investment strategy", "framework building", "VC methodology", "measuring innovation ROI", "portfolio management"],
+        "match_when": "User is trying to bring VC-style rigour to corporate innovation, or an investor who needs frameworks to make their practice more systematic and measurable.",
     },
     {
         "name": "Rachael Neumann",
@@ -1158,6 +1198,10 @@ WADE_PEOPLE = [
         "expertise": ["early-stage investing", "Australian founders", "deep human problems", "ecosystem building"],
         "url": "https://wadeinstitute.org.au/investing-in-deep-human-fundamentals-meet-rachael-neumann-vc-catalyst-lead-facilitator/",
         "hook": "Believes the industry 'reinvents itself every six to twelve months' — backs founders solving deep human fundamentals, not surface-level problems.",
+        "cluster": "investor",
+        "match_roles": ["investor", "VC", "angel", "fund manager", "early-stage investor"],
+        "match_challenges": ["early-stage investing", "founder selection", "investment thesis", "what to back", "ecosystem building", "deep problems vs surface trends"],
+        "match_when": "User is an early-stage investor developing or stress-testing their thesis, or trying to distinguish problems worth backing from surface-level trends.",
     },
     {
         "name": "Lauren Capelin",
@@ -1165,6 +1209,10 @@ WADE_PEOPLE = [
         "expertise": ["generative AI", "web3", "fintech", "early-stage investing", "Australian VC ecosystem"],
         "url": "https://wadeinstitute.org.au/plying-our-own-path-how-australia-is-rewriting-the-venture-capital-playbook/",
         "hook": "Observes that Australia was 'definitely risk averse' in VC — and is watching that change fundamentally in real time.",
+        "cluster": "investor",
+        "match_roles": ["investor", "VC", "startup leader", "tech founder", "fintech", "AI founder"],
+        "match_challenges": ["generative AI strategy", "web3", "fintech", "Australian VC landscape", "tech investing", "startup ecosystem"],
+        "match_when": "User is operating or investing in AI, fintech, or web3, or navigating the Australian VC landscape and wants perspective on how it's evolving.",
     },
     {
         "name": "Rachel Yang",
@@ -1172,6 +1220,10 @@ WADE_PEOPLE = [
         "expertise": ["impact investing", "climate", "health", "education", "women's empowerment"],
         "url": "https://wadeinstitute.org.au/solving-the-worlds-most-pressing-problems-with-giant-leap-partner-rachel-yang/",
         "hook": "Backs mission-driven founders solving the world's most pressing problems — across climate, health, and social empowerment.",
+        "cluster": "investor",
+        "match_roles": ["impact investor", "mission-driven founder", "climate founder", "health founder", "social enterprise"],
+        "match_challenges": ["impact investing", "climate", "health innovation", "women's empowerment", "mission-aligned capital", "social enterprise funding"],
+        "match_when": "User is building or investing in a mission-driven venture and needs to understand how capital can be aligned with impact — not despite returns, alongside them.",
     },
     {
         "name": "Rayn Ong",
@@ -1179,6 +1231,10 @@ WADE_PEOPLE = [
         "expertise": ["angel investing", "SaaS", "deep tech", "founder coaching"],
         "url": "https://wadeinstitute.org.au/founders-take-wisdom-from-the-wiggles-rayn-ong/",
         "hook": "Portfolio includes Morse Micro, Eucalyptus, and HappyCo — all valued over $100M. Advises founders to 'take wisdom from The Wiggles' on consistency.",
+        "cluster": "investor",
+        "match_roles": ["angel investor", "investor", "founder seeking angel", "deep tech founder", "SaaS founder"],
+        "match_challenges": ["angel investing", "portfolio building", "deep tech", "SaaS metrics", "founder discipline", "consistency", "raising angel rounds"],
+        "match_when": "User is an angel investor building a portfolio, or a founder raising angel rounds who needs to understand what disciplined angel investors look for.",
     },
     {
         "name": "Jodie Imam",
@@ -1186,6 +1242,10 @@ WADE_PEOPLE = [
         "expertise": ["revenue-based financing", "female founders", "startup investing", "imposter syndrome"],
         "url": "https://wadeinstitute.org.au/shaking-off-imposter-syndrome-to-invest-in-profitable-founders/",
         "hook": "Felt 'like an imposter' at VC Catalyst — now runs a fund committed to 50% female-led portfolio companies.",
+        "cluster": "investor",
+        "match_roles": ["aspiring investor", "female founder", "female investor", "startup investor", "career changer into investing"],
+        "match_challenges": ["imposter syndrome", "revenue-based financing", "alternative funding models", "female founders", "diversity in VC", "belonging in investing"],
+        "match_when": "User is struggling with confidence or belonging as an investor or founder, or a female founder navigating funding options beyond traditional VC.",
     },
     {
         "name": "Rick Baker",
@@ -1193,6 +1253,10 @@ WADE_PEOPLE = [
         "expertise": ["VC fund building", "Australian tech ecosystem", "storytelling", "conviction investing"],
         "url": "https://wadeinstitute.org.au/the-muscle-weve-built-lessons-from-a-decade-of-belief-in-australian-venture/",
         "hook": "Conducted 500 coffee meetings in 2011 to pitch Blackbird's first fund — 'Storytelling built this industry.'",
+        "cluster": "investor",
+        "match_roles": ["VC", "fund manager", "investor", "fund builder", "GP"],
+        "match_challenges": ["fund building", "storytelling for investment", "conviction", "early-stage VC", "Australian tech ecosystem", "long-term thesis"],
+        "match_when": "User is building or growing a VC fund, or an investor working on how to develop and communicate conviction — especially in the Australian market.",
     },
     {
         "name": "Dr Kate Cornick",
@@ -1200,6 +1264,10 @@ WADE_PEOPLE = [
         "expertise": ["startup ecosystem", "government innovation policy", "angel investing", "ecosystem building"],
         "url": "https://wadeinstitute.org.au/continued-investment-into-an-innovation-ecosystem-launchvic-ceo-dr-kate-cornick/",
         "hook": "'Ten years ago, there was a brain drain to Silicon Valley — you don't hear that as much now.' Has spent a decade building the Australian startup ecosystem.",
+        "cluster": "innovator",
+        "match_roles": ["government", "ecosystem builder", "policy maker", "innovation lead", "angel investor", "academic turned founder"],
+        "match_challenges": ["ecosystem building", "government innovation policy", "startup community", "angel investing", "public sector innovation", "founder-to-government pivot"],
+        "match_when": "User works at the intersection of government, policy, and innovation — or is building the conditions for an innovation ecosystem rather than a single venture.",
     },
     {
         "name": "Paul Naphtali",
@@ -1207,6 +1275,10 @@ WADE_PEOPLE = [
         "expertise": ["early-stage VC", "Australian startup investing", "fund strategy"],
         "url": "https://wadeinstitute.org.au/programs/investors/vc-catalyst/",
         "hook": "Co-leads rampersand, one of Australia's most active early-stage funds backing the next generation of category-defining companies.",
+        "cluster": "investor",
+        "match_roles": ["VC", "investor", "fund manager", "startup founder seeking VC"],
+        "match_challenges": ["early-stage VC", "fund strategy", "what makes a category-defining company", "startup investing", "Australian venture"],
+        "match_when": "User is a startup founder seeking institutional VC, or an investor focused on identifying and backing category-defining Australian companies.",
     },
     {
         "name": "Sarah Nolet",
@@ -1214,6 +1286,10 @@ WADE_PEOPLE = [
         "expertise": ["AgTech", "agrifood tech investing", "investment thesis", "rural innovation"],
         "url": "https://wadeinstitute.org.au/tenacious-ventures-transforming-agriculture-through-innovation-and-investment/",
         "hook": "'A well-crafted investment thesis is more than a strategy — it's the foundation of your sourcing, co-investment relationships, and value-add.'",
+        "cluster": "investor",
+        "match_roles": ["investor", "AgTech founder", "agrifood innovator", "sector specialist investor", "rural innovator"],
+        "match_challenges": ["investment thesis building", "AgTech", "agrifood", "sector-specific investing", "rural innovation", "niche market sourcing"],
+        "match_when": "User is building a sector-specific investment thesis, or innovating in agriculture, food systems, or rural communities.",
     },
     # --- WADE LEADERSHIP & FACULTY ---
     {
@@ -1222,6 +1298,10 @@ WADE_PEOPLE = [
         "expertise": ["urban tech", "data analytics", "social impact", "human-centered design", "entrepreneurship education"],
         "url": "https://wadeinstitute.org.au/meet-jessica-christiansen-franks-wades-new-director/",
         "hook": "Startup founder turned institute director — 'inspired by Wade's mission from afar for years' before joining to lead it.",
+        "cluster": "innovator",
+        "match_roles": ["director", "urban tech founder", "social impact founder", "education leader", "data founder"],
+        "match_challenges": ["urban innovation", "data-driven social impact", "human-centered design", "entrepreneurship education", "tech for good", "city innovation"],
+        "match_when": "User is working at the intersection of technology, cities, and social impact — or leading entrepreneurship education and building programs that develop innovation capability.",
     },
     {
         "name": "Prof Colin McLeod",
@@ -1229,6 +1309,10 @@ WADE_PEOPLE = [
         "expertise": ["venture capital education", "startup investing", "entrepreneurship"],
         "url": "https://wadeinstitute.org.au/welcoming-new-facilitators-to-vc-catalyst/",
         "hook": "Described by VC Catalyst participants as 'transformative' — an investor, educator, and director of six early-stage companies.",
+        "cluster": "investor",
+        "match_roles": ["investor", "VC", "academic investor", "fund manager", "educator in investing"],
+        "match_challenges": ["VC education", "investment frameworks", "academic rigour in investing", "startup investing methodology", "early-stage company building"],
+        "match_when": "User is an investor who wants rigorous, academically-grounded frameworks for their practice — or is building both investing and operational capability simultaneously.",
     },
     {
         "name": "Peter Wade",
@@ -1236,6 +1320,10 @@ WADE_PEOPLE = [
         "expertise": ["entrepreneurship", "travel", "education philanthropy", "founder mindset"],
         "url": "https://wadeinstitute.org.au/we-have-to-increase-the-rate-of-startup-success-peter-wade-entrepreneur/",
         "hook": "'Got frustrated giving it my all but having to bend to institutional rules' — founded the institute to change the culture of entrepreneurship in Australia.",
+        "cluster": "innovator",
+        "match_roles": ["frustrated corporate", "first-time founder", "entrepreneur", "founder", "philanthropist"],
+        "match_challenges": ["taking the leap", "breaking from institutions", "founder mindset", "first venture", "entrepreneurship culture", "why start at all"],
+        "match_when": "User is frustrated within a corporate or institutional structure and is at the threshold of beginning — or justifying — their entrepreneurial path.",
     },
     {
         "name": "Dan Madhavan",
@@ -1243,6 +1331,10 @@ WADE_PEOPLE = [
         "expertise": ["impact investing", "sustainable finance", "ESG", "social enterprise"],
         "url": "https://wadeinstitute.org.au/welcoming-new-facilitators-to-vc-catalyst/",
         "hook": "Dedicated to 'using business and finance to create a sustainable and equitable future' — 13 years at Goldman Sachs before pivoting to impact.",
+        "cluster": "investor",
+        "match_roles": ["impact investor", "ESG professional", "sustainable finance", "former banker", "social enterprise leader"],
+        "match_challenges": ["impact investing", "ESG", "sustainable finance", "finance to impact transition", "deploying capital with social goals", "impact measurement"],
+        "match_when": "User is navigating the transition from traditional finance to impact investing, or deploying capital with explicit social and environmental goals.",
     },
     {
         "name": "Tick Jiang",
@@ -1250,6 +1342,10 @@ WADE_PEOPLE = [
         "expertise": ["AI", "angel investing", "diverse founder funding", "portfolio management"],
         "url": "https://wadeinstitute.org.au/closing-the-funding-gap-and-commercialising-ai-with-tick-jiang/",
         "hook": "'Emotion is so important. It's not just the business; it is about the story.' — using AI to close the funding gap for diverse founders.",
+        "cluster": "investor",
+        "match_roles": ["AI founder", "angel investor", "diverse founder", "tech founder", "entrepreneur in residence"],
+        "match_challenges": ["AI commercialisation", "diverse founder funding", "funding gap", "angel investing with AI", "portfolio management", "AI startup strategy"],
+        "match_when": "User is an AI founder commercialising a product, a diverse founder navigating funding gaps, or an angel investor exploring data-driven deal sourcing.",
     },
     {
         "name": "Nicole Gibson",
@@ -1257,6 +1353,10 @@ WADE_PEOPLE = [
         "expertise": ["health tech", "wearables", "emotion tracking", "empathy", "mental health"],
         "url": "https://wadeinstitute.org.au/mixing-innovation-with-empathy/",
         "hook": "Building the world's first software to track emotions through consumer-grade wearables — 'emotions drive 80% of our decision-making.'",
+        "cluster": "innovator",
+        "match_roles": ["health tech founder", "deep tech founder", "social innovator", "government-to-startup", "mental health innovator"],
+        "match_challenges": ["health tech", "wearables", "empathy-driven innovation", "mental health", "deep human problems", "government to startup transition", "emotion and decision-making"],
+        "match_when": "User is working on health tech, mental health, or deeply human problems that require both empathy and technical innovation — or is making the leap from government or public sector to a startup.",
     },
 ]
 
@@ -1275,7 +1375,11 @@ def build_wade_knowledge_block():
         for p in WADE_PROGRAMS
     )
     people_text = "\n".join(
-        f'- **{p["name"]}** ({p["role"]}): {p["hook"]} [{p["name"]}]({p["url"]})'
+        f'- **[{p["name"]}]({p["url"]})** ({p["role"]})\n'
+        f'  _{p["hook"]}_\n'
+        f'  Match when role involves: {", ".join(p["match_roles"][:5])}\n'
+        f'  Match when challenge involves: {", ".join(p["match_challenges"][:5])}\n'
+        f'  Recommend when: {p["match_when"]}'
         for p in WADE_PEOPLE
     )
     return f"""
@@ -1290,7 +1394,12 @@ Step 3: Recommend ONE program only. Tie it directly to something they said or di
 
 {programs_text}
 
-WADE COMMUNITY PEOPLE (use these for From the Wade Community):
+WADE COMMUNITY PEOPLE — MATCHING GUIDE:
+Recommend 1-2 people whose story speaks directly to the specific challenge this person brought to the session.
+Step 1: Use their cluster (investor / innovator / educator), role, and the challenge they're navigating.
+Step 2: Read the "Recommend when" field — only recommend someone if the description genuinely fits this session.
+Step 3: Explain the connection in one sentence using something specific from the conversation, not a generic role match.
+
 {people_text}
 """
 
@@ -1326,7 +1435,7 @@ Begin the report with the title: # Innovation Coaching Session Summary
 - The remaining steps should be equally concrete and time-bound
 
 ### From the Wade Community
-Recommend 1-2 people from the Wade community list provided — alumni, faculty, or speakers — whose experience is most directly relevant to this person's challenge. One sentence per person explaining the connection. Render each as a markdown link using their article URL. Only include people with a genuine thematic match.
+Use the matching guide in the knowledge block. Recommend 1-2 people whose story speaks directly to something specific this person said or discovered — not a generic role match. Read the "Recommend when" field for each person before selecting. Write one sentence per person that names the specific parallel between their story and this user's challenge. Always render as a markdown link. If no one is a genuine fit, include only one person rather than forcing a second.
 
 ### Suggested Reading
 Recommend 1-2 of the most relevant Wade community articles from the list provided. One sentence explaining why each fits this session. Always render as markdown links. Only recommend articles that are genuinely relevant to what this person is working on.
