@@ -547,6 +547,7 @@ function forceCloseSession() {
     state.exchangeCount = 0;
     state.reportGenerated = false;
     state.reportText = '';
+    delete document.body.dataset.mode;
     welcome.classList.remove('hidden');
     moveInputToWelcome();
     sessionBar.classList.add('hidden');
@@ -586,6 +587,7 @@ sessionClose.addEventListener('click', () => {
     state.exchangeCount = 0;
     state.reportGenerated = false;
     state.reportText = '';
+    delete document.body.dataset.mode;
 
     // Show welcome, move input back, hide session bar
     welcome.classList.remove('hidden');
