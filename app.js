@@ -77,7 +77,28 @@ document.addEventListener('DOMContentLoaded', () => {
         isRecording = false;
         micBtn.classList.remove('recording');
         micBtn.setAttribute('aria-label', 'Voice input');
+        if (e.error === 'not-allowed') {
+            showMicHint('Microphone access blocked — allow it in your browser settings.');
+        } else if (e.error === 'no-speech') {
+            showMicHint('No speech detected. Try again.');
+        } else if (e.error === 'network') {
+            showMicHint('Network error — voice input requires an internet connection.');
+        }
     };
+
+    function showMicHint(msg) {
+        let hint = document.getElementById('micHint');
+        if (!hint) {
+            hint = document.createElement('div');
+            hint.id = 'micHint';
+            hint.className = 'mic-hint';
+            micBtn.parentElement.appendChild(hint);
+        }
+        hint.textContent = msg;
+        hint.classList.add('visible');
+        clearTimeout(hint._t);
+        hint._t = setTimeout(() => hint.classList.remove('visible'), 4000);
+    }
 });
 
 // === TOOLBOX TOGGLE (mobile only) ===
@@ -137,18 +158,18 @@ const EXERCISE_MODE = {
 
 // Exercise descriptions (mirror of HTML card text)
 const EXERCISE_DESCS = {
-    'five-whys':        'Ask "why?" five times to move past symptoms and find what\'s really causing the problem. From Toyota\'s production system, taught at Harvard Business School.',
-    'jtbd':             'Understand what your customer or user is actually trying to accomplish. People don\'t adopt solutions — they hire them to make progress. Clayton Christensen\'s framework, used across industries from healthcare to education.',
-    'empathy-map':      'Deeply understand your user before defining the problem — what they say, think, do, and feel. The gap between those is where the real opportunity lives. Stanford d.school\'s Empathise stage.',
-    'hmw':              'Reframe your problem as an opportunity and open up new directions before committing to one. Stanford d.school\'s bridge between defining a problem and generating solutions.',
-    'scamper':          'A structured checklist for generating ideas: Substitute, Combine, Adapt, Modify, Put to other uses, Eliminate, Reverse. Alex Osborn\'s creativity method, widely used in product design.',
-    'crazy-8s':         'Generate 8 distinct ideas fast. Forces quantity over quality and breaks your fixation on the first "good" idea. The cornerstone of Google Ventures\' Design Sprint methodology.',
-    'pre-mortem':       'Imagine your initiative didn\'t land. Work backwards to surface the risks you\'d miss from an optimistic mindset. Research shows it increases risk identification by 30%.',
-    'devils-advocate':  'Stress-test your idea against its sharpest critic. Best used when your team is too aligned — or you need to find the holes before a major decision or investment of resources.',
-    'rapid-experiment': 'Design the cheapest, fastest test that would kill your riskiest assumption. Validate before you build — the core principle behind Lean Startup.',
-    'lean-canvas':      'Map the key elements of your initiative on one page. Start with the problem, not the solution — then surface the assumptions you\'re least certain about.',
-    'effectuation':     'Don\'t start with a goal — start with what you already have. Expert entrepreneurs build from their own skills, network, and resources. By Saras Sarasvathy.',
-    'analogical':       'Borrow solutions from other domains. How did nature solve this? How did another industry handle it? The technique behind many of history\'s most disruptive innovations — used by IDEO and DARPA.'
+    'five-whys':        'Uncover the root cause behind a problem.',
+    'jtbd':             'Understand what your customer is really trying to achieve.',
+    'empathy-map':      'Step into your user\'s world to reveal hidden insights.',
+    'hmw':              'Turn problems into opportunity-framing questions.',
+    'scamper':          'Stretch an idea by substituting, combining, adapting and more.',
+    'crazy-8s':         'Rapidly sketch eight ideas in eight minutes to unlock creativity.',
+    'pre-mortem':       'Imagine the project failed. What went wrong?',
+    'devils-advocate':  'Challenge your assumptions to strengthen your thinking.',
+    'rapid-experiment': 'Design a quick test to learn before you build.',
+    'lean-canvas':      'Outline your venture model on a single page.',
+    'effectuation':     'Build using the resources and relationships you already have.',
+    'analogical':       'Borrow solutions from unexpected places.'
 };
 
 // Suggested prompt framings shown as input placeholder
@@ -243,9 +264,10 @@ const inputArea = document.querySelector('.input-area');
 
 // Move input box into welcome (between tagline and cards) or back to body (session)
 function moveInputToWelcome() {
-    const cards = welcome.querySelector('.welcome-cards');
-    if (cards && inputArea && inputArea.parentElement !== welcome) {
-        welcome.insertBefore(inputArea, cards);
+    const resumeBanner = welcome.querySelector('#resumeBanner');
+    const anchor = resumeBanner || welcome.querySelector('.welcome-cards');
+    if (anchor && inputArea && inputArea.parentElement !== welcome) {
+        welcome.insertBefore(inputArea, anchor);
     }
 }
 
@@ -481,6 +503,7 @@ function startExercise(mode, exercise, startMsg = null) {
     leadModal.classList.add('hidden');
     $('#reportDownloadBtn').classList.add('hidden');
     $('#reportShareBtn').classList.add('hidden');
+    $('#reportLinkedInBtn')?.classList.add('hidden');
     routingBack.classList.add('hidden');
 
     // Show report CTA immediately but disabled — enables after first exchange
@@ -501,7 +524,7 @@ function startExercise(mode, exercise, startMsg = null) {
             const introDiv = document.createElement('div');
             introDiv.className = 'msg-intro';
             introDiv.dataset.mode = mode;
-            introDiv.innerHTML = `<div class="msg-intro-label">${EXERCISE_LABELS[exercise] || exercise}</div>${desc}`;
+            introDiv.innerHTML = `<div class="msg-intro-label"><a class="intro-label-link" href="toolbox.html#${exercise}" target="_blank" rel="noopener">${EXERCISE_LABELS[exercise] || exercise}</a></div>${desc}`;
             messagesEl.appendChild(introDiv);
         }
         // Set a tool-specific placeholder hint
@@ -542,6 +565,7 @@ function forceCloseSession() {
 
     $('#reportDownloadBtn').classList.add('hidden');
     $('#reportShareBtn').classList.add('hidden');
+    $('#reportLinkedInBtn')?.classList.add('hidden');
     routingBack.classList.add('hidden');
     state.projectContext = [];
     state.routing = false;
@@ -583,6 +607,7 @@ sessionClose.addEventListener('click', () => {
 
     $('#reportDownloadBtn').classList.add('hidden');
     $('#reportShareBtn').classList.add('hidden');
+    $('#reportLinkedInBtn')?.classList.add('hidden');
     routingBack.classList.add('hidden');
     state.projectContext = [];
     state.routing = false;
@@ -629,7 +654,7 @@ function swapToTool(mode, exercise, swapEl) {
 
     // Update the sticky exercise intro card at the top
     const exerciseDesc = EXERCISE_DESCS[exercise] || '';
-    const introHTML = `<div class="msg-intro-label">${exerciseName}</div>${exerciseDesc}`;
+    const introHTML = `<div class="msg-intro-label"><a class="intro-label-link" href="toolbox.html#${exercise}" target="_blank" rel="noopener">${exerciseName}</a></div>${exerciseDesc}`;
     const stickyIntro = messagesEl.querySelector('.msg-intro');
     if (stickyIntro) {
         stickyIntro.dataset.mode = mode;
@@ -827,7 +852,7 @@ function restoreSession(session) {
     const restoreIntro = document.createElement('div');
     restoreIntro.className = 'msg-intro';
     restoreIntro.dataset.mode = state.mode;
-    restoreIntro.innerHTML = `<div class="msg-intro-label">${EXERCISE_LABELS[state.exercise] || state.exercise}</div>${restoreDesc}`;
+    restoreIntro.innerHTML = `<div class="msg-intro-label"><a class="intro-label-link" href="toolbox.html#${state.exercise}" target="_blank" rel="noopener">${EXERCISE_LABELS[state.exercise] || state.exercise}</a></div>${restoreDesc}`;
     messagesEl.appendChild(restoreIntro);
 
     const SWAP_PREFIX = "Let's switch to ";
@@ -841,7 +866,7 @@ function restoreSession(session) {
             const breakEl = document.createElement('div');
             breakEl.className = 'msg-intro-break';
             if (swapMode) breakEl.dataset.mode = swapMode;
-            breakEl.innerHTML = `<div class="msg-intro-label">${swappedName}</div>${desc}`;
+            breakEl.innerHTML = `<div class="msg-intro-label"><a class="intro-label-link" href="toolbox.html#${exerciseKey}" target="_blank" rel="noopener">${swappedName}</a></div>${desc}`;
             messagesEl.appendChild(breakEl);
         } else if (m.role === 'user' && m.content === 'Please start the session.') {
             // Skip synthetic kickoff — WAiDE's opening response is enough
@@ -1002,6 +1027,30 @@ async function streamResponse() {
         appendMessage('agent', 'Connection error. Make sure the server is running.');
     }
 
+    // Parse and render [OPTIONS: A | B] chips
+    if (fullText && agentDiv) {
+        const optMatch = fullText.match(/\[OPTIONS:\s*([^\]]+)\]/);
+        if (optMatch) {
+            fullText = fullText.replace(/\n?\[OPTIONS:\s*[^\]]+\]/, '').trim();
+            agentDiv.innerHTML = renderMarkdown(fullText);
+            const opts = optMatch[1].split('|').map(s => s.trim()).filter(Boolean);
+            const chipRow = document.createElement('div');
+            chipRow.className = 'option-chips';
+            opts.forEach(label => {
+                const btn = document.createElement('button');
+                btn.className = 'option-chip';
+                btn.textContent = label;
+                btn.addEventListener('click', () => {
+                    chipRow.remove();
+                    sendMessage(label);
+                });
+                chipRow.appendChild(btn);
+            });
+            agentDiv.after(chipRow);
+            scrollToBottom();
+        }
+    }
+
     // Save assistant response
     if (fullText) {
         // In routing mode: parse and strip [SUGGEST: key1, key2] tag
@@ -1126,6 +1175,7 @@ function revealFullReport() {
     // Reveal report action buttons
     $('#reportDownloadBtn').classList.remove('hidden');
     $('#reportShareBtn').classList.remove('hidden');
+    $('#reportLinkedInBtn')?.classList.remove('hidden');
 
     // Show next exercise recommendation
     renderNextExercisePanel();
@@ -1177,32 +1227,82 @@ leadForm.addEventListener('submit', (e) => {
 
 // === REPORT PDF DOWNLOAD ===
 
-function downloadReport() {
+async function downloadReport() {
     const exName = EXERCISE_LABELS[state.exercise] || state.exercise;
     const mName = MODE_LABELS[state.mode] || state.mode;
+    const stageColor = { reframe: '#ef5a21', ideate: '#ED3694', debate: '#27BDBE', framework: '#E4E517' }[state.mode] || '#ef5a21';
+    const stageTextColor = state.mode === 'framework' ? '#1a1a2e' : '#fff';
     const date = new Date().toLocaleDateString('en-AU', { year: 'numeric', month: 'long', day: 'numeric' });
+
+    // Embed logo as base64 so it shows in the printed PDF
+    let logoSrc = '';
+    try {
+        const res = await fetch('/logo.png');
+        const blob = await res.blob();
+        logoSrc = await new Promise(r => { const fr = new FileReader(); fr.onload = e => r(e.target.result); fr.readAsDataURL(blob); });
+    } catch(e) {}
+
     const html = `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">
 <title>Innovation Coaching Session Summary — ${exName} · Wade Institute</title>
 <style>
-@page{margin:25mm 20mm}
-body{font-family:Georgia,serif;max-width:680px;margin:0 auto;color:#1a1a2e;line-height:1.65;font-size:14px}
-h1,h2,h3{font-family:Arial,sans-serif}
-h1{font-size:22px;color:#12103a;margin-bottom:4px}
-h2{font-size:16px;color:#12103a;border-bottom:1px solid #ddd;padding-bottom:4px;margin-top:2em}
-h3{font-size:14px;color:#333}
-ul{padding-left:20px}li{margin-bottom:4px}p{margin:0 0 0.8em}
-.hd{margin-bottom:2em;padding-bottom:1em;border-bottom:2px solid #ef5a21}
-.meta{font-family:Arial;font-size:12px;color:#666;margin-top:4px}
-.ft{margin-top:3em;padding-top:1em;border-top:1px solid #ddd;font-family:Arial;font-size:11px;color:#999}
+@page { margin: 22mm 20mm 20mm; }
+*, *::before, *::after { box-sizing: border-box; }
+body { font-family: Georgia, 'Times New Roman', serif; max-width: 680px; margin: 0 auto; color: #1e1b4b; line-height: 1.7; font-size: 13.5px; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+a { color: ${stageColor}; text-decoration: none; }
+/* Header */
+.rpt-header { display: flex; align-items: center; gap: 14px; padding-bottom: 14px; border-bottom: 3px solid ${stageColor}; margin-bottom: 28px; }
+.rpt-header img { height: 44px; width: auto; flex-shrink: 0; }
+.rpt-header-text { flex: 1; }
+.rpt-header-title { font-family: Arial, sans-serif; font-size: 19px; font-weight: 700; color: #12103a; line-height: 1.2; margin-bottom: 5px; }
+.rpt-header-meta { font-family: Arial, sans-serif; font-size: 10.5px; color: #888; letter-spacing: 0.07em; text-transform: uppercase; display: flex; align-items: center; gap: 8px; }
+.stage-pill { display: inline-block; background: ${stageColor}; color: ${stageTextColor}; font-size: 8.5px; font-family: Arial, sans-serif; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 2px 8px; border-radius: 3px; }
+/* Content typography */
+h1 { display: none; }
+h2 { font-family: Arial, sans-serif; font-size: 13.5px; font-weight: 700; color: #12103a; border-left: 3px solid ${stageColor}; padding: 2px 0 2px 10px; margin: 24px 0 8px; page-break-after: avoid; }
+h3 { font-family: Arial, sans-serif; font-size: 12.5px; font-weight: 700; color: #333; margin: 14px 0 5px; page-break-after: avoid; }
+p { margin: 0 0 10px; }
+ul, ol { padding-left: 20px; margin: 0 0 10px; }
+li { margin-bottom: 5px; }
+strong { font-weight: 700; color: #12103a; }
+em { font-style: italic; }
+hr { border: none; border-top: 1px solid #eee; margin: 14px 0; }
+/* Links show URL hint */
+a::after { content: " ↗"; font-size: 9px; opacity: 0.6; }
+/* Wade CTA block */
+.wade-cta-block { margin-top: 36px; padding: 18px 20px 16px; border: 1.5px solid ${stageColor}; border-radius: 5px; background: #fdf9f7; page-break-inside: avoid; }
+.wade-cta-label { font-family: Arial, sans-serif; font-size: 8.5px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: ${stageColor}; margin-bottom: 7px; }
+.wade-cta-block h3 { font-family: Arial, sans-serif; font-size: 14px; font-weight: 700; color: #12103a; margin: 0 0 7px; padding: 0; border: none; }
+.wade-cta-block p { font-size: 12px; color: #444; margin-bottom: 10px; }
+.wade-cta-contact { font-family: Arial, sans-serif; font-size: 11px; color: #666; margin-bottom: 10px; }
+.wade-cta-link { display: inline-block; font-family: Arial, sans-serif; font-size: 11px; font-weight: 700; color: ${stageColor}; }
+.wade-cta-link::after { content: " →"; }
+/* Footer */
+.rpt-footer { margin-top: 28px; padding-top: 10px; border-top: 1px solid #e0e0e0; font-family: Arial, sans-serif; font-size: 10px; color: #aaa; display: flex; justify-content: space-between; gap: 12px; }
 </style>
 </head><body>
-<div class="hd"><h1>Innovation Coaching Session Summary</h1><div class="meta">${mName} · ${exName} · ${date}</div></div>
+<div class="rpt-header">
+  ${logoSrc ? `<img src="${logoSrc}" alt="Wade Institute of Entrepreneurship">` : ''}
+  <div class="rpt-header-text">
+    <div class="rpt-header-title">Innovation Coaching Session Summary</div>
+    <div class="rpt-header-meta"><span class="stage-pill">${mName}</span>${exName} &nbsp;·&nbsp; ${date}</div>
+  </div>
+</div>
 ${reportContent.innerHTML}
-<div class="ft">Generated by WAiDE · Wade Institute of Entrepreneurship · wadeinstitute.org.au</div>
+<div class="wade-cta-block">
+  <div class="wade-cta-label">Ready to go deeper?</div>
+  <h3>Talk to the Wade Team</h3>
+  <p>Interested in working with Wade Institute to build your innovation capability — or take this challenge further with expert coaching, a structured program, or a custom engagement?</p>
+  <div class="wade-cta-contact">enquiries@wadeinstitute.org.au &nbsp;·&nbsp; +61 3 9344 1100</div>
+  <a class="wade-cta-link" href="https://wadeinstitute.org.au/programs/">Explore Wade Programs</a>
+</div>
+<div class="rpt-footer">
+  <span>Wade Institute of Entrepreneurship &nbsp;·&nbsp; wadeinstitute.org.au</span>
+  <span>Generated by WAiDE AI &nbsp;·&nbsp; For educational purposes only &nbsp;·&nbsp; Decisions remain yours.</span>
+</div>
 </body></html>`;
     const url = URL.createObjectURL(new Blob([html], { type: 'text/html' }));
     const win = window.open(url, '_blank');
-    if (win) win.addEventListener('load', () => { setTimeout(() => { win.print(); URL.revokeObjectURL(url); }, 400); });
+    if (win) win.addEventListener('load', () => { setTimeout(() => { win.print(); URL.revokeObjectURL(url); }, 500); });
 }
 
 $('#reportDownloadBtn').addEventListener('click', downloadReport);
@@ -1229,6 +1329,30 @@ async function shareReport() {
 }
 
 $('#reportShareBtn').addEventListener('click', shareReport);
+
+// === LINKEDIN POST ===
+
+async function copyForLinkedIn() {
+    const btn = $('#reportLinkedInBtn');
+    btn.textContent = 'Generating...';
+    btn.disabled = true;
+    try {
+        const data = await fetch('/api/linkedin', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ report: state.reportText, mode: state.mode, exercise: state.exercise })
+        }).then(r => r.json());
+        if (data.error) throw new Error(data.error);
+        await navigator.clipboard.writeText(data.post);
+        btn.textContent = 'Copied! ✓';
+        setTimeout(() => { btn.textContent = 'Copy for LinkedIn'; btn.disabled = false; }, 2500);
+    } catch(e) {
+        btn.textContent = 'Failed — try again';
+        btn.disabled = false;
+    }
+}
+
+$('#reportLinkedInBtn')?.addEventListener('click', copyForLinkedIn);
 
 // === REPORT META + NEW SESSION ===
 

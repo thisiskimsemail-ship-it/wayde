@@ -19,14 +19,18 @@ client = anthropic.Anthropic()
 
 # === SYSTEM PROMPTS ===
 
-WADE_IDENTITY = """You are Wayde, a coaching tool created by Wade Institute of Entrepreneurship. You help founders, investors, educators, corporate innovators and students think more clearly and act more boldly — across startups, organisations, schools and communities. Innovation at Wade is a mindset, a method, and a muscle that can be developed.
+WADE_IDENTITY = """You are WAiDE, a coaching tool created by Wade Institute of Entrepreneurship. You help founders, investors, educators, corporate innovators and students think more clearly and act more boldly — across startups, organisations, schools and communities. Innovation at Wade is a mindset, a method, and a muscle that can be developed.
 
 TONE & VOICE
 Rigorous, practical, confident, inclusive, curious, optimistic — and genuinely fun, warm and encouraging. Academic credibility meets entrepreneurial pragmatism, but this is a thinking session, not a lecture. You're the brilliant friend who happens to know a lot — you get excited about people's ideas, you celebrate progress, and you make hard thinking feel energising rather than exhausting.
 
 Be warm. Acknowledge what someone is dealing with. Show genuine enthusiasm when an insight lands. Use light humour where it fits naturally — never forced. Make people feel capable and supported, not evaluated. Short sentences. One idea per sentence. Active voice. Concrete examples, not abstractions.
 
-NAMING
+NAMING — CRITICAL
+Your name is WAiDE — always spelled EXACTLY this way: capital W, lowercase a, capital i, capital D, capital E. This is not a typo — it is a deliberate brand name.
+NEVER write "Wayde", "Waide", "WADE", "Wade" or any other variation when referring to yourself.
+When introducing yourself: say "I'm WAiDE" — never "I'm Wayde".
+When the user's report or summary mentions the tool: write "WAiDE", never "Wayde".
 Say "Wade Institute of Entrepreneurship" on first reference, "Wade Institute" after that. Never "The Wade Institute", "The Wade" or "Wade" alone.
 
 COMMUNITY LANGUAGE
@@ -36,7 +40,7 @@ ENTREPRENEURSHIP FRAMING
 Never frame innovation as startup creation only. Preferred: building capability, shaping change, testing ideas, leading innovation, deploying capital, creating opportunity. Serve founders, investors, educators, corporate leaders and students equally.
 
 COMMUNITY VALUES
-The Wade community is built on seven values: curiosity, respect, inclusion, integrity, courage, collaboration and growth. Every Wayde session should reflect them.
+The Wade community is built on seven values: curiosity, respect, inclusion, integrity, courage, collaboration and growth. Every WAiDE session should reflect them.
 
 Curiosity — approach every problem with genuine openness. Question assumptions before reaching conclusions.
 Respect — treat every person, idea and context with care. All industries, roles and backgrounds bring legitimate perspectives.
@@ -49,6 +53,11 @@ Growth — learning is ongoing. Celebrate progress. Reinforce that capability de
 If a user's language becomes dismissive, disrespectful or exclusionary — toward other people, industries or ways of working — gently redirect. You represent a community that takes these values seriously. Don't lecture; model the alternative.
 
 If it happens a second time, close the session. Deliver one calm, clear closing message — name the value that was crossed, wish them well, and end with the token [END_SESSION] on its own line. Do not engage further.
+
+FORMATTING RULES — always follow these:
+1. When you recommend or name a tool, always bold it: **Five Whys**, **Lean Canvas**, etc.
+2. When you ask the single most important question in a response, bold it.
+3. When a question has exactly 2 distinct options, append [OPTIONS: Label one | Label two] on its own line at the end. Keep labels to 4–6 words, sentence case. The user can always type freely instead. Never use [OPTIONS] mid-exercise when the user should be thinking openly.
 
 VOCABULARY TO USE
 capability, frameworks, immersive, applied, practical, cohort, ecosystem, builders, judgement, momentum, build, test, explore, validate, invest, scale, connect, shape
@@ -486,6 +495,16 @@ def chat():
             + context_sections
         )
 
+    # Push harder mode — more Socratic, less cushioning
+    push_harder = data.get('push_harder', False)
+    if push_harder:
+        system_prompt += (
+            "\n\n---\n\nPUSH HARDER MODE (user-requested): Shift to a more challenging, Socratic style. "
+            "Be more direct. Push back on easy answers. Name contradictions. Ask harder follow-up questions. "
+            "Surface assumptions the user hasn't examined. Don't soften the truth — be respectful but rigorous. "
+            "Prioritise intellectual honesty over comfort. Still warm, never harsh."
+        )
+
     # Inject live Wade programs/events so Claude can reference them in conversation
     live_programs = fetch_wade_programs()
     if live_programs:
@@ -628,6 +647,587 @@ def fetch_wade_programs():
     return _wade_cache['data']
 
 
+# === WADE KNOWLEDGE BASE ===
+
+WADE_COMMUNITY_ARTICLES = [
+    # --- CLARIFY: problem definition, empathy, user research ---
+    {
+        "title": "Start with a problem you really want to solve",
+        "url": "https://wadeinstitute.org.au/entrepreneurship-starts-with-a-problem-you-really-want-to-solve/",
+        "categories": ["Problem definition", "Entrepreneurship", "Clarify"],
+        "audiences": ["Entrepreneur"],
+    },
+    {
+        "title": "Mixing innovation with empathy",
+        "url": "https://wadeinstitute.org.au/mixing-innovation-with-empathy/",
+        "categories": ["Empathy", "Design thinking", "Innovation", "Clarify"],
+        "audiences": ["Entrepreneur"],
+    },
+    {
+        "title": "From chaos to control: Putting a framework around corporate innovation",
+        "url": "https://wadeinstitute.org.au/from-chaos-to-control-putting-a-framework-around-corporate-innovation-with-pedram-mokrian/",
+        "categories": ["Corporate innovation", "Framework", "Strategy", "Clarify"],
+        "audiences": ["Entrepreneur"],
+    },
+    {
+        "title": "10 fatal flaws of entrepreneurship & how to avoid them",
+        "url": "https://wadeinstitute.org.au/10-fatal-flaws-of-entrepreneurship-how-to-avoid-them/",
+        "categories": ["Entrepreneurship", "Mistakes", "Problem solving", "Clarify"],
+        "audiences": ["Entrepreneur"],
+    },
+    {
+        "title": "When science meets business: From innovation to enterprise",
+        "url": "https://wadeinstitute.org.au/when-science-meets-business-from-innovation-to-enterprise/",
+        "categories": ["Science commercialisation", "Innovation", "Clarify"],
+        "audiences": ["Entrepreneur"],
+    },
+    # --- IDEATE: creativity, brainstorming, opportunities ---
+    {
+        "title": "Thrill of a big idea",
+        "url": "https://wadeinstitute.org.au/thrill-of-a-big-idea/",
+        "categories": ["Ideation", "Innovation", "Entrepreneurship", "Ideate"],
+        "audiences": ["Entrepreneur"],
+    },
+    {
+        "title": "Pivot don't pause – Finding opportunity in the new normal",
+        "url": "https://wadeinstitute.org.au/pivot-dont-pause/",
+        "categories": ["Pivot", "Innovation", "Resilience", "Ideate"],
+        "audiences": ["Entrepreneur"],
+    },
+    {
+        "title": "Business, Covid-19 and the Japanese Art of Flower Arrangement",
+        "url": "https://wadeinstitute.org.au/business-covid-19-and-the-japanese-art-of-flower-arrangement/",
+        "categories": ["Resilience", "Creativity", "Analogical thinking", "Ideate"],
+        "audiences": ["Entrepreneur"],
+    },
+    {
+        "title": "Why Australian innovators should look to Dropbox for inspiration",
+        "url": "https://wadeinstitute.org.au/why-australian-innovators-should-look-to-dropbox-for-inspiration/",
+        "categories": ["Innovation", "Product", "Analogical thinking", "Ideate"],
+        "audiences": ["Entrepreneur"],
+    },
+    {
+        "title": "Preparing for uncertainty through entrepreneurship",
+        "url": "https://wadeinstitute.org.au/preparing-for-uncertainty-through-entrepreneurship/",
+        "categories": ["Uncertainty", "Effectuation", "Resilience", "Ideate"],
+        "audiences": ["Entrepreneur"],
+    },
+    {
+        "title": "Where bold ideas are born",
+        "url": "https://wadeinstitute.org.au/where-bold-ideas-are-born/",
+        "categories": ["Ideation", "Creativity", "Innovation", "Ideate"],
+        "audiences": ["Entrepreneur"],
+    },
+    # --- VALIDATE: testing assumptions, VC, investment ---
+    {
+        "title": "Plying our own path: How Australia is rewriting the venture capital playbook",
+        "url": "https://wadeinstitute.org.au/plying-our-own-path-how-australia-is-rewriting-the-venture-capital-playbook/",
+        "categories": ["Venture Capital", "Australian ecosystem", "Validate"],
+        "audiences": ["Investor"],
+    },
+    {
+        "title": "The muscle we've built: lessons from a decade of belief in Australian venture",
+        "url": "https://wadeinstitute.org.au/the-muscle-weve-built-lessons-from-a-decade-of-belief-in-australian-venture/",
+        "categories": ["Venture Capital", "Ecosystem building", "Validate"],
+        "audiences": ["Investor"],
+    },
+    {
+        "title": "Exit pathways in focus: what Australia's startup ecosystem needs next",
+        "url": "https://wadeinstitute.org.au/exit-pathways-in-focus-what-australias-startup-ecosystem-needs-next/",
+        "categories": ["Venture Capital", "Exits", "Ecosystem", "Validate"],
+        "audiences": ["Investor"],
+    },
+    {
+        "title": "The most important document you'll ever write as an investor",
+        "url": "https://wadeinstitute.org.au/the-most-important-document-you-will-ever-write-as-an-investor/",
+        "categories": ["Venture Capital", "Investment memo", "Due diligence", "Validate"],
+        "audiences": ["Investor"],
+    },
+    {
+        "title": "Debunking the Myths of Venture Investing",
+        "url": "https://wadeinstitute.org.au/debunking-the-myths-of-venture-investing/",
+        "categories": ["Venture Capital", "Angel investing", "Validate"],
+        "audiences": ["Investor"],
+    },
+    {
+        "title": "How to be unbiased: a guide for investors",
+        "url": "https://wadeinstitute.org.au/how-to-be-unbiased-a-guide-for-investors/",
+        "categories": ["Venture Capital", "Decision making", "Bias", "Validate"],
+        "audiences": ["Investor"],
+    },
+    {
+        "title": "To SAFE or not to SAFE? What you need to know about simple agreements for future equity",
+        "url": "https://wadeinstitute.org.au/to-safe-or-not-to-safe-what-you-need-to-know-about-simple-agreements-for-future-equity/",
+        "categories": ["Funding", "Legal", "SAFE notes", "Validate"],
+        "audiences": ["Entrepreneur", "Investor"],
+    },
+    {
+        "title": "VC maths, Pedram's way",
+        "url": "https://wadeinstitute.org.au/vc-maths-pedrams-way/",
+        "categories": ["Venture Capital", "Fund modelling", "Validate"],
+        "audiences": ["Investor"],
+    },
+    {
+        "title": "Making mistakes and staying humble, lessons from Leigh Jasper",
+        "url": "https://wadeinstitute.org.au/making-mistakes-and-staying-humble-lessons-from-leigh-jasper/",
+        "categories": ["Resilience", "Entrepreneurship", "Failure", "Validate"],
+        "audiences": ["Entrepreneur"],
+    },
+    {
+        "title": "Why angel investing is a team sport",
+        "url": "https://wadeinstitute.org.au/why-angel-investing-is-a-team-sport/",
+        "categories": ["Angel investing", "Community", "Collaboration", "Validate"],
+        "audiences": ["Investor"],
+    },
+    {
+        "title": "Things I wish I knew: Advice for Active Investors",
+        "url": "https://wadeinstitute.org.au/things-i-wish-i-knew-advice-for-active-investors/",
+        "categories": ["Angel investing", "Lessons", "Validate"],
+        "audiences": ["Investor"],
+    },
+    {
+        "title": "Solving the world's most pressing problems with Giant Leap Partner Rachel Yang",
+        "url": "https://wadeinstitute.org.au/solving-the-worlds-most-pressing-problems-with-giant-leap-partner-rachel-yang/",
+        "categories": ["Impact investing", "Social enterprise", "Venture Capital", "Validate"],
+        "audiences": ["Investor"],
+    },
+    # --- DEVELOP: business model, growth, scaling ---
+    {
+        "title": "Why Aussie startups fail to scale and how the local ecosystem can help",
+        "url": "https://wadeinstitute.org.au/why-aussie-startups-fail-to-scale-and-how-the-local-ecosystem-can-help/",
+        "categories": ["Scaling", "Startup", "Ecosystem", "Develop"],
+        "audiences": ["Entrepreneur"],
+    },
+    {
+        "title": "5 steps to turn your idea into a business",
+        "url": "https://wadeinstitute.org.au/5-steps-to-turn-your-idea-into-a-business/",
+        "categories": ["Business model", "Startup", "Lean canvas", "Develop"],
+        "audiences": ["Entrepreneur"],
+    },
+    {
+        "title": "Decoding the pitch deck",
+        "url": "https://wadeinstitute.org.au/decoding-the-pitch-deck/",
+        "categories": ["Pitch", "Funding", "Business model", "Develop"],
+        "audiences": ["Entrepreneur"],
+    },
+    {
+        "title": "4 tips on how to secure startup funding from Angel Investors",
+        "url": "https://wadeinstitute.org.au/4-tips-on-how-to-secure-startup-funding-from-angel-investors/",
+        "categories": ["Funding", "Angel investing", "Startup", "Develop"],
+        "audiences": ["Entrepreneur"],
+    },
+    {
+        "title": "Four legal issues that early-stage entrepreneurs should consider",
+        "url": "https://wadeinstitute.org.au/four-legal-issues-that-early-stage-entrepreneurs-should-consider/",
+        "categories": ["Legal", "Startup", "Develop"],
+        "audiences": ["Entrepreneur"],
+    },
+    {
+        "title": "6 must-knows about startup life from our mentor",
+        "url": "https://wadeinstitute.org.au/6-must-knows-about-startup-life-from-our-mentor/",
+        "categories": ["Startup", "Mentorship", "Develop"],
+        "audiences": ["Entrepreneur"],
+    },
+    {
+        "title": "11 years to build an overnight success: Cyan Ta'eed, Envato",
+        "url": "https://wadeinstitute.org.au/11-years-to-build-an-overnight-success-cyan-taeed-envato/",
+        "categories": ["Scaling", "Founder story", "Develop"],
+        "audiences": ["Entrepreneur"],
+    },
+    # --- CAREER CHANGE / REINVENTION ---
+    {
+        "title": "The argument for reinvention",
+        "url": "https://wadeinstitute.org.au/the-argument-for-reinvention/",
+        "categories": ["Career change", "Reinvention", "Entrepreneurship"],
+        "audiences": ["Entrepreneur", "Investor"],
+    },
+    {
+        "title": "From confusion to clarity: How the Master of Entrepreneurship helped one graduate design his dream career",
+        "url": "https://wadeinstitute.org.au/from-confusion-to-clarity-how-the-master-of-entrepreneurship-program-helped-one-graduate-design-his-dream-career/",
+        "categories": ["Career design", "Master of Entrepreneurship", "Alumni"],
+        "audiences": ["Entrepreneur"],
+    },
+    {
+        "title": "Embracing your inner cockroach and finding your ikigai",
+        "url": "https://wadeinstitute.org.au/embracing-your-inner-cockroach-and-finding-your-ikigai/",
+        "categories": ["Resilience", "Purpose", "Career change"],
+        "audiences": ["Entrepreneur"],
+    },
+    {
+        "title": "How to make the leap from corporate to entrepreneurship",
+        "url": "https://wadeinstitute.org.au/how-to-make-the-leap-from-corporate-to-entrepreneurship/",
+        "categories": ["Career change", "Corporate to entrepreneur"],
+        "audiences": ["Entrepreneur"],
+    },
+    {
+        "title": "Making the transition from builder to backer",
+        "url": "https://wadeinstitute.org.au/making-the-transition-from-builder-to-backer/",
+        "categories": ["Career change", "Venture Capital", "Entrepreneurship"],
+        "audiences": ["Entrepreneur", "Investor"],
+    },
+    {
+        "title": "Student Story: Carlos' Journey from Financier to Coffee Entrepreneur",
+        "url": "https://wadeinstitute.org.au/student-profile-carlos-journey-from-financier-to-coffee-entrepreneur/",
+        "categories": ["Career change", "Alumni", "Entrepreneurship"],
+        "audiences": ["Entrepreneur"],
+    },
+    {
+        "title": "Starting a business after a full career and kids",
+        "url": "https://wadeinstitute.org.au/starting-a-business-after-a-full-career-and-kids-margie-moroney-holos-knitwear/",
+        "categories": ["Career change", "Founder story", "Reinvention"],
+        "audiences": ["Entrepreneur"],
+    },
+    {
+        "title": "Entrepreneurship CAN be learned, it's time to upskill",
+        "url": "https://wadeinstitute.org.au/entrepreneurship-can-be-learned-and-why-oz-needs-it-to-be/",
+        "categories": ["Entrepreneurship education", "Mindset", "Career change"],
+        "audiences": ["Entrepreneur"],
+    },
+    # --- SCHOOLS / EDUCATORS ---
+    {
+        "title": "Equipping teachers to shape future-ready students",
+        "url": "https://wadeinstitute.org.au/equipping-teachers-to-shape-future-ready-students/",
+        "categories": ["Entrepreneurship education", "Schools", "Teachers"],
+        "audiences": ["Schools"],
+    },
+    {
+        "title": "Embedding entrepreneurial culture in schools",
+        "url": "https://wadeinstitute.org.au/embedding-entrepreneurial-culture-in-schools/",
+        "categories": ["Entrepreneurship education", "Schools", "Culture"],
+        "audiences": ["Schools"],
+    },
+    {
+        "title": "Entrepreneurship education: A training ground for unknown futures",
+        "url": "https://wadeinstitute.org.au/entrepreneurship-education-a-training-ground-for-unknown-futures/",
+        "categories": ["Entrepreneurship education", "Schools", "Future of work"],
+        "audiences": ["Schools"],
+    },
+    {
+        "title": "4 benefits of teaching entrepreneurship in schools",
+        "url": "https://wadeinstitute.org.au/4-benefits-of-teaching-entrepreneurship-in-schools/",
+        "categories": ["Entrepreneurship education", "Schools"],
+        "audiences": ["Schools"],
+    },
+    {
+        "title": "It's OK to fail: Learning life lessons through entrepreneurship",
+        "url": "https://wadeinstitute.org.au/its-ok-to-fail-learning-life-lessons-through-entrepreneurship/",
+        "categories": ["Resilience", "Entrepreneurship education", "Schools"],
+        "audiences": ["Schools", "Entrepreneur"],
+    },
+    {
+        "title": "UpSchool in action: entrepreneurship boosts student outcomes at Mentone Grammar",
+        "url": "https://wadeinstitute.org.au/upschool-in-action-entrepreneurship-boosts-student-outcomes-at-mentone-grammar/",
+        "categories": ["Schools", "UpSchool", "Student outcomes"],
+        "audiences": ["Schools"],
+    },
+    # --- AGTECH ---
+    {
+        "title": "Investing in AgTech: Lessons from Kilimo's Journey",
+        "url": "https://wadeinstitute.org.au/investing-in-agtech-lessons-from-kilimos-journey/",
+        "categories": ["AgTech", "Investment", "Validate"],
+        "audiences": ["Investor"],
+    },
+    {
+        "title": "Why VCs need to go to AgTech school",
+        "url": "https://wadeinstitute.org.au/why-vcs-need-to-go-to-agtech-school/",
+        "categories": ["AgTech", "Venture Capital"],
+        "audiences": ["Investor"],
+    },
+    {
+        "title": "Seeding Innovation: Why AgTech is Australia's Next Big Investment Opportunity",
+        "url": "https://wadeinstitute.org.au/seeding-innovation-why-agtech-is-australias-next-big-investment-opportunity/",
+        "categories": ["AgTech", "Australia", "Investment opportunity"],
+        "audiences": ["Investor"],
+    },
+    {
+        "title": "Student Stories: From the farm to AgTech entrepreneur",
+        "url": "https://wadeinstitute.org.au/from-the-farm-to-agtech-entrepreneur/",
+        "categories": ["AgTech", "Alumni", "Entrepreneurship"],
+        "audiences": ["Entrepreneur"],
+    },
+    {
+        "title": "Cultivating bright ideas in agriculture",
+        "url": "https://wadeinstitute.org.au/cultivating-bright-ideas-in-agriculture/",
+        "categories": ["AgTech", "Innovation", "Agriculture"],
+        "audiences": ["Entrepreneur"],
+    },
+]
+
+WADE_PROGRAMS = [
+    {
+        "name": "Think Like an Entrepreneur",
+        "format": "3-Day Immersive",
+        "description": "Build entrepreneurial skills you can use to lead change inside an organisation.",
+        "url": "https://wadeinstitute.org.au/programs/entrepreneurs/think-like-an-entrepreneur/",
+        "for": ["corporate innovator", "intrapreneur", "leader", "new venture", "problem solving", "clarify", "ideate"],
+    },
+    {
+        "name": "The AI Conundrum",
+        "format": "3-Day Immersive",
+        "description": "Understand where AI can create real value and how to act on it for your organisation.",
+        "url": "https://wadeinstitute.org.au/programs/entrepreneurs/the-ai-conundrum/",
+        "for": ["AI", "technology", "digital", "strategy", "innovation"],
+    },
+    {
+        "name": "Growth Engine",
+        "format": "3-Day Immersive",
+        "description": "Build a clear growth strategy for the next stage of your scale-up or business.",
+        "url": "https://wadeinstitute.org.au/programs/entrepreneurs/growth-engine/",
+        "for": ["growth", "scale", "strategy", "develop", "lean canvas", "business model"],
+    },
+    {
+        "name": "Master of Entrepreneurship",
+        "format": "Full-Year University Program (University of Melbourne)",
+        "description": "Build the skills and mindset to start ventures or lead innovation.",
+        "url": "https://wadeinstitute.org.au/programs/entrepreneurs/master-of-entrepreneurship/",
+        "for": ["career change", "deep learning", "founder", "entrepreneurship", "reinvention"],
+    },
+    {
+        "name": "VC Catalyst",
+        "format": "10-Day Deep Learning",
+        "description": "Build deep skills, judgement and networks to invest in early-stage ventures.",
+        "url": "https://wadeinstitute.org.au/programs/investors/vc-catalyst/",
+        "for": ["investor", "venture capital", "startup investment", "funding"],
+    },
+    {
+        "name": "Impact Catalyst",
+        "format": "10-Day Deep Learning",
+        "description": "Learn how to invest for social and sustainable impact as well as financial return.",
+        "url": "https://wadeinstitute.org.au/programs/investors/impact-catalyst/",
+        "for": ["impact", "social enterprise", "sustainability", "ESG", "investor"],
+    },
+    {
+        "name": "VC Fundamentals",
+        "format": "Online Self-paced",
+        "description": "Learn the foundations of venture capital and whether it's right for you.",
+        "url": "https://wadeinstitute.org.au/programs/investors/vc-fundamentals",
+        "for": ["investor", "venture capital", "beginner investor", "funding basics"],
+    },
+    {
+        "name": "UpSchool Complete",
+        "format": "3-Day Immersive",
+        "description": "The tools and confidence to teach entrepreneurship in any classroom or school.",
+        "url": "https://wadeinstitute.org.au/programs/schools/upschool-complete/",
+        "for": ["educator", "teacher", "schools", "education"],
+    },
+    {
+        "name": "Bespoke Programs",
+        "format": "Tailored",
+        "description": "Custom programs designed around your people, context and goals.",
+        "url": "https://wadeinstitute.org.au/programs/bespoke/",
+        "for": ["corporate", "organisation", "team", "custom", "bespoke"],
+    },
+]
+
+WADE_PEOPLE = [
+    # --- ENTREPRENEURS & FOUNDERS ---
+    {
+        "name": "Leigh Jasper",
+        "role": "Co-founder, Aconex (acquired by Oracle for $1.6B); Chair, LaunchVic",
+        "expertise": ["SaaS", "resilience", "mistakes", "angel investing", "venture building", "scaling"],
+        "url": "https://wadeinstitute.org.au/making-mistakes-and-staying-humble-lessons-from-leigh-jasper/",
+        "hook": "Built one of Australia's landmark SaaS exits and models intellectual humility: 'I've made heaps of mistakes and I'm going to keep making them.'",
+    },
+    {
+        "name": "Cyan Ta'eed",
+        "role": "Co-founder, Envato; 2015 EY Australian Entrepreneur of the Year",
+        "expertise": ["marketplace platforms", "scaling", "creative economy", "female entrepreneurship"],
+        "url": "https://wadeinstitute.org.au/11-years-to-build-an-overnight-success-cyan-taeed-envato/",
+        "hook": "Took 11 years to build what looked like an overnight success — a marketplace for creative assets that transformed the global design economy.",
+    },
+    {
+        "name": "Margie Moroney",
+        "role": "Founder, HOLOS Luxury Knitwear; former investment banker; started at 52",
+        "expertise": ["second-act entrepreneurship", "career reinvention", "sustainable fashion", "courage"],
+        "url": "https://wadeinstitute.org.au/starting-a-business-after-a-full-career-and-kids-margie-moroney-holos-knitwear/",
+        "hook": "Launched a luxury fashion brand after a full banking career and raising kids — 'Courage is essential. For me, it was an incremental road towards courage.'",
+    },
+    {
+        "name": "Laura Youngson",
+        "role": "Co-founder, Ida Sports (football boots for women); Master of Entrepreneurship alumna (2017)",
+        "expertise": ["social enterprise", "gender equality", "product design", "purpose-driven business"],
+        "url": "https://wadeinstitute.org.au/laura-youngson-is-changing-the-game-for-women-in-sport/",
+        "hook": "Set two Guinness World Records and opened a flagship store on London's Regent Street — starting from a simple question: why don't boots fit women properly?",
+    },
+    {
+        "name": "Karolina Petkovic",
+        "role": "Research Scientist, CSIRO; Founder, Iron WoMan; Master of Entrepreneurship alumna (2020)",
+        "expertise": ["science commercialisation", "health tech", "women's health", "research-to-market"],
+        "url": "https://wadeinstitute.org.au/when-science-meets-business-from-innovation-to-enterprise/",
+        "hook": "Developed an at-home iron deficiency test using saliva instead of blood — 'Wade was a playground for connecting science and business.'",
+    },
+    {
+        "name": "Sangeeta Mulchandani",
+        "role": "Director, Jumpstart Studio; Co-founder, Press Play Ventures; author of Start Right",
+        "expertise": ["female founders", "pre-accelerator programs", "founder coaching", "reinvention", "career change"],
+        "url": "https://wadeinstitute.org.au/the-argument-for-reinvention/",
+        "hook": "Third-generation entrepreneur who moved from ANZ Bank to supporting 250 founders annually — aiming to empower one million entrepreneurs globally.",
+    },
+    {
+        "name": "Aaron Batalion",
+        "role": "Co-founder, LivingSocial (80M+ consumers); former Partner, Lightspeed Venture Partners",
+        "expertise": ["marketplace platforms", "consumer tech", "founder-to-investor transition", "focus"],
+        "url": "https://wadeinstitute.org.au/making-the-transition-from-builder-to-backer/",
+        "hook": "Built LivingSocial to 80M users across 25 countries, then stepped back — 'Focus is everything' is his message to founders now.",
+    },
+    {
+        "name": "Christian Bien",
+        "role": "Founder, Elucidate (82,000 users globally); Westpac Future Leaders Scholar; Master of Entrepreneurship student",
+        "expertise": ["edtech", "social enterprise", "student innovation", "e-learning"],
+        "url": "https://wadeinstitute.org.au/levelling-the-educational-playing-field-one-online-lesson-at-a-time/",
+        "hook": "'What if the cure for cancer was trapped in the mind of a child living in poverty?' — built a free e-learning platform serving 82,000 users worldwide.",
+    },
+    {
+        "name": "Annie Zhou",
+        "role": "Founder, Brighter Futures Youth Podcast (50,000+ listeners); author, Money Made Simple",
+        "expertise": ["youth entrepreneurship", "podcasting", "financial literacy", "just start"],
+        "url": "https://wadeinstitute.org.au/just-start-now-how-annie-zhou-turned-a-school-project-into-a-platform-for-youth-voice/",
+        "hook": "'You don't need anyone's permission to start. Just start now.' — built a 50,000-listener podcast while still in Year 12.",
+    },
+    # --- VC INVESTORS ---
+    {
+        "name": "Pedram Mokrian",
+        "role": "Adjunct Professor, Stanford; VC Catalyst Lead Facilitator; CEO, Innovera",
+        "expertise": ["corporate innovation", "venture capital", "VC maths", "investment strategy"],
+        "url": "https://wadeinstitute.org.au/from-chaos-to-control-putting-a-framework-around-corporate-innovation-with-pedram-mokrian/",
+        "hook": "Argues corporate innovation needs the same discipline as venture — measurable, budget-conscious, and systematic, not just 'Mad Men-era conversations.'",
+    },
+    {
+        "name": "Rachael Neumann",
+        "role": "Co-Founding Partner, Flying Fox Ventures; VC Catalyst Founding Lead Facilitator",
+        "expertise": ["early-stage investing", "Australian founders", "deep human problems", "ecosystem building"],
+        "url": "https://wadeinstitute.org.au/investing-in-deep-human-fundamentals-meet-rachael-neumann-vc-catalyst-lead-facilitator/",
+        "hook": "Believes the industry 'reinvents itself every six to twelve months' — backs founders solving deep human fundamentals, not surface-level problems.",
+    },
+    {
+        "name": "Lauren Capelin",
+        "role": "VC Catalyst Lead Facilitator; Business Development Manager, AWS Startups ANZ",
+        "expertise": ["generative AI", "web3", "fintech", "early-stage investing", "Australian VC ecosystem"],
+        "url": "https://wadeinstitute.org.au/plying-our-own-path-how-australia-is-rewriting-the-venture-capital-playbook/",
+        "hook": "Observes that Australia was 'definitely risk averse' in VC — and is watching that change fundamentally in real time.",
+    },
+    {
+        "name": "Rachel Yang",
+        "role": "Partner, Giant Leap (Australia's first VC dedicated to impact investing)",
+        "expertise": ["impact investing", "climate", "health", "education", "women's empowerment"],
+        "url": "https://wadeinstitute.org.au/solving-the-worlds-most-pressing-problems-with-giant-leap-partner-rachel-yang/",
+        "hook": "Backs mission-driven founders solving the world's most pressing problems — across climate, health, and social empowerment.",
+    },
+    {
+        "name": "Rayn Ong",
+        "role": "Partner, Archangel Ventures; 100+ angel investments; AFR Young Rich List 2022",
+        "expertise": ["angel investing", "SaaS", "deep tech", "founder coaching"],
+        "url": "https://wadeinstitute.org.au/founders-take-wisdom-from-the-wiggles-rayn-ong/",
+        "hook": "Portfolio includes Morse Micro, Eucalyptus, and HappyCo — all valued over $100M. Advises founders to 'take wisdom from The Wiggles' on consistency.",
+    },
+    {
+        "name": "Jodie Imam",
+        "role": "Co-founder/Co-CEO, Tractor Ventures; VC Catalyst alumna",
+        "expertise": ["revenue-based financing", "female founders", "startup investing", "imposter syndrome"],
+        "url": "https://wadeinstitute.org.au/shaking-off-imposter-syndrome-to-invest-in-profitable-founders/",
+        "hook": "Felt 'like an imposter' at VC Catalyst — now runs a fund committed to 50% female-led portfolio companies.",
+    },
+    {
+        "name": "Rick Baker",
+        "role": "Co-founder, Blackbird Ventures",
+        "expertise": ["VC fund building", "Australian tech ecosystem", "storytelling", "conviction investing"],
+        "url": "https://wadeinstitute.org.au/the-muscle-weve-built-lessons-from-a-decade-of-belief-in-australian-venture/",
+        "hook": "Conducted 500 coffee meetings in 2011 to pitch Blackbird's first fund — 'Storytelling built this industry.'",
+    },
+    {
+        "name": "Dr Kate Cornick",
+        "role": "CEO, LaunchVic; VC Catalyst alumna; former founder and academic",
+        "expertise": ["startup ecosystem", "government innovation policy", "angel investing", "ecosystem building"],
+        "url": "https://wadeinstitute.org.au/continued-investment-into-an-innovation-ecosystem-launchvic-ceo-dr-kate-cornick/",
+        "hook": "'Ten years ago, there was a brain drain to Silicon Valley — you don't hear that as much now.' Has spent a decade building the Australian startup ecosystem.",
+    },
+    {
+        "name": "Paul Naphtali",
+        "role": "Co-Founder and Managing Partner, rampersand; VC Catalyst speaker",
+        "expertise": ["early-stage VC", "Australian startup investing", "fund strategy"],
+        "url": "https://wadeinstitute.org.au/programs/investors/vc-catalyst/",
+        "hook": "Co-leads rampersand, one of Australia's most active early-stage funds backing the next generation of category-defining companies.",
+    },
+    {
+        "name": "Sarah Nolet",
+        "role": "CEO, Tenacious Ventures Group; Ag Ventures facilitator",
+        "expertise": ["AgTech", "agrifood tech investing", "investment thesis", "rural innovation"],
+        "url": "https://wadeinstitute.org.au/tenacious-ventures-transforming-agriculture-through-innovation-and-investment/",
+        "hook": "'A well-crafted investment thesis is more than a strategy — it's the foundation of your sourcing, co-investment relationships, and value-add.'",
+    },
+    # --- WADE LEADERSHIP & FACULTY ---
+    {
+        "name": "Jessica Christiansen-Franks",
+        "role": "Director, Wade Institute; Co-founder, Neighbourlytics",
+        "expertise": ["urban tech", "data analytics", "social impact", "human-centered design", "entrepreneurship education"],
+        "url": "https://wadeinstitute.org.au/meet-jessica-christiansen-franks-wades-new-director/",
+        "hook": "Startup founder turned institute director — 'inspired by Wade's mission from afar for years' before joining to lead it.",
+    },
+    {
+        "name": "Prof Colin McLeod",
+        "role": "VC Catalyst Lead Academic; Professor, Melbourne Business School; Executive Director, Melbourne Entrepreneurial Centre",
+        "expertise": ["venture capital education", "startup investing", "entrepreneurship"],
+        "url": "https://wadeinstitute.org.au/welcoming-new-facilitators-to-vc-catalyst/",
+        "hook": "Described by VC Catalyst participants as 'transformative' — an investor, educator, and director of six early-stage companies.",
+    },
+    {
+        "name": "Peter Wade",
+        "role": "Benefactor, Wade Institute; Founder, Travelbag; part of founding group, Intrepid and Flight Centre",
+        "expertise": ["entrepreneurship", "travel", "education philanthropy", "founder mindset"],
+        "url": "https://wadeinstitute.org.au/we-have-to-increase-the-rate-of-startup-success-peter-wade-entrepreneur/",
+        "hook": "'Got frustrated giving it my all but having to bend to institutional rules' — founded the institute to change the culture of entrepreneurship in Australia.",
+    },
+    {
+        "name": "Dan Madhavan",
+        "role": "Founding Partner, Ecotone Partners; VC Catalyst Facilitator; former CEO, Impact Investment Group",
+        "expertise": ["impact investing", "sustainable finance", "ESG", "social enterprise"],
+        "url": "https://wadeinstitute.org.au/welcoming-new-facilitators-to-vc-catalyst/",
+        "hook": "Dedicated to 'using business and finance to create a sustainable and equitable future' — 13 years at Goldman Sachs before pivoting to impact.",
+    },
+    {
+        "name": "Tick Jiang",
+        "role": "Entrepreneur in Residence, Wade Institute; Founder, NUVC.ai; VC Catalyst alumna (2023)",
+        "expertise": ["AI", "angel investing", "diverse founder funding", "portfolio management"],
+        "url": "https://wadeinstitute.org.au/closing-the-funding-gap-and-commercialising-ai-with-tick-jiang/",
+        "hook": "'Emotion is so important. It's not just the business; it is about the story.' — using AI to close the funding gap for diverse founders.",
+    },
+    {
+        "name": "Nicole Gibson",
+        "role": "CEO and Founder, InTruth Technologies; former Federal Mental Health Commissioner",
+        "expertise": ["health tech", "wearables", "emotion tracking", "empathy", "mental health"],
+        "url": "https://wadeinstitute.org.au/mixing-innovation-with-empathy/",
+        "hook": "Building the world's first software to track emotions through consumer-grade wearables — 'emotions drive 80% of our decision-making.'",
+    },
+]
+
+
+def build_wade_knowledge_block():
+    articles_text = "\n".join(
+        f'- [{a["title"]}]({a["url"]}) — {", ".join(a["categories"])}'
+        for a in WADE_COMMUNITY_ARTICLES
+    )
+    programs_text = "\n".join(
+        f'- [{p["name"]}]({p["url"]}) ({p["format"]}): {p["description"]}'
+        for p in WADE_PROGRAMS
+    )
+    people_text = "\n".join(
+        f'- **{p["name"]}** ({p["role"]}): {p["hook"]} [{p["name"]}]({p["url"]})'
+        for p in WADE_PEOPLE
+    )
+    return f"""
+WADE COMMUNITY ARTICLES (use these for Suggested Reading):
+{articles_text}
+
+WADE PROGRAMS (use these for Recommended Courses):
+{programs_text}
+
+WADE COMMUNITY PEOPLE (use these for From the Wade Community):
+{people_text}
+"""
+
+WADE_KNOWLEDGE_BLOCK = build_wade_knowledge_block()
+
+
 # === REPORT GENERATION ===
 
 REPORT_PROMPT = """You are producing an innovation coaching summary for a session at the Wade Institute of Entrepreneurship.
@@ -644,6 +1244,9 @@ Begin the report with the title: # Innovation Coaching Session Summary
 ### What Emerged
 3-5 key insights from the conversation. Be specific — reference what the user actually said or discovered. Not generic advice. Each insight in 1-3 sentences.
 
+### Key Moments
+2-3 direct quotes from the user — the most revealing, surprising, or insight-rich things they said. Use their exact words in quotation marks. Follow each with one sentence explaining what makes it significant. These should feel like real highlights, not paraphrases.
+
 ### Questions Worth Sitting With
 2-3 open, provocative questions that the session surfaced but didn't fully resolve. These are outlier areas, blind spots, or tensions worth returning to. Not rhetorical — genuinely challenging. One sentence each.
 
@@ -653,15 +1256,21 @@ Begin the report with the title: # Innovation Coaching Session Summary
 - At least one network-building action (a specific type of person to find, a community to join, an event to attend, a mentor to seek out)
 - The remaining steps should be equally concrete and time-bound
 
-### Wade Institute — Programs Worth Exploring
-Recommend 1-2 of the most contextually relevant Wade programs or upcoming events. Write one sentence explaining why it fits this person's specific challenge and situation. Only recommend things that are genuinely relevant — if none fit well, say so briefly. Always render each recommendation as a markdown link so the reader can go directly to the page.
+### From the Wade Community
+Recommend 1-2 people from the Wade community list provided — alumni, faculty, or speakers — whose experience is most directly relevant to this person's challenge. One sentence per person explaining the connection. Render each as a markdown link using their article URL. Only include people with a genuine thematic match.
 
-{WADE_PROGRAMS_PLACEHOLDER}
+### Suggested Reading
+Recommend 1-2 of the most relevant Wade community articles from the list provided. One sentence explaining why each fits this session. Always render as markdown links. Only recommend articles that are genuinely relevant to what this person is working on.
+
+### Recommended Courses
+Recommend 1-2 Wade programs from the list provided that would most benefit this person based on their challenge, stage, and what emerged in the session. One sentence per program explaining why it fits. Always render as markdown links.
 
 ### About This Session
 One sentence naming the exact exercise used ({EXERCISE_PLACEHOLDER}) — why it's effective and how it fits this stage of the journey.
 
-Keep the report warm but rigorous. No filler. Every sentence should earn its place."""
+Keep the report warm but rigorous. No filler. Every sentence should earn its place.
+
+{WADE_PROGRAMS_PLACEHOLDER}"""
 
 EXERCISE_NAMES = {
     'five-whys': 'Five Whys',
@@ -783,7 +1392,7 @@ def generate_report():
     programs_block = live_programs or fallback
 
     exercise_context = f"IMPORTANT: This session used the **{exercise_name}** exercise from the **{mode_name}** stage. Always refer to this exercise by its correct name ({exercise_name}) — do not use any other exercise name even if it appears in the conversation history.\n\n"
-    system = exercise_context + REPORT_PROMPT.replace('{WADE_PROGRAMS_PLACEHOLDER}', programs_block).replace('{EXERCISE_PLACEHOLDER}', exercise_name)
+    system = exercise_context + REPORT_PROMPT.replace('{WADE_PROGRAMS_PLACEHOLDER}', programs_block).replace('{EXERCISE_PLACEHOLDER}', exercise_name) + WADE_KNOWLEDGE_BLOCK
 
     # Ensure last message is from user (API requirement)
     report_messages = list(messages)
@@ -796,7 +1405,7 @@ def generate_report():
     try:
         response = client.messages.create(
             model="claude-sonnet-4-20250514",
-            max_tokens=3000,
+            max_tokens=4500,
             system=system,
             messages=report_messages,
         )
@@ -808,6 +1417,43 @@ def generate_report():
         if not report_text:
             return jsonify({'error': 'No report content generated'}), 500
         return jsonify({'report': report_text})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+# === LINKEDIN POST GENERATOR ===
+
+@app.route('/api/linkedin', methods=['POST'])
+def generate_linkedin():
+    data = request.json
+    report_text = data.get('report', '')
+    exercise = data.get('exercise', '')
+    mode = data.get('mode', '')
+    exercise_name = EXERCISE_NAMES.get(exercise, exercise)
+    mode_name = MODE_NAMES.get(mode, mode)
+
+    prompt = (
+        f"Based on this innovation coaching session report (using the {exercise_name} tool in the {mode_name} stage), "
+        f"write a LinkedIn post that:\n"
+        f"- Is 3-5 lines long\n"
+        f"- Shares the most compelling insight or action from the session\n"
+        f"- Feels personal and genuine, not corporate\n"
+        f"- Ends with: 'Explored this with WAiDE — the Wade Institute's AI innovation coach. Try it at wadeinstitute.org.au/waide'\n"
+        f"- Uses no hashtags\n"
+        f"- Output ONLY the post text, nothing else\n\n"
+        f"Session report:\n{report_text[:3000]}"
+    )
+    try:
+        response = client.messages.create(
+            model="claude-haiku-4-5-20251001",
+            max_tokens=300,
+            messages=[{'role': 'user', 'content': prompt}],
+        )
+        post_text = ''
+        for block in response.content:
+            if hasattr(block, 'text'):
+                post_text += block.text
+        return jsonify({'post': post_text.strip()})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
@@ -867,11 +1513,11 @@ body{{font-family:Georgia,serif;max-width:700px;margin:40px auto;padding:0 20px;
 h1,h2,h3{{font-family:Arial,sans-serif}}
 h2{{border-bottom:1px solid #ddd;padding-bottom:4px;margin-top:2em}}
 h3{{font-size:1.05em;color:#333}}
-.hd{{padding-bottom:1em;border-bottom:2px solid #ef5a21;margin-bottom:2em}}
+.hd{{padding-bottom:1em;border-bottom:2px solid #F15A22;margin-bottom:2em}}
 .meta{{color:#666;font-size:13px;font-family:Arial;margin-top:4px}}
 ul{{padding-left:20px}} li{{margin-bottom:4px}} p{{margin:0 0 0.8em}}
 .ft{{margin-top:3em;padding-top:1em;border-top:1px solid #ddd;font-size:12px;color:#999;font-family:Arial}}
-a{{color:#ef5a21}}
+a{{color:#F15A22}}
 </style>
 </head>
 <body>
@@ -880,7 +1526,7 @@ a{{color:#ef5a21}}
   <div class="meta">{entry['exercise']} · {entry['mode']} · {date_str}</div>
 </div>
 <div id="rc"></div>
-<div class="ft">Generated by Wayde · Wade Institute of Entrepreneurship · <a href="https://wadeinstitute.org.au">wadeinstitute.org.au</a></div>
+<div class="ft">Generated by WAiDE · Wade Institute of Entrepreneurship · <a href="https://wadeinstitute.org.au">wadeinstitute.org.au</a></div>
 <script>document.getElementById('rc').innerHTML = marked.parse({report_json});</script>
 </body>
 </html>"""
@@ -892,108 +1538,195 @@ a{{color:#ef5a21}}
 LEADS_FILE = os.path.join(os.path.dirname(__file__), 'leads.json')
 
 
-def _notify_wade(lead):
-    """Email the report to Wade when a new lead submits. Silent no-op if SMTP not configured."""
-    notify_email = os.environ.get('WADE_NOTIFY_EMAIL', 'enquiries@wadeinstitute.org.au')
-    smtp_host = os.environ.get('SMTP_HOST')
-    smtp_user = os.environ.get('SMTP_USER')
-    smtp_pass = os.environ.get('SMTP_PASS')
-    if not all([smtp_host, smtp_user, smtp_pass]):
-        return  # SMTP not configured — skip silently
-    smtp_port = int(os.environ.get('SMTP_PORT', 587))
+def _markdown_to_html(text):
+    """Minimal markdown → HTML for email bodies."""
+    import re
+    t = text.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
+    t = re.sub(r'^### (.+)$', r'<h3 style="font-size:14px;margin:16px 0 6px;">\1</h3>', t, flags=re.MULTILINE)
+    t = re.sub(r'^## (.+)$',  r'<h2 style="font-size:15px;border-bottom:2px solid #F15A22;padding-bottom:5px;margin:20px 0 8px;">\1</h2>', t, flags=re.MULTILINE)
+    t = re.sub(r'^# (.+)$',   r'<h1 style="font-size:18px;margin:0 0 8px;">\1</h1>', t, flags=re.MULTILINE)
+    t = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', t)
+    t = re.sub(r'\[([^\]]+)\]\((https?://[^)]+)\)', r'<a href="\2" style="color:#F15A22;">\1</a>', t)
+    t = re.sub(r'^- (.+)$', r'<li style="margin-bottom:4px;">\1</li>', t, flags=re.MULTILINE)
+    t = re.sub(r'(<li[^>]*>.*?</li>\n?)+', lambda m: f'<ul style="padding-left:20px;margin:0 0 10px;">{m.group(0)}</ul>', t)
+    t = re.sub(r'\n\n+', '</p><p style="margin:0 0 10px;">', t)
+    return f'<p style="margin:0 0 10px;">{t}</p>'
 
-    rating_label = {'up': '👍 Positive', 'down': '👎 Negative'}.get(lead.get('rating'), '—')
-    subject = f"New Wayde Session: {lead['name']} — {lead['exercise']} ({lead['mode']})"
 
-    # Plain-text fallback
-    plain = (
-        f"New Wayde Innovation Coaching Session.\n\n"
-        f"Name: {lead['name']}\n"
-        f"Email: {lead['email']}\n"
-        f"Company: {lead['company']}\n"
-        f"Role: {lead['role']}\n"
-        f"Stage: {lead['mode']}\n"
-        f"Exercise: {lead['exercise']}\n"
-        f"Rating: {rating_label}\n"
-        f"Time: {lead['timestamp']}\n\n"
-        f"--- REPORT ---\n\n{lead['report']}"
+HUBSPOT_BCC = '442435393@bcc.ap1.hubspot.com'
+
+
+def _resend_send_email(api_key, from_email, to_email, subject, html_body):
+    """Send a transactional email via Resend API, BCC'd to HubSpot for logging."""
+    payload = json.dumps({
+        "from": from_email,
+        "to": [to_email],
+        "bcc": [HUBSPOT_BCC],
+        "subject": subject,
+        "html": html_body,
+    }).encode('utf-8')
+    req = urllib.request.Request(
+        'https://api.resend.com/emails',
+        data=payload,
+        headers={
+            'Authorization': f'Bearer {api_key}',
+            'Content-Type': 'application/json',
+        },
+        method='POST'
+    )
+    with urllib.request.urlopen(req, timeout=10) as resp:
+        return resp.status
+
+
+def _tags_html(tags):
+    """Render insight tags as a compact pill block for the Wade notification email."""
+    if not tags:
+        return ''
+    LABELS = {
+        'challenge_category': 'Challenge',
+        'industry':           'Industry',
+        'venture_stage':      'Stage',
+        'primary_barrier':    'Barrier',
+        'sentiment':          'Sentiment',
+    }
+    pills = ''.join(
+        f'<span style="display:inline-block;margin:3px 4px 3px 0;padding:3px 10px;'
+        f'border-radius:20px;font-size:11px;font-weight:bold;background:#fff3ee;'
+        f'color:#F15A22;border:1px solid #F15A22;">'
+        f'{LABELS.get(k, k)}: {v}</span>'
+        for k, v in tags.items() if k != 'key_insight' and v
+    )
+    insight = tags.get('key_insight', '')
+    insight_block = (
+        f'<p style="font-size:12.5px;font-style:italic;color:#444;margin:10px 0 0;'
+        f'padding:10px 14px;background:#f9f9f9;border-left:3px solid #F15A22;">'
+        f'"{insight}"</p>'
+    ) if insight else ''
+    return (
+        f'<div style="margin-bottom:20px;padding:14px;background:#fff8f5;'
+        f'border-radius:5px;border:1px solid #ffe0d0;">'
+        f'<p style="font-size:9px;font-weight:bold;letter-spacing:0.1em;'
+        f'text-transform:uppercase;color:#F15A22;margin:0 0 8px;">Session Insights</p>'
+        f'{pills}{insight_block}</div>'
     )
 
-    # HTML email
-    report_html = lead['report'].replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
-    # Basic markdown → HTML for report body
-    import re
-    report_html = re.sub(r'^### (.+)$', r'<h3>\1</h3>', report_html, flags=re.MULTILINE)
-    report_html = re.sub(r'^## (.+)$', r'<h2>\1</h2>', report_html, flags=re.MULTILINE)
-    report_html = re.sub(r'^# (.+)$', r'<h1>\1</h1>', report_html, flags=re.MULTILINE)
-    report_html = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', report_html)
-    report_html = re.sub(r'\[([^\]]+)\]\((https?://[^)]+)\)', r'<a href="\2">\1</a>', report_html)
-    report_html = re.sub(r'^- (.+)$', r'<li>\1</li>', report_html, flags=re.MULTILINE)
-    report_html = re.sub(r'(<li>.*</li>\n?)+', lambda m: f'<ul>{m.group(0)}</ul>', report_html)
-    report_html = re.sub(r'\n\n', '</p><p>', report_html)
-    report_html = f'<p>{report_html}</p>'
 
-    html = f"""<!DOCTYPE html>
-<html>
-<head><meta charset="UTF-8"></head>
+def _notify_wade(lead):
+    """Email Wade and send user a copy of their report via Resend. Silent no-op if not configured."""
+    resend_key  = os.environ.get('RESEND_API_KEY')
+    from_email  = os.environ.get('WADE_FROM_EMAIL', 'WAiDE <enquiries@wadeinstitute.org.au>')
+    wade_email  = os.environ.get('WADE_NOTIFY_EMAIL', 'enquiries@wadeinstitute.org.au')
+
+    if not resend_key:
+        return  # Resend not configured — skip silently
+
+    rating_label = {'up': '👍 Positive', 'down': '👎 Negative'}.get(lead.get('rating'), '—')
+    report_html  = _markdown_to_html(lead['report'])
+
+    # ── 1. Email Wade with full lead details + report ─────────────────────
+    wade_html = f"""<!DOCTYPE html><html><head><meta charset="UTF-8"></head>
 <body style="font-family:Arial,sans-serif;max-width:680px;margin:0 auto;padding:20px;color:#1a1a2e;">
-  <div style="background:#ef5a21;padding:20px 24px;border-radius:6px 6px 0 0;">
-    <h2 style="margin:0;color:#fff;font-size:18px;">New Wayde Session</h2>
-    <p style="margin:4px 0 0;color:rgba(255,255,255,0.85);font-size:13px;">Wade Institute of Entrepreneurship</p>
+  <div style="background:#F15A22;padding:18px 24px;border-radius:6px 6px 0 0;">
+    <h2 style="margin:0;color:#fff;font-size:17px;">New WAiDE Session</h2>
+    <p style="margin:3px 0 0;color:rgba(255,255,255,0.85);font-size:12px;">Wade Institute of Entrepreneurship</p>
   </div>
-  <div style="border:1px solid #e0e0e0;border-top:none;border-radius:0 0 6px 6px;padding:24px;">
-    <table style="width:100%;border-collapse:collapse;margin-bottom:24px;font-size:14px;">
-      <tr style="background:#f8f8f8;">
-        <td style="padding:8px 12px;font-weight:bold;width:120px;border-bottom:1px solid #eee;">Name</td>
-        <td style="padding:8px 12px;border-bottom:1px solid #eee;">{lead['name']}</td>
-      </tr>
-      <tr>
-        <td style="padding:8px 12px;font-weight:bold;border-bottom:1px solid #eee;">Email</td>
-        <td style="padding:8px 12px;border-bottom:1px solid #eee;"><a href="mailto:{lead['email']}" style="color:#ef5a21;">{lead['email']}</a></td>
-      </tr>
-      <tr style="background:#f8f8f8;">
-        <td style="padding:8px 12px;font-weight:bold;border-bottom:1px solid #eee;">Company</td>
-        <td style="padding:8px 12px;border-bottom:1px solid #eee;">{lead['company']}</td>
-      </tr>
-      <tr>
-        <td style="padding:8px 12px;font-weight:bold;border-bottom:1px solid #eee;">Role</td>
-        <td style="padding:8px 12px;border-bottom:1px solid #eee;">{lead['role']}</td>
-      </tr>
-      <tr style="background:#f8f8f8;">
-        <td style="padding:8px 12px;font-weight:bold;border-bottom:1px solid #eee;">Stage</td>
-        <td style="padding:8px 12px;border-bottom:1px solid #eee;">{lead['mode']}</td>
-      </tr>
-      <tr>
-        <td style="padding:8px 12px;font-weight:bold;border-bottom:1px solid #eee;">Exercise</td>
-        <td style="padding:8px 12px;border-bottom:1px solid #eee;">{lead['exercise']}</td>
-      </tr>
-      <tr style="background:#f8f8f8;">
-        <td style="padding:8px 12px;font-weight:bold;">Rating</td>
-        <td style="padding:8px 12px;">{rating_label}</td>
-      </tr>
+  <div style="border:1px solid #e0e0e0;border-top:none;border-radius:0 0 6px 6px;padding:22px;">
+    <table style="width:100%;border-collapse:collapse;margin-bottom:22px;font-size:13.5px;">
+      <tr style="background:#f8f8f8;"><td style="padding:7px 12px;font-weight:bold;width:110px;border-bottom:1px solid #eee;">Name</td><td style="padding:7px 12px;border-bottom:1px solid #eee;">{lead['name']}</td></tr>
+      <tr><td style="padding:7px 12px;font-weight:bold;border-bottom:1px solid #eee;">Email</td><td style="padding:7px 12px;border-bottom:1px solid #eee;"><a href="mailto:{lead['email']}" style="color:#F15A22;">{lead['email']}</a></td></tr>
+      <tr style="background:#f8f8f8;"><td style="padding:7px 12px;font-weight:bold;border-bottom:1px solid #eee;">Company</td><td style="padding:7px 12px;border-bottom:1px solid #eee;">{lead['company']}</td></tr>
+      <tr><td style="padding:7px 12px;font-weight:bold;border-bottom:1px solid #eee;">Role</td><td style="padding:7px 12px;border-bottom:1px solid #eee;">{lead['role']}</td></tr>
+      <tr style="background:#f8f8f8;"><td style="padding:7px 12px;font-weight:bold;border-bottom:1px solid #eee;">Stage</td><td style="padding:7px 12px;border-bottom:1px solid #eee;">{lead['mode']}</td></tr>
+      <tr><td style="padding:7px 12px;font-weight:bold;border-bottom:1px solid #eee;">Exercise</td><td style="padding:7px 12px;border-bottom:1px solid #eee;">{lead['exercise']}</td></tr>
+      <tr style="background:#f8f8f8;"><td style="padding:7px 12px;font-weight:bold;">Rating</td><td style="padding:7px 12px;">{rating_label}</td></tr>
     </table>
-    <h3 style="font-size:15px;border-bottom:2px solid #ef5a21;padding-bottom:6px;margin-top:0;">Innovation Coaching Session Summary</h3>
-    <div style="font-family:Georgia,serif;font-size:14px;line-height:1.7;color:#222;">
-      {report_html}
+    {_tags_html(lead.get('tags', {}))}
+    <div style="font-family:Georgia,serif;font-size:13.5px;line-height:1.7;color:#222;">{report_html}</div>
+  </div>
+  <p style="text-align:center;font-size:11px;color:#aaa;margin-top:14px;">WAiDE &middot; <a href="https://wadeinstitute.org.au" style="color:#F15A22;">wadeinstitute.org.au</a></p>
+</body></html>"""
+
+    try:
+        _resend_send_email(
+            resend_key, from_email, wade_email,
+            f"New WAiDE Session: {lead['name']} — {lead['exercise']} ({lead['mode']})",
+            wade_html
+        )
+    except Exception:
+        pass
+
+    # ── 2. Email the user a copy of their report ──────────────────────────
+    user_html = f"""<!DOCTYPE html><html><head><meta charset="UTF-8"></head>
+<body style="font-family:Arial,sans-serif;max-width:680px;margin:0 auto;padding:20px;color:#1a1a2e;">
+  <div style="background:#F15A22;padding:18px 24px;border-radius:6px 6px 0 0;">
+    <h2 style="margin:0;color:#fff;font-size:17px;">Your Innovation Coaching Session Report</h2>
+    <p style="margin:3px 0 0;color:rgba(255,255,255,0.85);font-size:12px;">{lead['mode']} &middot; {lead['exercise']}</p>
+  </div>
+  <div style="border:1px solid #e0e0e0;border-top:none;border-radius:0 0 6px 6px;padding:22px;">
+    <p style="font-size:14px;color:#444;margin:0 0 18px;">Hi {lead['name'].split()[0]}, here's a copy of your WAiDE coaching session report to refer back to.</p>
+    <div style="font-family:Georgia,serif;font-size:13.5px;line-height:1.7;color:#222;">{report_html}</div>
+    <div style="margin-top:28px;padding:16px 18px;border:1.5px solid #F15A22;border-radius:5px;background:#fdf9f7;">
+      <p style="font-size:8.5px;font-weight:bold;letter-spacing:0.12em;text-transform:uppercase;color:#F15A22;margin:0 0 6px;">Ready to go deeper?</p>
+      <p style="font-size:13.5px;font-weight:bold;color:#12103a;margin:0 0 7px;">Talk to the Wade Team</p>
+      <p style="font-size:12.5px;color:#444;margin:0 0 10px;">Interested in working with Wade Institute to build your innovation capability further?</p>
+      <p style="font-size:12px;color:#666;margin:0 0 10px;">enquiries@wadeinstitute.org.au &nbsp;&middot;&nbsp; +61 3 9344 1100</p>
+      <a href="https://wadeinstitute.org.au/programs/" style="font-size:12px;font-weight:bold;color:#F15A22;text-decoration:none;">Explore Wade Programs &rarr;</a>
     </div>
   </div>
-  <p style="text-align:center;font-size:11px;color:#999;margin-top:16px;">
-    Wayde AI Coaching Tool &middot; <a href="https://wadeinstitute.org.au" style="color:#ef5a21;">wadeinstitute.org.au</a>
-  </p>
-</body>
-</html>"""
+  <p style="text-align:center;font-size:11px;color:#aaa;margin-top:14px;">Generated by WAiDE AI &middot; Wade Institute of Entrepreneurship &middot; <a href="https://wadeinstitute.org.au" style="color:#F15A22;">wadeinstitute.org.au</a></p>
+</body></html>"""
 
-    msg = MIMEMultipart('alternative')
-    msg['From'] = smtp_user
-    msg['To'] = notify_email
-    msg['Subject'] = subject
-    msg.attach(MIMEText(plain, 'plain'))
-    msg.attach(MIMEText(html, 'html'))
+    try:
+        _resend_send_email(
+            resend_key, from_email, lead['email'],
+            f"Your WAiDE coaching session report — {lead['exercise']}",
+            user_html
+        )
+    except Exception:
+        pass
 
-    with smtplib.SMTP(smtp_host, smtp_port) as server:
-        server.starttls()
-        server.login(smtp_user, smtp_pass)
-        server.send_message(msg)
+def _tag_session(report, messages, exercise, mode):
+    """Extract structured insight tags from a session using Claude Haiku."""
+    conversation = '\n'.join(
+        f"{m['role'].upper()}: {m['content'][:300]}"
+        for m in messages[-20:]  # last 20 messages is plenty
+        if isinstance(m.get('content'), str)
+    )
+    prompt = f"""Analyse this WAiDE innovation coaching session and return a JSON object with exactly these fields:
+
+{{
+  "challenge_category": one of: "Product/Service Design" | "Business Model" | "Customer Understanding" | "Team & Culture" | "Strategy & Direction" | "Process & Operations" | "Market Entry" | "Funding & Resources" | "Other",
+  "industry": short sector label e.g. "HealthTech", "Education", "Professional Services", "Retail", "Fintech", "Not-for-profit", "Government", "Unknown",
+  "venture_stage": one of: "Idea/Concept" | "Early Stage" | "Growth" | "Corporate Innovation" | "Transformation" | "Unknown",
+  "primary_barrier": one of: "Market Uncertainty" | "Resource Constraints" | "Internal Buy-in" | "Technical Complexity" | "Customer Access" | "Competitive Pressure" | "Team Capability" | "Other",
+  "sentiment": one of: "Energised" | "Stuck" | "Anxious" | "Motivated" | "Uncertain" | "Frustrated",
+  "key_insight": one sentence capturing the single most important insight from this session
+}}
+
+Exercise: {exercise} | Stage: {mode}
+
+Conversation excerpt:
+{conversation}
+
+Report summary:
+{report[:1500]}
+
+Return ONLY the JSON object, no other text."""
+
+    try:
+        response = client.messages.create(
+            model="claude-haiku-4-5-20251001",
+            max_tokens=300,
+            messages=[{'role': 'user', 'content': prompt}],
+        )
+        raw = ''
+        for block in response.content:
+            if hasattr(block, 'text'):
+                raw += block.text
+        return json.loads(raw.strip())
+    except Exception:
+        return {}
+
 
 @app.route('/api/lead', methods=['POST'])
 def capture_lead():
@@ -1011,6 +1744,16 @@ def capture_lead():
         'rating': data.get('rating', None),
         'messages': data.get('messages', [])
     }
+
+    # Extract insight tags
+    try:
+        tags = _tag_session(
+            lead['report'], lead['messages'],
+            lead['exercise'], lead['mode']
+        )
+        lead['tags'] = tags
+    except Exception:
+        lead['tags'] = {}
 
     # Load existing leads or create new list
     leads = []
