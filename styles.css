@@ -381,7 +381,7 @@ body {
     justify-content: center;
     min-height: 60vh;
     text-align: center;
-    padding: 2rem;
+    padding: 3rem 2rem 2.5rem;
     position: relative;
     overflow: hidden;
 }
@@ -402,25 +402,27 @@ body {
 .welcome.hidden { display: none; }
 
 .welcome-tagline {
-    font-size: 0.9rem;
+    font-size: 1rem;
     color: var(--text-dim);
-    max-width: 560px;
-    line-height: 1.6;
+    max-width: 580px;
+    line-height: 1.65;
     margin-bottom: 2rem;
 }
 
 .welcome-title {
-    font-size: 2.75rem;
-    font-weight: 600;
-    margin-bottom: 0.3rem;
+    font-size: 3.25rem;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
     color: var(--text);
+    letter-spacing: -0.02em;
+    line-height: 1.1;
 }
 
 .welcome-sub {
-    font-size: 1.375rem;
+    font-size: 1.125rem;
     color: var(--orange);
     font-weight: 500;
-    margin-bottom: 1rem;
+    margin-bottom: 1.25rem;
 }
 
 .welcome-intro {
@@ -460,6 +462,7 @@ body {
 
 /* === CARDS HEADING === */
 .cards-heading {
+    grid-column: 1 / -1;
     width: 100%;
     text-align: center;
     font-size: 0.875rem;
@@ -473,7 +476,9 @@ body {
 .cards-chevron { display: none; }
 
 .cards-sub {
+    grid-column: 1 / -1;
     width: 100%;
+    max-width: 660px;
     text-align: center;
     font-size: 0.9rem;
     color: var(--text-dim);
@@ -498,11 +503,11 @@ body {
 
 /* === WELCOME CARDS === */
 .welcome-cards {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
     gap: 1.2rem;
-    flex-wrap: wrap;
-    justify-content: center;
-    max-width: 1280px;
+    width: 100%;
+    max-width: 1200px;
     align-items: flex-start;
 }
 
@@ -511,16 +516,22 @@ body {
     flex-direction: column;
     gap: 0.75rem;
     padding: 1.2rem 1.4rem;
-    border: 1px solid rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-top: 3px solid rgba(255,255,255,0.08);
     border-radius: 8px;
-    min-width: 240px;
-    max-width: 300px;
-    flex: 1;
-    transition: border-color 0.25s, box-shadow 0.25s;
+    transition: border-color 0.25s, box-shadow 0.25s, transform 0.2s ease;
 }
 
+/* Stage-coloured top accent borders */
+.card-reframe  { border-top-color: var(--orange); }
+.card-ideate   { border-top-color: var(--pink); }
+.card-debate   { border-top-color: var(--teal); }
+.card-framework { border-top-color: var(--yellow); }
+
 .welcome-card:hover {
-    border-color: rgba(255,255,255,0.15);
+    border-color: rgba(255,255,255,0.18);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
 }
 
 .card-header {
@@ -1013,12 +1024,13 @@ html[data-theme="light"] .mic-btn:hover { border-color: rgba(30,25,79,0.3); colo
 
 .input-disclaimer {
     text-align: center;
-    font-size: 0.65rem;
-    color: var(--text-dim);
-    opacity: 0.5;
-    margin: 0.35rem auto 0;
-    max-width: 800px;
-    letter-spacing: 0.01em;
+    font-size: 0.6rem;
+    color: var(--text-muted);
+    opacity: 0.55;
+    margin: 0.4rem auto 0;
+    max-width: 600px;
+    letter-spacing: 0.02em;
+    font-family: var(--mono);
 }
 
 .input-hint {
@@ -1709,8 +1721,9 @@ html[data-theme="light"] .option-chip:hover {
     .input-hint-copy { display: none; }
 
     /* Welcome screen */
-    .welcome { padding: 1.25rem 1rem; min-height: auto; }
+    .welcome { padding: 1.5rem 1rem 1.5rem; min-height: auto; }
     .welcome-title { font-size: 1.875rem; }
+    .welcome-sub { font-size: 1rem; }
     .welcome-intro { margin-bottom: 0.75rem; }
 
     .welcome-guide {
@@ -1721,23 +1734,19 @@ html[data-theme="light"] .option-chip:hover {
     }
     .guide-sep { display: none; }
 
-    /* Home stage cards — stacked vertically on mobile */
+    /* Home stage cards — 1-column grid on mobile */
     .welcome-cards {
+        grid-template-columns: 1fr;
         width: 100%;
         max-width: 100%;
-        flex-wrap: wrap;
-        overflow-x: visible;
-        scroll-snap-type: none;
-        justify-content: stretch;
         padding: 0 1rem 0.5rem;
         gap: 0.75rem;
         box-sizing: border-box;
     }
     .welcome-card {
-        flex: 1 1 100%;
         min-width: 0;
-        max-width: 100%;
-        scroll-snap-align: none;
+        /* reset hover lift for touch — avoids sticky transform state */
+        transform: none !important;
     }
 
     /* Stage progress bar — compress to fit 4 stages */
@@ -1775,7 +1784,7 @@ html[data-theme="light"] .option-chip:hover {
     .cards-heading { cursor: pointer; user-select: none; margin-top: 0.5rem; display: flex; align-items: center; justify-content: center; gap: 0.4em; font-size: 0.75rem; letter-spacing: 0.04em; white-space: nowrap; }
     .cards-chevron { display: inline-block; transition: transform 0.25s ease; letter-spacing: 0; flex-shrink: 0; }
     .welcome-cards.cards-collapsed .welcome-card { display: none; }
-    .welcome-cards.cards-collapsed { overflow: hidden; flex-wrap: wrap; }
+    .welcome-cards.cards-collapsed { overflow: hidden; }
     .welcome-cards.cards-collapsed .cards-chevron { transform: rotate(-90deg); }
 }
 
