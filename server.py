@@ -1776,6 +1776,40 @@ def _markdown_to_html(text):
 HUBSPOT_BCC = '442435393@bcc.ap1.hubspot.com'
 
 
+def _sync_lead_to_sheets(lead):
+    """POST lead to Google Apps Script webhook → appends a row to Google Sheets.
+    URL stored in env var GOOGLE_SHEETS_WEBHOOK_URL. Fails silently."""
+    sheets_url = os.environ.get('GOOGLE_SHEETS_WEBHOOK_URL')
+    if not sheets_url:
+        return
+    try:
+        # Build a flat row — skip full report/messages (too long for cells)
+        tag_data = lead.get('tags', {})
+        row = {
+            'timestamp':  lead.get('timestamp', ''),
+            'name':       lead.get('name', ''),
+            'email':      lead.get('email', ''),
+            'company':    lead.get('company', ''),
+            'role':       lead.get('role', ''),
+            'stage':      lead.get('mode', ''),
+            'tool':       lead.get('exercise', ''),
+            'rating':     lead.get('rating', ''),
+            'cluster':    tag_data.get('cluster', ''),
+            'themes':     ', '.join(tag_data.get('themes', [])),
+            'challenge':  tag_data.get('challenge_summary', ''),
+        }
+        payload = json.dumps(row).encode('utf-8')
+        req = urllib.request.Request(
+            sheets_url,
+            data=payload,
+            headers={'Content-Type': 'application/json'},
+            method='POST'
+        )
+        urllib.request.urlopen(req, timeout=6)
+    except Exception as e:
+        print(f'[Sheets] sync failed: {e}')
+
+
 def _resend_send_email(api_key, from_email, to_email, subject, html_body):
     """Send a transactional email via Resend API, BCC'd to HubSpot for logging."""
     payload = json.dumps({
@@ -1993,6 +2027,11 @@ def capture_lead():
         _notify_wade(lead)
     except Exception:
         pass  # Never break lead capture if email fails
+
+    try:
+        _sync_lead_to_sheets(lead)
+    except Exception:
+        pass  # Never break lead capture if Sheets sync fails
 
     return jsonify({'success': True})
 
