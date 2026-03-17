@@ -57,7 +57,15 @@ body {
 .logo {
     height: 90px;
     width: auto;
+    transition: filter 0.6s ease;
 }
+
+/* Logo shifts to stage colour when a session is active.
+   Base colour is orange #F15A22 (hue ~17°); offsets reach each stage colour. */
+body[data-mode="reframe"]   .logo { filter: hue-rotate(0deg)   drop-shadow(0 0 10px rgba(241,90,34,0.35)); }
+body[data-mode="ideate"]    .logo { filter: hue-rotate(308deg)  drop-shadow(0 0 10px rgba(236,54,147,0.35)); }
+body[data-mode="debate"]    .logo { filter: hue-rotate(164deg)  drop-shadow(0 0 10px rgba(38,189,190,0.35)); }
+body[data-mode="framework"] .logo { filter: hue-rotate(44deg) saturate(0.9) brightness(1.05) drop-shadow(0 0 10px rgba(228,229,23,0.35)); }
 
 /* === SESSION BAR (shown during active exercise) === */
 .session-bar {
