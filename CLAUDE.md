@@ -37,7 +37,7 @@ Railway picks up the push and deploys in ~90 seconds.
 | File | Purpose |
 |---|---|
 | `server.py` | Flask backend — all routes, system prompts, WADE_KNOWLEDGE_BLOCK, email, lead capture |
-| `index.html` | All UI — welcome cards, chat, report, lead form. Cache-bust script tag at `?v=57` |
+| `index.html` | All UI — welcome cards, chat, report, lead form. Cache-bust script tag at `?v=58` |
 | `app.js` | Frontend logic — `EXERCISE_LABELS`, `MODE_LABELS`, chat state, report trigger |
 | `styles.css` | All styling — GT Walsheim font, stage colours, dark/light theme, responsive layout |
 | `fonts/` | GT-Walsheim-Regular.woff/.ttf/.otf |
@@ -132,15 +132,47 @@ Report tone adapts per cluster — two-step in `REPORT_PROMPT`: identify cluster
 
 ---
 
-## Known pending work
+## Backlog
 
-| Item | Priority | Notes |
+### 🔴 Must do — data integrity
+| # | Item | Notes |
 |---|---|---|
-| Google Sheets export for leads | High | `leads.json` is lost on Railway redeploy |
-| Resend domain verification | High | `enquiries@` must be verified in Resend dashboard |
-| Article `match_when` signals | Medium | 47 articles need signals added to `WADE_COMMUNITY_ARTICLES` |
-| Logo SVG source | Low | PNG only — SVG needed for wink/smile animation |
-| In-conversation program timing | Low | Mention programs during chat, not just report |
+| 1 | **Complete Google Sheets setup** | Code is live — user must create Sheet, deploy Apps Script, add `GOOGLE_SHEETS_WEBHOOK_URL` to Railway env |
+| 2 | **Verify Resend domain** | `enquiries@wadeinstitute.org.au` must be verified in Resend dashboard or emails hit spam |
+| 3 | **Fix index.html cache-bust version in CLAUDE.md** | Listed as `?v=57` — currently `?v=58` |
+
+### 🟠 Should do — conversion & effectiveness
+| # | Item | Notes |
+|---|---|---|
+| 4 | **HubSpot attribution** | Connect WAiDE leads (already BCC'd) to program enquiries and enrolments — measure whether WAiDE drives revenue |
+| 5 | **Email follow-up sequence** | After lead capture, send a 2–3 email nurture sequence via Resend — no return mechanism exists currently |
+| 6 | **Report program CTA strength** | Current recommendation is passive — add a direct link + next step CTA tied to the specific program recommended |
+| 7 | **Social proof in the tool** | Show Wader count, cohort numbers, or a rotating quote on the welcome screen — builds trust before the session starts |
+
+### 🟡 Should do — content & matching quality
+| # | Item | Notes |
+|---|---|---|
+| 8 | **Article `match_when` signals** | 47 articles in `WADE_COMMUNITY_ARTICLES` need signals — "From the Wade Community" report section is underperforming without them |
+| 9 | **People matching refinement** | Review all 25 Waders' `match_when` fields — some are generic and won't fire a strong match |
+| 10 | **Program intake dates** | `next_intake` fields in `WADE_PROGRAMS` will go stale — needs a refresh process or live scraping |
+
+### 🔵 Nice to have — design & experience
+| # | Item | Notes |
+|---|---|---|
+| 11 | **Logo SVG source** | PNG only — SVG needed for stage-colour stroke animation and wink/hover effect |
+| 12 | **Logo yellow colour accuracy** | CSS `filter: sepia + hue-rotate` is approximate — exact `#E4E517` requires SVG stroke |
+| 13 | **Light theme polish** | Cards-sub centering was fixed but full light theme audit not done |
+| 14 | **Toolbox page** | `toolbox.html` is linked from exercise labels — content and design quality unknown |
+| 15 | **Multi-session continuity** | Users who return get a blank session — no memory of previous work |
+| 16 | **Mobile input UX** | Keyboard pushes the input area on iOS — test and fix viewport behaviour |
+
+### ⚪ Explore when ready — bigger bets
+| # | Item | Notes |
+|---|---|---|
+| 17 | **Trend report from session data** | Tag accumulation (`_tag_session`) enables insight reports — no export or visualisation yet |
+| 18 | **Wader story injection mid-session** | Option A from program mention discussion — requires reliable `match_when` on people first |
+| 19 | **Wade program landing pages scraping** | `fetch_wade_programs()` exists but may not be running reliably — verify live data is flowing |
+| 20 | **Session sharing beyond report** | Users can share the report but not the session itself — shareable session link could drive referrals |
 
 ---
 
