@@ -899,7 +899,7 @@ function scrollToBottom() {
 function maybeShowReportCta() {
     if (state.exchangeCount >= 3 && !state.reportGenerated) {
         reportCtaBtn.disabled = false;
-        reportCtaBtn.textContent = 'Access your Workshop Session report →';
+        reportCtaBtn.textContent = 'Access your Studio Session report →';
         // Enable within-stage tool picker after first real exchange
         setPickerEnabled(true);
     }
@@ -1026,7 +1026,7 @@ function renderWrapPrompt() {
         const nextExName = EXERCISE_LABELS[next.exercise] || next.exercise;
         actionsHtml += `<button class="wrap-btn wrap-btn-continue">Continue to ${nextModeName} — ${nextExName} →</button>`;
     }
-    actionsHtml += '<button class="wrap-btn wrap-btn-report">Access your Workshop Session report →</button>';
+    actionsHtml += '<button class="wrap-btn wrap-btn-report">Access your Studio Session report →</button>';
 
     wrapDiv.innerHTML = `
         <p class="wrap-prompt-text">This exercise is complete.</p>
