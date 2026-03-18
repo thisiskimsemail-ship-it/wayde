@@ -1763,28 +1763,23 @@ html[data-theme="light"] .mic-btn:hover { border-color: rgba(30,25,79,0.3); colo
 .site-footer-inner {
     display: flex;
     align-items: center;
-    gap: 2rem;
-    padding: 1.75rem 1rem 2.5rem;
+    gap: 1.25rem;
+    padding: 1rem 1rem 1.5rem;
     flex-wrap: wrap;
 }
 
 .site-footer-brand {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.5rem;
-    flex-shrink: 0;
-    min-width: 80px;
+    display: none; /* Hide the logo block — keep it minimal */
 }
 
 .site-footer-icon {
-    height: 52px;
+    height: 32px;
     width: auto;
     opacity: 0.85;
 }
 
 .site-footer-orgname {
-    font-size: 0.65rem;
+    font-size: 0.6rem;
     letter-spacing: 0.04em;
     color: var(--text-muted);
     text-align: center;
@@ -1798,19 +1793,19 @@ html[data-theme="light"] .mic-btn:hover { border-color: rgba(30,25,79,0.3); colo
 }
 
 .site-footer-heading {
-    font-size: 0.85rem;
+    font-size: 0.75rem;
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--text);
-    margin-bottom: 0.3rem;
+    margin-bottom: 0.2rem;
 }
 
 .site-footer-text {
-    font-size: 0.8rem;
+    font-size: 0.72rem;
     color: var(--text-dim);
-    line-height: 1.45;
-    margin-bottom: 0.75rem;
+    line-height: 1.4;
+    margin-bottom: 0.5rem;
 }
 
 .site-footer-contacts {
@@ -1840,12 +1835,12 @@ html[data-theme="light"] .mic-btn:hover { border-color: rgba(30,25,79,0.3); colo
     background: var(--orange);
     color: #fff;
     font-family: var(--font);
-    font-size: 0.8rem;
+    font-size: 0.72rem;
     font-weight: 700;
     letter-spacing: 0.03em;
     text-decoration: none;
-    padding: 0.65rem 1.25rem;
-    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
     white-space: nowrap;
     transition: opacity 0.2s;
 }
