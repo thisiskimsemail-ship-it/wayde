@@ -737,7 +737,7 @@ function forceCloseSession() {
     inputField.disabled = false;
     inputField.placeholder = 'Describe your challenge or idea...';
     sendBtn.disabled = true;
-    modeLabel.textContent = '';
+    modeLabel.textContent = 'Wade Innovation Toolbox · ';
     state.rating = null;
     state.parkingLot = [];
     state.board = { cards: [], visible: false };
@@ -825,7 +825,7 @@ function doCloseSession() {
     messagesEl.innerHTML = '';
     inputField.value = ''; sendBtn.disabled = true;
     inputField.placeholder = 'Describe your challenge or idea...';
-    modeLabel.textContent = '';
+    modeLabel.textContent = 'Wade Innovation Toolbox · ';
     state.rating = null;
     state.pushHarder = false;
     setPickerEnabled(false);
@@ -993,7 +993,7 @@ routingBackBtn.addEventListener('click', () => {
     messagesEl.innerHTML = '';
     inputField.value = ''; sendBtn.disabled = true;
     inputField.placeholder = 'Describe your challenge or idea...';
-    modeLabel.textContent = '';
+    modeLabel.textContent = 'Wade Innovation Toolbox · ';
     routingBack.classList.add('hidden');
     chatArea.scrollTop = 0;
 });
