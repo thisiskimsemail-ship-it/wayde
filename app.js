@@ -1321,6 +1321,8 @@ async function streamResponse() {
             // Show wrap-up card if facilitator signalled the exercise is complete
             if (wrapSignaled && !state.reportGenerated) {
                 renderWrapPrompt();
+                // Auto-generate report in the background while user reads Pete's closing message
+                generateReport();
             }
         }
     }
