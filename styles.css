@@ -20,9 +20,9 @@
     --text-dim: #b8b5d0;
     --text-muted: #6e6a8a;
     --orange: #F15A22;
-    --yellow: #E4E517;
-    --teal: #26bdbe;
-    --pink: #ec3693;
+    --yellow: #F15A22;
+    --teal: #F15A22;
+    --pink: #F15A22;
     --font: 'GT Walsheim', 'Space Grotesk', sans-serif;
     --mono: 'GT Walsheim', sans-serif;
 }
@@ -531,16 +531,19 @@ html[data-theme="light"] .parking-lot-toggle:hover { border-color: rgba(30,25,79
 .stage-step.done .stage-name { opacity: 0.5; }
 
 /* Active step: full color + subtle card background matching home page cards */
-.stage-step.active[data-stage="reframe"]   { background: rgba(241,90,34,0.1);   border-color: rgba(241,90,34,0.2);   --stage-pulse-color: rgba(241,90,34,0.22);   animation: stagePulse 3s ease-in-out infinite; }
-.stage-step.active[data-stage="ideate"]    { background: rgba(236,54,147,0.1); border-color: rgba(236,54,147,0.2); --stage-pulse-color: rgba(236,54,147,0.22); animation: stagePulse 3s ease-in-out infinite; }
-.stage-step.active[data-stage="debate"]    { background: rgba(38,189,190,0.1);  border-color: rgba(38,189,190,0.2);  --stage-pulse-color: rgba(38,189,190,0.22);  animation: stagePulse 3s ease-in-out infinite; }
-.stage-step.active[data-stage="framework"] { background: rgba(228,229,23,0.1);  border-color: rgba(228,229,23,0.2);  --stage-pulse-color: rgba(228,229,23,0.22);  animation: stagePulse 3s ease-in-out infinite; }
+.stage-step.active[data-stage="reframe"],
+.stage-step.active[data-stage="ideate"],
+.stage-step.active[data-stage="debate"],
+.stage-step.active[data-stage="framework"] { background: rgba(241,90,34,0.1); border-color: rgba(241,90,34,0.2); --stage-pulse-color: rgba(241,90,34,0.22); animation: stagePulse 3s ease-in-out infinite; }
 
 .stage-step.active .stage-name { opacity: 1; }
 
 /* All steps open a picker — always pointer, hover tint in stage color */
 .stage-step { cursor: pointer; }
-.stage-step[data-stage="reframe"]:hover   { background: rgba(241,90,34,0.06);   }
+.stage-step[data-stage="reframe"]:hover,
+.stage-step[data-stage="ideate"]:hover,
+.stage-step[data-stage="debate"]:hover,
+.stage-step[data-stage="framework"]:hover { background: rgba(241,90,34,0.06); }
 .stage-step[data-stage="ideate"]:hover    { background: rgba(236,54,147,0.06); }
 .stage-step[data-stage="debate"]:hover    { background: rgba(38,189,190,0.06);  }
 .stage-step[data-stage="framework"]:hover { background: rgba(228,229,23,0.06);  }
@@ -1050,26 +1053,16 @@ html[data-theme="light"] .parking-lot-toggle:hover { border-color: rgba(30,25,79
 }
 .card-reframe .card-exercise-btn:hover .exercise-name { color: var(--orange); }
 
-.card-ideate .card-exercise-btn:hover {
-    border-color: rgba(155, 109, 255, 0.35);
-    background: rgba(155, 109, 255, 0.07);
-    box-shadow: 0 4px 16px rgba(236,54,147,0.12);
-}
-.card-ideate .card-exercise-btn:hover .exercise-name { color: var(--pink); }
-
-.card-debate .card-exercise-btn:hover {
-    border-color: rgba(38, 189, 190, 0.35);
-    background: rgba(38, 189, 190, 0.07);
-    box-shadow: 0 4px 16px rgba(38,189,190,0.12);
-}
-.card-debate .card-exercise-btn:hover .exercise-name { color: var(--teal); }
-
+.card-ideate .card-exercise-btn:hover,
+.card-debate .card-exercise-btn:hover,
 .card-framework .card-exercise-btn:hover {
-    border-color: rgba(228,229,23, 0.35);
-    background: rgba(228,229,23, 0.07);
-    box-shadow: 0 4px 16px rgba(228,229,23,0.12);
+    border-color: rgba(241, 90, 34, 0.35);
+    background: rgba(241, 90, 34, 0.07);
+    box-shadow: 0 4px 16px rgba(241,90,34,0.12);
 }
-.card-framework .card-exercise-btn:hover .exercise-name { color: var(--yellow); }
+.card-ideate .card-exercise-btn:hover .exercise-name,
+.card-debate .card-exercise-btn:hover .exercise-name,
+.card-framework .card-exercise-btn:hover .exercise-name { color: var(--orange); }
 
 /* === EXERCISE INTRO CARD === */
 .msg-intro {
@@ -1703,17 +1696,15 @@ html[data-theme="light"] .mic-btn:hover { border-color: rgba(30,25,79,0.3); colo
 .swap-suggest-btn.mode-reframe:hover  { border-color: var(--orange); background: rgba(255,160,50,0.08); }
 .swap-suggest-btn.mode-reframe .swap-suggest-stage { color: var(--orange); }
 
-.swap-suggest-btn.mode-ideate   { border: 1px solid rgba(236,54,147,0.35); color: var(--pink); }
-.swap-suggest-btn.mode-ideate:hover   { border-color: var(--pink); background: rgba(236,54,147,0.08); }
-.swap-suggest-btn.mode-ideate .swap-suggest-stage { color: var(--pink); }
-
-.swap-suggest-btn.mode-debate   { border: 1px solid rgba(0,200,180,0.35); color: var(--teal); }
-.swap-suggest-btn.mode-debate:hover   { border-color: var(--teal); background: rgba(0,200,180,0.08); }
-.swap-suggest-btn.mode-debate .swap-suggest-stage { color: var(--teal); }
-
-.swap-suggest-btn.mode-framework { border: 1px solid rgba(255,100,160,0.35); color: var(--yellow); }
-.swap-suggest-btn.mode-framework:hover { border-color: var(--yellow); background: rgba(255,100,160,0.08); }
-.swap-suggest-btn.mode-framework .swap-suggest-stage { color: var(--yellow); }
+.swap-suggest-btn.mode-ideate,
+.swap-suggest-btn.mode-debate,
+.swap-suggest-btn.mode-framework { border: 1px solid rgba(241,90,34,0.35); color: var(--orange); }
+.swap-suggest-btn.mode-ideate:hover,
+.swap-suggest-btn.mode-debate:hover,
+.swap-suggest-btn.mode-framework:hover { border-color: var(--orange); background: rgba(241,90,34,0.08); }
+.swap-suggest-btn.mode-ideate .swap-suggest-stage,
+.swap-suggest-btn.mode-debate .swap-suggest-stage,
+.swap-suggest-btn.mode-framework .swap-suggest-stage { color: var(--orange); }
 
 /* === WRAP UP PROMPT === */
 
@@ -2825,10 +2816,10 @@ html[data-theme="light"] .tool-entry-time { background: rgba(30,25,79,0.05); }
 .board-card-delete:hover { color: rgba(255,255,255,0.6); }
 
 /* Stage colours on card left border */
-.board-card[data-stage="reframe"]   { border-left-color: var(--orange); }
-.board-card[data-stage="ideate"]    { border-left-color: #ED3694; }
-.board-card[data-stage="debate"]    { border-left-color: #27BDBE; }
-.board-card[data-stage="framework"] { border-left-color: #E4E517; }
+.board-card[data-stage="reframe"],
+.board-card[data-stage="ideate"],
+.board-card[data-stage="debate"],
+.board-card[data-stage="framework"] { border-left-color: var(--orange); }
 
 /* Add card inline form */
 .board-add-inline {
