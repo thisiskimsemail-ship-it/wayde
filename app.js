@@ -2055,6 +2055,36 @@ function initBoardDragDrop() {
             if (cardId) moveBoardCard(cardId, zone);
         });
     });
+    // Allow drag to parking lot panel
+    const parkingPanel = document.getElementById('parkingLotItems');
+    if (parkingPanel) {
+        parkingPanel.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            parkingPanel.closest('.parking-lot-panel')?.classList.add('drag-over');
+        });
+        parkingPanel.addEventListener('dragleave', (e) => {
+            if (!parkingPanel.contains(e.relatedTarget)) {
+                parkingPanel.closest('.parking-lot-panel')?.classList.remove('drag-over');
+            }
+        });
+        parkingPanel.addEventListener('drop', (e) => {
+            e.preventDefault();
+            parkingPanel.closest('.parking-lot-panel')?.classList.remove('drag-over');
+            const cardId = e.dataTransfer.getData('text/plain');
+            if (cardId) {
+                const card = state.board.cards.find(c => c.id === cardId);
+                if (card) {
+                    // Move to parking lot
+                    state.parkingLot.push({ text: card.text, fromExercise: card.source || 'session', timestamp: Date.now() });
+                    removeBoardCard(cardId);
+                    renderParkingLot();
+                    saveSession();
+                }
+            }
+        });
+    }
+
     document.querySelectorAll('.board-zone').forEach(zoneDiv => {
         const zone = zoneDiv.dataset.zone;
         zoneDiv.addEventListener('dragover', (e) => {
@@ -2085,6 +2115,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const boardCloseBtn = document.getElementById('boardCloseBtn');
     if (boardCloseBtn) boardCloseBtn.addEventListener('click', () => {
         if (state.board.visible) toggleBoard();
+    });
+
+    // Board maximise button
+    const boardMaxBtn = document.getElementById('boardMaxBtn');
+    if (boardMaxBtn) boardMaxBtn.addEventListener('click', () => {
+        const layout = document.getElementById('workshopLayout');
+        if (!layout) return;
+        const isMax = layout.classList.toggle('board-maximised');
+        document.body.classList.toggle('board-maximised', isMax);
+        boardMaxBtn.textContent = isMax ? '⛶' : '⛶';
+        boardMaxBtn.title = isMax ? 'Restore board' : 'Maximise board';
     });
 
     // Init drag-drop on default zones
