@@ -1811,6 +1811,14 @@ function removeBoardCard(cardId) {
             const hint = zoneCards.closest('.board-zone')?.querySelector('.zone-hint');
             if (hint) hint.style.display = '';
         }
+        // Notify Pete that the user removed a card — inject as a system-like user message
+        if (card.zone && card.text) {
+            const zoneName = card.zone.replace(/-/g, ' ');
+            const msg = `[I just removed "${card.text}" from the ${zoneName} block on the canvas. I'm not sure about that one.]`;
+            state.messages.push({ role: 'user', content: msg });
+            appendMessage(msg, 'user');
+            streamResponse();
+        }
     }
     updateBoardCounts();
     saveSession();
