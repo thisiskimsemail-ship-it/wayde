@@ -293,6 +293,10 @@ const inputArea = document.querySelector('.input-area');
 
 // Move input box into welcome (between tagline and cards) or back to body (session)
 function moveInputToWelcome() {
+    // Input stays in footer on welcome — Enter Studio button handles entry
+    // Only move input into welcome if there's no Enter Studio button (legacy fallback)
+    const enterBtn = document.getElementById('enterStudioBtn');
+    if (enterBtn) return;
     const resumeBanner = welcome.querySelector('#resumeBanner');
     const anchor = resumeBanner || welcome.querySelector('.welcome-cards');
     if (anchor && inputArea && inputArea.parentElement !== welcome) {
@@ -733,6 +737,41 @@ function swapToTool(mode, exercise, swapEl) {
 
 // === ROUTING (no tool selected) ===
 
+function enterStudio() {
+    // Enter the studio — facilitator speaks first with welcome + icebreaker
+    state.mode = 'routing';
+    state.exercise = 'suggest';
+    state.routing = true;
+    state.messages = [];
+    state.exchangeCount = 0;
+    state.reportGenerated = false;
+    state.reportText = '';
+
+    welcome.classList.add('hidden');
+    if (inputArea) inputArea.style.display = '';
+    moveInputToSession();
+    modeLabel.textContent = 'Wade Studio · ';
+    inputField.placeholder = 'Type your response...';
+
+    // Send a silent kickoff message so the facilitator greets first
+    state.messages.push({ role: 'user', content: 'I just entered the studio. Welcome me and run an icebreaker.' });
+
+    inputField.value = ''; sendBtn.disabled = true;
+    inputField.style.height = 'auto';
+
+    streamResponse();
+}
+
+// Wire up the Enter Studio button + hide input on welcome
+document.addEventListener('DOMContentLoaded', () => {
+    const enterBtn = document.getElementById('enterStudioBtn');
+    if (enterBtn) {
+        enterBtn.addEventListener('click', enterStudio);
+        // Hide the input bar on the welcome page — it appears when you enter the studio
+        if (inputArea) inputArea.style.display = 'none';
+    }
+});
+
 function startRouting(text) {
     state.mode = 'routing';
     state.exercise = 'suggest';
@@ -744,8 +783,8 @@ function startRouting(text) {
 
     welcome.classList.add('hidden');
     moveInputToSession();
-    routingBack.classList.remove('hidden'); // show subtle back link immediately
-    modeLabel.textContent = 'Finding your tool · ';
+    routingBack.classList.remove('hidden');
+    modeLabel.textContent = 'Wade Studio · ';
 
     state.messages.push({ role: 'user', content: text });
     appendMessage('user', text);

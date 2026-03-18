@@ -62,11 +62,7 @@ body {
 
 /* Logo shifts to exact brand colours per active stage.
    Brand palette: Orange #F15A22 · Pink #ED3694 · Teal #27BDBE · Yellow #E4E517 */
-body[data-mode="reframe"]   .logo { filter: hue-rotate(0deg)   drop-shadow(0 0 10px rgba(241,90,34,0.35)); }
-body[data-mode="ideate"]    .logo { filter: hue-rotate(313deg)  drop-shadow(0 0 10px rgba(237,54,148,0.35)); }
-body[data-mode="debate"]    .logo { filter: hue-rotate(164deg)  drop-shadow(0 0 10px rgba(39,189,190,0.35)); }
-/* Yellow #E4E517 — sepia base ~38°, +25° lands at 63° which matches #E4E517 hue exactly */
-body[data-mode="framework"] .logo { filter: sepia(1) hue-rotate(25deg) saturate(4) brightness(1.45); }
+/* Logo stays orange — no colour shifting per stage */
 
 /* === SESSION BAR (shown during active exercise) === */
 .session-bar {
@@ -771,7 +767,42 @@ html[data-theme="light"] .parking-lot-toggle:hover { border-color: rgba(30,25,79
     color: var(--text-dim);
     max-width: 580px;
     line-height: 1.65;
-    margin-bottom: 2rem;
+    margin-bottom: 0.75rem;
+}
+
+.welcome-tagline:last-of-type { margin-bottom: 2rem; }
+
+.welcome-tagline-bold {
+    font-weight: 600;
+    color: var(--text);
+    font-size: 1.05rem;
+}
+
+/* Enter the Studio CTA */
+.enter-studio-btn {
+    display: inline-block;
+    background: var(--orange);
+    color: #fff;
+    border: none;
+    padding: 0.85rem 2.2rem;
+    font-size: 1.05rem;
+    font-weight: 600;
+    font-family: var(--font);
+    border-radius: 8px;
+    cursor: pointer;
+    letter-spacing: 0.01em;
+    transition: background 0.15s, transform 0.1s, box-shadow 0.15s;
+    margin-bottom: 1.5rem;
+}
+
+.enter-studio-btn:hover {
+    background: #d94f1a;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(241, 90, 34, 0.3);
+}
+
+.enter-studio-btn:active {
+    transform: translateY(0);
 }
 
 /* Welcome hero — full bleed image above text */
