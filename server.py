@@ -1626,72 +1626,88 @@ CORPORATE INNOVATOR lens — strategic and organisationally aware. Frame insight
 
 EDUCATOR lens — practical and classroom-ready. Frame insights around student outcomes, curriculum design, and what's immediately implementable in their specific school context. Actions should be concrete classroom activities, conversations with school leadership, or curriculum pilots. Language: students, curriculum, classroom, embed, school community, implement, year level, staff buy-in.
 
-Begin the report with the title: # Workshop Debrief
+Begin the report with the header structure shown below. Use the exact section names and order.
 
-## Workshop Debrief
+# Innovation Coaching Summary
+**Develop | {EXERCISE_PLACEHOLDER}**
 
-### The Challenge
+---
+
+### Your Innovation Challenge
 2-3 sentences. What the person brought to this session — their situation, problem, or idea.
 
-### Workshop Journey
-2-3 sentences describing the arc of the exercise. Where did divergent thinking happen? Where did convergence land? What was the key turning point — the moment their thinking shifted? This should make the session feel designed and structured, not like a freeform chat. Reference the specific exercise phases.
-
-### What Emerged
-3-5 key insights from the conversation. Be specific — reference what the user actually said or discovered. Not generic advice. Each insight in 1-3 sentences.
+### Session Summary
+2-3 sentences describing the arc of the exercise. Where did divergent thinking happen? Where did convergence land? What was the key turning point? Reference the specific exercise phases.
 
 ### Key Moments
-2-3 direct quotes from the user — the most revealing, surprising, or insight-rich things they said. Use their exact words in quotation marks. Follow each with one sentence explaining what makes it significant. These should feel like real highlights, not paraphrases.
+2-3 highlights from the session. For each: lead with the insight first (one sentence explaining what makes it significant), then the user's exact words in a blockquote. Insight first, quote second.
+
+### Your Lean Canvas
+Render the completed Lean Canvas as a markdown table based on what was discussed in the session. Fill every block with the specific content from the conversation. If a block wasn't discussed, write "To explore" in that cell. Use this exact layout:
+
+| Problem | Solution | Unique Value Proposition | Unfair Advantage | Customer Segments |
+|---|---|---|---|---|
+| [from session] | [from session] | [from session] | [from session] | [from session] |
+
+| **Key Metrics** | **Channels** |
+|---|---|
+| [from session] | [from session] |
+
+| **Cost Structure** | **Revenue Streams** |
+|---|---|
+| [from session] | [from session] |
+
+Every cell should contain 1-3 bullet points of specific content from the conversation — not generic descriptions. If the user stated a hypothesis, write it as stated. Mark any block with weak or untested content with "(hypothesis — needs testing)".
 
 ### Questions Worth Sitting With
-Exactly 3 questions. Each must come from a DIFFERENT type below — do not use the same type twice. Do not ask about anything already fully explored in the session. These should feel uncomfortable, not obvious.
+Exactly 3 questions. Each from a DIFFERENT type — do not repeat types. These should feel uncomfortable, not obvious.
 
-Question types (pick 3 from different categories):
-
-ASSUMPTION — the belief they're treating as fact that hasn't been tested: "What are you assuming about [X] that you haven't actually checked?"
-STAKEHOLDER — the perspective missing from their thinking: "Whose voice is completely absent from this picture — and what would they say?"
-REVERSAL — what if the opposite were true: "What would you do differently if [core belief] turned out to be wrong?"
-TIMELINE — what changes their mind or their situation: "What would have to happen in the next 90 days to make you genuinely reconsider this direction?"
-COST — what they're not seeing they're giving up: "What are you not doing — or not becoming — because you're focused on this?"
-IDENTITY — who they need to be, not just what they need to do: "What kind of [founder / investor / leader / educator] does this path require you to become?"
-SYSTEM — the wider forces they're not accounting for: "What's happening in the world around this that could make your plan irrelevant?"
-
-Write each question in plain language, specific to their situation. No preamble. One sentence each.
+Types (pick 3 from different categories):
+ASSUMPTION — "What are you assuming about [X] that you haven't actually checked?"
+STAKEHOLDER — "Whose voice is completely absent from this picture?"
+REVERSAL — "What would you do differently if [core belief] turned out to be wrong?"
+TIMELINE — "What would have to happen in the next 90 days to make you reconsider?"
+COST — "What are you not doing because you're focused on this?"
+IDENTITY — "What kind of [role] does this path require you to become?"
+SYSTEM — "What's happening around this that could make your plan irrelevant?"
 
 ### Recommended Actions
-5-7 concrete, specific next steps written through the cluster lens identified above. Every action must be grounded in this person's actual context — not generic advice.
+5-7 concrete next steps. Group each action with a tag:
 
-For INVESTORS: at least one action to test a thesis assumption with real data or a real conversation; at least one to strengthen deal flow or a co-investor relationship.
-For FOUNDERS: at least one market-facing action (customer conversation, cheap experiment, live test — external signal, not internal thinking); at least one to build a specific type of relationship.
-For CORPORATE INNOVATORS: at least one action to build internal support or test a business case assumption; at least one to find a peer or external reference point.
-For EDUCATORS: at least one action they can run in a classroom or school within the next two weeks; at least one conversation with school leadership or a colleague.
+**Quick wins** (doable this week, low effort):
+- [action] — time-bound and specific
 
-All clusters: actions must be time-bound and specific — not "talk to customers" but "identify 3 [specific type] and run a 20-minute structured conversation this week."
+**Deeper work** (requires more time or coordination):
+- [action] — time-bound and specific
+
+**What to explore next** (tools and frameworks for your top uncertainties):
+- Always include one recommendation for which Wade Studio tool to use next to address the weakest block on the canvas. Frame it as: "Your [block] is your riskiest assumption. Try running a [tool name] to test it."
+
+All actions must be grounded in this person's actual context — not generic advice. Time-bound and specific.
 
 ### Decisions Made
-List 2-4 specific decisions or commitments the participant made during the session. Frame each as: "You decided to [specific decision]." This is not a summary of insights — these are choices that were explicitly made or strongly implied during the conversation. If fewer than 2 clear decisions were made, omit this section entirely.
+2-4 specific decisions or commitments from the session. Frame as: "You decided to [specific decision]." If fewer than 2 clear decisions were made, omit this section entirely.
 
 ### Parking Lot
-If the session included parked ideas (provided in PARKING_LOT_ITEMS below), list each one with a brief note on which exercise it connects to and a suggested next step for exploring it. If no items were parked, omit this section entirely.
+If parked ideas exist (from PARKING_LOT_ITEMS below), list each with a suggested next step. If none, omit this section.
+
+### Wade Institute — Programs Worth Exploring
+Recommend exactly ONE Wade program using the matching guide. Frame as a natural next step from the session.
+
+Write one sentence tying the program to something concrete they said. Include format, price, and next intake. Always render as a markdown link.
+
+End with: "Book a 15-minute call with the Wade team to talk about [Program Name]" or "Register your interest."
 
 ### From the Wade Community
-Use the matching guide in the knowledge block. Recommend 1-2 people whose story speaks directly to something specific this person said or discovered — not a generic role match. Read the "Recommend when" field for each person before selecting. Write one sentence per person that names the specific parallel between their story and this user's challenge. Always render as a markdown link. If no one is a genuine fit, include only one person rather than forcing a second.
+1-2 matched Waders whose story parallels their challenge. One sentence per person naming the specific connection. Render as markdown links.
 
 ### Suggested Reading
-Recommend 1-2 of the most relevant Wade community articles from the list provided. One sentence explaining why each fits this session. Always render as markdown links. Only recommend articles that are genuinely relevant to what this person is working on.
-
-### Recommended Courses
-Recommend exactly ONE Wade program. Use the matching guide in the knowledge block: first infer whether this person is an investor, an innovator/corporate leader, or an educator — then select the program whose audience description most closely fits their role, company type, and the specific challenge they brought to this session.
-
-Frame the recommendation as a natural next step from the session: "You worked through a Lean Canvas in 25 minutes with one framework. In [Program Name], you'd work through multiple frameworks over [format] with [Facilitator Name] and a cohort of people facing similar challenges. Imagine what you'd leave with."
-
-Write one sentence that ties the program directly to something concrete they said or discovered — not a generic description. Include the format, price, and next intake in parentheses. Always render as a markdown link. Never recommend more than one program.
-
-End with a clear next step: "Book a 15-minute call with the Wade team to talk about [Program Name]" or "Register your interest for the next cohort."
+1-2 relevant Wade community articles. One sentence per article. Render as markdown links.
 
 ### About This Session
-One sentence naming the exact exercise used ({EXERCISE_PLACEHOLDER}) — why it's effective and how it fits this stage of the journey.
+One sentence naming {EXERCISE_PLACEHOLDER} — why it's effective and how it fits this stage. Include a link to the Lean Canvas origin: [Learn more about the Lean Canvas](https://leanstack.com/lean-canvas).
 
-Keep the report warm but rigorous. No filler. Every sentence should earn its place. This is a workshop output — frame everything as the participant's own thinking, not facilitator advice.
+Keep the report warm but rigorous. No filler. Every sentence earns its place. Frame everything as the participant's own thinking.
 
 {WADE_PROGRAMS_PLACEHOLDER}"""
 
