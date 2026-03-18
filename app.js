@@ -1930,6 +1930,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const boardToggleBtn = document.getElementById('boardToggle');
     if (boardToggleBtn) boardToggleBtn.addEventListener('click', toggleBoard);
 
+    // Board close button
+    const boardCloseBtn = document.getElementById('boardCloseBtn');
+    if (boardCloseBtn) boardCloseBtn.addEventListener('click', () => {
+        if (state.board.visible) toggleBoard();
+    });
+
     // Init drag-drop on default zones
     initBoardDragDrop();
 

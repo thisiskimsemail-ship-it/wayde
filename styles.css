@@ -2691,11 +2691,27 @@ html[data-theme="light"] .tool-entry-time { background: rgba(30,25,79,0.05); }
 .board-header {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    gap: 0.5rem;
     padding: 0.25rem 0.25rem 0.5rem;
     border-bottom: 1px solid rgba(255,255,255,0.06);
     flex-shrink: 0;
 }
+.board-close-btn {
+    background: none;
+    border: 1px solid rgba(255,255,255,0.1);
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    width: 22px;
+    height: 22px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: auto;
+    transition: all 0.2s;
+}
+.board-close-btn:hover { border-color: rgba(255,255,255,0.3); color: var(--text); }
 
 .board-title {
     font-size: 0.8rem;
