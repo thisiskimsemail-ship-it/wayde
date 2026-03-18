@@ -95,7 +95,14 @@ body {
     font-weight: 600;
     color: var(--orange);
     letter-spacing: 0.03em;
+    text-decoration: none;
 }
+.session-label-exercise:hover { text-decoration: underline; }
+.mode-label {
+    text-decoration: none;
+    color: inherit;
+}
+.mode-label:hover { text-decoration: underline; }
 
 .session-mode {
     font-family: var(--mono);
@@ -2757,6 +2764,30 @@ html[data-theme="light"] .resume-banner { background: rgba(246,245,245,0.95); bo
     border-bottom: 1px solid rgba(255,255,255,0.05);
 }
 .tool-entry:last-child { border-bottom: none; }
+.tool-entry-featured { border: 1px solid rgba(241,90,34,0.2); border-radius: 10px; padding: 1.5rem; background: rgba(241,90,34,0.03); }
+.tool-entry-cta {
+    display: inline-block;
+    margin-top: 1.25rem;
+    padding: 0.65rem 1.5rem;
+    background: var(--orange);
+    color: #fff;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: opacity 0.2s;
+}
+.tool-entry-cta:hover { opacity: 0.9; }
+.toolbox-coming-soon {
+    margin-top: 2.5rem;
+    padding: 1.5rem;
+    border: 1px dashed rgba(255,255,255,0.1);
+    border-radius: 10px;
+}
+.toolbox-coming-soon h3 { font-size: 0.95rem; color: var(--text-dim); margin-bottom: 0.5rem; }
+.toolbox-coming-soon p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; }
+html[data-theme="light"] .tool-entry-featured { border-color: rgba(241,90,34,0.15); background: rgba(241,90,34,0.03); }
+html[data-theme="light"] .toolbox-coming-soon { border-color: rgba(0,0,0,0.08); }
 
 .tool-entry-header {
     display: flex;
