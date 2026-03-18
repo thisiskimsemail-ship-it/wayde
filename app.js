@@ -547,11 +547,9 @@ function startExercise(mode, exercise, startMsg = null) {
     $('#reportLinkedInBtn')?.classList.add('hidden');
     routingBack.classList.add('hidden');
 
-    // Switch board layout based on exercise
+    // Switch board layout based on exercise (board stays closed — user opens via grid icon when ready)
     if (exercise === 'lean-canvas') {
         switchBoardLayout('lean-canvas');
-        // Auto-open the board for canvas exercises
-        if (!state.board.visible) toggleBoard();
     } else {
         switchBoardLayout('default');
     }
