@@ -38,9 +38,15 @@
         <span class="js-state" id="sessionMode"></span>
         <span class="js-state" id="sessionExercise"></span>
         <button class="js-state" id="toolPickerBtn" disabled></button>
-        <!-- Session label -->
-        <div class="session-label" id="sessionLabel">
-            <a class="session-label-exercise" id="sessionLabelExercise" href="toolbox.html#lean-canvas" target="_blank" rel="noopener">Lean Canvas</a>
+        <!-- Session breadcrumb with dropdown -->
+        <div class="session-breadcrumb" id="sessionBreadcrumb">
+            <span class="breadcrumb-stage" id="breadcrumbStage">CLARIFY</span>
+            <span class="breadcrumb-arrow">→</span>
+            <button class="breadcrumb-tool" id="breadcrumbTool">Five Whys <svg class="breadcrumb-chevron" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg></button>
+            <div class="breadcrumb-dropdown hidden" id="breadcrumbDropdown">
+                <div class="breadcrumb-dropdown-inner" id="breadcrumbDropdownInner"></div>
+                <a class="breadcrumb-toolbox-link" href="toolbox.html" target="_blank" rel="noopener">Explore all tools →</a>
+            </div>
         </div>
         <!-- Hidden legacy elements for compatibility -->
         <div class="stage-progress hidden" id="stageProgress">
@@ -86,8 +92,7 @@
             <h1 class="welcome-title">The Studio</h1>
             <p class="welcome-sub">A virtual workshop, led by Wade.</p>
             <p class="welcome-tagline">More AI answers won't fix it. Better human thinking will.</p>
-            <p class="welcome-tagline">Bring what you're working on. We'll help you unpack it, reframe it, and decide what to do next.</p>
-            <p class="welcome-tagline">You'll be guided through the right tools, challenged where it matters, and leave with something you can actually use.</p>
+            <p class="welcome-tagline">Bring what you're working on. We'll help you unpack it, reframe it, and decide what to do next. You'll be guided through the right tools, challenged where it matters, and leave with something you can actually use.</p>
 
             <button class="enter-studio-btn" id="enterStudioBtn">Step into Wade →</button>
 
@@ -270,6 +275,6 @@
         </div>
     </footer>
 
-    <script src="app.js?v=82"></script>
+    <script src="app.js?v=83"></script>
 </body>
 </html>
