@@ -1396,6 +1396,76 @@ body.board-open > .input-area {
     outline: none;
 }
 
+/* === PITCH PREVIEW CARD === */
+.pitch-preview {
+    background: rgba(241,90,34,0.04);
+    border: 1px solid rgba(241,90,34,0.15);
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1rem;
+    max-width: 800px;
+}
+.pitch-preview.hidden { display: none; }
+.pitch-preview-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--orange);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+.pitch-progress-dots {
+    display: flex;
+    gap: 0.3rem;
+    margin-left: auto;
+}
+.pitch-progress-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(255,255,255,0.2);
+    background: transparent;
+    transition: all 0.3s;
+}
+.pitch-progress-dot.filled {
+    background: var(--orange);
+    border-color: var(--orange);
+}
+.pitch-preview-toggle {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 0 0.25rem;
+}
+.pitch-preview-text {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: var(--text-dim);
+    font-style: italic;
+}
+.pitch-slot {
+    font-style: normal;
+    font-weight: 600;
+    color: var(--text-muted);
+    border-bottom: 1px dashed rgba(255,255,255,0.15);
+    padding: 0 0.1rem;
+    transition: all 0.3s;
+}
+.pitch-slot.filled {
+    color: var(--orange);
+    border-bottom-color: var(--orange);
+}
+.pitch-preview.collapsed .pitch-preview-text { display: none; }
+html[data-theme="light"] .pitch-preview { background: rgba(241,90,34,0.03); border-color: rgba(241,90,34,0.12); }
+html[data-theme="light"] .pitch-progress-dot { border-color: rgba(0,0,0,0.15); }
+html[data-theme="light"] .pitch-slot { border-bottom-color: rgba(0,0,0,0.1); color: #999; }
+html[data-theme="light"] .pitch-slot.filled { color: var(--orange); }
+
 /* Focus glow — always orange */
 .input-field:focus { box-shadow: 0 0 0 3px rgba(241,90,34,0.12); border-color: rgba(241,90,34,0.4); }
 

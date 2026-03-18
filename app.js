@@ -130,6 +130,7 @@ const EXERCISE_LABELS = {
     'rapid-experiment': 'Rapid Experiment',
     'empathy-map': 'Empathy Map',
     'lean-canvas': 'Lean Canvas',
+    'elevator-pitch': 'Elevator Pitch',
     'effectuation': 'Effectuation'
 };
 
@@ -152,6 +153,7 @@ const EXERCISE_MODE = {
     'devils-advocate':  'debate',
     'rapid-experiment': 'debate',
     'lean-canvas':      'framework',
+    'elevator-pitch':   'framework',
     'effectuation':     'framework',
     'analogical':       'framework'
 };
@@ -209,7 +211,7 @@ const EXERCISE_EXCHANGES = {
     'five-whys': 7, 'jtbd': 10, 'empathy-map': 10,
     'hmw': 8, 'scamper': 10, 'crazy-8s': 8,
     'pre-mortem': 10, 'devils-advocate': 10, 'rapid-experiment': 8,
-    'lean-canvas': 12, 'effectuation': 8, 'analogical': 8
+    'lean-canvas': 12, 'elevator-pitch': 6, 'effectuation': 8, 'analogical': 8
 };
 
 // Stage order for progress strip
@@ -257,7 +259,8 @@ const state = {
     currentPhase: null,   // 'diverge' | 'converge'
     sessionStartTime: null, // Date.now() when exercise starts
     board: { cards: [], visible: false },  // workshop board state
-    boardMode: 'default'  // 'default' | 'lean-canvas'
+    boardMode: 'default',  // 'default' | 'lean-canvas'
+    pitch: { customer: null, problem: null, solution: null, benefit: null, differentiator: null }  // elevator pitch components
 };
 
 // === DOM ===
@@ -547,11 +550,24 @@ function startExercise(mode, exercise, startMsg = null) {
     $('#reportLinkedInBtn')?.classList.add('hidden');
     routingBack.classList.add('hidden');
 
-    // Switch board layout based on exercise (board stays closed — user opens via grid icon when ready)
+    // Switch board layout based on exercise
     if (exercise === 'lean-canvas') {
         switchBoardLayout('lean-canvas');
+        // If coming from elevator pitch, carry components into canvas
+        if (Object.values(state.pitch).some(v => v)) {
+            pitchToCanvas();
+        }
     } else {
         switchBoardLayout('default');
+    }
+
+    // Show/hide pitch preview
+    const pitchPreview = document.getElementById('pitchPreview');
+    if (exercise === 'elevator-pitch') {
+        state.pitch = { customer: null, problem: null, solution: null, benefit: null, differentiator: null };
+        if (pitchPreview) pitchPreview.classList.remove('hidden');
+    } else {
+        if (pitchPreview) pitchPreview.classList.add('hidden');
     }
 
     // Show report CTA immediately but disabled — enables after first exchange
@@ -1259,6 +1275,19 @@ async function streamResponse() {
             }
         }
         fullText = fullText.replace(/\n?\[CANVAS:[a-z_-]+:\s*[^\]]+\]/g, '').trim();
+
+        // Parse [PITCH:component: text] tags — Elevator Pitch components
+        const pitchRegex = /\[PITCH:([a-z_-]+):\s*([^\]]+)\]/g;
+        const pitchMatches = fullText.matchAll(pitchRegex);
+        for (const pm of pitchMatches) {
+            const component = pm[1].trim().toLowerCase();
+            const text = pm[2].trim();
+            if (['customer', 'problem', 'solution', 'benefit', 'differentiator'].includes(component)) {
+                state.pitch[component] = text;
+                updatePitchPreview();
+            }
+        }
+        fullText = fullText.replace(/\n?\[PITCH:[a-z_-]+:\s*[^\]]+\]/g, '').trim();
 
         // Parse [BOARD:open] and [BOARD:close] signals
         if (fullText.includes('[BOARD:open]')) {
@@ -2343,6 +2372,65 @@ function renderMarkdown(text) {
 
     return html;
 }
+
+// === PITCH PREVIEW ===
+
+function updatePitchPreview() {
+    const preview = document.getElementById('pitchPreview');
+    if (!preview) return;
+    // Show preview when any pitch component is set
+    const hasAny = Object.values(state.pitch).some(v => v);
+    if (hasAny) preview.classList.remove('hidden');
+
+    // Update slots
+    ['customer', 'problem', 'solution', 'benefit', 'differentiator'].forEach(key => {
+        const slot = preview.querySelector(`.pitch-slot[data-slot="${key}"]`);
+        if (slot) {
+            if (state.pitch[key]) {
+                slot.textContent = state.pitch[key];
+                slot.classList.add('filled');
+            } else {
+                slot.textContent = '___';
+                slot.classList.remove('filled');
+            }
+        }
+    });
+
+    // Update progress dots
+    const dots = document.querySelectorAll('.pitch-progress-dot');
+    const components = ['customer', 'problem', 'solution', 'benefit', 'differentiator'];
+    dots.forEach((dot, i) => {
+        dot.classList.toggle('filled', !!state.pitch[components[i]]);
+    });
+}
+
+// Canvas handoff — carry pitch components into Lean Canvas
+function pitchToCanvas() {
+    const mapping = {
+        customer: 'segments',
+        problem: 'problem',
+        solution: 'solution',
+        benefit: 'uvp',
+        differentiator: 'unfair'
+    };
+    Object.entries(mapping).forEach(([pitchKey, canvasZone]) => {
+        if (state.pitch[pitchKey]) {
+            addBoardCard(state.pitch[pitchKey], canvasZone, 'framework', 'Elevator Pitch');
+        }
+    });
+}
+
+// Pitch preview toggle
+document.addEventListener('DOMContentLoaded', () => {
+    const toggleBtn = document.getElementById('pitchPreviewToggle');
+    const preview = document.getElementById('pitchPreview');
+    if (toggleBtn && preview) {
+        toggleBtn.addEventListener('click', () => {
+            preview.classList.toggle('collapsed');
+            toggleBtn.textContent = preview.classList.contains('collapsed') ? '+' : '-';
+        });
+    }
+});
 
 // === TEXT SIZE CONTROL ===
 document.addEventListener('DOMContentLoaded', () => {

@@ -107,6 +107,28 @@
                 <button class="resume-dismiss" id="resumeDismiss">✕</button>
             </div>
         </div>
+        <!-- Pitch Preview Card (hidden until elevator-pitch exercise starts) -->
+        <div class="pitch-preview hidden" id="pitchPreview">
+            <div class="pitch-preview-header">
+                <span>Your pitch</span>
+                <div class="pitch-progress-dots">
+                    <span class="pitch-progress-dot" title="Customer"></span>
+                    <span class="pitch-progress-dot" title="Problem"></span>
+                    <span class="pitch-progress-dot" title="Solution"></span>
+                    <span class="pitch-progress-dot" title="Benefit"></span>
+                    <span class="pitch-progress-dot" title="Differentiator"></span>
+                </div>
+                <button class="pitch-preview-toggle" id="pitchPreviewToggle">-</button>
+            </div>
+            <p class="pitch-preview-text" id="pitchPreviewText">
+                For <span class="pitch-slot" data-slot="customer">___</span>
+                who <span class="pitch-slot" data-slot="problem">___</span>,
+                <span class="pitch-slot" data-slot="solution">___</span>
+                that <span class="pitch-slot" data-slot="benefit">___</span>.
+                Unlike the alternatives, we <span class="pitch-slot" data-slot="differentiator">___</span>.
+            </p>
+        </div>
+
         <div class="messages" id="messages"></div>
 
         <!-- Report card (shown after lead capture) -->
@@ -257,6 +279,6 @@
         </div>
     </footer>
 
-    <script src="app.js?v=75"></script>
+    <script src="app.js?v=76"></script>
 </body>
 </html>
