@@ -314,13 +314,13 @@ function moveInputToSession() {
 // Render "Challenge me" + "Help me" buttons after each AI response
 function renderSessionActions() {
     if (!state.mode || state.routing || state.reportGenerated) return;
-    $('.session-actions')?.remove();
+    document.querySelector('.chat-action-btns')?.remove();
 
     const actionsDiv = document.createElement('div');
-    actionsDiv.className = 'session-actions';
+    actionsDiv.className = 'chat-action-btns';
 
     const challengeBtn = document.createElement('button');
-    challengeBtn.className = 'session-action-btn challenge-btn' + (state.pushHarder ? ' active' : '');
+    challengeBtn.className = 'chat-action-btn challenge-btn' + (state.pushHarder ? ' active' : '');
     challengeBtn.textContent = state.pushHarder ? 'Challenge mode on' : 'Challenge me';
     challengeBtn.addEventListener('click', () => {
         state.pushHarder = !state.pushHarder;
@@ -329,7 +329,7 @@ function renderSessionActions() {
     });
 
     const helpBtn = document.createElement('button');
-    helpBtn.className = 'session-action-btn help-btn';
+    helpBtn.className = 'chat-action-btn help-btn';
     helpBtn.textContent = 'Help me';
     helpBtn.addEventListener('click', () => {
         if (state.streaming) return;
@@ -1469,6 +1469,8 @@ function revealFullReport() {
     $('#reportDownloadBtn').classList.remove('hidden');
     $('#reportShareBtn').classList.remove('hidden');
     $('#reportLinkedInBtn')?.classList.remove('hidden');
+    $('#reportSubstackBtn')?.classList.remove('hidden');
+    $('#reportEmailBtn')?.classList.remove('hidden');
 
     // Show next exercise recommendation
     renderNextExercisePanel();
@@ -1646,6 +1648,82 @@ async function copyForLinkedIn() {
 }
 
 $('#reportLinkedInBtn')?.addEventListener('click', copyForLinkedIn);
+
+// === SUBSTACK COPY ===
+
+async function copyForSubstack() {
+    const btn = $('#reportSubstackBtn');
+    btn.textContent = 'Copying...';
+    btn.disabled = true;
+    try {
+        // For Substack, copy the raw markdown — it renders natively
+        await navigator.clipboard.writeText(state.reportText);
+        btn.textContent = 'Copied! ✓';
+        setTimeout(() => { btn.textContent = 'Copy for Substack'; btn.disabled = false; }, 2500);
+    } catch(e) {
+        btn.textContent = 'Failed — try again';
+        btn.disabled = false;
+    }
+}
+
+$('#reportSubstackBtn')?.addEventListener('click', copyForSubstack);
+
+// === EMAIL REPORT COPY ===
+
+async function emailReportCopy() {
+    const btn = $('#reportEmailBtn');
+    // Open save modal to get email, then send report
+    const overlay = document.getElementById('saveModalOverlay');
+    const emailInput = document.getElementById('saveModalEmail');
+    const submitBtn = document.getElementById('saveModalSubmit');
+    if (!overlay) return;
+
+    // Override submit to send report email instead of session save
+    overlay.classList.remove('hidden');
+    if (emailInput) emailInput.focus();
+
+    const originalHandler = submitBtn.onclick;
+    submitBtn.onclick = async () => {
+        const email = emailInput?.value?.trim();
+        if (!email) return;
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Sending...';
+        try {
+            await fetch('/api/lead', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email,
+                    name: '',
+                    company: '',
+                    role: '',
+                    mode: state.mode,
+                    exercise: state.exercise,
+                    report: state.reportText,
+                    rating: state.rating,
+                    messages: state.messages
+                })
+            });
+            const statusEl = document.getElementById('saveModalStatus');
+            if (statusEl) {
+                statusEl.textContent = 'Report sent! Check your inbox.';
+                statusEl.classList.remove('hidden');
+            }
+            setTimeout(() => { overlay.classList.add('hidden'); }, 2000);
+        } catch(e) {
+            const statusEl = document.getElementById('saveModalStatus');
+            if (statusEl) {
+                statusEl.textContent = 'Failed to send. Try again.';
+                statusEl.classList.remove('hidden');
+            }
+        }
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Send link';
+        submitBtn.onclick = originalHandler;
+    };
+}
+
+$('#reportEmailBtn')?.addEventListener('click', emailReportCopy);
 
 // === REPORT META + NEW SESSION ===
 

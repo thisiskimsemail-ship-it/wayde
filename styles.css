@@ -2467,10 +2467,44 @@ html[data-theme="light"] .text-size-option:hover { background: rgba(0,0,0,0.04);
     color: var(--text-dim);
 }
 
-.challenge-btn.active {
-    border-color: rgba(241,90,34,0.5);
+/* === IN-CHAT HELP / CHALLENGE BUTTONS === */
+.chat-action-btns {
+    display: flex;
+    gap: 0.5rem;
+    margin: 0.75rem 0;
+    max-width: 800px;
+}
+.chat-action-btn {
+    padding: 0.5rem 1.25rem;
+    border-radius: 20px;
+    font-family: var(--font);
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 1.5px solid rgba(255,255,255,0.15);
+    background: transparent;
+    color: var(--text-dim);
+}
+.chat-action-btn:hover {
+    border-color: var(--orange);
     color: var(--orange);
-    background: rgba(241,90,34,0.08);
+}
+.chat-action-btn.help-btn:hover {
+    background: rgba(241,90,34,0.06);
+}
+.chat-action-btn.challenge-btn.active {
+    border-color: var(--orange);
+    color: var(--orange);
+    background: rgba(241,90,34,0.1);
+}
+html[data-theme="light"] .chat-action-btn {
+    border-color: rgba(0,0,0,0.12);
+    color: #666;
+}
+html[data-theme="light"] .chat-action-btn:hover {
+    border-color: var(--orange);
+    color: var(--orange);
 }
 
 /* === NEXT EXERCISE PANEL === */
