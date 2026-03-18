@@ -2989,6 +2989,20 @@ html[data-theme="light"] .resume-banner { background: rgba(246,245,245,0.95); bo
     transition: opacity 0.2s;
 }
 .tool-entry-cta:hover { opacity: 0.9; }
+
+/* Toolbox stage colour coding */
+.tool-stage-reframe   { border-left: 3px solid var(--orange); }
+.tool-stage-ideate    { border-left: 3px solid var(--pink); }
+.tool-stage-debate    { border-left: 3px solid var(--teal); }
+.tool-stage-framework { border-left: 3px solid var(--yellow); }
+.tool-stage-reframe .tool-entry-name   { color: var(--orange); }
+.tool-stage-ideate .tool-entry-name    { color: var(--pink); }
+.tool-stage-debate .tool-entry-name    { color: var(--teal); }
+.tool-stage-framework .tool-entry-name { color: var(--yellow); }
+.tool-stage-reframe .tool-entry-cta   { background: var(--orange); }
+.tool-stage-ideate .tool-entry-cta    { background: var(--pink); }
+.tool-stage-debate .tool-entry-cta    { background: var(--teal); }
+.tool-stage-framework .tool-entry-cta { background: var(--yellow); color: #1a1a2e; }
 .toolbox-coming-soon {
     margin-top: 2.5rem;
     padding: 1.5rem;
