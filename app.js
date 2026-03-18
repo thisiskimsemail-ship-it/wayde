@@ -1835,6 +1835,33 @@ async function shareReport() {
 
 $('#reportShareBtn').addEventListener('click', shareReport);
 
+// === SHARE DROPDOWN TOGGLE ===
+const shareToggle = $('#reportShareToggle');
+const shareMenu = $('#reportShareMenu');
+if (shareToggle && shareMenu) {
+    shareToggle.addEventListener('click', () => shareMenu.classList.toggle('hidden'));
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.report-share-dropdown')) shareMenu.classList.add('hidden');
+    });
+}
+
+// === COPY ALL REPORT TEXT ===
+const copyAllBtn = $('#reportCopyAllBtn');
+if (copyAllBtn) {
+    copyAllBtn.addEventListener('click', async () => {
+        const content = $('#reportContent');
+        if (!content) return;
+        try {
+            await navigator.clipboard.writeText(content.innerText);
+            copyAllBtn.textContent = 'Copied!';
+            setTimeout(() => { copyAllBtn.textContent = 'Copy all'; }, 2000);
+        } catch(e) {
+            copyAllBtn.textContent = 'Failed';
+            setTimeout(() => { copyAllBtn.textContent = 'Copy all'; }, 2000);
+        }
+    });
+}
+
 // === LINKEDIN POST ===
 
 async function copyForLinkedIn() {

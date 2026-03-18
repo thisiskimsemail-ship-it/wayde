@@ -2316,14 +2316,42 @@ html[data-theme="light"] .option-chip:hover {
 
 /* === REPORT CARD === */
 .report-card {
-    max-width: 800px;
+    max-width: 680px;
     margin: 1.5rem auto 0;
     background: rgba(255,255,255,0.03);
     border: 1px solid rgba(241, 90, 34, 0.2);
     border-radius: 10px;
-    padding: 1.5rem;
+    padding: 2rem;
     animation: fadeIn 0.3s ease;
 }
+.report-actions-top {
+    display: flex; gap: 0.5rem; align-items: center;
+    margin-bottom: 1.5rem; padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.report-share-dropdown { position: relative; }
+.report-share-menu {
+    position: absolute; top: 100%; right: 0; margin-top: 4px;
+    background: var(--bg-light, #1a1750); border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 8px; padding: 0.25rem 0; min-width: 180px; z-index: 100;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+}
+.report-share-option {
+    display: block; width: 100%; text-align: left;
+    background: none; border: none; color: var(--text-dim);
+    padding: 0.5rem 0.75rem; font-size: 0.8rem; cursor: pointer;
+}
+.report-share-option:hover { background: rgba(255,255,255,0.06); color: var(--text); }
+.report-new-session {
+    background: none; border: none; color: var(--text-dim);
+    font-size: 0.8rem; cursor: pointer; padding: 0;
+    margin-bottom: 0.75rem;
+}
+.report-new-session:hover { color: var(--text); }
+.report-footer-line { font-size: 0.75rem; color: var(--text-dim); }
+.report-footer-line a { color: var(--text-dim); }
+.report-footer-contact { font-size: 0.75rem; color: var(--text-dim); margin-top: 0.25rem; }
+.report-footer-contact a { color: var(--orange); }
 
 .report-card.hidden { display: none; }
 
@@ -2381,7 +2409,24 @@ html[data-theme="light"] .option-chip:hover {
     font-size: 1.1875rem;
     font-weight: 600;
     color: var(--text);
-    margin: 1rem 0 0.3rem;
+    margin: 2.5rem 0 0.5rem;
+}
+.report-content h3:first-child { margin-top: 0; }
+.report-content blockquote {
+    border-left: 3px solid var(--orange);
+    padding: 0.75rem 1rem;
+    margin: 0.75rem 0;
+    font-size: 1.05rem;
+    font-style: italic;
+    color: var(--text);
+    background: rgba(241,90,34,0.04);
+    border-radius: 0 6px 6px 0;
+    line-height: 1.6;
+}
+.report-content hr {
+    border: none;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    margin: 2rem 0;
 }
 
 .report-content strong {
@@ -2434,14 +2479,11 @@ html[data-theme="light"] .option-chip:hover {
 
 .report-footer {
     display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    margin-top: 1.5rem;
+    flex-direction: column;
+    gap: 0.25rem;
+    margin-top: 2.5rem;
     padding-top: 1rem;
-    border-top: 1px solid rgba(255,255,255,0.06);
-    font-size: 0.875rem;
-    color: var(--text-muted);
-    font-family: var(--mono);
+    border-top: 1px solid rgba(255,255,255,0.08);
 }
 
 .report-logo {
