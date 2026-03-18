@@ -1,16 +1,16 @@
 // === THEME TOGGLE ===
 (function() {
-    const saved = localStorage.getItem('waide_theme') || 'dark';
+    const saved = localStorage.getItem('studio_theme') || 'dark';
     if (saved === 'light') document.documentElement.setAttribute('data-theme', 'light');
     document.addEventListener('DOMContentLoaded', () => {
         const btn = document.getElementById('themeToggle');
         if (!btn) return;
         const icon = btn.querySelector('.theme-icon');
-        icon.textContent = (localStorage.getItem('waide_theme') || 'dark') === 'light' ? '☾' : '☀';
+        icon.textContent = (localStorage.getItem('studio_theme') || 'dark') === 'light' ? '☾' : '☀';
         btn.addEventListener('click', () => {
             const next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
             document.documentElement.setAttribute('data-theme', next);
-            localStorage.setItem('waide_theme', next);
+            localStorage.setItem('studio_theme', next);
             icon.textContent = next === 'light' ? '☾' : '☀';
         });
     });
@@ -188,6 +188,30 @@ const EXERCISE_HINTS = {
     'analogical':       'e.g. "How might we reduce handoff delays between teams the way Formula 1 does pit stops?"'
 };
 
+// Exercise arc descriptions for activity brief cards
+const EXERCISE_ARCS = {
+    'five-whys':        'We\'ll name your challenge, then dig through five layers of "why?" to find the root cause underneath.',
+    'jtbd':             'We\'ll map out what your customer is really trying to get done, then narrow to the job that matters most.',
+    'empathy-map':      'We\'ll build a picture of what your user thinks, feels, says, and does — then find the gaps between them.',
+    'hmw':              'We\'ll reframe your problem as opportunity questions, then pick the one with the most creative potential.',
+    'scamper':          'We\'ll run your idea through seven creative lenses, then pull out the strongest twist.',
+    'crazy-8s':         'We\'ll rapidly generate eight different ideas, then zero in on the one worth developing.',
+    'pre-mortem':       'We\'ll imagine your project has failed spectacularly, then work backwards to find what you can prevent now.',
+    'devils-advocate':  'We\'ll stress-test your thinking from every angle, then identify what holds up and what needs work.',
+    'rapid-experiment': 'We\'ll design a quick, cheap test to validate your riskiest assumption before you build.',
+    'lean-canvas':      'We\'ll map your venture model on one page, then pressure-test the weakest blocks.',
+    'effectuation':     'We\'ll start with what you have — skills, network, resources — then find where they point.',
+    'analogical':       'We\'ll borrow solutions from unexpected places and adapt them to your challenge.'
+};
+
+// Expected exchange counts per exercise (for progress indicator)
+const EXERCISE_EXCHANGES = {
+    'five-whys': 7, 'jtbd': 10, 'empathy-map': 10,
+    'hmw': 8, 'scamper': 10, 'crazy-8s': 8,
+    'pre-mortem': 10, 'devils-advocate': 10, 'rapid-experiment': 8,
+    'lean-canvas': 12, 'effectuation': 8, 'analogical': 8
+};
+
 // Stage order for progress strip
 const STAGE_ORDER = ['reframe', 'ideate', 'debate', 'framework'];
 
@@ -227,8 +251,11 @@ const state = {
     projectContext: [],  // accumulated context from previous stages
     routing: false,      // true when in tool-suggestion mode (no exercise selected)
     rating: null,        // thumbs up/down from wrap card
-    pushHarder: false,   // more Socratic coaching mode
-    preReportAsked: false // true after pre-report handoff question has been shown
+    pushHarder: false,   // more Socratic facilitation mode
+    preReportAsked: false, // true after pre-report handoff question has been shown
+    parkingLot: [],       // { text, fromExercise, timestamp }
+    currentPhase: null,   // 'diverge' | 'converge'
+    sessionStartTime: null // Date.now() when exercise starts
 };
 
 // === DOM ===
@@ -476,6 +503,8 @@ function startExercise(mode, exercise, startMsg = null) {
     state.routing = false;
     state.rating = null;
     state.preReportAsked = false;
+    state.currentPhase = null;
+    state.sessionStartTime = Date.now();
 
     // Hide welcome, move input to session, show session bar
     welcome.classList.add('hidden');
@@ -511,7 +540,7 @@ function startExercise(mode, exercise, startMsg = null) {
     // Show report CTA immediately but disabled — enables after first exchange
     reportCta.classList.remove('hidden');
     reportCtaBtn.disabled = true;
-    reportCtaBtn.textContent = 'Talk to WAiDE to build your report';
+    reportCtaBtn.textContent = 'Workshop your thinking to build your report';
 
     if (autoStartMsg) {
         // Use the user's actual description as the first message so WAiDE skips
@@ -520,13 +549,15 @@ function startExercise(mode, exercise, startMsg = null) {
         state.messages = [{ role: 'user', content: autoStartMsg }];
         streamResponse();
     } else {
-        // Show exercise description intro card
+        // Show activity brief card
         const desc = EXERCISE_DESCS[exercise];
+        const arc = EXERCISE_ARCS[exercise];
+        const expectedExchanges = EXERCISE_EXCHANGES[exercise] || 8;
         if (desc) {
             const introDiv = document.createElement('div');
-            introDiv.className = 'msg-intro';
+            introDiv.className = 'activity-brief';
             introDiv.dataset.mode = mode;
-            introDiv.innerHTML = `<div class="msg-intro-label"><a class="intro-label-link" href="toolbox.html#${exercise}" target="_blank" rel="noopener">${EXERCISE_LABELS[exercise] || exercise}</a></div>${desc}`;
+            introDiv.innerHTML = `<div class="activity-brief-header"><span class="activity-brief-stage">${MODE_LABELS[mode] || mode}</span><span class="activity-brief-time">~${Math.round(expectedExchanges * 2)} min · ~${expectedExchanges} exchanges</span></div><h3 class="activity-brief-name"><a class="intro-label-link" href="toolbox.html#${exercise}" target="_blank" rel="noopener">${EXERCISE_LABELS[exercise] || exercise}</a></h3><p class="activity-brief-desc">${desc}</p>${arc ? `<p class="activity-brief-arc">${arc}</p>` : ''}`;
             messagesEl.appendChild(introDiv);
         }
         // Set a tool-specific placeholder hint
@@ -558,6 +589,10 @@ function forceCloseSession() {
     sendBtn.disabled = true;
     modeLabel.textContent = '';
     state.rating = null;
+    state.parkingLot = [];
+    updateParkingLot();
+    const parkingPanel = $('#parkingLotPanel');
+    if (parkingPanel) parkingPanel.classList.add('hidden');
     setPickerEnabled(false);
     toolPickerMenu.classList.add('hidden');
     reportCta.classList.add('hidden');
@@ -649,7 +684,7 @@ function swapToTool(mode, exercise, swapEl) {
 
     reportCta.classList.remove('hidden');
     reportCtaBtn.disabled = true;
-    reportCtaBtn.textContent = 'Talk to WAiDE to build your report';
+    reportCtaBtn.textContent = 'Workshop your thinking to build your report';
 
     // Remove swap suggestion card from chat
     if (swapEl) swapEl.remove();
@@ -796,7 +831,7 @@ function scrollToBottom() {
 function maybeShowReportCta() {
     if (state.exchangeCount >= 3 && !state.reportGenerated) {
         reportCtaBtn.disabled = false;
-        reportCtaBtn.textContent = 'Access your Innovation Coaching Session report →';
+        reportCtaBtn.textContent = 'Access your Workshop Session report →';
         // Enable within-stage tool picker after first real exchange
         setPickerEnabled(true);
     }
@@ -808,7 +843,7 @@ function maybeShowReportCta() {
 
 function saveSession() {
     if (!state.mode || state.mode === 'routing') return;
-    localStorage.setItem('waide_session', JSON.stringify({
+    localStorage.setItem('studio_session', JSON.stringify({
         mode: state.mode,
         exercise: state.exercise,
         messages: state.messages,
@@ -816,12 +851,13 @@ function saveSession() {
         reportGenerated: state.reportGenerated,
         reportText: state.reportText,
         projectContext: state.projectContext,
+        parkingLot: state.parkingLot,
         savedAt: Date.now()
     }));
 }
 
 function clearSession() {
-    localStorage.removeItem('waide_session');
+    localStorage.removeItem('studio_session');
 }
 
 function restoreSession(session) {
@@ -833,9 +869,11 @@ function restoreSession(session) {
         reportGenerated: session.reportGenerated,
         reportText: session.reportText,
         projectContext: session.projectContext || [],
+        parkingLot: session.parkingLot || [],
         routing: false,
         rating: null
     });
+    updateParkingLot();
 
     welcome.classList.add('hidden');
     moveInputToSession();
@@ -904,7 +942,7 @@ function renderWrapPrompt() {
         const nextExName = EXERCISE_LABELS[next.exercise] || next.exercise;
         actionsHtml += `<button class="wrap-btn wrap-btn-continue">Continue to ${nextModeName} — ${nextExName} →</button>`;
     }
-    actionsHtml += '<button class="wrap-btn wrap-btn-report">Access your Innovation Coaching Session report →</button>';
+    actionsHtml += '<button class="wrap-btn wrap-btn-report">Access your Workshop Session report →</button>';
 
     wrapDiv.innerHTML = `
         <p class="wrap-prompt-text">This exercise is complete.</p>
@@ -1090,6 +1128,46 @@ async function streamResponse() {
             }
         }
 
+        // Parse [PARK: description] tags — parking lot items
+        const parkMatches = fullText.match(/\[PARK:\s*([^\]]+)\]/g);
+        if (parkMatches) {
+            parkMatches.forEach(tag => {
+                const desc = tag.match(/\[PARK:\s*([^\]]+)\]/)[1].trim();
+                state.parkingLot.push({
+                    text: desc,
+                    fromExercise: EXERCISE_LABELS[state.exercise] || state.exercise || 'session',
+                    timestamp: Date.now()
+                });
+            });
+            fullText = fullText.replace(/\n?\[PARK:\s*[^\]]+\]/g, '').trim();
+            if (agentDiv) agentDiv.innerHTML = renderMarkdown(fullText);
+            updateParkingLot();
+        }
+
+        // Parse [PHASE: diverge|converge] tags — workshop phase indicator
+        const phaseMatch = fullText.match(/\[PHASE:\s*(diverge|converge)\]/);
+        if (phaseMatch) {
+            state.currentPhase = phaseMatch[1];
+            fullText = fullText.replace(/\n?\[PHASE:\s*(?:diverge|converge)\]/g, '').trim();
+            if (agentDiv) agentDiv.innerHTML = renderMarkdown(fullText);
+            updatePhaseIndicator(state.currentPhase);
+            // Insert phase transition divider in chat
+            const transDiv = document.createElement('div');
+            transDiv.className = `phase-transition phase-${state.currentPhase}`;
+            transDiv.innerHTML = `<span class="phase-transition-text">— ${state.currentPhase === 'diverge' ? 'Opening up' : 'Time to narrow down'} —</span>`;
+            messagesEl.appendChild(transDiv);
+        }
+
+        // Parse [CELEBRATE] tag — breakthrough moment effect
+        const celebrateMatch = fullText.match(/\[CELEBRATE\]/);
+        if (celebrateMatch) {
+            fullText = fullText.replace(/\n?\[CELEBRATE\]/g, '').trim();
+            if (agentDiv) {
+                agentDiv.innerHTML = renderMarkdown(fullText);
+                agentDiv.classList.add('celebrate');
+            }
+        }
+
         state.messages.push({ role: 'assistant', content: fullText });
 
         if (state.routing) {
@@ -1110,8 +1188,9 @@ async function streamResponse() {
             scrollToBottom();
         } else {
             state.exchangeCount++;
+            updateProgressIndicator();
             maybeShowReportCta();
-            // Show wrap-up card if WAiDE signalled the exercise is complete
+            // Show wrap-up card if facilitator signalled the exercise is complete
             if (wrapSignaled && !state.reportGenerated) {
                 renderWrapPrompt();
             }
@@ -1138,7 +1217,8 @@ async function generateReport() {
             body: JSON.stringify({
                 mode: state.mode,
                 exercise: state.exercise,
-                messages: state.messages
+                messages: state.messages,
+                parking_lot: state.parkingLot
             })
         });
 
@@ -1374,13 +1454,13 @@ ${reportContent.innerHTML}
 <div class="wade-cta-block">
   <div class="wade-cta-label">Ready to go deeper?</div>
   <h3>Talk to the Wade Team</h3>
-  <p>Interested in working with Wade Institute to build your innovation capability — or take this challenge further with expert coaching, a structured program, or a custom engagement?</p>
+  <p>Interested in working with Wade Institute to build your innovation capability — or take this challenge further with a structured programme, expert facilitation, or a custom engagement?</p>
   <div class="wade-cta-contact">enquiries@wadeinstitute.org.au &nbsp;·&nbsp; +61 3 9344 1100</div>
   <a class="wade-cta-link" href="https://wadeinstitute.org.au/programs/">Explore Wade Programs</a>
 </div>
 <div class="rpt-footer">
   <span>Wade Institute of Entrepreneurship &nbsp;·&nbsp; wadeinstitute.org.au</span>
-  <span>Generated by WAiDE AI &nbsp;·&nbsp; For educational purposes only &nbsp;·&nbsp; Decisions remain yours.</span>
+  <span>Generated by Wade Studio &nbsp;·&nbsp; For educational purposes only &nbsp;·&nbsp; Decisions remain yours.</span>
 </div>
 </body></html>`;
     const url = URL.createObjectURL(new Blob([html], { type: 'text/html' }));
@@ -1482,6 +1562,121 @@ function renderNextExercisePanel() {
     });
 }
 
+// === WORKSHOP PHASE & PROGRESS ===
+
+function updatePhaseIndicator(phase) {
+    const el = document.getElementById('phaseIndicator');
+    if (!el) return;
+    el.className = 'phase-indicator';
+    if (phase === 'diverge') {
+        el.textContent = 'Opening up ↗';
+        el.classList.add('phase-diverge');
+    } else if (phase === 'converge') {
+        el.textContent = 'Narrowing down ↘';
+        el.classList.add('phase-converge');
+    } else {
+        el.textContent = '';
+    }
+}
+
+function updateProgressIndicator() {
+    const el = document.getElementById('progressIndicator');
+    if (!el || !state.exercise) return;
+    const expected = EXERCISE_EXCHANGES[state.exercise] || 8;
+    const current = state.exchangeCount;
+    const pct = Math.min(100, Math.round((current / expected) * 100));
+    el.innerHTML = `<span class="progress-count">${current} of ~${expected}</span><div class="progress-bar-track"><div class="progress-bar-fill" style="width:${pct}%"></div></div>`;
+    el.classList.remove('hidden');
+}
+
+// === PARKING LOT ===
+
+function updateParkingLot() {
+    const countEl = $('#parkingLotCount');
+    const itemsEl = $('#parkingLotItems');
+    if (!countEl || !itemsEl) return;
+
+    const count = state.parkingLot.length;
+    countEl.textContent = count;
+    countEl.classList.toggle('hidden', count === 0);
+
+    itemsEl.innerHTML = '';
+    state.parkingLot.forEach((item, i) => {
+        const div = document.createElement('div');
+        div.className = 'parking-lot-item';
+        div.innerHTML = `
+            <div class="parking-lot-item-text">${item.text}</div>
+            <div class="parking-lot-item-from">${item.fromExercise}</div>
+            <button class="parking-lot-item-delete" data-index="${i}" title="Remove">✕</button>
+        `;
+        div.querySelector('.parking-lot-item-delete').addEventListener('click', () => {
+            state.parkingLot.splice(i, 1);
+            updateParkingLot();
+            saveSession();
+        });
+        itemsEl.appendChild(div);
+    });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const toggle = $('#parkingLotToggle');
+    const panel = $('#parkingLotPanel');
+    const closeBtn = $('#parkingLotClose');
+    const addBtn = $('#parkingLotAdd');
+
+    if (!toggle || !panel) return;
+
+    toggle.addEventListener('click', () => {
+        panel.classList.toggle('hidden');
+    });
+
+    if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+            panel.classList.add('hidden');
+        });
+    }
+
+    if (addBtn) {
+        addBtn.addEventListener('click', () => {
+            const existing = panel.querySelector('.parking-lot-add-input');
+            if (existing) { existing.querySelector('input').focus(); return; }
+
+            const row = document.createElement('div');
+            row.className = 'parking-lot-add-input';
+            row.innerHTML = `
+                <input type="text" placeholder="Park an idea..." class="parking-lot-input">
+                <button class="parking-lot-input-save">Add</button>
+            `;
+            addBtn.before(row);
+            const input = row.querySelector('input');
+            const saveBtn = row.querySelector('.parking-lot-input-save');
+            input.focus();
+
+            const doAdd = () => {
+                const text = input.value.trim();
+                if (text) {
+                    state.parkingLot.push({
+                        text,
+                        fromExercise: EXERCISE_LABELS[state.exercise] || state.exercise || 'manual',
+                        timestamp: Date.now()
+                    });
+                    updateParkingLot();
+                    saveSession();
+                }
+                row.remove();
+            };
+
+            saveBtn.addEventListener('click', doAdd);
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') { e.preventDefault(); doAdd(); }
+                if (e.key === 'Escape') row.remove();
+            });
+        });
+    }
+
+    updateParkingLot();
+});
+
 // === PAGE LOAD INIT ===
 // Place input box inside welcome (between tagline and cards) on initial load
 moveInputToWelcome();
@@ -1503,7 +1698,7 @@ moveInputToWelcome();
 
 (function checkSavedSession() {
     try {
-        const session = JSON.parse(localStorage.getItem('waide_session'));
+        const session = JSON.parse(localStorage.getItem('studio_session'));
         if (!session?.mode || !session.messages?.length) return;
         const banner = $('#resumeBanner');
         $('#resumeLabel').textContent = EXERCISE_LABELS[session.exercise] || session.exercise;
