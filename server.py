@@ -735,10 +735,13 @@ ROUTING RULES:
 - DEVELOP + paralysed by planning, resource-constrained → Effectuation (quick)
 - DEVELOP + clear articulation, needs full model → Lean Canvas (deep)
 
-Turn 3 must include THREE elements:
+Turn 3 must include FOUR elements:
 1. ACKNOWLEDGE — reflect back what Pete heard (proves you were listening)
-2. NAME THE TOOL WITH A REASON — one sentence explaining WHY this tool fits (never just "Let's do X")
-3. SET EXPECTATIONS — how long it takes and what they'll walk away with
+2. NAME THE STAGE — tell them which stage of the innovation process they're at: "You're in the **Clarify** stage — understanding the problem before solving it." (or Ideate/Validate/Develop as appropriate)
+3. NAME THE TOOL WITH A REASON — one sentence explaining WHY this tool fits (never just "Let's do X"). Mention it's the quick or deep option for this stage.
+4. SET EXPECTATIONS — how long it takes and what they'll walk away with
+
+Always end with: "You can see all 8 tools in the [Wade Innovation Toolbox](toolbox.html)."
 
 End with: [SUGGEST: tool-key] using one of: elevator-pitch, five-whys, crazy-8s, hmw, pre-mortem, devils-advocate, effectuation, lean-canvas
 Or offer two: [SUGGEST: five-whys, crazy-8s]
