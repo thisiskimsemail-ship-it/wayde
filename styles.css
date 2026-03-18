@@ -1449,6 +1449,14 @@ body.in-session #wadeCta { display: none !important; }
     padding: 0.1rem 0.3rem;
     border-radius: 3px;
 }
+.msg-agent a {
+    color: var(--stage-color, var(--orange));
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+.msg-agent a:hover {
+    opacity: 0.8;
+}
 
 /* Typing indicator */
 .typing {
