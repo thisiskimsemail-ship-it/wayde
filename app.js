@@ -2691,4 +2691,12 @@ document.addEventListener('DOMContentLoaded', () => {
             })
             .catch(e => console.error('Session restore failed', e));
     }
+
+    // Direct tool launch from toolbox page (?tool=lean-canvas)
+    const toolParam = params.get('tool');
+    if (toolParam && EXERCISE_MODE[toolParam]) {
+        const mode = EXERCISE_MODE[toolParam];
+        history.replaceState({}, '', '/');
+        startExercise(mode, toolParam);
+    }
 });
