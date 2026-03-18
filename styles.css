@@ -3731,3 +3731,82 @@ html[data-theme="light"] .board-toggle { border-color: rgba(0,0,0,0.15); color: 
     .tool-entry-meta { grid-template-columns: 1fr; gap: 0.9rem; }
     .toolbox-stage-desc { display: none; }
 }
+
+/* === TOUR === */
+.tour-help-btn {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(255,255,255,0.2);
+    background: transparent;
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: border-color 0.2s, color 0.2s;
+}
+.tour-help-btn:hover { border-color: var(--orange); color: var(--orange); }
+html[data-theme="light"] .tour-help-btn { border-color: rgba(30,25,79,0.2); color: rgba(30,25,79,0.5); }
+html[data-theme="light"] .tour-help-btn:hover { border-color: var(--orange); color: var(--orange); }
+
+.tour-overlay {
+    position: fixed; inset: 0;
+    z-index: 10000;
+    pointer-events: none;
+}
+.tour-overlay:not(.hidden) { pointer-events: auto; }
+
+.tour-spotlight {
+    position: absolute;
+    border-radius: 8px;
+    box-shadow: 0 0 0 9999px rgba(0,0,0,0.65);
+    transition: all 0.35s ease;
+    pointer-events: none;
+    z-index: 10001;
+}
+
+.tour-tooltip {
+    position: absolute;
+    background: var(--bg-light, #1a1750);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    max-width: 320px;
+    z-index: 10002;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    animation: tourFadeIn 0.3s ease;
+}
+@keyframes tourFadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+html[data-theme="light"] .tour-tooltip { background: #fff; border-color: rgba(30,25,79,0.1); box-shadow: 0 8px 32px rgba(0,0,0,0.12); }
+
+.tour-text {
+    font-size: 0.9rem;
+    line-height: 1.55;
+    color: var(--text);
+    margin-bottom: 0.75rem;
+}
+.tour-nav {
+    display: flex; align-items: center; justify-content: space-between;
+}
+.tour-step-count {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    font-family: var(--mono);
+}
+.tour-btns { display: flex; gap: 0.5rem; }
+.tour-skip {
+    background: none; border: none;
+    color: var(--text-dim);
+    font-size: 0.8rem; cursor: pointer;
+    padding: 0.3rem 0.5rem;
+}
+.tour-skip:hover { color: var(--text); }
+.tour-next {
+    background: var(--orange);
+    color: #fff; border: none;
+    padding: 0.4rem 1rem;
+    border-radius: 6px;
+    font-size: 0.8rem; font-weight: 600;
+    cursor: pointer;
+}
+.tour-next:hover { opacity: 0.9; }

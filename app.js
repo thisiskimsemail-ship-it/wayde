@@ -943,6 +943,8 @@ function enterStudio() {
     streamResponse().then(() => {
         // Show input after Pete's first message arrives
         if (inputArea) inputArea.style.display = '';
+        // Auto-start tour for first-time users
+        if (typeof maybeStartTour === 'function') maybeStartTour();
     });
 }
 
@@ -2836,3 +2838,84 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => { if (inputArea) inputArea.style.display = ''; }, 500);
     }
 });
+
+// === GUIDED TOUR ===
+const TOUR_STEPS = [
+    { el: '#sessionBreadcrumb', text: 'This shows which stage and tool you\'re using. Click the tool name to switch to a different one.', pos: 'below' },
+    { el: '#boardToggle', text: 'Open the Workshop Board to see your ideas, insights, and actions building up as you work.', pos: 'below' },
+    { el: '#inputField', text: 'Type your responses here. Pete will guide you through the exercise one question at a time.', pos: 'above' },
+    { el: '.help-challenge-row', text: '"Help me" gives you a nudge. "Challenge me" pushes you harder. Use them any time.', pos: 'above' },
+    { el: '#saveSessionBtn', text: 'Save your session any time. We\'ll email you a link to pick up exactly where you left off.', pos: 'below' },
+    { el: '#tourHelpBtn', text: 'You can replay this tour any time by clicking here. Now let\'s get to work.', pos: 'below' }
+];
+
+let tourStep = 0;
+const tourOverlay = document.getElementById('tourOverlay');
+const tourSpotlight = document.getElementById('tourSpotlight');
+const tourTooltip = document.getElementById('tourTooltip');
+const tourText = document.getElementById('tourText');
+const tourStepCount = document.getElementById('tourStepCount');
+const tourNext = document.getElementById('tourNext');
+const tourSkip = document.getElementById('tourSkip');
+
+function startTour() {
+    if (!tourOverlay) return;
+    tourStep = 0;
+    tourOverlay.classList.remove('hidden');
+    showTourStep();
+}
+
+function showTourStep() {
+    if (tourStep >= TOUR_STEPS.length) { endTour(); return; }
+    const step = TOUR_STEPS[tourStep];
+    const target = document.querySelector(step.el);
+    if (!target || target.offsetParent === null) {
+        // Element not visible — skip
+        tourStep++;
+        showTourStep();
+        return;
+    }
+    const rect = target.getBoundingClientRect();
+    const pad = 6;
+    tourSpotlight.style.top = (rect.top - pad) + 'px';
+    tourSpotlight.style.left = (rect.left - pad) + 'px';
+    tourSpotlight.style.width = (rect.width + pad * 2) + 'px';
+    tourSpotlight.style.height = (rect.height + pad * 2) + 'px';
+
+    tourText.textContent = step.text;
+    tourStepCount.textContent = (tourStep + 1) + ' of ' + TOUR_STEPS.length;
+    tourNext.textContent = tourStep === TOUR_STEPS.length - 1 ? 'Done' : 'Next →';
+
+    // Position tooltip
+    const ttWidth = 300;
+    let ttLeft = rect.left + rect.width / 2 - ttWidth / 2;
+    ttLeft = Math.max(12, Math.min(ttLeft, window.innerWidth - ttWidth - 12));
+    tourTooltip.style.width = ttWidth + 'px';
+    tourTooltip.style.left = ttLeft + 'px';
+    if (step.pos === 'above') {
+        tourTooltip.style.top = 'auto';
+        tourTooltip.style.bottom = (window.innerHeight - rect.top + 12) + 'px';
+    } else {
+        tourTooltip.style.top = (rect.bottom + 12) + 'px';
+        tourTooltip.style.bottom = 'auto';
+    }
+}
+
+function endTour() {
+    tourOverlay.classList.add('hidden');
+    localStorage.setItem('wade_tour_seen', '1');
+}
+
+if (tourNext) tourNext.addEventListener('click', () => { tourStep++; showTourStep(); });
+if (tourSkip) tourSkip.addEventListener('click', endTour);
+
+// Help button — replay tour
+const tourHelpBtn = document.getElementById('tourHelpBtn');
+if (tourHelpBtn) tourHelpBtn.addEventListener('click', startTour);
+
+// Auto-start tour on first session entry (called from enterStudio)
+function maybeStartTour() {
+    if (!localStorage.getItem('wade_tour_seen')) {
+        setTimeout(startTour, 1500); // slight delay so Pete's message appears first
+    }
+}

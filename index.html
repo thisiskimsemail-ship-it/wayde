@@ -26,6 +26,7 @@
             <button class="theme-toggle" id="themeToggle" title="Toggle light/dark mode" aria-label="Toggle light/dark mode">
                 <span class="theme-icon">☀</span>
             </button>
+            <button class="tour-help-btn" id="tourHelpBtn" title="Take a tour">?</button>
             <button class="header-save-btn hidden" id="saveSessionBtn" title="Save session">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
             </button>
@@ -275,6 +276,21 @@
         </div>
     </footer>
 
-    <script src="app.js?v=83"></script>
+    <!-- Tour overlay -->
+    <div class="tour-overlay hidden" id="tourOverlay">
+        <div class="tour-spotlight" id="tourSpotlight"></div>
+        <div class="tour-tooltip" id="tourTooltip">
+            <p class="tour-text" id="tourText"></p>
+            <div class="tour-nav">
+                <span class="tour-step-count" id="tourStepCount"></span>
+                <div class="tour-btns">
+                    <button class="tour-skip" id="tourSkip">Skip</button>
+                    <button class="tour-next" id="tourNext">Next →</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js?v=84"></script>
 </body>
 </html>
