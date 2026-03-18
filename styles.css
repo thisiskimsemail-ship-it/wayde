@@ -704,7 +704,7 @@ html[data-theme="light"] .parking-lot-toggle:hover { border-color: rgba(30,25,79
 /* Only show when welcome is hidden (session active) */
 .chat-area:has(.welcome.hidden)::before,
 .chat-area:has(.welcome.hidden)::after {
-    opacity: 0.1;
+    opacity: 0.25;
 }
 
 /* Ensure chat content sits above the background */
