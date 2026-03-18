@@ -3008,13 +3008,17 @@ html[data-theme="light"] .tool-entry-time { background: rgba(30,25,79,0.05); }
 .board-zone[data-colour="yellow"] { border-left: 3px solid var(--yellow); }
 
 .board-grid-canvas .zone-name {
-    font-size: 0.65rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--orange);
 }
 .board-grid-canvas .board-card-text {
-    font-size: 0.75rem;
+    font-size: 0.85rem;
+    line-height: 1.45;
+    color: #f5f5f5;
 }
 .board-grid-canvas .board-card {
-    padding: 0.35rem 0.45rem;
+    padding: 0.5rem 0.6rem;
 }
 
 /* Zone hint text */
@@ -3127,9 +3131,9 @@ html[data-theme="light"] .tool-entry-time { background: rgba(30,25,79,0.05); }
 .board-card.dragging { opacity: 0.4; transform: scale(0.96); }
 
 .board-card-text {
-    font-size: 0.75rem;
-    line-height: 1.35;
-    color: rgba(255,255,255,0.85);
+    font-size: 0.85rem;
+    line-height: 1.45;
+    color: #f5f5f5;
 }
 
 .board-card-meta {
