@@ -90,11 +90,7 @@ body[data-mode="debate"]    { --stage-color: var(--teal); }
 body[data-mode="framework"] { --stage-color: var(--yellow); }
 body[data-mode="routing"]   { --stage-color: var(--orange); }
 
-/* Logo — colour shift per stage */
-body[data-mode="reframe"]   .logo { filter: none; }
-body[data-mode="ideate"]    .logo { filter: hue-rotate(310deg) saturate(1.5); }
-body[data-mode="debate"]    .logo { filter: hue-rotate(170deg) saturate(1.8); }
-body[data-mode="framework"] .logo { filter: hue-rotate(55deg) saturate(3) brightness(1.3); }
+/* Logo — swap wordmark per stage (JS sets src, no filters needed) */
 
 /* Session bar bottom border */
 body[data-mode] .session-bar { border-bottom-color: var(--stage-color); border-bottom-width: 2px; }

@@ -101,6 +101,21 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+// === LOGO SWAP PER STAGE ===
+const STAGE_LOGOS = {
+    reframe: 'logo-orange.png',
+    ideate: 'logo-pink.png',
+    debate: 'logo-teal.png',
+    framework: 'logo-yellow.png',
+    routing: 'logo-orange.png'
+};
+function updateStageLogo(mode) {
+    const logo = document.querySelector('.logo');
+    if (!logo) return;
+    const src = STAGE_LOGOS[mode] || 'logo.png';
+    if (!logo.src.endsWith(src)) logo.src = src;
+}
+
 // === TOOLBOX TOGGLE (mobile only) ===
 document.addEventListener('DOMContentLoaded', () => {
     const heading = document.getElementById('cardsHeading');
@@ -354,6 +369,7 @@ function renderSessionActions() {
 function updateStageProgress(mode) {
     stageProgress.dataset.mode = mode;
     document.body.dataset.mode = mode;
+    updateStageLogo(mode);
     const idx = STAGE_ORDER.indexOf(mode);
     $$('.stage-step').forEach((step, i) => {
         step.classList.toggle('active', i === idx);
@@ -543,6 +559,7 @@ function startExercise(mode, exercise, startMsg = null) {
     sessionBar.classList.remove('hidden');
     sessionBar.dataset.mode = mode;
     document.body.dataset.mode = mode;
+    updateStageLogo(mode);
 
     // Update session bar text
     sessionMode.textContent = MODE_LABELS[mode] || mode;
@@ -635,6 +652,9 @@ function forceCloseSession() {
     state.reportGenerated = false;
     state.reportText = '';
     delete document.body.dataset.mode;
+    // Reset logo to default orange wordmark
+    const logo = document.querySelector('.logo');
+    if (logo) logo.src = 'logo.png';
     welcome.classList.remove('hidden');
     moveInputToWelcome();
     sessionBar.classList.add('hidden');
@@ -827,6 +847,7 @@ function enterStudio() {
     if (wadeCta) wadeCta.style.display = 'none';
     document.body.classList.add('in-session');
     document.body.dataset.mode = 'routing';
+    updateStageLogo('routing');
     // Hide input until Pete's first message arrives
     if (inputArea) inputArea.style.display = 'none';
     moveInputToSession();
