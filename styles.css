@@ -684,7 +684,9 @@ html[data-theme="light"] .parking-lot-toggle:hover { border-color: rgba(30,25,79
 
 /* Hide Wade CTA during active session */
 body[data-mode] .site-footer,
-body.in-session .site-footer { display: none !important; }
+body.in-session .site-footer,
+body[data-mode] #wadeCta,
+body.in-session #wadeCta { display: none !important; }
 
 /* No background images on session page — clean dark navy */
 
