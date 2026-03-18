@@ -536,9 +536,13 @@ function startExercise(mode, exercise, startMsg = null) {
 
     // Hide welcome, move input to session, show session bar
     welcome.classList.add('hidden');
+    if (wadeCta) wadeCta.style.display = 'none';
+    document.body.classList.add('in-session');
     moveInputToSession();
+    if (inputArea) inputArea.style.display = '';
     sessionBar.classList.remove('hidden');
     sessionBar.dataset.mode = mode;
+    document.body.dataset.mode = mode;
 
     // Update session bar text
     sessionMode.textContent = MODE_LABELS[mode] || mode;
