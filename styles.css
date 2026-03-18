@@ -866,17 +866,7 @@ html[data-theme="light"] .parking-lot-toggle:hover { border-color: rgba(30,25,79
     background: url('banner.jpg') center 40% / cover no-repeat;
     position: relative;
 }
-/* Subtle gradient fade into background at bottom edge */
-.welcome-hero::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 40%;
-    background: linear-gradient(to bottom, transparent, var(--bg));
-    pointer-events: none;
-}
+/* No gradient overlay on hero image */
 
 @media (max-width: 640px) {
     .welcome-hero { height: 32vh; min-height: 200px; max-height: 300px; margin: -1.5rem -1rem 1.5rem; }
