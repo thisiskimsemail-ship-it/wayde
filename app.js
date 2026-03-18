@@ -780,7 +780,7 @@ function enterStudio() {
     // Hide input until Pete's first message arrives
     if (inputArea) inputArea.style.display = 'none';
     moveInputToSession();
-    modeLabel.textContent = 'The Studio · ';
+    modeLabel.textContent = 'Wade Innovation Toolbox · ';
     inputField.placeholder = 'Type your response...';
 
     // Send a silent kickoff — never shown to user
@@ -817,7 +817,7 @@ function startRouting(text) {
     welcome.classList.add('hidden');
     moveInputToSession();
     routingBack.classList.remove('hidden');
-    modeLabel.textContent = 'Wade Studio · ';
+    modeLabel.textContent = 'Wade Innovation Toolbox · ';
 
     state.messages.push({ role: 'user', content: text });
     appendMessage('user', text);
