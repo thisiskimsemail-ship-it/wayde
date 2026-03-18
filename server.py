@@ -6,7 +6,7 @@ import smtplib
 import urllib.request
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from html.parser import HTMLParser
 from flask import Flask, request, Response, send_from_directory, jsonify
 from dotenv import load_dotenv
@@ -490,14 +490,20 @@ First, give a high-level explanation of what a Lean Canvas is and why it matters
 - The point isn't to fill in boxes — it's to surface the riskiest assumptions so you know what to test first
 - Everything on the canvas is a hypothesis, not a fact
 
+Then explain how the canvas board works: "You'll see a canvas icon in the toolbar up top — that's your board. I'll be adding to it as we go, but you can open it, edit it, or add your own cards any time. Think of it as your workshop wall."
+
 Open the board briefly so they can see the empty canvas layout: include [BOARD:open] at the end of this message.
 
 STEP 2 — CLOSE THE BOARD AND ASK THE FIRST QUESTION
 In your next message, close the board with [BOARD:close] and ask your first question about the Problem block. Frame it conversationally. Do not list all 9 blocks or present a roadmap.
 
-Work through the 9 blocks conversationally. Do NOT present them all at once. Ask about one block, discuss it, challenge assumptions, then move to the next.
+Also mention: "You can also save your session, download your canvas, or generate a report at any time — use the icons in the toolbar."
 
-After each block, explicitly name the hypothesis: "So your hypothesis is that [X]. How confident are you, 1 to 10? What would change your mind?"
+Work through the 9 blocks conversationally. Do NOT present them all at once.
+
+PACING — CRITICAL: Do NOT spend more than 1-2 exchanges per block. Get 1-2 key ideas for the block, name the hypothesis, then MOVE ON to the next block. The whole canvas should take 9-15 exchanges, not 30. If the user gives a clear answer, accept it and advance. Only push back if the answer is genuinely vague or contradictory. Speed is part of the workshop energy — keep momentum.
+
+After each block, briefly name the hypothesis in one sentence: "So your hypothesis is [X]." Then immediately transition to the next block.
 
 CANVAS BOARD TAGS — CRITICAL
 After you and the user agree on the key content for each canvas block, emit a signal tag so the visual canvas board updates in real-time. Format: [CANVAS:block_id: concise summary]
@@ -2107,6 +2113,107 @@ def view_canvas(canvas_id):
         return 'Canvas not found', 404
     except:
         return 'Canvas not found', 404
+
+
+# === SESSION SAVE & MAGIC LINK ===
+
+SESSIONS_FILE = os.path.join(os.path.dirname(__file__), 'sessions.json')
+
+def _load_sessions():
+    if os.path.exists(SESSIONS_FILE):
+        try:
+            with open(SESSIONS_FILE, 'r') as f:
+                return json.load(f)
+        except (json.JSONDecodeError, IOError):
+            pass
+    return {}
+
+def _save_sessions(sessions):
+    with open(SESSIONS_FILE, 'w') as f:
+        json.dump(sessions, f, indent=2)
+
+
+@app.route('/api/session/save', methods=['POST'])
+def save_session():
+    data = request.json
+    email = data.get('email', '').strip()
+    if not email:
+        return jsonify({'error': 'Email is required'}), 400
+
+    session_id = str(uuid.uuid4())[:8]
+    entry = {
+        'id': session_id,
+        'email': email,
+        'mode': data.get('mode'),
+        'exercise': data.get('exercise'),
+        'messages': data.get('messages', []),
+        'exchangeCount': data.get('exchangeCount', 0),
+        'projectContext': data.get('projectContext', []),
+        'parkingLot': data.get('parkingLot', []),
+        'board': data.get('board', {'cards': [], 'visible': False}),
+        'boardMode': data.get('boardMode', 'default'),
+        'reportGenerated': data.get('reportGenerated', False),
+        'reportText': data.get('reportText', ''),
+        'created': datetime.now(timezone.utc).isoformat(),
+        'expiresAt': (datetime.now(timezone.utc) + timedelta(days=30)).isoformat()
+    }
+
+    sessions = _load_sessions()
+    sessions[session_id] = entry
+    _save_sessions(sessions)
+
+    # Send magic link email
+    base_url = request.host_url.rstrip('/')
+    resume_url = f"{base_url}/s/{session_id}"
+    exercise_name = EXERCISE_NAMES.get(data.get('exercise', ''), data.get('exercise', 'your session'))
+
+    try:
+        resend_key = os.environ.get('RESEND_API_KEY')
+        if resend_key:
+            from_email = os.environ.get('WADE_FROM_EMAIL', 'Wade Studio <enquiries@wadeinstitute.org.au>')
+            html_body = f"""
+            <div style="font-family: -apple-system, sans-serif; max-width: 560px; margin: 0 auto; padding: 2rem;">
+                <h2 style="color: #1E194F; margin-bottom: 0.5rem;">Your session is saved</h2>
+                <p style="color: #555; line-height: 1.6;">You were working through a <strong>{exercise_name}</strong> session in Wade Studio. Pick up exactly where you left off:</p>
+                <a href="{resume_url}" style="display: inline-block; background: #F15A22; color: #fff; padding: 12px 28px; border-radius: 6px; text-decoration: none; font-weight: 600; margin: 1.5rem 0;">Continue your session &rarr;</a>
+                <p style="color: #999; font-size: 0.85rem;">This link expires in 30 days.</p>
+                <hr style="border: none; border-top: 1px solid #eee; margin: 1.5rem 0;">
+                <p style="color: #999; font-size: 0.8rem;">Wade Institute of Entrepreneurship &middot; The Studio</p>
+            </div>
+            """
+            _resend_send_email(resend_key, from_email, email, f"Your Wade Studio session — {exercise_name}", html_body)
+    except Exception as e:
+        print(f"Session email failed: {e}")
+
+    return jsonify({'id': session_id, 'url': f'/s/{session_id}'})
+
+
+@app.route('/api/session/<session_id>')
+def get_session(session_id):
+    sessions = _load_sessions()
+    session = sessions.get(session_id)
+    if not session:
+        return jsonify({'error': 'Session not found'}), 404
+    # Check expiry
+    expires = session.get('expiresAt')
+    if expires:
+        try:
+            exp_dt = datetime.fromisoformat(expires.replace('Z', '+00:00'))
+            if datetime.now(timezone.utc) > exp_dt:
+                return jsonify({'error': 'Session has expired'}), 410
+        except:
+            pass
+    return jsonify(session)
+
+
+@app.route('/s/<session_id>')
+def resume_session(session_id):
+    sessions = _load_sessions()
+    session = sessions.get(session_id)
+    if not session:
+        return '<h1>Session not found</h1><p>This session link may have expired or been removed.</p>', 404
+    # Redirect to main app with resume parameter
+    return f'<html><head><meta http-equiv="refresh" content="0;url=/?resume={session_id}"></head></html>'
 
 
 # === SHARED REPORT LINKS ===

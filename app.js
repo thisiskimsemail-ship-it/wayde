@@ -1939,11 +1939,13 @@ function toggleBoard() {
         layout.classList.add('board-active');
         boardPane.classList.remove('hidden');
         toggleBtn?.classList.add('active');
+        document.body.classList.add('board-open');
         renderBoard();
     } else {
         layout.classList.remove('board-active');
         boardPane.classList.add('hidden');
         toggleBtn?.classList.remove('active');
+        document.body.classList.remove('board-open');
     }
 }
 
@@ -2253,5 +2255,129 @@ document.addEventListener('DOMContentLoaded', () => {
         picker.querySelectorAll('.text-size-option').forEach(b => {
             b.classList.toggle('active', b.dataset.size === size);
         });
+    }
+});
+
+// === SESSION ACTIONS: Save, Canvas, Report ===
+document.addEventListener('DOMContentLoaded', () => {
+    const saveBtn = document.getElementById('saveSessionBtn');
+    const canvasBtn = document.getElementById('downloadCanvasBtn');
+    const reportBtn = document.getElementById('getReportBtn');
+    const overlay = document.getElementById('saveModalOverlay');
+    const closeModal = document.getElementById('saveModalClose');
+    const emailInput = document.getElementById('saveModalEmail');
+    const submitBtn = document.getElementById('saveModalSubmit');
+    const statusEl = document.getElementById('saveModalStatus');
+
+    // Save session — open email modal
+    if (saveBtn) saveBtn.addEventListener('click', () => {
+        if (overlay) overlay.classList.remove('hidden');
+        if (emailInput) emailInput.focus();
+    });
+
+    // Close modal
+    if (closeModal) closeModal.addEventListener('click', () => {
+        if (overlay) overlay.classList.add('hidden');
+    });
+    if (overlay) overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) overlay.classList.add('hidden');
+    });
+
+    // Submit save
+    if (submitBtn) submitBtn.addEventListener('click', async () => {
+        const email = emailInput?.value?.trim();
+        if (!email) return;
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Sending...';
+        try {
+            const res = await fetch('/api/session/save', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email,
+                    mode: state.mode,
+                    exercise: state.exercise,
+                    messages: state.messages,
+                    exchangeCount: state.exchangeCount,
+                    projectContext: state.projectContext,
+                    parkingLot: state.parkingLot,
+                    board: state.board,
+                    boardMode: state.boardMode,
+                    reportGenerated: state.reportGenerated,
+                    reportText: state.reportText
+                })
+            });
+            const data = await res.json();
+            if (data.id) {
+                if (statusEl) {
+                    statusEl.textContent = 'Link sent! Check your inbox.';
+                    statusEl.classList.remove('hidden');
+                }
+                setTimeout(() => { if (overlay) overlay.classList.add('hidden'); }, 2000);
+            } else {
+                if (statusEl) {
+                    statusEl.textContent = data.error || 'Something went wrong';
+                    statusEl.classList.remove('hidden');
+                }
+            }
+        } catch (e) {
+            if (statusEl) {
+                statusEl.textContent = 'Failed to save. Try again.';
+                statusEl.classList.remove('hidden');
+            }
+        }
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Send link';
+    });
+
+    // Download canvas
+    if (canvasBtn) canvasBtn.addEventListener('click', async () => {
+        if (!state.messages.length) return;
+        canvasBtn.disabled = true;
+        try {
+            const res = await fetch('/api/canvas', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ messages: state.messages })
+            });
+            const data = await res.json();
+            if (data.canvas_id) {
+                window.open('/canvas/' + data.canvas_id, '_blank');
+            }
+        } catch (e) {
+            console.error('Canvas export failed', e);
+        }
+        canvasBtn.disabled = false;
+    });
+
+    // Get report — trigger existing report flow without exchange gate
+    if (reportBtn) reportBtn.addEventListener('click', () => {
+        if (!state.messages.length) return;
+        // Trigger the report card directly
+        const reportCard = document.getElementById('reportCard');
+        if (reportCard && typeof generateReport === 'function') {
+            generateReport();
+        }
+    });
+
+    // Resume session from magic link
+    const params = new URLSearchParams(window.location.search);
+    const resumeId = params.get('resume');
+    if (resumeId) {
+        fetch('/api/session/' + resumeId)
+            .then(r => r.json())
+            .then(session => {
+                if (session.error) {
+                    console.error('Session restore failed:', session.error);
+                    return;
+                }
+                // Restore the session
+                if (typeof restoreSession === 'function') {
+                    restoreSession(session);
+                }
+                // Clean URL
+                history.replaceState({}, '', '/');
+            })
+            .catch(e => console.error('Session restore failed', e));
     }
 });
