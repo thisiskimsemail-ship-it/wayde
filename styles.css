@@ -895,17 +895,17 @@ body.in-session #wadeCta { display: none !important; }
 /* Welcome hero — full bleed image above text */
 .welcome-hero {
     width: 100vw;
-    height: 45vh;
-    min-height: 280px;
-    max-height: 420px;
-    margin: -3rem -1.5rem 2.5rem;
+    height: 30vh;
+    min-height: 180px;
+    max-height: 300px;
+    margin: -3rem -1.5rem 1.5rem;
     background: url('banner.jpg') center 40% / cover no-repeat;
     position: relative;
 }
 /* No gradient overlay on hero image */
 
 @media (max-width: 640px) {
-    .welcome-hero { height: 32vh; min-height: 200px; max-height: 300px; margin: -1.5rem -1rem 1.5rem; }
+    .welcome-hero { height: 25vh; min-height: 140px; max-height: 220px; margin: -1.5rem -1rem 1rem; }
 }
 
 .welcome-title {
