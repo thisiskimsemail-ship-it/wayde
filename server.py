@@ -1943,6 +1943,7 @@ STEP 3: Recommend exactly ONE Wade program. Include ALL of:
 - Format tag in brackets: (3-Day Immersive) or (Online) or (Full-Year) or (Custom/Bespoke)
 - One sentence connecting it to something specific from the session
 - "When you're ready: [link to course page]"
+- If intake date information is available, include it. If not, say "Check the website for upcoming dates."
 
 ### Suggested Reading
 2-3 Wade community blog posts relevant to this user's specific challenge. Each with:

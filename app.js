@@ -599,6 +599,19 @@ function startExercise(mode, exercise, startMsg = null) {
     reportCtaBtn.disabled = true;
     reportCtaBtn.textContent = 'Workshop your thinking to build your report';
 
+    // Always show activity brief card — even when transitioning from routing
+    const desc = EXERCISE_DESCS[exercise];
+    const arc = EXERCISE_ARCS[exercise];
+    const expectedExchanges = EXERCISE_EXCHANGES[exercise] || 8;
+    if (desc) {
+        const introDiv = document.createElement('div');
+        introDiv.className = 'activity-brief';
+        introDiv.dataset.mode = mode;
+        introDiv.innerHTML = `<div class="activity-brief-header"><span class="activity-brief-stage">${MODE_LABELS[mode] || mode}</span><span class="activity-brief-time">~${Math.round(expectedExchanges * 2)} min · ~${expectedExchanges} exchanges</span></div><h3 class="activity-brief-name"><a class="intro-label-link" href="toolbox.html#${exercise}" target="_blank" rel="noopener">${EXERCISE_LABELS[exercise] || exercise}</a></h3><p class="activity-brief-desc">${desc}</p>${arc ? `<p class="activity-brief-arc">${arc}</p>` : ''}`;
+        messagesEl.appendChild(introDiv);
+    }
+    inputField.placeholder = EXERCISE_HINTS[exercise] || 'Describe your challenge or idea...';
+
     if (autoStartMsg) {
         // Use the user's actual description as the first message so WAiDE skips
         // "what are you working on?" and responds directly in context
@@ -606,20 +619,6 @@ function startExercise(mode, exercise, startMsg = null) {
         state.messages = [{ role: 'user', content: autoStartMsg }];
         streamResponse();
     } else {
-        // Show activity brief card
-        const desc = EXERCISE_DESCS[exercise];
-        const arc = EXERCISE_ARCS[exercise];
-        const expectedExchanges = EXERCISE_EXCHANGES[exercise] || 8;
-        if (desc) {
-            const introDiv = document.createElement('div');
-            introDiv.className = 'activity-brief';
-            introDiv.dataset.mode = mode;
-            introDiv.innerHTML = `<div class="activity-brief-header"><span class="activity-brief-stage">${MODE_LABELS[mode] || mode}</span><span class="activity-brief-time">~${Math.round(expectedExchanges * 2)} min · ~${expectedExchanges} exchanges</span></div><h3 class="activity-brief-name"><a class="intro-label-link" href="toolbox.html#${exercise}" target="_blank" rel="noopener">${EXERCISE_LABELS[exercise] || exercise}</a></h3><p class="activity-brief-desc">${desc}</p>${arc ? `<p class="activity-brief-arc">${arc}</p>` : ''}`;
-            messagesEl.appendChild(introDiv);
-        }
-        // Set a tool-specific placeholder hint
-        inputField.placeholder = EXERCISE_HINTS[exercise] || 'Describe your challenge or idea...';
-
         // Auto-kickoff: send a synthetic first message so WAiDE opens the conversation
         state.messages = [{ role: 'user', content: 'Please start the session.' }];
         streamResponse();
