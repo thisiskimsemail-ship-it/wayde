@@ -1256,6 +1256,17 @@ async function streamResponse() {
             }
         }
         fullText = fullText.replace(/\n?\[CANVAS:[a-z_-]+:\s*[^\]]+\]/g, '').trim();
+
+        // Parse [BOARD:open] and [BOARD:close] signals
+        if (fullText.includes('[BOARD:open]')) {
+            if (!state.board.visible) toggleBoard();
+            fullText = fullText.replace(/\n?\[BOARD:open\]/g, '').trim();
+        }
+        if (fullText.includes('[BOARD:close]')) {
+            if (state.board.visible) toggleBoard();
+            fullText = fullText.replace(/\n?\[BOARD:close\]/g, '').trim();
+        }
+
         if (agentDiv) agentDiv.innerHTML = renderMarkdown(fullText);
 
         // Parse [PHASE: diverge|converge] tags — workshop phase indicator
