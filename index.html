@@ -38,6 +38,10 @@
         </div>
         <span class="phase-indicator" id="phaseIndicator"></span>
         <div class="progress-indicator hidden" id="progressIndicator"></div>
+        <button class="board-toggle" id="boardToggle" title="Workshop Board">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+            <span class="board-count hidden" id="boardCount">0</span>
+        </button>
         <button class="parking-lot-toggle" id="parkingLotToggle" title="Parking Lot">P<span class="parking-lot-count hidden" id="parkingLotCount">0</span></button>
         <button class="session-close" id="sessionClose" title="Back to menu">✕</button>
     </div>
@@ -54,6 +58,8 @@
     </div>
 
     <main class="chat-area" id="chatArea">
+      <div class="workshop-layout" id="workshopLayout">
+        <div class="chat-pane" id="chatPane">
         <div class="welcome" id="welcome">
             <h1 class="welcome-title">Wade Studio</h1>
             <p class="welcome-sub">Your virtual workshop space.</p>
@@ -233,6 +239,39 @@
             <button class="routing-back-btn" id="routingBackBtn">← Back to tools</button>
         </div>
 
+        </div><!-- /chat-pane -->
+
+        <!-- Workshop Board -->
+        <div class="board-pane hidden" id="boardPane">
+            <div class="board-header">
+                <h3 class="board-title">Workshop Board</h3>
+                <button class="board-add-card-btn" id="boardAddCard">+ Add card</button>
+            </div>
+            <div class="board-zones" id="boardZones">
+                <div class="board-zone" data-zone="insights">
+                    <div class="zone-header"><span class="zone-icon">💡</span><span class="zone-name">Key Insights</span><span class="zone-count" data-zone="insights">0</span></div>
+                    <div class="zone-cards" data-zone="insights"></div>
+                    <div class="zone-empty">No insights yet — keep digging</div>
+                </div>
+                <div class="board-zone" data-zone="ideas">
+                    <div class="zone-header"><span class="zone-icon">✨</span><span class="zone-name">Ideas</span><span class="zone-count" data-zone="ideas">0</span></div>
+                    <div class="zone-cards" data-zone="ideas"></div>
+                    <div class="zone-empty">Ideas will land here</div>
+                </div>
+                <div class="board-zone" data-zone="parking">
+                    <div class="zone-header"><span class="zone-icon">🅿️</span><span class="zone-name">Parking Lot</span><span class="zone-count" data-zone="parking">0</span></div>
+                    <div class="zone-cards" data-zone="parking"></div>
+                    <div class="zone-empty">Park tangential ideas here</div>
+                </div>
+                <div class="board-zone" data-zone="actions">
+                    <div class="zone-header"><span class="zone-icon">🎯</span><span class="zone-name">Actions</span><span class="zone-count" data-zone="actions">0</span></div>
+                    <div class="zone-cards" data-zone="actions"></div>
+                    <div class="zone-empty">Concrete next steps go here</div>
+                </div>
+            </div>
+        </div><!-- /board-pane -->
+
+      </div><!-- /workshop-layout -->
     </main>
 
     <!-- Lead capture modal overlay -->
@@ -308,6 +347,6 @@
         </div>
     </footer>
 
-    <script src="app.js?v=62"></script>
+    <script src="app.js?v=63"></script>
 </body>
 </html>

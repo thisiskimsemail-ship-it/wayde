@@ -255,7 +255,8 @@ const state = {
     preReportAsked: false, // true after pre-report handoff question has been shown
     parkingLot: [],       // { text, fromExercise, timestamp }
     currentPhase: null,   // 'diverge' | 'converge'
-    sessionStartTime: null // Date.now() when exercise starts
+    sessionStartTime: null, // Date.now() when exercise starts
+    board: { cards: [], visible: false }  // workshop board state
 };
 
 // === DOM ===
@@ -590,7 +591,16 @@ function forceCloseSession() {
     modeLabel.textContent = '';
     state.rating = null;
     state.parkingLot = [];
+    state.board = { cards: [], visible: false };
     updateParkingLot();
+    renderBoard();
+    // Close board pane
+    const layout = document.getElementById('workshopLayout');
+    const boardPane = document.getElementById('boardPane');
+    const boardToggleBtn = document.getElementById('boardToggle');
+    if (layout) layout.classList.remove('board-active');
+    if (boardPane) boardPane.classList.add('hidden');
+    if (boardToggleBtn) boardToggleBtn.classList.remove('active');
     const parkingPanel = $('#parkingLotPanel');
     if (parkingPanel) parkingPanel.classList.add('hidden');
     setPickerEnabled(false);
@@ -852,6 +862,7 @@ function saveSession() {
         reportText: state.reportText,
         projectContext: state.projectContext,
         parkingLot: state.parkingLot,
+        board: state.board,
         savedAt: Date.now()
     }));
 }
@@ -870,10 +881,25 @@ function restoreSession(session) {
         reportText: session.reportText,
         projectContext: session.projectContext || [],
         parkingLot: session.parkingLot || [],
+        board: session.board || { cards: [], visible: false },
         routing: false,
         rating: null
     });
+    // Migrate old parking lot items to board if board has no parking cards
+    if (state.parkingLot.length > 0 && !state.board.cards.some(c => c.zone === 'parking')) {
+        state.parkingLot.forEach(item => {
+            state.board.cards.push({
+                id: 'c_' + item.timestamp + '_' + Math.random().toString(36).slice(2, 6),
+                text: item.text,
+                zone: 'parking',
+                stage: state.mode || 'reframe',
+                source: item.fromExercise || 'session',
+                timestamp: item.timestamp
+            });
+        });
+    }
     updateParkingLot();
+    renderBoard();
 
     welcome.classList.add('hidden');
     moveInputToSession();
@@ -1128,7 +1154,7 @@ async function streamResponse() {
             }
         }
 
-        // Parse [PARK: description] tags — parking lot items
+        // Parse [PARK: description] tags — parking lot items + board cards
         const parkMatches = fullText.match(/\[PARK:\s*([^\]]+)\]/g);
         if (parkMatches) {
             parkMatches.forEach(tag => {
@@ -1138,11 +1164,28 @@ async function streamResponse() {
                     fromExercise: EXERCISE_LABELS[state.exercise] || state.exercise || 'session',
                     timestamp: Date.now()
                 });
+                // Also add to board parking zone
+                addBoardCard(desc, 'parking', state.mode, EXERCISE_LABELS[state.exercise] || state.exercise || 'session');
             });
             fullText = fullText.replace(/\n?\[PARK:\s*[^\]]+\]/g, '').trim();
             if (agentDiv) agentDiv.innerHTML = renderMarkdown(fullText);
             updateParkingLot();
         }
+
+        // Parse [INSIGHT:], [IDEA:], [ACTION:] tags — workshop board cards
+        const boardTagMap = { INSIGHT: 'insights', IDEA: 'ideas', ACTION: 'actions' };
+        Object.entries(boardTagMap).forEach(([tag, zone]) => {
+            const regex = new RegExp(`\\[${tag}:\\s*([^\\]]+)\\]`, 'g');
+            const matches = fullText.match(regex);
+            if (matches) {
+                matches.forEach(m => {
+                    const desc = m.match(new RegExp(`\\[${tag}:\\s*([^\\]]+)\\]`))[1].trim();
+                    addBoardCard(desc, zone, state.mode, EXERCISE_LABELS[state.exercise] || state.exercise || 'session');
+                });
+                fullText = fullText.replace(new RegExp(`\\n?\\[${tag}:\\s*[^\\]]+\\]`, 'g'), '').trim();
+                if (agentDiv) agentDiv.innerHTML = renderMarkdown(fullText);
+            }
+        });
 
         // Parse [PHASE: diverge|converge] tags — workshop phase indicator
         const phaseMatch = fullText.match(/\[PHASE:\s*(diverge|converge)\]/);
@@ -1588,6 +1631,210 @@ function updateProgressIndicator() {
     el.innerHTML = `<span class="progress-count">${current} of ~${expected}</span><div class="progress-bar-track"><div class="progress-bar-fill" style="width:${pct}%"></div></div>`;
     el.classList.remove('hidden');
 }
+
+// === WORKSHOP BOARD ===
+
+function addBoardCard(text, zone, stage, source) {
+    const card = {
+        id: 'c_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+        text: text,
+        zone: zone,        // 'insights' | 'ideas' | 'parking' | 'actions'
+        stage: stage || state.mode || 'reframe',
+        source: source || EXERCISE_LABELS[state.exercise] || state.exercise || 'session',
+        timestamp: Date.now()
+    };
+    state.board.cards.push(card);
+    renderBoardCard(card);
+    updateBoardCounts();
+    saveSession();
+    return card;
+}
+
+function removeBoardCard(cardId) {
+    state.board.cards = state.board.cards.filter(c => c.id !== cardId);
+    const el = document.querySelector(`.board-card[data-card-id="${cardId}"]`);
+    if (el) el.remove();
+    updateBoardCounts();
+    saveSession();
+}
+
+function moveBoardCard(cardId, toZone) {
+    const card = state.board.cards.find(c => c.id === cardId);
+    if (!card || card.zone === toZone) return;
+    // Remove from old zone DOM
+    const el = document.querySelector(`.board-card[data-card-id="${cardId}"]`);
+    if (el) el.remove();
+    card.zone = toZone;
+    // Add to new zone DOM
+    renderBoardCard(card);
+    updateBoardCounts();
+    saveSession();
+}
+
+function renderBoardCard(card) {
+    const zoneEl = document.querySelector(`.zone-cards[data-zone="${card.zone}"]`);
+    if (!zoneEl) return;
+    const div = document.createElement('div');
+    div.className = 'board-card';
+    div.draggable = true;
+    div.dataset.cardId = card.id;
+    div.dataset.stage = card.stage;
+    div.innerHTML = `
+        <div class="board-card-text">${card.text}</div>
+        <div class="board-card-meta">
+            <span class="board-card-source">${card.source}</span>
+            <button class="board-card-delete" title="Remove">✕</button>
+        </div>
+    `;
+    // Delete handler
+    div.querySelector('.board-card-delete').addEventListener('click', (e) => {
+        e.stopPropagation();
+        removeBoardCard(card.id);
+    });
+    // Drag handlers
+    div.addEventListener('dragstart', (e) => {
+        e.dataTransfer.setData('text/plain', card.id);
+        e.dataTransfer.effectAllowed = 'move';
+        div.classList.add('dragging');
+    });
+    div.addEventListener('dragend', () => {
+        div.classList.remove('dragging');
+    });
+    zoneEl.appendChild(div);
+}
+
+function renderBoard() {
+    // Clear all zone card containers
+    document.querySelectorAll('.zone-cards').forEach(z => z.innerHTML = '');
+    // Re-render all cards
+    state.board.cards.forEach(card => renderBoardCard(card));
+    updateBoardCounts();
+}
+
+function updateBoardCounts() {
+    const zones = ['insights', 'ideas', 'parking', 'actions'];
+    let total = 0;
+    zones.forEach(zone => {
+        const count = state.board.cards.filter(c => c.zone === zone).length;
+        total += count;
+        const countEl = document.querySelector(`.zone-count[data-zone="${zone}"]`);
+        if (countEl) countEl.textContent = count;
+    });
+    const boardCountEl = document.getElementById('boardCount');
+    if (boardCountEl) {
+        boardCountEl.textContent = total;
+        boardCountEl.classList.toggle('hidden', total === 0);
+    }
+}
+
+function toggleBoard() {
+    const layout = document.getElementById('workshopLayout');
+    const boardPane = document.getElementById('boardPane');
+    const toggleBtn = document.getElementById('boardToggle');
+    if (!layout || !boardPane) return;
+    state.board.visible = !state.board.visible;
+    if (state.board.visible) {
+        layout.classList.add('board-active');
+        boardPane.classList.remove('hidden');
+        toggleBtn?.classList.add('active');
+        renderBoard();
+    } else {
+        layout.classList.remove('board-active');
+        boardPane.classList.add('hidden');
+        toggleBtn?.classList.remove('active');
+    }
+}
+
+// Board drag-and-drop zone handlers
+document.addEventListener('DOMContentLoaded', () => {
+    // Board toggle
+    const boardToggleBtn = document.getElementById('boardToggle');
+    if (boardToggleBtn) boardToggleBtn.addEventListener('click', toggleBoard);
+
+    // Drop zones
+    document.querySelectorAll('.zone-cards').forEach(zoneEl => {
+        const zone = zoneEl.dataset.zone;
+
+        zoneEl.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            zoneEl.closest('.board-zone')?.classList.add('drag-over');
+        });
+
+        zoneEl.addEventListener('dragleave', (e) => {
+            // Only remove if actually leaving the zone
+            if (!zoneEl.contains(e.relatedTarget)) {
+                zoneEl.closest('.board-zone')?.classList.remove('drag-over');
+            }
+        });
+
+        zoneEl.addEventListener('drop', (e) => {
+            e.preventDefault();
+            zoneEl.closest('.board-zone')?.classList.remove('drag-over');
+            const cardId = e.dataTransfer.getData('text/plain');
+            if (cardId) moveBoardCard(cardId, zone);
+        });
+    });
+
+    // Also allow dropping on the zone itself (not just zone-cards)
+    document.querySelectorAll('.board-zone').forEach(zoneDiv => {
+        const zone = zoneDiv.dataset.zone;
+        zoneDiv.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            zoneDiv.classList.add('drag-over');
+        });
+        zoneDiv.addEventListener('dragleave', (e) => {
+            if (!zoneDiv.contains(e.relatedTarget)) {
+                zoneDiv.classList.remove('drag-over');
+            }
+        });
+        zoneDiv.addEventListener('drop', (e) => {
+            e.preventDefault();
+            zoneDiv.classList.remove('drag-over');
+            const cardId = e.dataTransfer.getData('text/plain');
+            if (cardId) moveBoardCard(cardId, zone);
+        });
+    });
+
+    // Add card button
+    const addCardBtn = document.getElementById('boardAddCard');
+    if (addCardBtn) {
+        addCardBtn.addEventListener('click', () => {
+            const existing = document.querySelector('.board-add-inline');
+            if (existing) { existing.querySelector('input')?.focus(); return; }
+            const row = document.createElement('div');
+            row.className = 'board-add-inline';
+            row.innerHTML = `
+                <input type="text" placeholder="Type your card...">
+                <select>
+                    <option value="insights">Insights</option>
+                    <option value="ideas">Ideas</option>
+                    <option value="parking">Parking Lot</option>
+                    <option value="actions">Actions</option>
+                </select>
+                <button>Add</button>
+            `;
+            addCardBtn.parentElement.after(row);
+            const input = row.querySelector('input');
+            const select = row.querySelector('select');
+            const saveBtn = row.querySelector('button');
+            input.focus();
+            const doAdd = () => {
+                const text = input.value.trim();
+                if (text) {
+                    addBoardCard(text, select.value, state.mode, 'Manual');
+                }
+                row.remove();
+            };
+            saveBtn.addEventListener('click', doAdd);
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') { e.preventDefault(); doAdd(); }
+                if (e.key === 'Escape') row.remove();
+            });
+        });
+    }
+});
 
 // === PARKING LOT ===
 
