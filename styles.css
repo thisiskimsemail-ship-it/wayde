@@ -1368,14 +1368,14 @@ body.board-open > .input-area {
     background: var(--bg-light);
     border: 1px solid rgba(255,255,255,0.08);
     border-radius: 10px;
-    padding: 0.7rem 1rem;
+    padding: 0.55rem 1rem;
     color: var(--text);
     font-family: var(--font);
     font-size: 1rem;
     line-height: 1.45;
     resize: none;
     outline: none;
-    min-height: 4rem;
+    min-height: 2.5rem;
     max-height: 120px;
     transition: border-color 0.2s, box-shadow 0.2s;
 }
