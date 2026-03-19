@@ -4013,3 +4013,44 @@ body.light .feedback-input { background: rgba(0,0,0,0.02); border-color: rgba(0,
     .feedback-panel { width: 260px; padding: 1rem; }
     .feedback-tab { font-size: 0.7rem; padding: 0.3rem 0.75rem; }
 }
+
+/* === FEATURE HINTS === */
+.feature-hint {
+    background: var(--orange);
+    color: #fff;
+    padding: 0.6rem 0.8rem;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    line-height: 1.4;
+    max-width: 250px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    animation: fadeIn 0.3s ease;
+}
+.feature-hint::before {
+    content: '';
+    position: absolute;
+    top: -6px;
+    left: 20px;
+    width: 12px;
+    height: 12px;
+    background: var(--orange);
+    transform: rotate(45deg);
+}
+.feature-hint-text {
+    font-weight: 400;
+}
+.feature-hint-dismiss {
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: #fff;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    cursor: pointer;
+    align-self: flex-end;
+}
+.feature-hint-dismiss:hover { background: rgba(255,255,255,0.3); }

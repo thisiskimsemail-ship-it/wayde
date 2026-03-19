@@ -2956,6 +2956,51 @@ function maybeStartTour() {
     }
 }
 
+// === FEATURE HINTS (one-time tooltips for new UI elements) ===
+function showFeatureHint(targetSelector, text, hintKey) {
+    const storageKey = 'wade_hint_' + hintKey;
+    if (localStorage.getItem(storageKey)) return;
+    const target = document.querySelector(targetSelector);
+    if (!target) return;
+
+    const hint = document.createElement('div');
+    hint.className = 'feature-hint';
+    hint.innerHTML = '<span class="feature-hint-text">' + text + '</span><button class="feature-hint-dismiss">Got it</button>';
+
+    const rect = target.getBoundingClientRect();
+    hint.style.position = 'fixed';
+    hint.style.top = (rect.bottom + 8) + 'px';
+    hint.style.left = Math.max(8, Math.min(rect.left, window.innerWidth - 260)) + 'px';
+    hint.style.zIndex = '9999';
+
+    document.body.appendChild(hint);
+    localStorage.setItem(storageKey, '1');
+
+    const dismiss = () => { hint.remove(); };
+    hint.querySelector('.feature-hint-dismiss').addEventListener('click', dismiss);
+    setTimeout(dismiss, 8000);
+}
+
+// Register hints for features as they appear
+const featureHints = {
+    board: { selector: '#boardToggle', text: 'Your workshop board — ideas and insights build here as you work.', key: 'board' },
+    save: { selector: '#saveSessionBtn', text: 'Save your session and come back later via a magic link.', key: 'save' },
+    pitchPreview: { selector: '#pitchPreview', text: 'Your pitch builds here as you define each component.', key: 'pitch' },
+    feedback: { selector: '#feedbackTab', text: 'We\'re in beta — your feedback shapes what we build next.', key: 'feedback' },
+    toolMenu: { selector: '#toolDropdownToggle', text: 'Switch tools anytime from this menu.', key: 'toolmenu' }
+};
+
+// Observe DOM for new elements appearing and show hints
+const hintObserver = new MutationObserver(() => {
+    Object.values(featureHints).forEach(h => {
+        const el = document.querySelector(h.selector);
+        if (el && el.offsetParent !== null && !localStorage.getItem('wade_hint_' + h.key)) {
+            setTimeout(() => showFeatureHint(h.selector, h.text, h.key), 500);
+        }
+    });
+});
+hintObserver.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['class'] });
+
 // === FEEDBACK WIDGET ===
 (function() {
     const tab = $('#feedbackTab');
