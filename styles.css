@@ -1550,8 +1550,8 @@ body.board-open > .input-area {
     line-height: 1.45;
     resize: none;
     outline: none;
-    min-height: 2.5rem;
-    max-height: 120px;
+    min-height: 5rem;
+    max-height: 160px;
     transition: border-color 0.2s, box-shadow 0.2s;
 }
 @media (max-width: 640px) {
