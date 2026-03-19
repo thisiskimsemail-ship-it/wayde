@@ -1330,17 +1330,17 @@ async function streamResponse() {
         let optMatch = fullText.match(/\[OPTIONS:\s*([^\]]+)\]/);
 
         // FALLBACK: if Pete forgot [OPTIONS], detect quick-fire questions and inject buttons
-        if (!optMatch) {
-            const lc = fullText.toLowerCase();
+        if (!optMatch && fullText) {
+            const normalised = fullText.replace(/[\u2018\u2019\u201C\u201D]/g, "'").toLowerCase();
             const quickFireFallbacks = [
                 { test: /how can i help/i, options: 'Idea Jam|Problem Solve' },
                 { test: /where are you at/i, options: 'Napkin sketch|Blueprint' },
                 { test: /who needs convincing/i, options: 'Just me|Other people' },
-                { test: /what.*vibe/i, options: 'Quick and scrappy|Polished and tight' },
+                { test: /what.{0,5}(the )?vibe/i, options: 'Quick and scrappy|Polished and tight' },
                 { test: /how much time/i, options: '5-10 minutes|15-20 minutes' }
             ];
             for (const fb of quickFireFallbacks) {
-                if (fb.test.test(fullText)) {
+                if (fb.test.test(normalised)) {
                     optMatch = [null, fb.options];
                     break;
                 }
@@ -2974,6 +2974,41 @@ function maybeStartTour() {
         }, 2000);
     }
 }
+
+// === QUICK-FIRE BUTTON INJECTION (backup for missed OPTIONS) ===
+// Watch for new agent messages and inject buttons if they match quick-fire phrases
+const qfObserver = new MutationObserver(() => {
+    document.querySelectorAll('.msg-agent').forEach(msg => {
+        if (msg.dataset.qfChecked) return;
+        msg.dataset.qfChecked = '1';
+        if (msg.nextElementSibling && msg.nextElementSibling.classList.contains('option-chips')) return;
+        const text = (msg.textContent || '').replace(/[\u2018\u2019\u201C\u201D]/g, "'").toLowerCase();
+        const fallbacks = [
+            { test: /how can i help/i, options: ['Idea Jam', 'Problem Solve'] },
+            { test: /where are you at/i, options: ['Napkin sketch', 'Blueprint'] },
+            { test: /who needs convincing/i, options: ['Just me', 'Other people'] },
+            { test: /what.{0,5}(the )?vibe/i, options: ['Quick and scrappy', 'Polished and tight'] },
+            { test: /how much time/i, options: ['5-10 minutes', '15-20 minutes'] }
+        ];
+        for (const fb of fallbacks) {
+            if (fb.test.test(text)) {
+                const chipRow = document.createElement('div');
+                chipRow.className = 'option-chips';
+                fb.options.forEach(label => {
+                    const btn = document.createElement('button');
+                    btn.className = 'option-chip';
+                    btn.textContent = label;
+                    btn.addEventListener('click', () => { chipRow.remove(); sendMessage(label); });
+                    chipRow.appendChild(btn);
+                });
+                msg.after(chipRow);
+                scrollToBottom();
+                break;
+            }
+        }
+    });
+});
+qfObserver.observe(document.querySelector('.messages') || document.body, { childList: true, subtree: true });
 
 // === FEATURE HINTS (one-time tooltips for new UI elements) ===
 function showFeatureHint(targetSelector, text, hintKey) {
