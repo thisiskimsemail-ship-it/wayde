@@ -1327,7 +1327,26 @@ async function streamResponse() {
 
     // Parse and render [OPTIONS: A | B] chips
     if (fullText && agentDiv) {
-        const optMatch = fullText.match(/\[OPTIONS:\s*([^\]]+)\]/);
+        let optMatch = fullText.match(/\[OPTIONS:\s*([^\]]+)\]/);
+
+        // FALLBACK: if Pete forgot [OPTIONS], detect quick-fire questions and inject buttons
+        if (!optMatch) {
+            const lc = fullText.toLowerCase();
+            const quickFireFallbacks = [
+                { test: /how can i help/i, options: 'Idea Jam|Problem Solve' },
+                { test: /where are you at/i, options: 'Napkin sketch|Blueprint' },
+                { test: /who needs convincing/i, options: 'Just me|Other people' },
+                { test: /what.*vibe/i, options: 'Quick and scrappy|Polished and tight' },
+                { test: /how much time/i, options: '5-10 minutes|15-20 minutes' }
+            ];
+            for (const fb of quickFireFallbacks) {
+                if (fb.test.test(fullText)) {
+                    optMatch = [null, fb.options];
+                    break;
+                }
+            }
+        }
+
         if (optMatch) {
             fullText = fullText.replace(/\n?\[OPTIONS:\s*[^\]]+\]/, '').trim();
             agentDiv.innerHTML = renderMarkdown(fullText);
