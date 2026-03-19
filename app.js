@@ -726,6 +726,7 @@ function forceCloseSession() {
     state.reportGenerated = false;
     state.reportText = '';
     delete document.body.dataset.mode;
+    inSession = false;
     // Reset logo to default orange wordmark
     const logo = document.querySelector('.logo');
     if (logo) logo.src = 'logo.png';
@@ -2941,14 +2942,12 @@ const tourHelpBtn = document.getElementById('tourHelpBtn');
 if (tourHelpBtn) tourHelpBtn.addEventListener('click', startTour);
 
 // Auto-start tour on first session entry (called from enterStudio)
+let inSession = false;
 function maybeStartTour() {
+    inSession = true;
     if (!localStorage.getItem('wade_tour_seen')) {
-        // Only start if welcome screen is actually hidden (we're in the session)
         setTimeout(() => {
-            const welcome = document.querySelector('.welcome');
-            if (welcome && welcome.classList.contains('hidden')) {
-                startTour();
-            }
-        }, 1500);
+            if (inSession) startTour();
+        }, 2000);
     }
 }
