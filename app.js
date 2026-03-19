@@ -585,9 +585,18 @@ function startExercise(mode, exercise, startMsg = null) {
     // so WAiDE can respond in context without asking them to repeat themselves
     let autoStartMsg = startMsg;
     if (!autoStartMsg && state.routing && state.messages.length > 0) {
+        // Filter out quick-fire button labels — only keep the user's actual problem description
+        const quickFireLabels = new Set([
+            'idea jam', 'problem solve',
+            'napkin sketch', 'blueprint',
+            'just me', 'other people',
+            'quick and scrappy', 'polished and tight',
+            '5-10 minutes', '15-20 minutes'
+        ]);
         autoStartMsg = state.messages
             .filter(m => m.role === 'user' && !m.content.startsWith('[SYSTEM]'))
             .map(m => m.content)
+            .filter(text => !quickFireLabels.has(text.trim().toLowerCase()))
             .join('\n\n');
     }
 

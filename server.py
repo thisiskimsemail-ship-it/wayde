@@ -2080,10 +2080,14 @@ Pete's reframed version of the problem based on the root cause — one sentence.
 CRAZY_8S_REPORT = """You are producing a Crazy 8s session report for The Studio at Wade Institute of Entrepreneurship.
 Write clearly, directly, using markdown. Frame everything as the user's own thinking.
 
+CRITICAL: Only include ideas that the user actually described during the exercise. Do NOT invent, fabricate, or pad the list. If fewer than 8 ideas were generated, list only the ones that were actually discussed — do not add placeholder text like "[not fully defined]". Ignore any quick-fire routing answers (e.g. "Idea Jam", "Napkin sketch", "Quick and scrappy") — these are UI navigation choices, not ideas.
+
+If WORKSHOP_BOARD_CARDS are provided below, use them as the authoritative list of ideas — they were reviewed and edited by the user.
+
 # Crazy 8s Report
 
-### Your 8 Ideas
-List all 8 ideas as numbered items. Mark the user's top 2-3 picks with a star or bold:
+### Your Ideas
+List all ideas the user actually generated. Mark the user's top picks with bold:
 
 1. [idea]
 2. [idea]
@@ -2091,7 +2095,7 @@ List all 8 ideas as numbered items. Mark the user's top 2-3 picks with a star or
 ...etc.
 
 ### Patterns Pete Noticed
-One paragraph: what patterns emerged across the 8 ideas? Were most ideas about automation? Customer experience? Cost reduction? Name the pattern — it reveals where the user's instincts point.
+One paragraph: what patterns emerged across the ideas? Were most ideas about automation? Customer experience? Cost reduction? Name the pattern — it reveals where the user's instincts point.
 
 ### Top Pick Analysis
 For each of the user's top 2-3 picks, one sentence on what makes it promising and one sentence on the biggest assumption to test.
