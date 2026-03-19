@@ -8,13 +8,38 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from datetime import datetime, timezone, timedelta
 from html.parser import HTMLParser
-from flask import Flask, request, Response, send_from_directory, jsonify
+from flask import Flask, request, Response, send_from_directory, jsonify, after_this_request
 from dotenv import load_dotenv
 import anthropic
+import gzip as gzip_mod
+from io import BytesIO
+from functools import wraps
 
 load_dotenv()
 
 app = Flask(__name__, static_folder='.', static_url_path='')
+
+# === GZIP COMPRESSION ===
+@app.after_request
+def add_gzip_and_cache(response):
+    # Cache static assets aggressively
+    if request.path.endswith(('.js', '.css', '.webp', '.jpg', '.png', '.woff', '.woff2', '.ttf', '.otf')):
+        response.headers['Cache-Control'] = 'public, max-age=31536000, immutable'
+    elif request.path.endswith('.html') or request.path == '/':
+        response.headers['Cache-Control'] = 'public, max-age=300'
+
+    # Gzip text responses
+    if (response.content_type and
+        any(t in response.content_type for t in ['text/', 'application/json', 'application/javascript']) and
+        'gzip' in request.headers.get('Accept-Encoding', '') and
+        response.content_length and response.content_length > 500):
+        buf = BytesIO()
+        with gzip_mod.GzipFile(fileobj=buf, mode='wb', compresslevel=6) as f:
+            f.write(response.get_data())
+        response.set_data(buf.getvalue())
+        response.headers['Content-Encoding'] = 'gzip'
+        response.headers['Content-Length'] = len(response.get_data())
+    return response
 client = anthropic.Anthropic()
 
 # === PROGRAM PATHS ===
@@ -2502,6 +2527,9 @@ def view_canvas(canvas_id):
 
 
 # === SESSION SAVE & MAGIC LINK ===
+# WARNING: sessions.json and leads.json are ephemeral on Railway — lost on every redeploy.
+# For production, connect a PostgreSQL addon (Railway Postgres) and set DATABASE_URL.
+# TODO: Add PostgreSQL storage when DATABASE_URL is present.
 
 SESSIONS_FILE = os.path.join(os.path.dirname(__file__), 'sessions.json')
 

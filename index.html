@@ -5,7 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Studio — A Virtual Workshop, Led by Wade</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="preload" href="fonts/GT-Walsheim-Regular.woff" as="font" type="font/woff" crossorigin>
+    <link rel="preload" href="banner.webp" as="image" type="image/webp">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -89,7 +93,12 @@
       <div class="workshop-layout" id="workshopLayout">
         <div class="chat-pane" id="chatPane">
         <div class="welcome" id="welcome">
-            <div class="welcome-hero"></div>
+            <div class="welcome-hero">
+                <picture>
+                    <source type="image/webp" srcset="banner-sm.webp 640w, banner-md.webp 1024w, banner.webp 1920w" sizes="100vw">
+                    <img src="banner.jpg" alt="Wade Institute workshop space" class="welcome-hero-img" width="1920" height="1280" loading="eager" fetchpriority="high">
+                </picture>
+            </div>
             <h1 class="welcome-title">The Studio</h1>
             <p class="welcome-sub">A virtual workshop, led by Wade.</p>
             <p class="welcome-tagline">More AI answers won't fix it. Better human thinking will.</p>
