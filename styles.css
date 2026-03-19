@@ -1335,6 +1335,7 @@ body.in-session #wadeCta { display: none !important; }
     display: flex;
     flex-direction: column;
     gap: 1rem;
+    padding-bottom: 140px; /* Space for fixed input bar */
 }
 
 .msg {
