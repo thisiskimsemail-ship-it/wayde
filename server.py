@@ -775,7 +775,7 @@ THE SPARK:
 
 THE BUILD:
 - Just me + Quick → Effectuation [SUGGEST: effectuation]
-- Just me + Polished → Elevator Pitch then Lean Canvas [SUGGEST: elevator-pitch]
+- Just me + Polished → Lean Canvas [SUGGEST: lean-canvas]
 - Other people + Quick → Elevator Pitch [SUGGEST: elevator-pitch]
 - Other people + Polished → Elevator Pitch then Lean Canvas [SUGGEST: elevator-pitch]
 
