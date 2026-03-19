@@ -3957,7 +3957,7 @@ html[data-theme="light"] .tour-tooltip { background: #fff; border-color: rgba(30
     bottom: 1.25rem;
     writing-mode: horizontal-tb;
     transform: none;
-    background: var(--orange);
+    background: var(--stage-color, var(--orange));
     color: #fff;
     border: none;
     padding: 0.5rem 1rem;
@@ -3968,7 +3968,7 @@ html[data-theme="light"] .tour-tooltip { background: #fff; border-color: rgba(30
     cursor: pointer;
     z-index: 1000;
     transition: all 0.2s;
-    box-shadow: 0 2px 12px rgba(241,90,34,0.3);
+    box-shadow: 0 2px 12px color-mix(in srgb, var(--stage-color, var(--orange)) 30%, transparent);
     display: flex;
     align-items: center;
     gap: 0.35rem;
@@ -3977,7 +3977,7 @@ html[data-theme="light"] .tour-tooltip { background: #fff; border-color: rgba(30
     content: '\2709';
     font-size: 0.9rem;
 }
-.feedback-tab:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(241,90,34,0.4); }
+.feedback-tab:hover { transform: translateY(-1px); box-shadow: 0 4px 16px color-mix(in srgb, var(--stage-color, var(--orange)) 40%, transparent); }
 
 .feedback-panel {
     position: fixed;
