@@ -109,7 +109,8 @@ body[data-mode] .send-btn { background: var(--stage-color); }
 /* Report CTA button */
 body[data-mode] .report-cta-btn { color: var(--stage-color); border-color: var(--stage-color); }
 
-/* Board toggle active */
+/* Board toggle — always stage colour */
+body[data-mode] .board-toggle { border-color: var(--stage-color); color: var(--stage-color); }
 body[data-mode] .board-toggle.active { border-color: var(--stage-color); color: var(--stage-color); }
 
 /* Help me / Challenge me hover */
@@ -242,6 +243,40 @@ body[data-mode] .pitch-progress-dot.filled { background: var(--stage-color); bor
     transition: color 0.15s;
 }
 .breadcrumb-toolbox-link:hover { color: var(--orange); }
+
+/* Time badges in dropdown & picker */
+.dropdown-time, .picker-time {
+    display: inline-block;
+    margin-left: 0.4rem;
+    font-size: 0.65rem;
+    font-weight: 400;
+    color: var(--text-muted);
+    opacity: 0.8;
+}
+.breadcrumb-dropdown-item { display: flex; align-items: center; justify-content: space-between; }
+.tool-picker-item { display: flex; align-items: center; justify-content: space-between; }
+
+/* Learn more link under prompt bar */
+.tool-learn-link {
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    text-decoration: none;
+    margin-right: 0.25rem;
+    transition: color 0.15s;
+}
+.tool-learn-link:hover { color: var(--orange); text-decoration: underline; }
+.tool-learn-link.hidden { display: none; }
+
+/* Learn more link in activity brief */
+.activity-brief-learn {
+    display: inline-block;
+    margin-top: 0.5rem;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.15s;
+}
+.activity-brief-learn:hover { color: var(--orange); text-decoration: underline; }
 
 /* Light theme */
 html[data-theme="light"] .breadcrumb-dropdown { background: #fff; border-color: rgba(0,0,0,0.1); box-shadow: 0 8px 24px rgba(0,0,0,0.12); }
@@ -1553,8 +1588,8 @@ body.board-open > .input-area {
     line-height: 1.45;
     resize: none;
     outline: none;
-    min-height: 5rem;
-    max-height: 160px;
+    min-height: 6rem;
+    max-height: 200px;
     transition: border-color 0.2s, box-shadow 0.2s;
 }
 @media (max-width: 640px) {
@@ -3196,6 +3231,15 @@ html[data-theme="light"] .resume-banner { background: rgba(246,245,245,0.95); bo
     transition: opacity 0.2s;
 }
 .tool-entry-cta:hover { opacity: 0.9; }
+.tool-entry-actions { display: flex; align-items: center; gap: 1rem; margin-top: 1.25rem; }
+.tool-entry-actions .tool-entry-cta { margin-top: 0; }
+.tool-entry-detail {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.15s;
+}
+.tool-entry-detail:hover { color: var(--text); text-decoration: underline; }
 
 /* Toolbox stage colour coding */
 .tool-stage-reframe   { border-left: 3px solid var(--orange); }
@@ -3344,7 +3388,11 @@ html[data-theme="light"] .tool-entry-time { background: rgba(30,25,79,0.05); }
 }
 
 .workshop-layout.board-active {
-    grid-template-columns: 45fr 55fr;
+    grid-template-columns: 1fr 1fr;
+}
+/* Lean Canvas needs more board space */
+.workshop-layout.board-active.board-lean-canvas {
+    grid-template-columns: 40fr 60fr;
 }
 
 .chat-pane {
@@ -3471,7 +3519,7 @@ body.board-maximised > .input-area {
     position: absolute;
     top: -5px;
     right: -5px;
-    background: var(--orange);
+    background: var(--stage-color, var(--orange));
     color: #fff;
     font-size: 0.55rem;
     font-weight: 700;
@@ -3681,6 +3729,16 @@ body.board-maximised > .input-area {
     color: rgba(255,255,255,0.3);
 }
 
+.board-card-edit-btn {
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.2);
+    cursor: pointer;
+    font-size: 0.7rem;
+    padding: 0 0.2rem;
+    line-height: 1;
+}
+.board-card-edit-btn:hover { color: rgba(255,255,255,0.6); }
 .board-card-delete {
     background: none;
     border: none;
@@ -3691,6 +3749,9 @@ body.board-maximised > .input-area {
     line-height: 1;
 }
 .board-card-delete:hover { color: rgba(255,255,255,0.6); }
+
+/* Card text clickable to edit */
+.board-card-text { cursor: text; }
 
 /* Stage colours on card left border */
 .board-card[data-stage="reframe"],
@@ -3748,6 +3809,8 @@ html[data-theme="light"] .zone-empty { color: rgba(0,0,0,0.2); }
 html[data-theme="light"] .board-card { background: #fff; }
 html[data-theme="light"] .board-card-text { color: rgba(0,0,0,0.8); }
 html[data-theme="light"] .board-card-source { color: rgba(0,0,0,0.3); }
+html[data-theme="light"] .board-card-edit-btn { color: rgba(0,0,0,0.2); }
+html[data-theme="light"] .board-card-edit-btn:hover { color: rgba(0,0,0,0.5); }
 html[data-theme="light"] .board-card-delete { color: rgba(0,0,0,0.2); }
 html[data-theme="light"] .board-card-delete:hover { color: rgba(0,0,0,0.5); }
 html[data-theme="light"] .board-add-card-btn { border-color: rgba(0,0,0,0.12); color: rgba(0,0,0,0.35); }
@@ -3890,41 +3953,48 @@ html[data-theme="light"] .tour-tooltip { background: #fff; border-color: rgba(30
 /* === FEEDBACK WIDGET === */
 .feedback-tab {
     position: fixed;
-    left: 0;
-    bottom: 80px;
-    writing-mode: vertical-rl;
-    transform: rotate(180deg);
+    right: 1.25rem;
+    bottom: 1.25rem;
+    writing-mode: horizontal-tb;
+    transform: none;
     background: var(--orange);
     color: #fff;
     border: none;
-    padding: 0.5rem 0.3rem;
-    font-size: 0.65rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
     font-weight: 600;
-    letter-spacing: 0.06em;
-    border-radius: 0 8px 8px 0;
+    letter-spacing: 0.02em;
+    border-radius: 20px;
     cursor: pointer;
     z-index: 1000;
-    transition: opacity 0.2s;
+    transition: all 0.2s;
+    box-shadow: 0 2px 12px rgba(241,90,34,0.3);
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
 }
-.feedback-tab:hover { opacity: 0.88; }
+.feedback-tab::before {
+    content: '\2709';
+    font-size: 0.9rem;
+}
+.feedback-tab:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(241,90,34,0.4); }
 
 .feedback-panel {
     position: fixed;
-    left: 0;
-    bottom: 80px;
-    width: 300px;
+    right: 1.25rem;
+    bottom: 4.5rem;
+    width: 320px;
     background: var(--bg-light, #1a1750);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-left: none;
-    border-radius: 0 12px 12px 0;
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 12px;
     padding: 1.25rem;
     z-index: 1001;
-    box-shadow: 4px 0 24px rgba(0,0,0,0.3);
-    animation: slideInLeft 0.2s ease;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.35);
+    animation: slideUpFeedback 0.2s ease;
 }
-@keyframes slideInLeft {
-    from { transform: translateX(-100%); }
-    to { transform: translateX(0); }
+@keyframes slideUpFeedback {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 .feedback-panel.hidden { display: none; }
 
@@ -4016,13 +4086,13 @@ html[data-theme="light"] .tour-tooltip { background: #fff; border-color: rgba(30
 .feedback-submit:disabled { opacity: 0.5; cursor: default; }
 
 /* Light theme feedback */
-body.light .feedback-panel { background: #fff; border-color: rgba(0,0,0,0.08); box-shadow: -4px 0 24px rgba(0,0,0,0.08); }
-body.light .feedback-star { background: rgba(0,0,0,0.03); border-color: rgba(0,0,0,0.1); color: var(--text-dim); }
-body.light .feedback-input { background: rgba(0,0,0,0.02); border-color: rgba(0,0,0,0.1); }
+body.light .feedback-panel, html[data-theme="light"] .feedback-panel { background: #fff; border-color: rgba(0,0,0,0.1); box-shadow: 0 8px 32px rgba(0,0,0,0.1); }
+body.light .feedback-star, html[data-theme="light"] .feedback-star { background: rgba(0,0,0,0.03); border-color: rgba(0,0,0,0.1); color: var(--text-dim); }
+body.light .feedback-input, html[data-theme="light"] .feedback-input { background: rgba(0,0,0,0.02); border-color: rgba(0,0,0,0.1); }
 
 @media (max-width: 640px) {
-    .feedback-panel { width: 260px; padding: 1rem; }
-    .feedback-tab { font-size: 0.7rem; padding: 0.3rem 0.75rem; }
+    .feedback-panel { width: calc(100vw - 2rem); right: 1rem; }
+    .feedback-tab { font-size: 0.75rem; padding: 0.45rem 0.85rem; right: 1rem; bottom: 1rem; }
 }
 
 /* === FEATURE HINTS === */

@@ -158,7 +158,8 @@ function updateBreadcrumbDropdown(currentMode, currentExercise) {
             const btn = document.createElement('button');
             btn.className = 'breadcrumb-dropdown-item';
             if (tool === currentExercise) btn.classList.add('active');
-            btn.textContent = EXERCISE_LABELS[tool] || tool;
+            const time = EXERCISE_TIMES[tool];
+            btn.innerHTML = `${EXERCISE_LABELS[tool] || tool}${time ? `<span class="dropdown-time">${time}</span>` : ''}`;
             btn.addEventListener('click', () => {
                 document.getElementById('breadcrumbDropdown').classList.add('hidden');
                 document.getElementById('breadcrumbTool').classList.remove('open');
@@ -300,6 +301,23 @@ const EXERCISE_EXCHANGES = {
     'lean-canvas': 12, 'elevator-pitch': 6, 'effectuation': 8, 'analogical': 8
 };
 
+// Human-readable time estimates per exercise
+const EXERCISE_TIMES = {
+    'elevator-pitch': '5–10 min',
+    'five-whys':      '15 min',
+    'jtbd':           '20 min',
+    'empathy-map':    '20 min',
+    'hmw':            '20 min',
+    'scamper':        '20 min',
+    'crazy-8s':       '15 min',
+    'pre-mortem':     '20 min',
+    'devils-advocate':'25 min',
+    'rapid-experiment':'15 min',
+    'lean-canvas':    '20 min',
+    'effectuation':   '20 min',
+    'analogical':     '15 min'
+};
+
 // Stage order for progress strip
 const STAGE_ORDER = ['reframe', 'ideate', 'debate', 'framework'];
 
@@ -361,6 +379,7 @@ const inputForm = $('#inputForm');
 const inputField = $('#inputField');
 const sendBtn = $('#sendBtn');
 const modeLabel = $('#modeLabel');
+const toolLearnLink = $('#toolLearnLink');
 const sessionBar = $('#sessionBar');
 const sessionMode = $('#sessionMode');
 const sessionExercise = $('#sessionExercise');
@@ -498,7 +517,8 @@ function openStagePickerForStep(stepEl) {
     toolPickerMenu.innerHTML =
         tools.map(t => {
             const isCurrent = t === state.exercise && targetMode === state.mode;
-            return `<button class="tool-picker-item${isCurrent ? ' tool-picker-current' : ''}" data-exercise="${t}" data-mode="${targetMode}">${EXERCISE_LABELS[t] || t}</button>`;
+            const time = EXERCISE_TIMES[t];
+            return `<button class="tool-picker-item${isCurrent ? ' tool-picker-current' : ''}" data-exercise="${t}" data-mode="${targetMode}">${EXERCISE_LABELS[t] || t}${time ? `<span class="picker-time">${time}</span>` : ''}</button>`;
         }).join('') +
         `<div class="picker-divider"></div>
          <button class="tool-picker-item tool-picker-help" data-mode="${targetMode}">Help me choose →</button>`;
@@ -654,8 +674,9 @@ function startExercise(mode, exercise, startMsg = null) {
     if (breadcrumbTool) breadcrumbTool.innerHTML = `${EXERCISE_LABELS[exercise] || exercise} <svg class="breadcrumb-chevron" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg>`;
     updateBreadcrumbDropdown(mode, exercise);
 
-    // Update footer label
+    // Update footer label + learn more link
     modeLabel.innerHTML = `${EXERCISE_LABELS[exercise] || exercise} ·`;
+    if (toolLearnLink) { toolLearnLink.href = `tool.html?tool=${exercise}`; toolLearnLink.classList.remove('hidden'); }
 
     // Update stage progress strip
     updateStageProgress(mode);
@@ -709,7 +730,8 @@ function startExercise(mode, exercise, startMsg = null) {
         const introDiv = document.createElement('div');
         introDiv.className = 'activity-brief';
         introDiv.dataset.mode = mode;
-        introDiv.innerHTML = `<div class="activity-brief-header"><span class="activity-brief-stage">${MODE_LABELS[mode] || mode}</span><span class="activity-brief-time">~${Math.round(expectedExchanges * 2)} min · ~${expectedExchanges} exchanges</span></div><h3 class="activity-brief-name"><a class="intro-label-link" href="toolbox.html#${exercise}" target="_blank" rel="noopener">${EXERCISE_LABELS[exercise] || exercise}</a></h3><p class="activity-brief-desc">${desc}</p>${arc ? `<p class="activity-brief-arc">${arc}</p>` : ''}`;
+        const briefTime = EXERCISE_TIMES[exercise] || `~${Math.round(expectedExchanges * 2)} min`;
+        introDiv.innerHTML = `<div class="activity-brief-header"><span class="activity-brief-stage">${MODE_LABELS[mode] || mode}</span><span class="activity-brief-time">${briefTime}</span></div><h3 class="activity-brief-name"><a class="intro-label-link" href="toolbox.html#${exercise}" target="_blank" rel="noopener">${EXERCISE_LABELS[exercise] || exercise}</a></h3><p class="activity-brief-desc">${desc}</p>${arc ? `<p class="activity-brief-arc">${arc}</p>` : ''}<a class="activity-brief-learn" href="tool.html?tool=${exercise}" target="_blank" rel="noopener">Learn more about this tool →</a>`;
         messagesEl.appendChild(introDiv);
     }
     inputField.placeholder = EXERCISE_HINTS[exercise] || 'Describe your challenge or idea...';
@@ -750,6 +772,7 @@ function forceCloseSession() {
     inputField.placeholder = 'Describe your challenge or idea...';
     sendBtn.disabled = true;
     modeLabel.textContent = 'Wade Innovation Toolbox · ';
+    if (toolLearnLink) toolLearnLink.classList.add('hidden');
     state.rating = null;
     state.parkingLot = [];
     state.board = { cards: [], visible: false };
@@ -838,6 +861,7 @@ function doCloseSession() {
     inputField.value = ''; sendBtn.disabled = true;
     inputField.placeholder = 'Describe your challenge or idea...';
     modeLabel.textContent = 'Wade Innovation Toolbox · ';
+    if (toolLearnLink) toolLearnLink.classList.add('hidden');
     state.rating = null;
     state.pushHarder = false;
     setPickerEnabled(false);
@@ -876,6 +900,7 @@ function swapToTool(mode, exercise, swapEl) {
     sessionMode.textContent = MODE_LABELS[mode] || mode;
     sessionExercise.textContent = EXERCISE_LABELS[exercise] || exercise;
     modeLabel.innerHTML = `<a class="mode-label-link" href="toolbox.html#${exercise}" target="_blank" rel="noopener">${EXERCISE_LABELS[exercise] || exercise}</a> ·`;
+    if (toolLearnLink) { toolLearnLink.href = `tool.html?tool=${exercise}`; toolLearnLink.classList.remove('hidden'); }
     updateStageProgress(mode);
 
     // Reset tool picker
@@ -944,6 +969,7 @@ function enterStudio() {
     if (inputArea) inputArea.style.display = 'none';
     moveInputToSession();
     modeLabel.textContent = 'Wade Innovation Toolbox · ';
+    if (toolLearnLink) toolLearnLink.classList.add('hidden');
     inputField.placeholder = 'Type your response...';
 
     // Send a silent kickoff — never shown to user
@@ -983,6 +1009,7 @@ function startRouting(text) {
     moveInputToSession();
     routingBack.classList.remove('hidden');
     modeLabel.textContent = 'Wade Innovation Toolbox · ';
+    if (toolLearnLink) toolLearnLink.classList.add('hidden');
 
     state.messages.push({ role: 'user', content: text });
     appendMessage('user', text);
@@ -1008,6 +1035,7 @@ routingBackBtn.addEventListener('click', () => {
     inputField.value = ''; sendBtn.disabled = true;
     inputField.placeholder = 'Describe your challenge or idea...';
     modeLabel.textContent = 'Wade Innovation Toolbox · ';
+    if (toolLearnLink) toolLearnLink.classList.add('hidden');
     routingBack.classList.add('hidden');
     chatArea.scrollTop = 0;
 });
@@ -1033,7 +1061,7 @@ inputForm.addEventListener('submit', (e) => {
 // Auto-resize textarea
 inputField.addEventListener('input', () => {
     inputField.style.height = 'auto';
-    inputField.style.height = Math.min(inputField.scrollHeight, 120) + 'px';
+    inputField.style.height = Math.min(inputField.scrollHeight, 200) + 'px';
     sendBtn.disabled = !inputField.value.trim();
 });
 
@@ -1076,6 +1104,11 @@ function appendMessage(role, content) {
 function scrollToBottom() {
     // Use rAF to ensure DOM has rendered before scrolling
     requestAnimationFrame(() => {
+        // When board is open, the chat-pane is the scrollable container
+        const chatPane = document.getElementById('chatPane');
+        if (chatPane && state.board.visible) {
+            chatPane.scrollTop = chatPane.scrollHeight;
+        }
         chatArea.scrollTop = chatArea.scrollHeight;
     });
 }
@@ -1152,6 +1185,7 @@ function restoreSession(session) {
     sessionMode.textContent = MODE_LABELS[state.mode] || state.mode;
     sessionExercise.textContent = EXERCISE_LABELS[state.exercise] || state.exercise;
     modeLabel.innerHTML = `<a class="mode-label-link" href="toolbox.html#${state.exercise}" target="_blank" rel="noopener">${EXERCISE_LABELS[state.exercise] || state.exercise}</a> ·`;
+    if (toolLearnLink) { toolLearnLink.href = `tool.html?tool=${state.exercise}`; toolLearnLink.classList.remove('hidden'); }
     reportCta.classList.remove('hidden');
     updateStageProgress(state.mode);
     // Restore tool picker state
@@ -2207,6 +2241,9 @@ const EFF_TAG_MAP = {
 function switchBoardLayout(mode) {
     const layout = BOARD_LAYOUTS[mode] || BOARD_LAYOUTS['default'];
     state.boardMode = mode;
+    // Toggle lean-canvas layout class for wider board
+    const workshopLayout = document.getElementById('workshopLayout');
+    if (workshopLayout) workshopLayout.classList.toggle('board-lean-canvas', mode === 'lean-canvas');
     const zonesContainer = document.getElementById('boardZones');
     if (!zonesContainer) return;
 
@@ -2241,10 +2278,17 @@ function addBoardCard(text, zone, stage, source) {
         source: source || EXERCISE_LABELS[state.exercise] || state.exercise || 'session',
         timestamp: Date.now()
     };
+    const isFirst = state.board.cards.length === 0;
     state.board.cards.push(card);
     renderBoardCard(card);
     updateBoardCounts();
     saveSession();
+
+    // Auto-open board on first card addition
+    if (isFirst && !state.board.visible) {
+        toggleBoard();
+    }
+
     return card;
 }
 
@@ -2298,6 +2342,7 @@ function renderBoardCard(card) {
         <div class="board-card-text">${card.text}</div>
         <div class="board-card-meta">
             <span class="board-card-source">${card.source}</span>
+            <button class="board-card-edit-btn" title="Edit">✎</button>
             <button class="board-card-delete" title="Remove">✕</button>
         </div>
     `;
@@ -2306,9 +2351,9 @@ function renderBoardCard(card) {
         e.stopPropagation();
         removeBoardCard(card.id);
     });
-    // Inline edit on double-click
-    div.addEventListener('dblclick', (e) => {
-        e.stopPropagation();
+
+    // Inline edit helper
+    function startEdit() {
         const textEl = div.querySelector('.board-card-text');
         if (!textEl || textEl.querySelector('textarea')) return;
         const current = card.text;
@@ -2335,6 +2380,16 @@ function renderBoardCard(card) {
             if (ke.key === 'Enter' && !ke.shiftKey) { ke.preventDefault(); ta.blur(); }
             if (ke.key === 'Escape') { ta.value = current; ta.blur(); }
         });
+    }
+    // Edit button click
+    div.querySelector('.board-card-edit-btn').addEventListener('click', (e) => {
+        e.stopPropagation();
+        startEdit();
+    });
+    // Click on card text to edit
+    div.querySelector('.board-card-text').addEventListener('click', (e) => {
+        e.stopPropagation();
+        startEdit();
     });
     // Drag handlers
     div.addEventListener('dragstart', (e) => {
