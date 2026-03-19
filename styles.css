@@ -191,13 +191,14 @@ body[data-mode] .pitch-progress-dot.filled { background: var(--stage-color); bor
     position: absolute;
     top: calc(100% + 6px);
     left: 0;
-    background: var(--card-bg);
-    border: 1px solid rgba(255,255,255,0.1);
+    background: #1e194f;
+    border: 1px solid rgba(255,255,255,0.12);
     border-radius: 8px;
     padding: 0.5rem 0;
     min-width: 220px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
     z-index: 200;
+    backdrop-filter: blur(12px);
 }
 .breadcrumb-dropdown.hidden { display: none; }
 
