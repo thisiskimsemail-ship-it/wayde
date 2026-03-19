@@ -3879,18 +3879,18 @@ html[data-theme="light"] .tour-tooltip { background: #fff; border-color: rgba(30
 /* === FEEDBACK WIDGET === */
 .feedback-tab {
     position: fixed;
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%) rotate(180deg);
+    left: 0;
+    bottom: 80px;
     writing-mode: vertical-rl;
+    transform: rotate(180deg);
     background: var(--orange);
     color: #fff;
     border: none;
-    padding: 0.6rem 0.35rem;
-    font-size: 0.7rem;
+    padding: 0.5rem 0.3rem;
+    font-size: 0.65rem;
     font-weight: 600;
     letter-spacing: 0.06em;
-    border-radius: 6px 0 0 6px;
+    border-radius: 0 5px 5px 0;
     cursor: pointer;
     z-index: 1000;
     transition: opacity 0.2s;
@@ -3899,22 +3899,21 @@ html[data-theme="light"] .tour-tooltip { background: #fff; border-color: rgba(30
 
 .feedback-panel {
     position: fixed;
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%);
+    left: 0;
+    bottom: 80px;
     width: 300px;
     background: var(--bg-light, #1a1750);
     border: 1px solid rgba(255,255,255,0.1);
-    border-right: none;
-    border-radius: 12px 0 0 12px;
+    border-left: none;
+    border-radius: 0 12px 12px 0;
     padding: 1.25rem;
     z-index: 1001;
-    box-shadow: -4px 0 24px rgba(0,0,0,0.3);
-    animation: slideInRight 0.2s ease;
+    box-shadow: 4px 0 24px rgba(0,0,0,0.3);
+    animation: slideInLeft 0.2s ease;
 }
-@keyframes slideInRight {
-    from { transform: translateY(-50%) translateX(100%); }
-    to { transform: translateY(-50%) translateX(0); }
+@keyframes slideInLeft {
+    from { transform: translateX(-100%); }
+    to { transform: translateX(0); }
 }
 .feedback-panel.hidden { display: none; }
 
