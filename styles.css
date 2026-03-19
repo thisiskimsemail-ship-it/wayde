@@ -3795,8 +3795,9 @@ html[data-theme="light"] .tour-help-btn:hover { border-color: var(--orange); col
     position: fixed; inset: 0;
     z-index: 10000;
     pointer-events: none;
+    display: none;
 }
-.tour-overlay:not(.hidden) { pointer-events: auto; }
+.tour-overlay:not(.hidden) { display: block; pointer-events: auto; }
 
 .tour-spotlight {
     position: absolute;
