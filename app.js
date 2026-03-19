@@ -1426,8 +1426,12 @@ async function streamResponse() {
             const zone = CANVAS_TAG_MAP[blockKey];
             if (zone) {
                 addBoardCard(blockText, zone, state.mode, EXERCISE_LABELS[state.exercise] || 'Lean Canvas');
-                // Auto-open board if not already visible
-                if (!state.board.visible) toggleBoard();
+                // Peek: briefly show the board when first card is added, then auto-close
+                if (!state.board.visible && !state.board.peeked) {
+                    state.board.peeked = true;
+                    toggleBoard();
+                    setTimeout(() => { if (state.board.visible) toggleBoard(); }, 3000);
+                }
             }
         }
         fullText = fullText.replace(/\n?\[CANVAS:[a-z_-]+:\s*[^\]]+\]/g, '').trim();
