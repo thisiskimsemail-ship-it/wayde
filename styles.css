@@ -91,6 +91,8 @@ body[data-mode="ideate"]    { --stage-color: var(--pink); }
 body[data-mode="debate"]    { --stage-color: var(--teal); }
 body[data-mode="framework"] { --stage-color: var(--yellow); }
 body[data-mode="routing"]   { --stage-color: var(--orange); }
+/* Light mode: yellow is invisible on white — swap to navy */
+html[data-theme="light"] body[data-mode="framework"] { --stage-color: #1E194F; }
 
 /* Logo — swap wordmark per stage (JS sets src, no filters needed) */
 
@@ -3085,7 +3087,7 @@ html[data-theme="light"] .input-field:focus { border-color: rgba(30,25,79,0.3); 
 html[data-theme="light"] body[data-mode="reframe"]   .input-field:focus { box-shadow: 0 0 0 3px rgba(241,90,34,0.1);   border-color: rgba(241,90,34,0.5); }
 html[data-theme="light"] body[data-mode="ideate"]    .input-field:focus { box-shadow: 0 0 0 3px rgba(236,54,147,0.1);  border-color: rgba(236,54,147,0.5); }
 html[data-theme="light"] body[data-mode="debate"]    .input-field:focus { box-shadow: 0 0 0 3px rgba(38,189,190,0.1);  border-color: rgba(38,189,190,0.5); }
-html[data-theme="light"] body[data-mode="framework"] .input-field:focus { box-shadow: 0 0 0 3px rgba(228,229,23,0.15); border-color: rgba(228,229,23,0.6); }
+html[data-theme="light"] body[data-mode="framework"] .input-field:focus { box-shadow: 0 0 0 3px rgba(30,25,79,0.1); border-color: rgba(30,25,79,0.5); }
 
 html[data-theme="light"] .msg-agent { background: rgba(30,25,79,0.04); border-color: rgba(30,25,79,0.08); }
 html[data-theme="light"] .msg-agent code { background: rgba(30,25,79,0.06); }
@@ -3110,7 +3112,7 @@ html[data-theme="light"] .wrap-rate-btn.selected { border-color: rgba(30,25,79,0
 html[data-theme="light"] .routing-suggest-btn.mode-reframe  { border-color: rgba(241,90,34,0.4); }
 html[data-theme="light"] .routing-suggest-btn.mode-ideate   { border-color: rgba(236,54,147,0.4); }
 html[data-theme="light"] .routing-suggest-btn.mode-debate   { border-color: rgba(38,189,190,0.4); }
-html[data-theme="light"] .routing-suggest-btn.mode-framework { border-color: rgba(228,229,23,0.5); }
+html[data-theme="light"] .routing-suggest-btn.mode-framework { border-color: rgba(30,25,79,0.4); }
 html[data-theme="light"] .swap-suggest-btn { background: rgba(30,25,79,0.03); }
 html[data-theme="light"] .swap-suggest-btn:hover { background: rgba(30,25,79,0.06); }
 
@@ -3123,7 +3125,7 @@ html[data-theme="light"] .next-exercise-btn:hover { border-color: rgba(30,25,79,
 
 html[data-theme="light"] .site-footer { border-top-color: rgba(30,25,79,0.1); }
 html[data-theme="light"] .site-footer-link { color: rgba(30,25,79,0.6); }
-html[data-theme="light"] .site-footer-link:hover { color: var(--navy); }
+html[data-theme="light"] .site-footer-link:hover { color: #1E194F; }
 html[data-theme="light"] .site-footer-text { color: rgba(30,25,79,0.65); }
 
 html[data-theme="light"] .report-card { background: rgba(30,25,79,0.02); }
