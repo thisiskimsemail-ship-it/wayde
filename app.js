@@ -2943,6 +2943,12 @@ if (tourHelpBtn) tourHelpBtn.addEventListener('click', startTour);
 // Auto-start tour on first session entry (called from enterStudio)
 function maybeStartTour() {
     if (!localStorage.getItem('wade_tour_seen')) {
-        setTimeout(startTour, 1500); // slight delay so Pete's message appears first
+        // Only start if welcome screen is actually hidden (we're in the session)
+        setTimeout(() => {
+            const welcome = document.querySelector('.welcome');
+            if (welcome && welcome.classList.contains('hidden')) {
+                startTour();
+            }
+        }, 1500);
     }
 }
