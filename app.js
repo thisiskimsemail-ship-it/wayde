@@ -1742,6 +1742,15 @@ async function generateReport() {
         });
         clearTimeout(timeout);
 
+        if (!res.ok) {
+            const errText = await res.text().catch(() => 'Unknown error');
+            console.error('[Report] Server error:', res.status, errText.slice(0, 200));
+            progress.error();
+            reportCtaBtn.textContent = 'Something went wrong — try again';
+            reportCtaBtn.disabled = false;
+            return;
+        }
+
         const data = await res.json();
 
         if (data.error) {

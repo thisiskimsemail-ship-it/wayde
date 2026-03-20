@@ -2446,9 +2446,10 @@ def generate_report():
         })
 
     try:
+        print(f"[REPORT] Generating for {exercise_name} ({mode_name}), {len(report_messages)} messages, system prompt ~{len(system)} chars")
         response = client.messages.create(
             model="claude-sonnet-4-20250514",
-            max_tokens=4500,
+            max_tokens=8000,
             system=system,
             messages=report_messages,
         )
@@ -2457,10 +2458,12 @@ def generate_report():
         for block in response.content:
             if hasattr(block, 'text'):
                 report_text += block.text
+        print(f"[REPORT] Generated {len(report_text)} chars, stop_reason={response.stop_reason}")
         if not report_text:
             return jsonify({'error': 'No report content generated'}), 500
         return jsonify({'report': report_text})
     except Exception as e:
+        print(f"[REPORT] ERROR: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
 
