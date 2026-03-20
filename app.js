@@ -1629,9 +1629,87 @@ async function streamResponse() {
 
 // === REPORT GENERATION + LEAD CAPTURE ===
 
+function showReportProgress() {
+    // Find or create progress bar in the wrap prompt area
+    const wrapPrompt = document.querySelector('.wrap-prompt');
+    let progressContainer = document.getElementById('reportProgress');
+
+    if (!progressContainer) {
+        progressContainer = document.createElement('div');
+        progressContainer.id = 'reportProgress';
+        progressContainer.className = 'report-progress';
+        progressContainer.innerHTML = `
+            <div class="report-progress-bar-track">
+                <div class="report-progress-bar-fill" id="reportProgressFill"></div>
+            </div>
+            <div class="report-progress-status" id="reportProgressStatus">Analysing your session...</div>
+        `;
+        if (wrapPrompt) {
+            // Insert after the wrap-prompt-text
+            const wrapText = wrapPrompt.querySelector('.wrap-prompt-text');
+            if (wrapText) {
+                wrapText.after(progressContainer);
+            } else {
+                wrapPrompt.prepend(progressContainer);
+            }
+        } else {
+            // Fallback: insert before the report CTA
+            const cta = document.getElementById('reportCta');
+            if (cta && cta.parentNode) {
+                cta.parentNode.insertBefore(progressContainer, cta);
+            }
+        }
+    }
+
+    progressContainer.classList.remove('hidden');
+    const fill = document.getElementById('reportProgressFill');
+    const status = document.getElementById('reportProgressStatus');
+
+    const stages = [
+        { pct: 12, text: 'Analysing your session...' },
+        { pct: 25, text: 'Identifying key moments...' },
+        { pct: 40, text: 'Matching patterns from the Wade community...' },
+        { pct: 55, text: 'Building your reframe...' },
+        { pct: 68, text: 'Writing your action plan...' },
+        { pct: 80, text: 'Assembling your report...' },
+        { pct: 90, text: 'Almost there...' },
+    ];
+
+    let stageIdx = 0;
+    fill.style.width = '5%';
+    status.textContent = stages[0].text;
+
+    const interval = setInterval(() => {
+        if (stageIdx < stages.length) {
+            fill.style.width = stages[stageIdx].pct + '%';
+            status.textContent = stages[stageIdx].text;
+            stageIdx++;
+        }
+    }, 3500); // ~3.5s per stage, total ~24s to reach 90%
+
+    return {
+        complete() {
+            clearInterval(interval);
+            fill.style.width = '100%';
+            status.textContent = 'Report ready';
+            setTimeout(() => {
+                progressContainer.classList.add('hidden');
+            }, 600);
+        },
+        error() {
+            clearInterval(interval);
+            fill.style.width = '0%';
+            status.textContent = '';
+            progressContainer.classList.add('hidden');
+        }
+    };
+}
+
 async function generateReport() {
     reportCtaBtn.disabled = true;
     reportCtaBtn.textContent = 'Generating report...';
+
+    const progress = showReportProgress();
 
     try {
         const controller = new AbortController();
@@ -1667,11 +1745,13 @@ async function generateReport() {
         const data = await res.json();
 
         if (data.error) {
+            progress.error();
             reportCtaBtn.textContent = 'Something went wrong — try again';
             reportCtaBtn.disabled = false;
             return;
         }
 
+        progress.complete();
         state.reportText = data.report;
         state.reportGenerated = true;
 
@@ -1692,6 +1772,7 @@ async function generateReport() {
         reportCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
     } catch (err) {
+        progress.error();
         reportCtaBtn.textContent = 'Connection error — try again';
         reportCtaBtn.disabled = false;
     }
