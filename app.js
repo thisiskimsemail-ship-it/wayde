@@ -3223,3 +3223,45 @@ hintObserver.observe(document.body, { childList: true, subtree: true, attributes
         }
     });
 })();
+
+// === iOS KEYBOARD VIEWPORT FIX ===
+// On iOS, the virtual keyboard shrinks the visual viewport but position:fixed
+// elements don't reposition. Use visualViewport API to compensate.
+(function() {
+    if (!window.visualViewport) return;
+
+    const vv = window.visualViewport;
+    let keyboardOpen = false;
+
+    function onViewportResize() {
+        const inputArea = document.querySelector('.input-area');
+        if (!inputArea) return;
+
+        // Keyboard is open when visual viewport is significantly smaller than layout viewport
+        const heightDiff = window.innerHeight - vv.height;
+        const isKeyboard = heightDiff > 100;
+
+        if (isKeyboard && !keyboardOpen) {
+            keyboardOpen = true;
+            document.body.classList.add('keyboard-open');
+            // Offset the input bar above the keyboard
+            inputArea.style.bottom = heightDiff + 'px';
+            // Scroll chat to bottom so latest message is visible
+            requestAnimationFrame(() => {
+                const chatPane = document.getElementById('chatPane');
+                if (chatPane && state.board && state.board.visible) {
+                    chatPane.scrollTop = chatPane.scrollHeight;
+                }
+                const chatArea = document.getElementById('chatArea');
+                if (chatArea) chatArea.scrollTop = chatArea.scrollHeight;
+            });
+        } else if (!isKeyboard && keyboardOpen) {
+            keyboardOpen = false;
+            document.body.classList.remove('keyboard-open');
+            inputArea.style.bottom = '';
+        }
+    }
+
+    vv.addEventListener('resize', onViewportResize);
+    vv.addEventListener('scroll', onViewportResize);
+})();

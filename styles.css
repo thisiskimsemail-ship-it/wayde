@@ -1552,6 +1552,15 @@ body.board-open > .input-area {
     right: 55%;
 }
 
+/* iOS keyboard open — compact the input area, hide non-essentials */
+body.keyboard-open > .input-area {
+    transition: bottom 0.15s ease;
+}
+body.keyboard-open > .input-area .input-hint { display: none; }
+body.keyboard-open > .input-area .input-disclaimer { display: none; }
+body.keyboard-open .feedback-tab { display: none; }
+body.keyboard-open .help-challenge-row { display: none; }
+
 /* Input embedded inside welcome (home page) — inline, no border, constrained width */
 .welcome .input-area {
     position: relative;
