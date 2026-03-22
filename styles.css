@@ -2625,15 +2625,14 @@ html[data-theme="light"] .option-chip:hover {
     color: var(--text-muted);
     font-family: var(--font);
     font-size: 0.9rem;
-    padding: 0.28rem 0.7rem;
+    padding: 0.4rem 0.85rem;
     cursor: pointer;
     transition: all 0.2s;
-    margin-left: auto;
 }
 
-.report-action-btn + .report-action-btn { margin-left: 0.4rem; }
-
 .report-action-btn:hover { border-color: rgba(255,255,255,0.3); color: var(--text); }
+.report-action-primary { background: var(--orange); border-color: var(--orange); color: #fff; }
+.report-action-primary:hover { background: #d44e1c; border-color: #d44e1c; color: #fff; }
 
 .report-action-btn.hidden { display: none; }
 

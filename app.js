@@ -1702,7 +1702,10 @@ function showReportProgress() {
     };
 }
 
+let reportGenerating = false;
 async function generateReport() {
+    if (reportGenerating || state.reportGenerated) return; // prevent double-generation
+    reportGenerating = true;
     reportCtaBtn.disabled = true;
     reportCtaBtn.textContent = 'Generating report...';
 
@@ -1743,6 +1746,7 @@ async function generateReport() {
             const errText = await res.text().catch(() => 'Unknown error');
             console.error('[Report] Server error:', res.status, errText.slice(0, 200));
             progress.error();
+            reportGenerating = false;
             reportCtaBtn.textContent = 'Something went wrong — try again';
             reportCtaBtn.disabled = false;
             return;
@@ -1753,6 +1757,7 @@ async function generateReport() {
         if (data.error || !data.report) {
             console.error('[Report] Error or empty:', data.error || 'empty report');
             progress.error();
+            reportGenerating = false;
             reportCtaBtn.textContent = 'Something went wrong — try again';
             reportCtaBtn.disabled = false;
             return;
@@ -1800,6 +1805,7 @@ async function generateReport() {
 
     } catch (err) {
         progress.error();
+        reportGenerating = false;
         reportCtaBtn.textContent = 'Connection error — try again';
         reportCtaBtn.disabled = false;
     }
@@ -2027,20 +2033,7 @@ ${reportContent.innerHTML}
 
 function handleReportAction(btn, action) {
     switch (action) {
-        case 'copy':
-            const content = $('#reportContent');
-            if (!content) return;
-            navigator.clipboard.writeText(content.innerText).then(() => {
-                btn.textContent = 'Copied!';
-                setTimeout(() => { btn.textContent = 'Copy all'; }, 2000);
-            }).catch(() => {
-                btn.textContent = 'Failed';
-                setTimeout(() => { btn.textContent = 'Copy all'; }, 2000);
-            });
-            break;
-
         case 'download-toggle':
-        case 'share-toggle':
             const dropdown = btn.closest('.report-action-dropdown');
             const menu = dropdown?.querySelector('.report-dropdown-menu');
             if (menu) {
@@ -2096,7 +2089,7 @@ function downloadReportWord() {
     const html = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
 <head><meta charset="utf-8"><title>${mName} · ${exName} · ${date}</title>
 <style>
-body { font-family: Calibri, Arial, sans-serif; font-size: 11pt; color: #333; line-height: 1.5; max-width: 700px; margin: 0 auto; padding: 2rem; }
+body { font-family: Arial, Helvetica, sans-serif; font-size: 11pt; color: #333; line-height: 1.5; max-width: 700px; margin: 0 auto; padding: 2rem; }
 h1 { font-size: 18pt; color: #1E194F; margin-bottom: 0.25em; }
 h2 { font-size: 14pt; color: #1E194F; margin-top: 1.5em; }
 h3 { font-size: 12pt; color: #1E194F; margin-top: 1.2em; }
