@@ -1765,6 +1765,7 @@ async function generateReport() {
 
         progress.complete();
         state.reportText = data.report;
+        state.reportSynopsis = data.synopsis || {};
         state.reportGenerated = true;
         console.log('[Report] Got report text, length:', data.report.length);
 
@@ -1776,31 +1777,38 @@ async function generateReport() {
         // Clean up end-of-session clutter
         document.querySelector('.chat-action-btns')?.remove();
         document.querySelector('.option-chips')?.remove();
-        // Update wrap card: remove the report button (report is now visible below)
         document.querySelector('.wrap-btn-report')?.remove();
 
-        // Show partial preview + inline unlock form (no modal gate)
-        reportContent.innerHTML = renderMarkdown(state.reportText);
-        populateReportMeta();
-        reportCard.classList.remove('hidden');
-        reportCard.classList.add('report-preview');
-        reportUnlock.classList.remove('hidden');
+        // Populate synopsis card
+        const synopsisCard = document.getElementById('reportSynopsis');
+        const synopsisTitle = document.getElementById('synopsisTitle');
+        const synopsisHook = document.getElementById('synopsisHook');
+        const synopsisBullets = document.getElementById('synopsisBullets');
+        const synopsisMeta = document.getElementById('synopsisMeta');
+
+        const mName = MODE_LABELS[state.mode] || state.mode;
+        const exName = EXERCISE_LABELS[state.exercise] || state.exercise;
+        const date = new Date().toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' }).toUpperCase();
+        if (synopsisMeta) synopsisMeta.textContent = `${mName} · ${exName} · ${date}`;
+
+        if (state.reportSynopsis.title) synopsisTitle.textContent = state.reportSynopsis.title;
+        if (state.reportSynopsis.hook) synopsisHook.textContent = state.reportSynopsis.hook;
+        if (state.reportSynopsis.bullets && synopsisBullets) {
+            synopsisBullets.innerHTML = state.reportSynopsis.bullets
+                .map(b => `<li>${b}</li>`).join('');
+        }
+
+        // Show synopsis card (not the full report)
+        synopsisCard.classList.remove('hidden');
         reportCta.classList.add('hidden');
 
-        // Scroll unlock form into view inside the chatPane scroll container
+        // Prepare full report in background (hidden)
+        reportContent.innerHTML = renderMarkdown(state.reportText);
+        populateReportMeta();
+
+        // Scroll synopsis into view
         setTimeout(() => {
-            const chatPane = document.getElementById('chatPane');
-            if (chatPane) {
-                // Scroll chatPane so report + unlock form are visible
-                reportUnlock.scrollIntoView({ behavior: 'smooth', block: 'end' });
-                // Also scroll the outer chatArea in case it's clipping
-                chatArea.scrollTop = chatArea.scrollHeight;
-            } else {
-                reportCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
-            console.log('[Report] Report card visible:', !reportCard.classList.contains('hidden'),
-                'Unlock visible:', !reportUnlock.classList.contains('hidden'),
-                'Report content length:', reportContent.innerHTML.length);
+            synopsisCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }, 200);
 
     } catch (err) {
@@ -1893,19 +1901,21 @@ reportCtaBtn.addEventListener('click', async () => {
 // === SHARED LEAD CAPTURE LOGIC ===
 
 function revealFullReport() {
+    reportCard.classList.remove('hidden');
     reportCard.classList.remove('report-preview');
     reportUnlock.classList.add('hidden');
-    reportCta.classList.add('hidden'); // hide footer CTA — report is now visible
-
+    reportCta.classList.add('hidden');
+    document.getElementById('reportSynopsis')?.classList.add('hidden');
 
     // Reveal report action bars (top + bottom)
     document.querySelectorAll('.report-actions').forEach(bar => bar.classList.remove('hidden'));
 
-    // Show next exercise recommendation
     renderNextExercisePanel();
-
     saveSession();
-    scrollToBottom();
+
+    setTimeout(() => {
+        reportCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
 }
 
 function handleLeadSubmit(nameEl, emailEl, companyEl, roleEl, submitEl) {
@@ -2030,6 +2040,76 @@ ${reportContent.innerHTML}
 }
 
 // === REPORT ACTION BUTTONS (unified for top + bottom bars) ===
+
+// === SYNOPSIS DOWNLOAD GATING ===
+
+let pendingDownloadFormat = null; // 'word' or 'pdf'
+
+// Synopsis "Download my report" toggle
+document.getElementById('synopsisDownloadBtn')?.addEventListener('click', () => {
+    const menu = document.getElementById('synopsisDownloadMenu');
+    if (menu) menu.classList.toggle('hidden');
+});
+
+// Gated download options (from synopsis card)
+document.getElementById('reportSynopsis')?.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-action]');
+    if (!btn) return;
+    const action = btn.dataset.action;
+    if (action === 'gated-word' || action === 'gated-pdf') {
+        pendingDownloadFormat = action === 'gated-word' ? 'word' : 'pdf';
+        closeAllDropdowns();
+        // Show lead capture form
+        reportUnlock.classList.remove('hidden');
+        reportUnlock.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+});
+
+// Lead capture form submit → download + email
+document.getElementById('unlockForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const submitBtn = document.getElementById('unlockSubmit');
+    const email = document.getElementById('unlockEmail')?.value?.trim();
+    const name = document.getElementById('unlockName')?.value?.trim();
+    const company = document.getElementById('unlockCompany')?.value?.trim();
+    const role = document.getElementById('unlockRole')?.value?.trim();
+
+    if (!email) return;
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Preparing your report...';
+
+    // Send lead + email the report
+    try {
+        await fetch('/api/lead', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                email, name, company, role,
+                mode: state.mode,
+                exercise: state.exercise,
+                report: state.reportText,
+                rating: state.rating,
+                messages: state.messages
+            })
+        });
+    } catch (err) {
+        console.error('[Lead] Failed to send:', err);
+    }
+
+    // Trigger the download
+    if (pendingDownloadFormat === 'word') {
+        downloadReportWord();
+    } else {
+        downloadReport();
+    }
+
+    // Reveal full report inline
+    revealFullReport();
+    reportUnlock.classList.add('hidden');
+    document.getElementById('reportSynopsis')?.classList.add('hidden');
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Send me my report →';
+});
 
 function handleReportAction(btn, action) {
     switch (action) {

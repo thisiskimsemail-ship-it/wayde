@@ -2438,6 +2438,64 @@ html[data-theme="light"] .option-chip:hover {
     padding: 2rem;
     animation: fadeIn 0.3s ease;
 }
+
+/* === SYNOPSIS CARD === */
+.report-synopsis {
+    background: linear-gradient(135deg, rgba(30,25,79,0.6) 0%, rgba(30,25,79,0.3) 100%);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 2.5rem 2rem;
+    margin: 1.5rem auto;
+    max-width: 640px;
+    text-align: center;
+}
+.synopsis-header {
+    display: flex; align-items: center; justify-content: center; gap: 1rem;
+    margin-bottom: 1.5rem; padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.synopsis-logo { height: 36px; }
+.synopsis-meta { font-size: 0.7rem; letter-spacing: 0.08em; color: var(--text-dim); text-transform: uppercase; }
+.synopsis-title {
+    font-size: 1.5rem; font-weight: 700; color: var(--text);
+    margin: 0 0 0.75rem; line-height: 1.3;
+}
+.synopsis-hook {
+    font-size: 1rem; color: var(--text-muted); line-height: 1.6;
+    margin: 0 0 1.5rem; font-style: italic;
+}
+.synopsis-bullets {
+    text-align: left; list-style: none; padding: 0; margin: 0 0 2rem;
+}
+.synopsis-bullets li {
+    position: relative; padding-left: 1.25rem; margin-bottom: 0.6rem;
+    font-size: 0.9rem; color: var(--text-muted); line-height: 1.5;
+}
+.synopsis-bullets li::before {
+    content: '→'; position: absolute; left: 0; color: var(--orange);
+}
+.synopsis-cta { margin-bottom: 1rem; }
+.synopsis-download-btn {
+    background: var(--orange); color: #fff; border: none;
+    border-radius: 8px; padding: 0.75rem 2rem; font-size: 1rem;
+    font-weight: 600; font-family: var(--font); cursor: pointer;
+    transition: all 0.2s;
+}
+.synopsis-download-btn:hover { background: #d44e1c; transform: translateY(-1px); }
+.synopsis-privacy {
+    font-size: 0.7rem; color: var(--text-dim); margin: 0;
+    line-height: 1.4; max-width: 400px; margin: 0 auto;
+}
+
+html[data-theme="light"] .report-synopsis {
+    background: linear-gradient(135deg, rgba(30,25,79,0.03) 0%, rgba(30,25,79,0.01) 100%);
+    border-color: rgba(30,25,79,0.1);
+}
+.report-unlock-heading {
+    font-size: 1.1rem; font-weight: 600; color: var(--text);
+    margin: 0 0 1rem; text-align: center;
+}
+
 .report-actions {
     display: flex; gap: 0.5rem; align-items: center;
     padding: 1rem 0;

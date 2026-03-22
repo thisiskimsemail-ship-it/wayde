@@ -2461,7 +2461,36 @@ def generate_report():
         print(f"[REPORT] Generated {len(report_text)} chars, stop_reason={response.stop_reason}")
         if not report_text:
             return jsonify({'error': 'No report content generated'}), 500
-        return jsonify({'report': report_text})
+
+        # Generate synopsis card (fast, using Haiku)
+        synopsis = {'title': f'{exercise_name} Report', 'hook': '', 'bullets': []}
+        try:
+            synopsis_response = client.messages.create(
+                model="claude-haiku-4-5-20251001",
+                max_tokens=400,
+                system="""You create compelling synopsis cards for workshop reports. Be direct, specific, and intriguing — never generic.
+
+Return EXACTLY this JSON format (no markdown, no code blocks):
+{"title": "A crisp 4-8 word title that names the specific insight discovered (not 'Five Whys Report' — something like 'The Consulting Trap Behind Your Talent Drain')", "hook": "One sentence positioning statement that makes the reader want to open the report. Reference their specific situation, not generic advice.", "bullets": ["First key finding from the report — specific and concrete", "Second key finding", "Third key finding"]}""",
+                messages=[{'role': 'user', 'content': f'Generate a synopsis card for this report:\n\n{report_text[:3000]}'}]
+            )
+            import json as _json
+            synopsis_text = synopsis_response.content[0].text.strip()
+            # Handle potential markdown code blocks
+            if synopsis_text.startswith('```'):
+                synopsis_text = synopsis_text.split('\n', 1)[1].rsplit('```', 1)[0].strip()
+            synopsis = _json.loads(synopsis_text)
+            print(f"[REPORT] Synopsis generated: {synopsis.get('title', 'no title')}")
+        except Exception as syn_err:
+            print(f"[REPORT] Synopsis fallback: {syn_err}")
+            # Fallback — extract first heading and first paragraph
+            synopsis = {
+                'title': f'Your {exercise_name} Report',
+                'hook': 'Your session uncovered something worth reading closely.',
+                'bullets': ['The full root cause chain from your session', 'A reframed problem statement', 'Concrete next steps']
+            }
+
+        return jsonify({'report': report_text, 'synopsis': synopsis})
     except Exception as e:
         print(f"[REPORT] ERROR: {str(e)}")
         return jsonify({'error': str(e)}), 500
