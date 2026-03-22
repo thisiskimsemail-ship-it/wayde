@@ -691,8 +691,7 @@ function startExercise(mode, exercise, startMsg = null) {
     reportCard.classList.remove('report-preview');
     reportUnlock.classList.add('hidden');
     leadModal.classList.add('hidden');
-    $('#reportDownloadBtn').classList.add('hidden');
-    $('#reportShareBtn').classList.add('hidden');
+    document.querySelectorAll('.report-actions').forEach(bar => bar.classList.add('hidden'));
     $('#reportLinkedInBtn')?.classList.add('hidden');
     routingBack.classList.add('hidden');
 
@@ -795,8 +794,7 @@ function forceCloseSession() {
     reportUnlock.classList.add('hidden');
     leadModal.classList.add('hidden');
 
-    $('#reportDownloadBtn').classList.add('hidden');
-    $('#reportShareBtn').classList.add('hidden');
+    document.querySelectorAll('.report-actions').forEach(bar => bar.classList.add('hidden'));
     $('#reportLinkedInBtn')?.classList.add('hidden');
     routingBack.classList.add('hidden');
     state.projectContext = [];
@@ -872,8 +870,7 @@ function doCloseSession() {
     reportUnlock.classList.add('hidden');
     leadModal.classList.add('hidden');
 
-    $('#reportDownloadBtn').classList.add('hidden');
-    $('#reportShareBtn').classList.add('hidden');
+    document.querySelectorAll('.report-actions').forEach(bar => bar.classList.add('hidden'));
     $('#reportLinkedInBtn')?.classList.add('hidden');
     routingBack.classList.add('hidden');
     state.projectContext = [];
@@ -1895,12 +1892,8 @@ function revealFullReport() {
     reportCta.classList.add('hidden'); // hide footer CTA — report is now visible
 
 
-    // Reveal report action buttons
-    $('#reportDownloadBtn').classList.remove('hidden');
-    $('#reportShareBtn').classList.remove('hidden');
-    $('#reportLinkedInBtn')?.classList.remove('hidden');
-    $('#reportSubstackBtn')?.classList.remove('hidden');
-    $('#reportEmailBtn')?.classList.remove('hidden');
+    // Reveal report action bars (top + bottom)
+    document.querySelectorAll('.report-actions').forEach(bar => bar.classList.remove('hidden'));
 
     // Show next exercise recommendation
     renderNextExercisePanel();
@@ -2030,112 +2023,118 @@ ${reportContent.innerHTML}
     if (win) win.addEventListener('load', () => { setTimeout(() => { win.print(); URL.revokeObjectURL(url); }, 500); });
 }
 
-$('#reportDownloadBtn').addEventListener('click', downloadReport);
+// === REPORT ACTION BUTTONS (unified for top + bottom bars) ===
 
-// === REPORT SHARE LINK ===
+function handleReportAction(btn, action) {
+    switch (action) {
+        case 'copy':
+            const content = $('#reportContent');
+            if (!content) return;
+            navigator.clipboard.writeText(content.innerText).then(() => {
+                btn.textContent = 'Copied!';
+                setTimeout(() => { btn.textContent = 'Copy all'; }, 2000);
+            }).catch(() => {
+                btn.textContent = 'Failed';
+                setTimeout(() => { btn.textContent = 'Copy all'; }, 2000);
+            });
+            break;
 
-async function shareReport() {
-    const btn = $('#reportShareBtn');
-    btn.textContent = 'Generating link...';
-    btn.disabled = true;
-    try {
-        const data = await fetch('/api/share', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ report: state.reportText, mode: state.mode, exercise: state.exercise })
-        }).then(r => r.json());
-        await navigator.clipboard.writeText(window.location.origin + data.url);
-        btn.textContent = 'Link copied! ✓';
-        setTimeout(() => { btn.textContent = 'Share report →'; btn.disabled = false; }, 2500);
-    } catch(e) {
-        btn.textContent = 'Copy failed — try again';
-        btn.disabled = false;
+        case 'download-toggle':
+        case 'share-toggle':
+            const dropdown = btn.closest('.report-action-dropdown');
+            const menu = dropdown?.querySelector('.report-dropdown-menu');
+            if (menu) {
+                document.querySelectorAll('.report-dropdown-menu').forEach(m => {
+                    if (m !== menu) m.classList.add('hidden');
+                });
+                menu.classList.toggle('hidden');
+            }
+            break;
+
+        case 'download-pdf':
+            downloadReport();
+            closeAllDropdowns();
+            break;
+
+        case 'download-word':
+            downloadReportWord();
+            closeAllDropdowns();
+            break;
+
+        case 'email':
+            emailReportCopy();
+            closeAllDropdowns();
+            break;
     }
 }
 
-$('#reportShareBtn').addEventListener('click', shareReport);
+function closeAllDropdowns() {
+    document.querySelectorAll('.report-dropdown-menu').forEach(m => m.classList.add('hidden'));
+}
 
-// === SHARE DROPDOWN TOGGLE ===
-const shareToggle = $('#reportShareToggle');
-const shareMenu = $('#reportShareMenu');
-if (shareToggle && shareMenu) {
-    shareToggle.addEventListener('click', () => shareMenu.classList.toggle('hidden'));
-    document.addEventListener('click', (e) => {
-        if (!e.target.closest('.report-share-dropdown')) shareMenu.classList.add('hidden');
+document.addEventListener('click', (e) => {
+    if (!e.target.closest('.report-action-dropdown')) closeAllDropdowns();
+});
+
+document.querySelectorAll('.report-actions').forEach(bar => {
+    bar.addEventListener('click', (e) => {
+        const btn = e.target.closest('[data-action]');
+        if (btn) handleReportAction(btn, btn.dataset.action);
     });
+});
+
+// === DOWNLOAD AS WORD (.doc) ===
+
+function downloadReportWord() {
+    const content = $('#reportContent');
+    if (!content) return;
+
+    const mName = MODE_LABELS[state.mode] || state.mode;
+    const exName = EXERCISE_LABELS[state.exercise] || state.exercise;
+    const date = new Date().toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' });
+
+    const html = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
+<head><meta charset="utf-8"><title>${mName} · ${exName} · ${date}</title>
+<style>
+body { font-family: Calibri, Arial, sans-serif; font-size: 11pt; color: #333; line-height: 1.5; max-width: 700px; margin: 0 auto; padding: 2rem; }
+h1 { font-size: 18pt; color: #1E194F; margin-bottom: 0.25em; }
+h2 { font-size: 14pt; color: #1E194F; margin-top: 1.5em; }
+h3 { font-size: 12pt; color: #1E194F; margin-top: 1.2em; }
+p { margin: 0.5em 0; }
+blockquote { border-left: 3px solid #ED3694; padding-left: 1em; margin: 1em 0; color: #555; font-style: italic; }
+a { color: #F15A22; }
+li { margin: 0.25em 0; }
+.meta { color: #888; font-size: 9pt; margin-bottom: 1.5em; }
+.footer { margin-top: 2em; padding-top: 1em; border-top: 1px solid #ddd; font-size: 9pt; color: #888; }
+</style></head><body>
+<h1>Wade Studio Report</h1>
+<div class="meta">${mName} · ${exName} · ${date}</div>
+${content.innerHTML}
+<div class="footer">
+  <p>Wade Institute of Entrepreneurship · wadeinstitute.org.au</p>
+  <p>Generated by Wade Studio · For educational purposes only · Decisions remain yours.</p>
+</div>
+</body></html>`;
+
+    const blob = new Blob([html], { type: 'application/msword' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `Wade-Studio-${exName.replace(/\s+/g, '-')}-${date.replace(/\s+/g, '-')}.doc`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
 }
-
-// === COPY ALL REPORT TEXT ===
-const copyAllBtn = $('#reportCopyAllBtn');
-if (copyAllBtn) {
-    copyAllBtn.addEventListener('click', async () => {
-        const content = $('#reportContent');
-        if (!content) return;
-        try {
-            await navigator.clipboard.writeText(content.innerText);
-            copyAllBtn.textContent = 'Copied!';
-            setTimeout(() => { copyAllBtn.textContent = 'Copy all'; }, 2000);
-        } catch(e) {
-            copyAllBtn.textContent = 'Failed';
-            setTimeout(() => { copyAllBtn.textContent = 'Copy all'; }, 2000);
-        }
-    });
-}
-
-// === LINKEDIN POST ===
-
-async function copyForLinkedIn() {
-    const btn = $('#reportLinkedInBtn');
-    btn.textContent = 'Generating...';
-    btn.disabled = true;
-    try {
-        const data = await fetch('/api/linkedin', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ report: state.reportText, mode: state.mode, exercise: state.exercise })
-        }).then(r => r.json());
-        if (data.error) throw new Error(data.error);
-        await navigator.clipboard.writeText(data.post);
-        btn.textContent = 'Copied! ✓';
-        setTimeout(() => { btn.textContent = 'Copy for LinkedIn'; btn.disabled = false; }, 2500);
-    } catch(e) {
-        btn.textContent = 'Failed — try again';
-        btn.disabled = false;
-    }
-}
-
-$('#reportLinkedInBtn')?.addEventListener('click', copyForLinkedIn);
-
-// === SUBSTACK COPY ===
-
-async function copyForSubstack() {
-    const btn = $('#reportSubstackBtn');
-    btn.textContent = 'Copying...';
-    btn.disabled = true;
-    try {
-        // For Substack, copy the raw markdown — it renders natively
-        await navigator.clipboard.writeText(state.reportText);
-        btn.textContent = 'Copied! ✓';
-        setTimeout(() => { btn.textContent = 'Copy for Substack'; btn.disabled = false; }, 2500);
-    } catch(e) {
-        btn.textContent = 'Failed — try again';
-        btn.disabled = false;
-    }
-}
-
-$('#reportSubstackBtn')?.addEventListener('click', copyForSubstack);
 
 // === EMAIL REPORT COPY ===
 
 async function emailReportCopy() {
-    const btn = $('#reportEmailBtn');
-    // Open save modal to get email, then send report
     const overlay = document.getElementById('saveModalOverlay');
     const emailInput = document.getElementById('saveModalEmail');
     const submitBtn = document.getElementById('saveModalSubmit');
     if (!overlay) return;
 
-    // Override submit to send report email instead of session save
     overlay.classList.remove('hidden');
     if (emailInput) emailInput.focus();
 
@@ -2179,8 +2178,6 @@ async function emailReportCopy() {
         submitBtn.onclick = originalHandler;
     };
 }
-
-$('#reportEmailBtn')?.addEventListener('click', emailReportCopy);
 
 // === REPORT META + NEW SESSION ===
 
