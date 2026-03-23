@@ -138,10 +138,10 @@ function updateStageLogo(mode) {
 
 // === BREADCRUMB DROPDOWN ===
 const STAGE_TOOLS = {
-    reframe: ['elevator-pitch', 'five-whys'],
-    ideate: ['crazy-8s', 'hmw'],
-    debate: ['pre-mortem', 'devils-advocate'],
-    framework: ['lean-canvas', 'effectuation']
+    reframe: ['five-whys', 'jtbd', 'empathy-map'],
+    ideate: ['crazy-8s', 'hmw', 'scamper'],
+    debate: ['pre-mortem', 'devils-advocate', 'rapid-experiment'],
+    framework: ['lean-canvas', 'effectuation', 'analogical']
 };
 
 function updateBreadcrumbDropdown(currentMode, currentExercise) {
@@ -217,7 +217,6 @@ const EXERCISE_LABELS = {
     'rapid-experiment': 'Rapid Experiment',
     'empathy-map': 'Empathy Map',
     'lean-canvas': 'Lean Canvas',
-    'elevator-pitch': 'Elevator Pitch',
     'effectuation': 'Effectuation'
 };
 
@@ -240,7 +239,6 @@ const EXERCISE_MODE = {
     'devils-advocate':  'debate',
     'rapid-experiment': 'debate',
     'lean-canvas':      'framework',
-    'elevator-pitch':   'reframe',
     'effectuation':     'framework',
     'analogical':       'framework'
 };
@@ -298,12 +296,11 @@ const EXERCISE_EXCHANGES = {
     'five-whys': 7, 'jtbd': 10, 'empathy-map': 10,
     'hmw': 8, 'scamper': 10, 'crazy-8s': 8,
     'pre-mortem': 10, 'devils-advocate': 10, 'rapid-experiment': 8,
-    'lean-canvas': 12, 'elevator-pitch': 6, 'effectuation': 8, 'analogical': 8
+    'lean-canvas': 12, 'effectuation': 8, 'analogical': 8
 };
 
 // Human-readable time estimates per exercise
 const EXERCISE_TIMES = {
-    'elevator-pitch': '5–10 min',
     'five-whys':      '15 min',
     'jtbd':           '20 min',
     'empathy-map':    '20 min',

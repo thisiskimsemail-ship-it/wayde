@@ -6,7 +6,7 @@
     <title>Wade Innovation Toolbox</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=83">
+    <link rel="stylesheet" href="styles.css?v=120">
 </head>
 <body>
 <div class="app-shell toolbox-shell">
@@ -19,28 +19,42 @@
     <main class="toolbox">
         <a class="toolbox-back" href="index.html">&larr; Back to The Studio</a>
         <h1 class="toolbox-page-title">Wade Innovation Toolbox</h1>
-        <p class="toolbox-page-sub">8 tools across 4 stages. Each stage has a quick option and a deep option. Pete recommends the right tool for you.</p>
+        <p class="toolbox-page-sub">12 tools across 4 stages. Pete recommends the right tool for you — or pick one yourself.</p>
 
         <!-- ══ CLARIFY ══ -->
         <div class="toolbox-stage-header">
             <span class="toolbox-stage-badge stage-badge-reframe">Clarify</span>
             <span class="toolbox-stage-desc">Understand the problem before solving it.</span>
         </div>
-        <div class="tool-entry tool-stage-reframe" id="elevator-pitch">
-            <div class="tool-entry-header">
-                <h2 class="tool-entry-name">Elevator Pitch Builder</h2>
-                <span class="tool-entry-time">5-10 min &middot; Quick</span>
-            </div>
-            <p class="tool-entry-desc">Articulate your idea in a single clear sentence using a structured framework. Works for startups, corporate initiatives, and social enterprises.</p>
-            <a class="tool-entry-cta" href="index.html?tool=elevator-pitch">Try Elevator Pitch &rarr;</a>
-        </div>
         <div class="tool-entry tool-stage-reframe" id="five-whys">
             <div class="tool-entry-header">
                 <h2 class="tool-entry-name">Five Whys</h2>
-                <span class="tool-entry-time">15 min &middot; Deep</span>
+                <span class="tool-entry-time">15 min</span>
             </div>
             <p class="tool-entry-desc">Ask "why?" five times to move past symptoms and find the root cause. From Toyota's production system. Are you sure you understand the problem?</p>
-            <a class="tool-entry-cta" href="index.html?tool=five-whys">Try Five Whys &rarr;</a>
+            <div class="tool-entry-actions">
+                <a class="tool-entry-cta" href="index.html?tool=five-whys">Try Five Whys &rarr;</a>
+            </div>
+        </div>
+        <div class="tool-entry tool-stage-reframe" id="jtbd">
+            <div class="tool-entry-header">
+                <h2 class="tool-entry-name">Jobs to Be Done</h2>
+                <span class="tool-entry-time">20 min</span>
+            </div>
+            <p class="tool-entry-desc">Discover what your customer is really hiring your product to do. Based on Clayton Christensen's framework — the job, not the feature, is what matters.</p>
+            <div class="tool-entry-actions">
+                <a class="tool-entry-cta" href="index.html?tool=jtbd">Try Jobs to Be Done &rarr;</a>
+            </div>
+        </div>
+        <div class="tool-entry tool-stage-reframe" id="empathy-map">
+            <div class="tool-entry-header">
+                <h2 class="tool-entry-name">Empathy Map</h2>
+                <span class="tool-entry-time">20 min</span>
+            </div>
+            <p class="tool-entry-desc">Step into your user's world. Map what they think, feel, say, and do — then find the gaps between them. A human-centred design essential.</p>
+            <div class="tool-entry-actions">
+                <a class="tool-entry-cta" href="index.html?tool=empathy-map">Try Empathy Map &rarr;</a>
+            </div>
         </div>
 
         <!-- ══ IDEATE ══ -->
@@ -51,18 +65,32 @@
         <div class="tool-entry tool-stage-ideate" id="crazy-8s">
             <div class="tool-entry-header">
                 <h2 class="tool-entry-name">Crazy 8s</h2>
-                <span class="tool-entry-time">15 min &middot; Quick</span>
+                <span class="tool-entry-time">15 min</span>
             </div>
             <p class="tool-entry-desc">Generate 8 distinct ideas fast. From Google's Design Sprint. Forces you past the obvious first idea into genuinely creative territory.</p>
-            <a class="tool-entry-cta" href="index.html?tool=crazy-8s">Try Crazy 8s &rarr;</a>
+            <div class="tool-entry-actions">
+                <a class="tool-entry-cta" href="index.html?tool=crazy-8s">Try Crazy 8s &rarr;</a>
+            </div>
         </div>
         <div class="tool-entry tool-stage-ideate" id="hmw">
             <div class="tool-entry-header">
                 <h2 class="tool-entry-name">How Might We</h2>
-                <span class="tool-entry-time">20 min &middot; Deep</span>
+                <span class="tool-entry-time">20 min</span>
             </div>
             <p class="tool-entry-desc">Reframe your problem from multiple angles using "How might we..." statements, then brainstorm solutions. Stanford d.school's bridge between problem and solution.</p>
-            <a class="tool-entry-cta" href="index.html?tool=hmw">Try How Might We &rarr;</a>
+            <div class="tool-entry-actions">
+                <a class="tool-entry-cta" href="index.html?tool=hmw">Try How Might We &rarr;</a>
+            </div>
+        </div>
+        <div class="tool-entry tool-stage-ideate" id="scamper">
+            <div class="tool-entry-header">
+                <h2 class="tool-entry-name">SCAMPER</h2>
+                <span class="tool-entry-time">20 min</span>
+            </div>
+            <p class="tool-entry-desc">Stretch an existing idea through seven creative lenses: Substitute, Combine, Adapt, Modify, Put to other use, Eliminate, Reverse. Systematic creativity.</p>
+            <div class="tool-entry-actions">
+                <a class="tool-entry-cta" href="index.html?tool=scamper">Try SCAMPER &rarr;</a>
+            </div>
         </div>
 
         <!-- ══ VALIDATE ══ -->
@@ -73,18 +101,32 @@
         <div class="tool-entry tool-stage-debate" id="pre-mortem">
             <div class="tool-entry-header">
                 <h2 class="tool-entry-name">Pre-Mortem</h2>
-                <span class="tool-entry-time">20 min &middot; Quick</span>
+                <span class="tool-entry-time">20 min</span>
             </div>
             <p class="tool-entry-desc">Imagine your idea has failed completely. Work backwards to surface the risks you'd miss from an optimistic mindset. By psychologist Gary Klein.</p>
-            <a class="tool-entry-cta" href="index.html?tool=pre-mortem">Try Pre-Mortem &rarr;</a>
+            <div class="tool-entry-actions">
+                <a class="tool-entry-cta" href="index.html?tool=pre-mortem">Try Pre-Mortem &rarr;</a>
+            </div>
         </div>
         <div class="tool-entry tool-stage-debate" id="devils-advocate">
             <div class="tool-entry-header">
                 <h2 class="tool-entry-name">Devil's Advocate</h2>
-                <span class="tool-entry-time">25 min &middot; Deep</span>
+                <span class="tool-entry-time">25 min</span>
             </div>
             <p class="tool-entry-desc">Pete actively argues against your idea across five dimensions. The toughest challenge in the toolbox. Like a sceptical investor Q&amp;A in a safe environment.</p>
-            <a class="tool-entry-cta" href="index.html?tool=devils-advocate">Try Devil's Advocate &rarr;</a>
+            <div class="tool-entry-actions">
+                <a class="tool-entry-cta" href="index.html?tool=devils-advocate">Try Devil's Advocate &rarr;</a>
+            </div>
+        </div>
+        <div class="tool-entry tool-stage-debate" id="rapid-experiment">
+            <div class="tool-entry-header">
+                <h2 class="tool-entry-name">Rapid Experiment</h2>
+                <span class="tool-entry-time">15 min</span>
+            </div>
+            <p class="tool-entry-desc">Design the cheapest, fastest test for your riskiest assumption. Based on Lean Startup's Build-Measure-Learn loop. Test before you build.</p>
+            <div class="tool-entry-actions">
+                <a class="tool-entry-cta" href="index.html?tool=rapid-experiment">Try Rapid Experiment &rarr;</a>
+            </div>
         </div>
 
         <!-- ══ DEVELOP ══ -->
@@ -92,21 +134,35 @@
             <span class="toolbox-stage-badge stage-badge-framework">Develop</span>
             <span class="toolbox-stage-desc">Turn insight into action.</span>
         </div>
-        <div class="tool-entry tool-stage-framework" id="effectuation">
-            <div class="tool-entry-header">
-                <h2 class="tool-entry-name">Effectuation</h2>
-                <span class="tool-entry-time">20 min &middot; Quick</span>
-            </div>
-            <p class="tool-entry-desc">Start with what you have, not what you need. Professor Saras Sarasvathy's framework for entrepreneurial action. What's possible from your skills, network, and resources right now?</p>
-            <a class="tool-entry-cta" href="index.html?tool=effectuation">Try Effectuation &rarr;</a>
-        </div>
         <div class="tool-entry tool-stage-framework" id="lean-canvas">
             <div class="tool-entry-header">
                 <h2 class="tool-entry-name">Lean Canvas</h2>
-                <span class="tool-entry-time">20 min &middot; Deep</span>
+                <span class="tool-entry-time">25 min</span>
             </div>
-            <p class="tool-entry-desc">Map the full business model on one page. 9 blocks covering customers, problem, solution, channels, revenue, costs, metrics, and unfair advantage. By <a href="https://leanstack.com/lean-canvas" target="_blank" rel="noopener">Ash Maurya</a>.</p>
-            <a class="tool-entry-cta" href="index.html?tool=lean-canvas">Try Lean Canvas &rarr;</a>
+            <p class="tool-entry-desc">Map the full business model on one page. 9 blocks covering customers, problem, solution, channels, revenue, costs, metrics, and unfair advantage. By Ash Maurya.</p>
+            <div class="tool-entry-actions">
+                <a class="tool-entry-cta" href="index.html?tool=lean-canvas">Try Lean Canvas &rarr;</a>
+            </div>
+        </div>
+        <div class="tool-entry tool-stage-framework" id="effectuation">
+            <div class="tool-entry-header">
+                <h2 class="tool-entry-name">Effectuation</h2>
+                <span class="tool-entry-time">20 min</span>
+            </div>
+            <p class="tool-entry-desc">Start with what you have, not what you need. Professor Saras Sarasvathy's framework for entrepreneurial action. What's possible from your skills, network, and resources right now?</p>
+            <div class="tool-entry-actions">
+                <a class="tool-entry-cta" href="index.html?tool=effectuation">Try Effectuation &rarr;</a>
+            </div>
+        </div>
+        <div class="tool-entry tool-stage-framework" id="analogical">
+            <div class="tool-entry-header">
+                <h2 class="tool-entry-name">Analogical Thinking</h2>
+                <span class="tool-entry-time">20 min</span>
+            </div>
+            <p class="tool-entry-desc">Borrow solutions from unexpected places. Find proven patterns from other industries, domains, or disciplines and adapt them to your challenge.</p>
+            <div class="tool-entry-actions">
+                <a class="tool-entry-cta" href="index.html?tool=analogical">Try Analogical Thinking &rarr;</a>
+            </div>
         </div>
     </main>
 </div>
@@ -133,6 +189,68 @@
         <a href="/privacy.html">Privacy</a>
     </div>
 </div>
+
+<!-- Feedback widget -->
+<button class="feedback-tab" id="feedbackTab">Feedback</button>
+<div class="feedback-panel hidden" id="feedbackPanel">
+    <div class="feedback-header">
+        <span>How was your experience?</span>
+        <button class="feedback-close" id="feedbackClose">&times;</button>
+    </div>
+    <p class="feedback-beta">The Studio is in beta. Help us make it amazing by sharing your experience.</p>
+    <div class="feedback-rating" id="feedbackRating">
+        <button class="feedback-star" data-rating="1">1</button>
+        <button class="feedback-star" data-rating="2">2</button>
+        <button class="feedback-star" data-rating="3">3</button>
+        <button class="feedback-star" data-rating="4">4</button>
+        <button class="feedback-star" data-rating="5">5</button>
+    </div>
+    <div class="feedback-rating-labels">
+        <span>Not great</span>
+        <span>Loved it</span>
+    </div>
+    <textarea class="feedback-input" id="feedbackInput" placeholder="Tell us more... what worked, what didn't, what you'd change." rows="3"></textarea>
+    <button class="feedback-submit" id="feedbackSubmit">Send feedback</button>
+</div>
+
+<script>
+// Feedback widget (standalone — no app.js dependency)
+(function() {
+    var tab = document.getElementById('feedbackTab');
+    var panel = document.getElementById('feedbackPanel');
+    var closeBtn = document.getElementById('feedbackClose');
+    var submitBtn = document.getElementById('feedbackSubmit');
+    var input = document.getElementById('feedbackInput');
+    var stars = document.querySelectorAll('.feedback-star');
+    var selectedRating = 0;
+    if (!tab || !panel) return;
+    tab.addEventListener('click', function() { panel.classList.remove('hidden'); tab.style.display = 'none'; });
+    closeBtn.addEventListener('click', function() { panel.classList.add('hidden'); tab.style.display = ''; });
+    stars.forEach(function(star) {
+        star.addEventListener('click', function() {
+            selectedRating = parseInt(star.dataset.rating);
+            stars.forEach(function(s) { s.classList.toggle('active', parseInt(s.dataset.rating) <= selectedRating); });
+        });
+    });
+    submitBtn.addEventListener('click', function() {
+        var text = input.value.trim();
+        if (!selectedRating && !text) return;
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Sending...';
+        fetch('/api/feedback', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ rating: selectedRating, text: text, page: window.location.pathname, tool: null, stage: null, exchanges: 0, timestamp: new Date().toISOString() })
+        }).then(function() {
+            submitBtn.textContent = 'Thanks!';
+            input.value = '';
+            selectedRating = 0;
+            stars.forEach(function(s) { s.classList.remove('active'); });
+            setTimeout(function() { panel.classList.add('hidden'); tab.style.display = ''; submitBtn.textContent = 'Send feedback'; submitBtn.disabled = false; }, 1500);
+        }).catch(function() { submitBtn.textContent = 'Failed — try again'; submitBtn.disabled = false; });
+    });
+})();
+</script>
 
 <script>
 (function() {

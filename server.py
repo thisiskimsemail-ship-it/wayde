@@ -812,26 +812,26 @@ TOOL ROUTING TABLE:
 THE SPARK:
 - Just me + Quick → Crazy 8s [SUGGEST: crazy-8s]
 - Just me + Polished → How Might We [SUGGEST: hmw]
-- Other people + Quick → Crazy 8s then Elevator Pitch [SUGGEST: crazy-8s]
-- Other people + Polished → How Might We then Elevator Pitch [SUGGEST: hmw]
+- Other people + Quick → Crazy 8s then SCAMPER [SUGGEST: crazy-8s]
+- Other people + Polished → How Might We then Analogical Thinking [SUGGEST: hmw]
 
 THE BUILD:
 - Just me + Quick → Effectuation [SUGGEST: effectuation]
 - Just me + Polished → Lean Canvas [SUGGEST: lean-canvas]
-- Other people + Quick → Elevator Pitch [SUGGEST: elevator-pitch]
-- Other people + Polished → Elevator Pitch then Lean Canvas [SUGGEST: elevator-pitch]
+- Other people + Quick → Effectuation then Rapid Experiment [SUGGEST: effectuation]
+- Other people + Polished → Lean Canvas then Pre-Mortem [SUGGEST: lean-canvas]
 
 THE UNTANGLE:
 - Just me + Quick → Five Whys [SUGGEST: five-whys]
-- Just me + Polished → Five Whys then How Might We [SUGGEST: five-whys]
-- Other people + Quick → Five Whys [SUGGEST: five-whys]
-- Other people + Polished → Five Whys then How Might We [SUGGEST: five-whys]
+- Just me + Polished → Five Whys then Empathy Map [SUGGEST: five-whys]
+- Other people + Quick → Jobs to Be Done [SUGGEST: jtbd]
+- Other people + Polished → Empathy Map then How Might We [SUGGEST: empathy-map]
 
 THE FIX:
-- Just me + Quick → Effectuation [SUGGEST: effectuation]
+- Just me + Quick → Rapid Experiment [SUGGEST: rapid-experiment]
 - Just me + Polished → Pre-Mortem then Devil's Advocate [SUGGEST: pre-mortem]
-- Other people + Quick → Pre-Mortem then Effectuation [SUGGEST: pre-mortem]
-- Other people + Polished → Devil's Advocate then Lean Canvas [SUGGEST: devils-advocate]
+- Other people + Quick → Devil's Advocate then Effectuation [SUGGEST: devils-advocate]
+- Other people + Polished → Pre-Mortem then Analogical Thinking [SUGGEST: pre-mortem]
 
 TEMPO BEHAVIOUR — Q4 changes how Pete operates for the ENTIRE session:
 Quick and scrappy: Short prompts, short responses. First drafts only. No "are you sure?" moments. Encourages "good enough, ship it." Celebrates speed.
@@ -849,7 +849,7 @@ EDGE CASES:
 NEVER assume a role (founder, investor, educator). Describe patterns only.
 NEVER ask a yes/no question outside the quick-fire pairs.
 
-Always mention: "You can see all 8 tools in the [Wade Innovation Toolbox](toolbox.html)."
+Always mention: "You can see all 12 tools in the [Wade Innovation Toolbox](toolbox.html)."
 
 TONE: Warm, direct, energetic. Respect the user's time.""",
 
@@ -2556,7 +2556,6 @@ EXERCISE_NAMES = {
     'rapid-experiment': 'Rapid Experiment',
     'empathy-map': 'Empathy Map',
     'lean-canvas': 'Lean Canvas',
-    'elevator-pitch': 'Elevator Pitch',
     'effectuation': 'Effectuation'
 }
 
@@ -2575,14 +2574,18 @@ Given the conversation below, recommend exactly 2 different thinking tools that 
 Do NOT recommend the tool they're currently using.
 
 Available tools:
-elevator-pitch (Clarify): Articulate your idea in one clear sentence — 5-10 min
 five-whys (Clarify): Ask "why?" five times to find root causes — 15 min
+jtbd (Clarify): Discover what people are really hiring your product to do — 20 min
+empathy-map (Clarify): Map what stakeholders think, feel, say, and do — 15 min
 crazy-8s (Ideate): Generate 8 distinct ideas fast — 15 min
 hmw (Ideate): Reframe the problem as "How Might We...?" questions — 20 min
+scamper (Ideate): Remix and twist existing ideas using 7 creative lenses — 15 min
 pre-mortem (Validate): Imagine failure and work backwards to identify risks — 20 min
 devils-advocate (Validate): Stress-test the idea against its sharpest critic — 25 min
+rapid-experiment (Validate): Design the cheapest, fastest test for your riskiest assumption — 15 min
 lean-canvas (Develop): Map the key elements of the initiative on one page — 25 min
 effectuation (Develop): Start with what you have, not a goal — 20 min
+analogical (Develop): Find proven patterns from other industries to apply — 20 min
 
 Respond with ONLY valid JSON in this exact format (no markdown, no other text):
 {
