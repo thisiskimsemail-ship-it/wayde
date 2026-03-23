@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link rel="preload" href="fonts/GT-Walsheim-Regular.woff" as="font" type="font/woff" crossorigin>
     <link rel="preload" href="banner.webp" as="image" type="image/webp">
-    <link rel="stylesheet" href="styles.css?v=117">
+    <link rel="stylesheet" href="styles.css?v=120">
 </head>
 <body>
 
@@ -18,6 +18,10 @@
 
     <header class="header">
         <img class="logo" src="logo.png" alt="Wade Institute">
+        <nav class="header-nav" id="headerNav">
+            <a class="header-nav-link active" href="#">The Studio</a>
+            <a class="header-nav-link" href="toolbox.html">Toolbox</a>
+        </nav>
         <div class="header-controls">
             <div class="text-size-control" id="textSizeControl">
                 <button class="text-size-btn" id="textSizeToggle" title="Adjust text size">Aa</button>
@@ -93,25 +97,206 @@
       <div class="workshop-layout" id="workshopLayout">
         <div class="chat-pane" id="chatPane">
         <div class="welcome" id="welcome">
-            <div class="welcome-hero">
-                <picture>
-                    <source type="image/webp" srcset="banner-sm.webp 640w, banner-md.webp 1024w, banner.webp 1920w" sizes="100vw">
-                    <img src="banner.jpg" alt="Wade Institute workshop space" class="welcome-hero-img" width="1920" height="1280" loading="eager" fetchpriority="high">
-                </picture>
-            </div>
-            <h1 class="welcome-title">The Studio</h1>
-            <p class="welcome-sub">A virtual workshop, led by Wade.</p>
-            <p class="welcome-tagline">More AI answers won't fix it. Better human thinking will.</p>
-            <p class="welcome-tagline">Bring what you're working on. We'll help you unpack it, reframe it, and decide what to do next. You'll be guided through the right tools, challenged where it matters, and leave with something you can actually use.</p>
 
-            <button class="enter-studio-btn" id="enterStudioBtn">Step into Wade →</button>
+            <!-- HERO — Two-column editorial -->
+            <section class="lp-hero">
+                <div class="lp-container lp-hero-inner">
+                    <div class="lp-hero-text">
+                        <h1 class="lp-hero-heading">The Studio</h1>
+                        <p class="lp-hero-sub">A virtual workshop, led by Wade.</p>
+                        <p class="lp-hero-lead">More AI answers won't fix it. Better human thinking will.</p>
+                        <p class="lp-hero-desc">Bring what you're working on. We'll help you unpack it, reframe it, and decide what to do next. You'll be guided through the right tools, challenged where it matters, and leave with something you can actually use.</p>
+                        <div class="lp-hero-stages">
+                            <span class="lp-stage-icon" style="color:var(--orange)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+                            <span class="lp-stage-arrow">→</span>
+                            <span class="lp-stage-icon" style="color:var(--pink)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>
+                            <span class="lp-stage-arrow">→</span>
+                            <span class="lp-stage-icon" style="color:var(--teal)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg></span>
+                            <span class="lp-stage-arrow">→</span>
+                            <span class="lp-stage-icon" style="color:var(--yellow)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg></span>
+                        </div>
+                        <button class="lp-cta enter-studio-trigger" id="enterStudioBtn">Start a free session →</button>
+                        <p class="lp-cta-caption">No sign-up required · 15–30 minutes</p>
+                        <!-- Resume pill -->
+                        <div class="resume-banner hidden" id="resumeBanner">
+                            <span class="resume-text"><strong id="resumeLabel"></strong></span>
+                            <button class="resume-btn" id="resumeBtn">Continue →</button>
+                            <button class="resume-dismiss" id="resumeDismiss">✕</button>
+                        </div>
+                    </div>
+                    <div class="lp-hero-visual">
+                        <picture>
+                            <source type="image/webp" srcset="banner-sm.webp 640w, banner-md.webp 1024w, banner.webp 1920w" sizes="(max-width: 640px) 100vw, 50vw">
+                            <img src="banner.jpg" alt="Wade Institute workshop space" class="lp-hero-img" width="1920" height="1280" loading="eager" fetchpriority="high">
+                        </picture>
+                    </div>
+                </div>
+            </section>
 
-            <!-- Resume pill (shown below Enter button if a saved session exists) -->
-            <div class="resume-banner hidden" id="resumeBanner">
-                <span class="resume-text"><strong id="resumeLabel"></strong></span>
-                <button class="resume-btn" id="resumeBtn">Continue →</button>
-                <button class="resume-dismiss" id="resumeDismiss">✕</button>
-            </div>
+            <!-- PROCESS — 4-stage grid -->
+            <section class="lp-process">
+                <div class="lp-container">
+                    <h2 class="lp-section-heading">How The Studio works</h2>
+                    <p class="lp-section-sub">Four stages. Twelve tools. One conversation.</p>
+                    <div class="lp-process-grid">
+                        <div class="lp-process-card lp-stage-reframe">
+                            <span class="lp-process-number">01</span>
+                            <h3 class="lp-process-title">Clarify</h3>
+                            <p class="lp-process-desc">Unpack what's really going on before you solve anything.</p>
+                            <div class="lp-process-tools">
+                                <span class="lp-tool-pill">Five Whys</span>
+                                <span class="lp-tool-pill">Jobs to Be Done</span>
+                                <span class="lp-tool-pill">Empathy Map</span>
+                            </div>
+                        </div>
+                        <div class="lp-process-card lp-stage-ideate">
+                            <span class="lp-process-number">02</span>
+                            <h3 class="lp-process-title">Ideate</h3>
+                            <p class="lp-process-desc">Generate possibilities before narrowing your focus.</p>
+                            <div class="lp-process-tools">
+                                <span class="lp-tool-pill">Crazy 8s</span>
+                                <span class="lp-tool-pill">How Might We</span>
+                                <span class="lp-tool-pill">SCAMPER</span>
+                            </div>
+                        </div>
+                        <div class="lp-process-card lp-stage-debate">
+                            <span class="lp-process-number">03</span>
+                            <h3 class="lp-process-title">Validate</h3>
+                            <p class="lp-process-desc">Stress-test your ideas before committing time and resources.</p>
+                            <div class="lp-process-tools">
+                                <span class="lp-tool-pill">Pre-Mortem</span>
+                                <span class="lp-tool-pill">Devil's Advocate</span>
+                                <span class="lp-tool-pill">Rapid Experiment</span>
+                            </div>
+                        </div>
+                        <div class="lp-process-card lp-stage-framework">
+                            <span class="lp-process-number">04</span>
+                            <h3 class="lp-process-title">Develop</h3>
+                            <p class="lp-process-desc">Map out how to bring your idea to life.</p>
+                            <div class="lp-process-tools">
+                                <span class="lp-tool-pill">Lean Canvas</span>
+                                <span class="lp-tool-pill">Effectuation</span>
+                                <span class="lp-tool-pill">Analogical Thinking</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- IMPACT STATS -->
+            <section class="lp-stats">
+                <div class="lp-container">
+                    <div class="lp-stats-grid">
+                        <div class="lp-stat">
+                            <span class="lp-stat-number">12</span>
+                            <span class="lp-stat-label">Innovation tools</span>
+                        </div>
+                        <div class="lp-stat">
+                            <span class="lp-stat-number">4</span>
+                            <span class="lp-stat-label">Thinking stages</span>
+                        </div>
+                        <div class="lp-stat">
+                            <span class="lp-stat-number">15 min</span>
+                            <span class="lp-stat-label">Average session</span>
+                        </div>
+                        <div class="lp-stat">
+                            <span class="lp-stat-number">Free</span>
+                            <span class="lp-stat-label">Always</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- WHAT YOU GET — Two-column -->
+            <section class="lp-features">
+                <div class="lp-container lp-features-inner">
+                    <div class="lp-features-list">
+                        <h2 class="lp-section-heading">Not just a chat.<br>A workshop.</h2>
+                        <p class="lp-features-lead">Pete, your AI facilitator, guides you through structured exercises — the same frameworks used by founders, investors, and corporate innovators at Wade Institute.</p>
+                        <ul class="lp-feature-items">
+                            <li class="lp-feature-item">
+                                <span class="lp-feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span>
+                                <div><strong>Downloadable report</strong><br><span class="lp-feature-desc">A personalised summary of your session with insights and next steps.</span></div>
+                            </li>
+                            <li class="lp-feature-item">
+                                <span class="lp-feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></span>
+                                <div><strong>Coaching observations</strong><br><span class="lp-feature-desc">Pete reflects back patterns and reframes you might not see on your own.</span></div>
+                            </li>
+                            <li class="lp-feature-item">
+                                <span class="lp-feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></span>
+                                <div><strong>12 structured tools</strong><br><span class="lp-feature-desc">Not open-ended chat — real innovation frameworks with proven methodology.</span></div>
+                            </li>
+                            <li class="lp-feature-item">
+                                <span class="lp-feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+                                <div><strong>Your next step</strong><br><span class="lp-feature-desc">Wade program and community recommendations tailored to your challenge.</span></div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="lp-features-preview">
+                        <div class="lp-chat-preview">
+                            <div class="lp-chat-msg lp-chat-agent">
+                                <div class="lp-chat-avatar">P</div>
+                                <div class="lp-chat-bubble">What's the problem or challenge you're facing? State it as simply as you can.</div>
+                            </div>
+                            <div class="lp-chat-msg lp-chat-user">
+                                <div class="lp-chat-bubble">We can't close enterprise deals — pilots don't convert to contracts.</div>
+                            </div>
+                            <div class="lp-chat-msg lp-chat-agent">
+                                <div class="lp-chat-avatar">P</div>
+                                <div class="lp-chat-bubble">Interesting. Why do you think the pilots aren't converting?</div>
+                            </div>
+                            <div class="lp-chat-chips">
+                                <span class="lp-chat-chip">Help me</span>
+                                <span class="lp-chat-chip">Challenge me</span>
+                            </div>
+                            <div class="lp-chat-input-bar">
+                                <span class="lp-chat-input-placeholder">Type your response...</span>
+                                <span class="lp-chat-send-icon">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- QUOTE -->
+            <section class="lp-quote">
+                <div class="lp-container">
+                    <blockquote class="lp-blockquote">
+                        <span class="lp-quote-mark">"</span>
+                        <p class="lp-quote-text">Wade was a playground for connecting science and business — the kind of thinking you can't get from a textbook.</p>
+                        <cite class="lp-quote-cite">— Karolina Petkovic, Research Scientist, CSIRO; Founder, Iron WoMan; MoE Alumna</cite>
+                    </blockquote>
+                </div>
+            </section>
+
+            <!-- BOTTOM CTA -->
+            <section class="lp-bottom-cta">
+                <div class="lp-container">
+                    <h2 class="lp-bottom-heading">Ready to think differently?</h2>
+                    <p class="lp-bottom-sub">Free. No login. Takes about 15 minutes.</p>
+                    <button class="lp-cta enter-studio-trigger">Start a free session →</button>
+                    <p class="lp-bottom-link"><a href="toolbox.html">Browse the toolbox →</a></p>
+                </div>
+            </section>
+
+            <!-- LANDING FOOTER -->
+            <footer class="lp-footer">
+                <div class="lp-container lp-footer-inner">
+                    <div class="lp-footer-brand">
+                        <img class="lp-footer-logo" src="wade-icon.png" alt="Wade Institute">
+                        <span class="lp-footer-orgname">Wade Institute of Entrepreneurship</span>
+                    </div>
+                    <div class="lp-footer-links">
+                        <a href="https://wadeinstitute.org.au" target="_blank" rel="noopener">wadeinstitute.org.au</a>
+                        <a href="mailto:enquiries@wadeinstitute.org.au">Contact</a>
+                        <a href="/privacy.html">Privacy</a>
+                    </div>
+                    <span class="lp-footer-copy">© 2026 Wade Institute of Entrepreneurship</span>
+                </div>
+            </footer>
+
         </div>
         <!-- Pitch Preview Card (hidden until elevator-pitch exercise starts) -->
         <div class="pitch-preview hidden" id="pitchPreview">
@@ -367,6 +552,6 @@
         <button class="feedback-submit" id="feedbackSubmit">Send feedback</button>
     </div>
 
-    <script src="app.js?v=116"></script>
+    <script src="app.js?v=120"></script>
 </body>
 </html>

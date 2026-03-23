@@ -990,7 +990,7 @@ function enterStudio() {
     });
 }
 
-// Wire up the Enter Studio button + hide input on welcome
+// Wire up Enter Studio buttons + hide input on welcome
 document.addEventListener('DOMContentLoaded', () => {
     const enterBtn = document.getElementById('enterStudioBtn');
     if (enterBtn) {
@@ -998,6 +998,10 @@ document.addEventListener('DOMContentLoaded', () => {
         // Hide the input bar on the welcome page — it appears when you enter the studio
         if (inputArea) inputArea.style.display = 'none';
     }
+    // Bind all secondary CTA buttons (e.g. bottom CTA on landing page)
+    document.querySelectorAll('.enter-studio-trigger').forEach(btn => {
+        if (btn !== enterBtn) btn.addEventListener('click', enterStudio);
+    });
 });
 
 function startRouting(text) {
