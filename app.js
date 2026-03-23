@@ -2962,6 +2962,15 @@ moveInputToWelcome();
     } catch(e) {}
 })();
 
+// === ENSURE REPORT UI IS HIDDEN ON PAGE LOAD ===
+// Prevents stale synopsis from previous session showing on welcome page
+(function() {
+    document.getElementById('reportSynopsis')?.classList.add('hidden');
+    document.getElementById('reportFormatChoice')?.classList.add('hidden');
+    document.getElementById('reportCard')?.classList.add('hidden');
+    document.getElementById('reportUnlock')?.classList.add('hidden');
+})();
+
 // === RESUME SAVED SESSION ===
 
 (function checkSavedSession() {
