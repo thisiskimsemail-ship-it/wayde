@@ -2046,7 +2046,9 @@ ${reportContent.innerHTML}
 let pendingDownloadFormat = null; // 'word' or 'pdf'
 
 // Synopsis "Download my report" toggle
-document.getElementById('synopsisDownloadBtn')?.addEventListener('click', () => {
+document.getElementById('synopsisDownloadBtn')?.addEventListener('click', (e) => {
+    // Don't toggle if clicking a format option inside the dropdown
+    if (e.target.closest('[data-action]')) return;
     const menu = document.getElementById('synopsisDownloadMenu');
     if (menu) menu.classList.toggle('hidden');
 });
@@ -2055,6 +2057,7 @@ document.getElementById('synopsisDownloadBtn')?.addEventListener('click', () => 
 document.getElementById('reportSynopsis')?.addEventListener('click', (e) => {
     const btn = e.target.closest('[data-action]');
     if (!btn) return;
+    e.stopPropagation(); // prevent re-toggling the dropdown
     const action = btn.dataset.action;
     if (action === 'gated-word' || action === 'gated-pdf') {
         pendingDownloadFormat = action === 'gated-word' ? 'word' : 'pdf';
@@ -2146,7 +2149,7 @@ function closeAllDropdowns() {
 }
 
 document.addEventListener('click', (e) => {
-    if (!e.target.closest('.report-action-dropdown')) closeAllDropdowns();
+    if (!e.target.closest('.report-action-dropdown') && !e.target.closest('#synopsisDownloadBtn')) closeAllDropdowns();
 });
 
 document.querySelectorAll('.report-actions').forEach(bar => {
