@@ -2045,30 +2045,13 @@ ${reportContent.innerHTML}
 
 let pendingDownloadFormat = null; // 'word' or 'pdf'
 
-// Synopsis "Download my report" toggle
-document.getElementById('synopsisDownloadBtn')?.addEventListener('click', (e) => {
-    // Don't toggle if clicking a format option inside the dropdown
-    if (e.target.closest('[data-action]')) return;
-    const menu = document.getElementById('synopsisDownloadMenu');
-    if (menu) menu.classList.toggle('hidden');
+// Synopsis "Download my report" button → show lead form
+document.getElementById('synopsisDownloadBtn')?.addEventListener('click', () => {
+    reportUnlock.classList.remove('hidden');
+    reportUnlock.scrollIntoView({ behavior: 'smooth', block: 'center' });
 });
 
-// Gated download options (from synopsis card)
-document.getElementById('reportSynopsis')?.addEventListener('click', (e) => {
-    const btn = e.target.closest('[data-action]');
-    if (!btn) return;
-    e.stopPropagation(); // prevent re-toggling the dropdown
-    const action = btn.dataset.action;
-    if (action === 'gated-word' || action === 'gated-pdf') {
-        pendingDownloadFormat = action === 'gated-word' ? 'word' : 'pdf';
-        closeAllDropdowns();
-        // Show lead capture form
-        reportUnlock.classList.remove('hidden');
-        reportUnlock.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-});
-
-// Lead capture form submit → download + email
+// Lead capture form submit → email report, then show format choice
 document.getElementById('unlockForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const submitBtn = document.getElementById('unlockSubmit');
@@ -2079,7 +2062,7 @@ document.getElementById('unlockForm')?.addEventListener('submit', async (e) => {
 
     if (!email) return;
     submitBtn.disabled = true;
-    submitBtn.textContent = 'Preparing your report...';
+    submitBtn.textContent = 'Sending your report...';
 
     // Send lead + email the report
     try {
@@ -2099,19 +2082,27 @@ document.getElementById('unlockForm')?.addEventListener('submit', async (e) => {
         console.error('[Lead] Failed to send:', err);
     }
 
-    // Trigger the download
-    if (pendingDownloadFormat === 'word') {
-        downloadReportWord();
-    } else {
-        downloadReport();
-    }
-
-    // Reveal full report inline
-    revealFullReport();
+    // Hide form + synopsis, show format choice
     reportUnlock.classList.add('hidden');
     document.getElementById('reportSynopsis')?.classList.add('hidden');
+    const formatChoice = document.getElementById('reportFormatChoice');
+    if (formatChoice) {
+        formatChoice.classList.remove('hidden');
+        formatChoice.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
     submitBtn.disabled = false;
     submitBtn.textContent = 'Send me my report →';
+});
+
+// Format choice buttons → trigger download
+document.getElementById('formatWordBtn')?.addEventListener('click', () => {
+    downloadReportWord();
+    document.getElementById('reportFormatChoice')?.classList.add('hidden');
+});
+document.getElementById('formatPdfBtn')?.addEventListener('click', () => {
+    downloadReport();
+    document.getElementById('reportFormatChoice')?.classList.add('hidden');
 });
 
 function handleReportAction(btn, action) {

@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link rel="preload" href="fonts/GT-Walsheim-Regular.woff" as="font" type="font/woff" crossorigin>
     <link rel="preload" href="banner.webp" as="image" type="image/webp">
-    <link rel="stylesheet" href="styles.css?v=107">
+    <link rel="stylesheet" href="styles.css?v=109">
 </head>
 <body>
 
@@ -147,13 +147,7 @@
             <p class="synopsis-hook" id="synopsisHook"></p>
             <ul class="synopsis-bullets" id="synopsisBullets"></ul>
             <div class="synopsis-cta">
-                <div class="report-action-dropdown">
-                    <button class="synopsis-download-btn" id="synopsisDownloadBtn">Download my report ▾</button>
-                    <div class="report-dropdown-menu hidden" id="synopsisDownloadMenu">
-                        <button class="report-dropdown-option" data-action="gated-word">Word (.doc)</button>
-                        <button class="report-dropdown-option" data-action="gated-pdf">PDF</button>
-                    </div>
-                </div>
+                <button class="synopsis-download-btn" id="synopsisDownloadBtn">Download my report</button>
             </div>
             <p class="synopsis-privacy">We'll also email you a copy. Wade Institute will use your details to send your report and share relevant programs. No spam, no third parties.</p>
         </div>
@@ -168,6 +162,16 @@
                 <input type="text" class="lead-input" id="unlockRole" placeholder="Role">
                 <button type="submit" class="lead-submit" id="unlockSubmit">Send me my report →</button>
             </form>
+        </div>
+
+        <!-- Format choice (appears after lead form submit) -->
+        <div class="report-format-choice hidden" id="reportFormatChoice">
+            <h3 class="report-format-heading">Your report is on its way ✓</h3>
+            <p class="report-format-subtext">We've emailed you a copy. Choose a format to download now:</p>
+            <div class="report-format-buttons">
+                <button class="report-format-btn" id="formatWordBtn">Word (.doc)</button>
+                <button class="report-format-btn" id="formatPdfBtn">PDF</button>
+            </div>
         </div>
 
         <!-- Full report card (hidden until after lead capture) -->
@@ -362,6 +366,6 @@
         <button class="feedback-submit" id="feedbackSubmit">Send feedback</button>
     </div>
 
-    <script src="app.js?v=108"></script>
+    <script src="app.js?v=109"></script>
 </body>
 </html>

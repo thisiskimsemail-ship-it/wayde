@@ -2487,6 +2487,36 @@ html[data-theme="light"] .option-chip:hover {
     line-height: 1.4; max-width: 400px; margin: 0 auto;
 }
 
+/* Format choice card (after lead capture) */
+.report-format-choice {
+    max-width: 500px; margin: 1.5rem auto; padding: 2rem;
+    text-align: center;
+    background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px; animation: fadeIn 0.3s ease;
+}
+.report-format-choice.hidden { display: none; }
+.report-format-heading {
+    font-size: 1.25rem; font-weight: 700; color: #fff; margin: 0 0 0.5rem;
+}
+.report-format-subtext {
+    font-size: 0.875rem; color: var(--text-dim); margin: 0 0 1.25rem;
+}
+.report-format-buttons { display: flex; gap: 0.75rem; justify-content: center; }
+.report-format-btn {
+    background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 8px; padding: 0.65rem 1.75rem; font-size: 0.95rem;
+    font-weight: 600; font-family: var(--font); cursor: pointer;
+    transition: all 0.2s;
+}
+.report-format-btn:hover {
+    background: var(--orange); border-color: var(--orange); transform: translateY(-1px);
+}
+html[data-theme="light"] .report-format-choice {
+    background: rgba(30,25,79,0.03); border-color: rgba(30,25,79,0.1);
+}
+html[data-theme="light"] .report-format-heading { color: #1E194F; }
+html[data-theme="light"] .report-format-btn { color: #1E194F; border-color: rgba(30,25,79,0.2); }
+
 html[data-theme="light"] .report-synopsis {
     background: linear-gradient(135deg, rgba(30,25,79,0.03) 0%, rgba(30,25,79,0.01) 100%);
     border-color: rgba(30,25,79,0.1);
