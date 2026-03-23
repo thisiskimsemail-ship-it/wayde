@@ -774,6 +774,11 @@ function forceCloseSession() {
     sendBtn.disabled = true;
     modeLabel.textContent = 'Wade Innovation Toolbox · ';
     if (toolLearnLink) toolLearnLink.classList.add('hidden');
+    // Clear all report UI
+    document.getElementById('reportSynopsis')?.classList.add('hidden');
+    document.getElementById('reportFormatChoice')?.classList.add('hidden');
+    reportCard.classList.add('hidden');
+    reportUnlock.classList.add('hidden');
     state.rating = null;
     state.parkingLot = [];
     state.board = { cards: [], visible: false };
@@ -1228,17 +1233,9 @@ function restoreSession(session) {
     });
 
     if (state.reportGenerated && state.reportText) {
-        // Report already generated — show format choice (download/email only, no in-page report)
-        populateReportMeta();
-        const synopsis = document.getElementById('reportSynopsis');
-        const formatChoice = document.getElementById('reportFormatChoice');
-        if (formatChoice) {
-            formatChoice.classList.remove('hidden');
-        } else if (synopsis) {
-            // Fallback: show synopsis with download button
-            populateSynopsis(state.reportText);
-            synopsis.classList.remove('hidden');
-        }
+        // Report was already generated and delivered (download + email)
+        // Don't re-show synopsis or format choice on session restore
+        // User can start a new session instead
     } else {
         maybeShowReportCta();
     }
