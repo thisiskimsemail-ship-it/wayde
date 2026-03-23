@@ -691,6 +691,8 @@ function startExercise(mode, exercise, startMsg = null) {
     reportCard.classList.remove('report-preview');
     reportUnlock.classList.add('hidden');
     leadModal.classList.add('hidden');
+    document.getElementById('reportSynopsis')?.classList.add('hidden');
+    document.getElementById('reportFormatChoice')?.classList.add('hidden');
     document.querySelectorAll('.report-actions').forEach(bar => bar.classList.add('hidden'));
     $('#reportLinkedInBtn')?.classList.add('hidden');
     routingBack.classList.add('hidden');
@@ -2081,24 +2083,31 @@ document.getElementById('unlockForm')?.addEventListener('submit', async (e) => {
     // Hide form + synopsis, show format choice
     reportUnlock.classList.add('hidden');
     document.getElementById('reportSynopsis')?.classList.add('hidden');
+    reportCta.classList.add('hidden');
     const formatChoice = document.getElementById('reportFormatChoice');
     if (formatChoice) {
         formatChoice.classList.remove('hidden');
         formatChoice.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 
+    // Show next exercise suggestion
+    renderNextExercisePanel();
+    saveSession();
+
     submitBtn.disabled = false;
     submitBtn.textContent = 'Send me my report →';
 });
 
-// Format choice buttons → trigger download
+// Format choice buttons → trigger download, then show next exercise
 document.getElementById('formatWordBtn')?.addEventListener('click', () => {
     downloadReportWord();
     document.getElementById('reportFormatChoice')?.classList.add('hidden');
+    renderNextExercisePanel();
 });
 document.getElementById('formatPdfBtn')?.addEventListener('click', () => {
     downloadReport();
     document.getElementById('reportFormatChoice')?.classList.add('hidden');
+    renderNextExercisePanel();
 });
 
 function handleReportAction(btn, action) {
