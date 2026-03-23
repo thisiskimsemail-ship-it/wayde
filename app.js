@@ -1004,6 +1004,13 @@ function startRouting(text) {
     state.reportGenerated = false;
     state.reportText = '';
 
+    // Clear any lingering report UI from previous session
+    document.getElementById('reportSynopsis')?.classList.add('hidden');
+    document.getElementById('reportFormatChoice')?.classList.add('hidden');
+    reportCard.classList.add('hidden');
+    reportUnlock.classList.add('hidden');
+    messagesEl.innerHTML = '';
+
     welcome.classList.add('hidden');
     moveInputToSession();
     routingBack.classList.remove('hidden');
@@ -2047,6 +2054,11 @@ let pendingDownloadFormat = null; // 'word' or 'pdf'
 document.getElementById('synopsisDownloadBtn')?.addEventListener('click', () => {
     reportUnlock.classList.remove('hidden');
     reportUnlock.scrollIntoView({ behavior: 'smooth', block: 'center' });
+});
+
+// Synopsis close button
+document.getElementById('synopsisCloseBtn')?.addEventListener('click', () => {
+    document.getElementById('reportSynopsis')?.classList.add('hidden');
 });
 
 // Lead capture form submit → email report, then show format choice
