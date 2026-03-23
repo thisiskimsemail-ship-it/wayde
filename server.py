@@ -2894,7 +2894,7 @@ def view_shared_report(report_id):
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{entry['exercise']} · Innovation Coaching Session Summary · Wade Institute</title>
+<title>{entry['exercise']} · Studio Workshop Summary · Wade Institute</title>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <style>
 body{{font-family:Georgia,serif;max-width:700px;margin:40px auto;padding:0 20px;color:#1a1a2e;line-height:1.7}}
@@ -2910,7 +2910,7 @@ a{{color:#F15A22}}
 </head>
 <body>
 <div class="hd">
-  <h1>Innovation Coaching Session Summary</h1>
+  <h1>Studio Workshop Summary</h1>
   <div class="meta">{entry['exercise']} · {entry['mode']} · {date_str}</div>
 </div>
 <div id="rc"></div>

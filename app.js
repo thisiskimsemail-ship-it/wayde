@@ -1971,7 +1971,7 @@ async function downloadReport() {
     } catch(e) {}
 
     const html = `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">
-<title>Innovation Coaching Session Summary — ${exName} · Wade Institute</title>
+<title>Studio Workshop Summary — ${exName} · Wade Institute</title>
 <style>
 @page { margin: 22mm 20mm 20mm; }
 *, *::before, *::after { box-sizing: border-box; }
@@ -2011,10 +2011,12 @@ a::after { content: " ↗"; font-size: 9px; opacity: 0.6; }
 <div class="rpt-header">
   ${logoSrc ? `<img src="${logoSrc}" alt="Wade Institute of Entrepreneurship">` : ''}
   <div class="rpt-header-text">
-    <div class="rpt-header-title">Innovation Coaching Session Summary</div>
+    <div class="rpt-header-title">Studio Workshop Summary</div>
     <div class="rpt-header-meta"><span class="stage-pill">${mName}</span>${exName} &nbsp;·&nbsp; ${date}</div>
   </div>
 </div>
+${state.reportSynopsis?.title ? `<h2 style="font-family:Arial,sans-serif;font-size:18px;font-weight:700;color:#12103a;border-left:none;padding:0;margin:0 0 8px;text-align:center;">${state.reportSynopsis.title}</h2>` : ''}
+${state.reportSynopsis?.hook ? `<p style="font-style:italic;color:#666;text-align:center;margin:0 0 24px;font-size:13px;">${state.reportSynopsis.hook}</p>` : ''}
 ${reportContent.innerHTML}
 <div class="wade-cta-block">
   <div class="wade-cta-label">Ready to go deeper?</div>
@@ -2168,8 +2170,10 @@ li { margin: 0.25em 0; }
 .meta { color: #888; font-size: 9pt; margin-bottom: 1.5em; }
 .footer { margin-top: 2em; padding-top: 1em; border-top: 1px solid #ddd; font-size: 9pt; color: #888; }
 </style></head><body>
-<h1>Wade Studio Report</h1>
+<h1>Studio Workshop Summary</h1>
 <div class="meta">${mName} · ${exName} · ${date}</div>
+${state.reportSynopsis?.title ? `<h2 style="text-align:center;margin-bottom:0.25em;">${state.reportSynopsis.title}</h2>` : ''}
+${state.reportSynopsis?.hook ? `<p style="font-style:italic;color:#666;text-align:center;margin-bottom:1.5em;">${state.reportSynopsis.hook}</p>` : ''}
 ${content.innerHTML}
 <div class="footer">
   <p>Wade Institute of Entrepreneurship · wadeinstitute.org.au</p>
