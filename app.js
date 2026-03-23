@@ -123,10 +123,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // === LOGO SWAP PER STAGE ===
 const STAGE_LOGOS = {
-    reframe: 'logo-orange.png',
-    ideate: 'logo-pink.png',
-    debate: 'logo-teal.png',
-    framework: 'logo-yellow.png',
+    untangle: 'logo-teal.png',
+    spark: 'logo-orange.png',
+    test: 'logo-pink.png',
+    build: 'logo-yellow.png',
     routing: 'logo-orange.png'
 };
 function updateStageLogo(mode) {
@@ -138,17 +138,17 @@ function updateStageLogo(mode) {
 
 // === BREADCRUMB DROPDOWN ===
 const STAGE_TOOLS = {
-    reframe: ['five-whys', 'jtbd', 'empathy-map'],
-    ideate: ['crazy-8s', 'hmw', 'scamper'],
-    debate: ['pre-mortem', 'devils-advocate', 'rapid-experiment'],
-    framework: ['lean-canvas', 'effectuation', 'analogical']
+    untangle: ['five-whys', 'empathy-map', 'jtbd'],
+    spark: ['crazy-8s', 'hmw', 'scamper'],
+    test: ['pre-mortem', 'devils-advocate', 'analogical'],
+    build: ['lean-canvas', 'effectuation', 'rapid-experiment']
 };
 
 function updateBreadcrumbDropdown(currentMode, currentExercise) {
     const inner = document.getElementById('breadcrumbDropdownInner');
     if (!inner) return;
     inner.innerHTML = '';
-    const STAGE_ORDER_ALL = ['reframe', 'ideate', 'debate', 'framework'];
+    const STAGE_ORDER_ALL = ['untangle', 'spark', 'test', 'build'];
     STAGE_ORDER_ALL.forEach(stage => {
         const section = document.createElement('div');
         section.className = 'breadcrumb-dropdown-section';
@@ -221,26 +221,26 @@ const EXERCISE_LABELS = {
 };
 
 const MODE_LABELS = {
-    reframe: 'Clarify',
-    ideate: 'Ideate',
-    debate: 'Validate',
-    framework: 'Develop'
+    untangle: 'The Untangle',
+    spark: 'The Spark',
+    test: 'The Test',
+    build: 'The Build'
 };
 
 // Reverse map: exercise key → mode (used for routing suggestions)
 const EXERCISE_MODE = {
-    'five-whys':        'reframe',
-    'jtbd':             'reframe',
-    'empathy-map':      'reframe',
-    'hmw':              'ideate',
-    'scamper':          'ideate',
-    'crazy-8s':         'ideate',
-    'pre-mortem':       'debate',
-    'devils-advocate':  'debate',
-    'rapid-experiment': 'debate',
-    'lean-canvas':      'framework',
-    'effectuation':     'framework',
-    'analogical':       'framework'
+    'five-whys':        'untangle',
+    'jtbd':             'untangle',
+    'empathy-map':      'untangle',
+    'hmw':              'spark',
+    'scamper':          'spark',
+    'crazy-8s':         'spark',
+    'pre-mortem':       'test',
+    'devils-advocate':  'test',
+    'analogical':       'test',
+    'lean-canvas':      'build',
+    'effectuation':     'build',
+    'rapid-experiment': 'build'
 };
 
 // Exercise descriptions (mirror of HTML card text)
@@ -316,30 +316,30 @@ const EXERCISE_TIMES = {
 };
 
 // Stage order for progress strip
-const STAGE_ORDER = ['reframe', 'ideate', 'debate', 'framework'];
+const STAGE_ORDER = ['untangle', 'spark', 'test', 'build'];
 
-// Next recommended stage after each mode
+// Next recommended category after each mode
 const NEXT_STAGE = {
-    reframe:   { mode: 'ideate',     exercise: 'hmw' },
-    ideate:    { mode: 'debate',     exercise: 'pre-mortem' },
-    debate:    { mode: 'framework',  exercise: 'lean-canvas' },
-    framework: null
+    untangle: { mode: 'spark',  exercise: 'crazy-8s' },
+    spark:    { mode: 'test',   exercise: 'pre-mortem' },
+    test:     { mode: 'build',  exercise: 'lean-canvas' },
+    build:    null
 };
 
-// Default exercise when navigating to a stage via the progress dots
+// Default exercise when navigating to a category via the progress dots
 const STAGE_DEFAULT = {
-    reframe:   'five-whys',
-    ideate:    'hmw',
-    debate:    'pre-mortem',
-    framework: 'lean-canvas'
+    untangle: 'five-whys',
+    spark:    'hmw',
+    test:     'pre-mortem',
+    build:    'lean-canvas'
 };
 
-// All exercises grouped by stage (for the within-stage tool picker)
+// All exercises grouped by category
 const TOOLS_BY_MODE = {
-    reframe:   ['five-whys', 'jtbd', 'empathy-map'],
-    ideate:    ['hmw', 'scamper', 'crazy-8s'],
-    debate:    ['pre-mortem', 'devils-advocate', 'rapid-experiment'],
-    framework: ['lean-canvas', 'effectuation', 'analogical']
+    untangle: ['five-whys', 'empathy-map', 'jtbd'],
+    spark:    ['crazy-8s', 'hmw', 'scamper'],
+    test:     ['pre-mortem', 'devils-advocate', 'analogical'],
+    build:    ['lean-canvas', 'effectuation', 'rapid-experiment']
 };
 
 // === STATE ===
@@ -1181,7 +1181,7 @@ function restoreSession(session) {
                 id: 'c_' + item.timestamp + '_' + Math.random().toString(36).slice(2, 6),
                 text: item.text,
                 zone: 'parking',
-                stage: state.mode || 'reframe',
+                stage: state.mode || 'untangle',
                 source: item.fromExercise || 'session',
                 timestamp: item.timestamp
             });
@@ -1965,8 +1965,8 @@ leadForm.addEventListener('submit', (e) => {
 async function downloadReport() {
     const exName = EXERCISE_LABELS[state.exercise] || state.exercise;
     const mName = MODE_LABELS[state.mode] || state.mode;
-    const stageColor = { reframe: '#F15A22', ideate: '#ED3694', debate: '#27BDBE', framework: '#E4E517' }[state.mode] || '#F15A22';
-    const stageTextColor = state.mode === 'framework' ? '#1a1a2e' : '#fff';
+    const stageColor = { untangle: '#27BDBE', spark: '#F15A22', test: '#ED3694', build: '#E4E517' }[state.mode] || '#F15A22';
+    const stageTextColor = state.mode === 'build' ? '#1a1a2e' : '#fff';
     const date = new Date().toLocaleDateString('en-AU', { year: 'numeric', month: 'long', day: 'numeric' });
 
     // Embed logo as base64 so it shows in the printed PDF
@@ -2290,7 +2290,7 @@ function renderNextExercisePanel() {
     panel.className = 'next-exercise-panel';
     const nextModeName = MODE_LABELS[next.mode] || next.mode;
     const nextExName = EXERCISE_LABELS[next.exercise] || next.exercise;
-    const modeColor = next.mode; // reframe/ideate/debate/framework
+    const modeColor = next.mode; // untangle/spark/test/build
 
     panel.innerHTML = `
         <div class="next-exercise-label">Ready to keep going?</div>
@@ -2486,7 +2486,7 @@ function addBoardCard(text, zone, stage, source) {
         id: 'c_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
         text: text,
         zone: zone,        // 'insights' | 'ideas' | 'parking' | 'actions'
-        stage: stage || state.mode || 'reframe',
+        stage: stage || state.mode || 'untangle',
         source: source || EXERCISE_LABELS[state.exercise] || state.exercise || 'session',
         timestamp: Date.now()
     };
@@ -2832,7 +2832,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     id: 'c_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
                     text: c.text,
                     zone: c.zone,
-                    stage: state.mode || 'reframe',
+                    stage: state.mode || 'untangle',
                     source: EXERCISE_LABELS[state.exercise] || state.exercise || 'session',
                     timestamp: Date.now()
                 }));
@@ -3086,7 +3086,7 @@ function pitchToCanvas() {
     };
     Object.entries(mapping).forEach(([pitchKey, canvasZone]) => {
         if (state.pitch[pitchKey]) {
-            addBoardCard(state.pitch[pitchKey], canvasZone, 'framework', 'Elevator Pitch');
+            addBoardCard(state.pitch[pitchKey], canvasZone, 'build', 'Elevator Pitch');
         }
     });
 }
