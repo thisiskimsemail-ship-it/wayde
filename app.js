@@ -1946,11 +1946,7 @@ function handleLeadSubmit(nameEl, emailEl, companyEl, roleEl, submitEl) {
     return true;
 }
 
-// Inline unlock form (below report preview)
-unlockForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    handleLeadSubmit($('#unlockName'), $('#unlockEmail'), $('#unlockCompany'), $('#unlockRole'), $('#unlockSubmit'));
-});
+// NOTE: unlockForm submit is handled in the synopsis gating section above
 
 // Legacy modal form (kept for fallback; no longer primary flow)
 leadForm.addEventListener('submit', (e) => {
