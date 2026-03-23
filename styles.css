@@ -2440,6 +2440,8 @@ html[data-theme="light"] .option-chip:hover {
 }
 
 /* === SYNOPSIS CARD === */
+.report-synopsis.hidden { display: none; }
+.report-format-choice.hidden { display: none; }
 .report-synopsis {
     position: relative;
     background: linear-gradient(135deg, rgba(30,25,79,0.6) 0%, rgba(30,25,79,0.3) 100%);
