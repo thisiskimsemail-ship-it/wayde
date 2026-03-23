@@ -1219,10 +1219,17 @@ function restoreSession(session) {
     });
 
     if (state.reportGenerated && state.reportText) {
-        reportContent.innerHTML = renderMarkdown(state.reportText);
+        // Report already generated — show format choice (download/email only, no in-page report)
         populateReportMeta();
-        reportCard.classList.remove('hidden');
-        revealFullReport();
+        const synopsis = document.getElementById('reportSynopsis');
+        const formatChoice = document.getElementById('reportFormatChoice');
+        if (formatChoice) {
+            formatChoice.classList.remove('hidden');
+        } else if (synopsis) {
+            // Fallback: show synopsis with download button
+            populateSynopsis(state.reportText);
+            synopsis.classList.remove('hidden');
+        }
     } else {
         maybeShowReportCta();
     }
@@ -1901,21 +1908,12 @@ reportCtaBtn.addEventListener('click', async () => {
 // === SHARED LEAD CAPTURE LOGIC ===
 
 function revealFullReport() {
-    reportCard.classList.remove('hidden');
-    reportCard.classList.remove('report-preview');
+    // In the new flow, never show the in-page report — it's download/email only
+    // Just clean up UI state
     reportUnlock.classList.add('hidden');
     reportCta.classList.add('hidden');
     document.getElementById('reportSynopsis')?.classList.add('hidden');
-
-    // Reveal report action bars (top + bottom)
-    document.querySelectorAll('.report-actions').forEach(bar => bar.classList.remove('hidden'));
-
-    renderNextExercisePanel();
     saveSession();
-
-    setTimeout(() => {
-        reportCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 100);
 }
 
 function handleLeadSubmit(nameEl, emailEl, companyEl, roleEl, submitEl) {
