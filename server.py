@@ -1846,50 +1846,332 @@ WADE_PEOPLE = [
 ]
 
 
-def build_wade_knowledge_block():
-    articles_text = "\n".join(
-        f'- [{a["title"]}]({a["url"]}) — {", ".join(a["categories"])}'
-        for a in WADE_COMMUNITY_ARTICLES
-    )
-    programs_text = "\n".join(
-        f'- **[{p["name"]}]({p["url"]})** | {p["format"]} | {p["price"]} | Next: {p["next_intake"]} | Status: {p.get("status", "Open")}\n'
-        f'  _{p["tagline"]}_\n'
-        f'  {p.get("description", "")}\n'
-        f'  Best for: {p["audience"]}\n'
-        f'  Match when role involves: {", ".join(p["match_roles"][:5])}\n'
-        f'  Match when challenge involves: {", ".join(p["match_challenges"][:5])}'
-        for p in WADE_PROGRAMS
-    )
-    people_text = "\n".join(
-        f'- **[{p["name"]}]({p["url"]})** ({p["role"]})\n'
-        f'  _{p["hook"]}_\n'
-        f'  Match when role involves: {", ".join(p["match_roles"][:5])}\n'
-        f'  Match when challenge involves: {", ".join(p["match_challenges"][:5])}\n'
-        f'  Recommend when: {p["match_when"]}'
-        for p in WADE_PEOPLE
-    )
-    return f"""
+WADE_KNOWLEDGE_BLOCK = """
 WADE COMMUNITY ARTICLES (use these for Suggested Reading):
-{articles_text}
+Each article is tagged with: Stage (Clarify / Ideate / Validate / Develop) AND Audience (Founder / Investor / Corporate / Educator / All).
+Pete must cross-reference BOTH tags when selecting articles. Never recommend an Investor-tagged article to a Founder, or a Founder-tagged article to a Corporate user, unless the article is tagged "All".
+EXCEPTION — Founders preparing to raise capital: If a Founder's challenge specifically involves fundraising, understanding investor thinking, or preparing for investor conversations, Pete may recommend up to 1 article from the Investor pool that directly teaches how investors evaluate deals (e.g. "Decoding the pitch deck", "To SAFE or not to SAFE?", "Debunking the Myths of Venture Investing"). Frame it as: "This is written for investors, but understanding how they think will sharpen your pitch." This exception does NOT apply in reverse — never recommend Founder articles to Investors.
+FALLBACK — If no articles match both the user's Stage AND Audience, Pete should: (1) prioritise Audience match over Stage match, and (2) draw from "All"-tagged articles at any stage. A relevant article for the right audience is always better than a stage-matched article for the wrong audience.
+- [Start with a problem you really want to solve](https://wadeinstitute.org.au/entrepreneurship-starts-with-a-problem-you-really-want-to-solve/) — Problem definition, Entrepreneurship, Clarify | Founder, Corporate
+- [Mixing innovation with empathy](https://wadeinstitute.org.au/mixing-innovation-with-empathy/) — Empathy, Design thinking, Innovation, Clarify | All
+- [From chaos to control: Putting a framework around corporate innovation](https://wadeinstitute.org.au/from-chaos-to-control-putting-a-framework-around-corporate-innovation-with-pedram-mokrian/) — Corporate innovation, Framework, Strategy, Clarify | Corporate
+- [10 fatal flaws of entrepreneurship & how to avoid them](https://wadeinstitute.org.au/10-fatal-flaws-of-entrepreneurship-how-to-avoid-them/) — Entrepreneurship, Mistakes, Problem solving, Clarify | Founder
+- [When science meets business: From innovation to enterprise](https://wadeinstitute.org.au/when-science-meets-business-from-innovation-to-enterprise/) — Science commercialisation, Innovation, Clarify | Founder
+- [Thrill of a big idea](https://wadeinstitute.org.au/thrill-of-a-big-idea/) — Ideation, Innovation, Entrepreneurship, Ideate | Founder, Corporate
+- [Pivot don't pause - Finding opportunity in the new normal](https://wadeinstitute.org.au/pivot-dont-pause/) — Pivot, Innovation, Resilience, Ideate | Founder, Corporate
+- [Business, Covid-19 and the Japanese Art of Flower Arrangement](https://wadeinstitute.org.au/business-covid-19-and-the-japanese-art-of-flower-arrangement/) — Resilience, Creativity, Analogical thinking, Ideate | All
+- [Why Australian innovators should look to Dropbox for inspiration](https://wadeinstitute.org.au/why-australian-innovators-should-look-to-dropbox-for-inspiration/) — Innovation, Product, Analogical thinking, Ideate | Founder
+- [Preparing for uncertainty through entrepreneurship](https://wadeinstitute.org.au/preparing-for-uncertainty-through-entrepreneurship/) — Uncertainty, Effectuation, Resilience, Ideate | Founder, Corporate
+- [Where bold ideas are born](https://wadeinstitute.org.au/where-bold-ideas-are-born/) — Ideation, Creativity, Innovation, Ideate | All
+- [Plying our own path: How Australia is rewriting the venture capital playbook](https://wadeinstitute.org.au/plying-our-own-path-how-australia-is-rewriting-the-venture-capital-playbook/) — Venture Capital, Australian ecosystem, Validate | Investor
+- [The muscle we've built: lessons from a decade of belief in Australian venture](https://wadeinstitute.org.au/the-muscle-weve-built-lessons-from-a-decade-of-belief-in-australian-venture/) — Venture Capital, Ecosystem building, Validate | Investor
+- [Exit pathways in focus: what Australia's startup ecosystem needs next](https://wadeinstitute.org.au/exit-pathways-in-focus-what-australias-startup-ecosystem-needs-next/) — Venture Capital, Exits, Ecosystem, Validate | Investor
+- [The most important document you'll ever write as an investor](https://wadeinstitute.org.au/the-most-important-document-you-will-ever-write-as-an-investor/) — Venture Capital, Investment memo, Due diligence, Validate | Investor
+- [Debunking the Myths of Venture Investing](https://wadeinstitute.org.au/debunking-the-myths-of-venture-investing/) — Venture Capital, Angel investing, Validate | Investor
+- [How to be unbiased: a guide for investors](https://wadeinstitute.org.au/how-to-be-unbiased-a-guide-for-investors/) — Venture Capital, Decision making, Bias, Validate | Investor
+- [To SAFE or not to SAFE? What you need to know about simple agreements for future equity](https://wadeinstitute.org.au/to-safe-or-not-to-safe-what-you-need-to-know-about-simple-agreements-for-future-equity/) — Funding, Legal, SAFE notes, Validate | Founder, Investor
+- [VC maths, Pedram's way](https://wadeinstitute.org.au/vc-maths-pedrams-way/) — Venture Capital, Fund modelling, Validate, Develop | Investor
+- [Making mistakes and staying humble, lessons from Leigh Jasper](https://wadeinstitute.org.au/making-mistakes-and-staying-humble-lessons-from-leigh-jasper/) — Resilience, Entrepreneurship, Failure, Validate | Founder
+- [Why angel investing is a team sport](https://wadeinstitute.org.au/why-angel-investing-is-a-team-sport/) — Angel investing, Community, Collaboration, Validate, Develop | Investor
+- [Things I wish I knew: Advice for Active Investors](https://wadeinstitute.org.au/things-i-wish-i-knew-advice-for-active-investors/) — Angel investing, Lessons, Validate, Develop | Investor
+- [Solving the world's most pressing problems with Giant Leap Partner Rachel Yang](https://wadeinstitute.org.au/solving-the-worlds-most-pressing-problems-with-giant-leap-partner-rachel-yang/) — Impact investing, Social enterprise, Venture Capital, Validate | Investor
+- [Why Aussie startups fail to scale and how the local ecosystem can help](https://wadeinstitute.org.au/why-aussie-startups-fail-to-scale-and-how-the-local-ecosystem-can-help/) — Scaling, Startup, Ecosystem, Develop | Founder
+- [5 steps to turn your idea into a business](https://wadeinstitute.org.au/5-steps-to-turn-your-idea-into-a-business/) — Business model, Startup, Lean canvas, Develop | Founder
+- [Decoding the pitch deck](https://wadeinstitute.org.au/decoding-the-pitch-deck/) — Pitch, Funding, Business model, Develop | Founder
+- [4 tips on how to secure startup funding from Angel Investors](https://wadeinstitute.org.au/4-tips-on-how-to-secure-startup-funding-from-angel-investors/) — Funding, Angel investing, Startup, Develop | Founder
+- [Four legal issues that early-stage entrepreneurs should consider](https://wadeinstitute.org.au/four-legal-issues-that-early-stage-entrepreneurs-should-consider/) — Legal, Startup, Develop | Founder
+- [6 must-knows about startup life from our mentor](https://wadeinstitute.org.au/6-must-knows-about-startup-life-from-our-mentor/) — Startup, Mentorship, Develop | Founder
+- [11 years to build an overnight success: Cyan Ta'eed, Envato](https://wadeinstitute.org.au/11-years-to-build-an-overnight-success-cyan-taeed-envato/) — Scaling, Founder story, Develop | Founder
+- [The argument for reinvention](https://wadeinstitute.org.au/the-argument-for-reinvention/) — Career change, Reinvention, Entrepreneurship | Founder
+- [From confusion to clarity: How the Master of Entrepreneurship helped one graduate design his dream career](https://wadeinstitute.org.au/from-confusion-to-clarity-how-the-master-of-entrepreneurship-program-helped-one-graduate-design-his-dream-career/) — Career design, Master of Entrepreneurship, Alumni | Founder
+- [Embracing your inner cockroach and finding your ikigai](https://wadeinstitute.org.au/embracing-your-inner-cockroach-and-finding-your-ikigai/) — Resilience, Purpose, Career change | Founder
+- [How to make the leap from corporate to entrepreneurship](https://wadeinstitute.org.au/how-to-make-the-leap-from-corporate-to-entrepreneurship/) — Career change, Corporate to entrepreneur | Founder, Corporate
+- [Making the transition from builder to backer](https://wadeinstitute.org.au/making-the-transition-from-builder-to-backer/) — Career change, Venture Capital, Entrepreneurship, Develop | Investor, Founder
+- [Student Story: Carlos' Journey from Financier to Coffee Entrepreneur](https://wadeinstitute.org.au/student-profile-carlos-journey-from-financier-to-coffee-entrepreneur/) — Career change, Alumni, Entrepreneurship | Founder
+- [Starting a business after a full career and kids](https://wadeinstitute.org.au/starting-a-business-after-a-full-career-and-kids-margie-moroney-holos-knitwear/) — Career change, Founder story, Reinvention | Founder
+- [Entrepreneurship CAN be learned, it's time to upskill](https://wadeinstitute.org.au/entrepreneurship-can-be-learned-and-why-oz-needs-it-to-be/) — Entrepreneurship education, Mindset, Career change | All
+- [Equipping teachers to shape future-ready students](https://wadeinstitute.org.au/equipping-teachers-to-shape-future-ready-students/) — Entrepreneurship education, Schools, Teachers, Develop | Educator
+- [Embedding entrepreneurial culture in schools](https://wadeinstitute.org.au/embedding-entrepreneurial-culture-in-schools/) — Entrepreneurship education, Schools, Culture, Clarify | Educator
+- [Entrepreneurship education: A training ground for unknown futures](https://wadeinstitute.org.au/entrepreneurship-education-a-training-ground-for-unknown-futures/) — Entrepreneurship education, Schools, Future of work, Ideate | Educator
+- [4 benefits of teaching entrepreneurship in schools](https://wadeinstitute.org.au/4-benefits-of-teaching-entrepreneurship-in-schools/) — Entrepreneurship education, Schools, Clarify | Educator
+- [It's OK to fail: Learning life lessons through entrepreneurship](https://wadeinstitute.org.au/its-ok-to-fail-learning-life-lessons-through-entrepreneurship/) — Resilience, Entrepreneurship education, Schools, Validate | Educator
+- [UpSchool in action: entrepreneurship boosts student outcomes at Mentone Grammar](https://wadeinstitute.org.au/upschool-in-action-entrepreneurship-boosts-student-outcomes-at-mentone-grammar/) — Schools, UpSchool, Student outcomes, Develop | Educator
+- [Investing in AgTech: Lessons from Kilimo's Journey](https://wadeinstitute.org.au/investing-in-agtech-lessons-from-kilimos-journey/) — AgTech, Investment, Validate | Investor
+- [Why VCs need to go to AgTech school](https://wadeinstitute.org.au/why-vcs-need-to-go-to-agtech-school/) — AgTech, Venture Capital | Investor
+- [Seeding Innovation: Why AgTech is Australia's Next Big Investment Opportunity](https://wadeinstitute.org.au/seeding-innovation-why-agtech-is-australias-next-big-investment-opportunity/) — AgTech, Australia, Investment opportunity | Investor, Founder
+- [Student Stories: From the farm to AgTech entrepreneur](https://wadeinstitute.org.au/from-the-farm-to-agtech-entrepreneur/) — AgTech, Alumni, Entrepreneurship | Founder
+- [Cultivating bright ideas in agriculture](https://wadeinstitute.org.au/cultivating-bright-ideas-in-agriculture/) — AgTech, Innovation, Agriculture | Founder, Corporate
 
 WADE PROGRAMS — MATCHING GUIDE:
 Use the profile below to identify the single most relevant program for this person.
-Step 1: Infer their audience cluster from role + company type (INVESTOR / INNOVATOR / EDUCATOR).
-Step 2: Within that cluster, select the program whose audience description and match signals best fit their specific challenge and stage.
+Step 1: Infer their audience segment from role + company type. The four segments are:
+  -- FOUNDER: Future founders, startup founders, scaleup founders/operators, serial entrepreneurs. These people are building or scaling their own venture. They are seeking survival and growth.
+  -- INVESTOR: Angels, family office managers, VCs, corporate venturers, aspiring investors, impact investors. These people deploy capital into ventures. They are seeking innovation deal flow.
+  -- CORPORATE: Corporate leaders, intrapreneurs, innovation/strategy teams, senior managers inside established organisations. These people drive change inside someone else's organisation. They are seeking innovation practice.
+  -- EDUCATOR: K-12 teachers, school leaders, curriculum coordinators. These people teach the next generation. They are the talent pipeline.
+CRITICAL MATCHING RULES:
+  -- A founder seeking funding is NOT an investor. Route them to Founder programs (Growth Engine, MoE), never to Investor programs (VC Catalyst, VC Fundamentals). A founder may benefit from understanding how investors think, but the right article or people recommendation handles that -- not a program mismatch.
+  -- A corporate innovation manager is NOT a founder. Route them to Corporate programs (Think Like an Entrepreneur, AI Conundrum, Bespoke), never to Founder programs (Growth Engine).
+  -- Someone wanting to "learn about VC" as an aspiring investor routes to Investor programs. Someone wanting to "raise VC" as a founder routes to Founder programs.
+  -- If someone's segment is ambiguous after Turn 2, ask one clarifying question: "Are you building something of your own, investing in others, or driving change inside an organisation?"
+Step 2: Within that segment, select the program whose audience description and match signals best fit their specific challenge and stage.
 Step 3: Recommend ONE program only. Tie it directly to something they said or discovered in the session.
 
-{programs_text}
+FOUNDER PROGRAMS:
+- **[Growth Engine](https://wadeinstitute.org.au/programs/entrepreneurs/growth-engine/)** | 3 days + 3 months mentoring (Hybrid) | $4,500 | Next: May 2026 (1 May + 4-5 May) | Status: Open
+  _Build a clearer growth strategy for the next stage of your business._
+  A three-day intensive for founders, founding teams, and boards navigating operational challenges as the business scales from 30 to 100+ people. Diagnose where your current growth model is working and where it is breaking. Stress-test positioning, channels and commercial priorities. Build a practical growth strategy alongside peers facing similar scale-up challenges. What works at 10 people will actively hurt you at 50.
+  Segment: FOUNDER
+  Best for: Scale-up founders, CEOs of growing businesses, senior operators responsible for growth, commercial and growth leaders, founders preparing for next stage of expansion.
+  Match when role involves: founder, CEO, COO, co-founder, operator, managing director of a startup or scaleup
+  Match when challenge involves: growth, scaling, revenue, go-to-market, GTM, hiring, operational pain, product-market fit expansion, team structure
+  DO NOT match when: user is a corporate employee, innovation team member, or intrapreneur inside an established organisation -- route to Think Like an Entrepreneur instead.
+- **[Master of Entrepreneurship](https://wadeinstitute.org.au/programs/entrepreneurs/master-of-entrepreneurship/)** | Full-Year University Program | Speak to Wade | Next: Annual intake | Status: Open
+  _Academic depth meets immersive practice -- build or lead ventures with rigour._
+  Segment: FOUNDER
+  Best for: Aspiring founders, early-stage founders seeking deep structured capability, career changers committed to building a venture, people who want both practical tools and academic grounding (University of Melbourne).
+  Match when role involves: aspiring entrepreneur, early-stage founder, career changer wanting to start a venture, intrapreneur seeking deep capability
+  Match when challenge involves: building foundational skills, starting a venture from scratch, career transition into entrepreneurship, long-term capability development, wanting academic rigour
+  DO NOT match when: user needs a quick win, is already scaling (route to Growth Engine), or is a corporate leader not planning to leave (route to Think Like an Entrepreneur).
+
+CORPORATE PROGRAMS:
+- **[Think Like an Entrepreneur](https://wadeinstitute.org.au/programs/entrepreneurs/think-like-an-entrepreneur/)** | 3 days + 3 months peer mastermind mentoring (Hybrid) | $4,500 | Next: Jun 2026 | Status: Open
+  _Build entrepreneurial skills you can use to lead change inside an organisation._
+  A practical, immersive program designed to help leaders build entrepreneurial skills they can use to lead change inside an organisation. Learn practical entrepreneurial frameworks to identify opportunities, challenge assumptions and work through uncertainty. Apply tools to real organisational contexts. Build methods for leading change, managing risk and moving ideas forward inside existing teams and systems.
+  Segment: CORPORATE
+  Best for: Corporate leaders, innovation and strategy teams, senior managers leading transformation, intrapreneurs working on new ideas inside established organisations, and professionals looking to build stronger innovation capability.
+  Match when role involves: manager, director, head of, VP, GM, innovation lead, strategy lead, intrapreneur inside a large organisation
+  Match when challenge involves: internal innovation, building a business case, change management, intrapreneurship, corporate transformation, getting buy-in, leading change inside an organisation
+  DO NOT match when: user is building their own venture (route to Growth Engine or MoE) or is primarily interested in investing (route to VC Catalyst or VC Fundamentals).
+- **[The AI Conundrum](https://wadeinstitute.org.au/programs/entrepreneurs/the-ai-conundrum/)** | 3 days (Hybrid, opening soon) | $4,500 | Next: TBC 2026 | Status: Opening soon
+  _Understand where AI can create real value and how to act on it._
+  Designed for leaders who want to move beyond the noise and build a clearer understanding of how AI can create real value. Build strategic clarity on AI's role in growth versus productivity. Learn a practical framework for evaluating and prioritising AI opportunities. Assess readiness, risk and implementation pathways. Develop a shared language to align leaders, teams and partners.
+  Segment: CORPORATE (also relevant to FOUNDER if AI is central to their venture strategy)
+  Best for: Corporate leaders, senior executives, innovation and strategy teams, digital and transformation leaders, managers evaluating new tools, and decision-makers shaping organisational policy or investment in AI.
+  Match when role involves: CEO, CTO, director, executive, leader, digital lead, transformation lead
+  Match when challenge involves: AI strategy, AI adoption, digital transformation, automation, technology strategy, evaluating AI tools, AI readiness
+  DO NOT match when: user is an investor evaluating AI deals (route to VC Catalyst) or a teacher (route to UpSchool).
+- **[Bespoke Programs](https://wadeinstitute.org.au/programs/bespoke/)** | Custom-Designed | Speak to Wade | Next: Ongoing | Status: Open
+  _Custom entrepreneurial training built for your team and context._
+  Segment: CORPORATE
+  Best for: Corporates, NFPs, universities, and government teams who need to build innovation capability across a cohort or organisation -- not just one person. Past partners include Minderoo Foundation, Gordon TAFE, University of Melbourne.
+  Match when role involves: L&D, learning and development, HR, training, program director, organisational development
+  Match when challenge involves: team capability, organisation-wide innovation, staff training, workforce development, custom program for a cohort, building innovation culture across a team
+  DO NOT match when: user is an individual seeking personal development (route to Think Like an Entrepreneur or Growth Engine).
+
+INVESTOR PROGRAMS:
+- **[VC Catalyst](https://wadeinstitute.org.au/programs/investors/vc-catalyst/)** | 10 days + 3 months mentoring (Hybrid) | $12,590 | Next: Autumn: 3-7 May + 17-21 May 2026 | Status: Open
+  _Build deep skills, judgement and networks to invest in early-stage ventures._
+  An immersive executive education program equipping you with the best practice tools and skills to make successful early-stage venture capital investments. Includes welcome event, 10 days intensive online, wrap-up dinner, follow-on mentoring, WhatsApp community, and 12 months content access.
+  Segment: INVESTOR
+  Best for: Sophisticated investors, family office investment managers, current and aspiring angel investors, corporate venturing and strategy teams, emerging and future venture fund managers, entrepreneurs transitioning into investing.
+  Match when role involves: investor, VC, venture capital, fund manager, family office, angel investor, corporate venture
+  Match when challenge involves: investment thesis, deal flow, deal evaluation, portfolio construction, venture investing, due diligence, building an investment practice
+  DO NOT match when: user is a founder trying to raise capital (route to Growth Engine or MoE) or a corporate leader not involved in venture investing (route to Think Like an Entrepreneur).
+- **[Impact Catalyst](https://wadeinstitute.org.au/programs/investors/impact-catalyst/)** | 10 days + 3 months mentoring (Hybrid) | $12,590 | Next: 3-7 Aug + 17-21 Aug 2026 | Status: Pre-launch
+  _Learn how to invest for social impact as well as financial return._
+  A deep learning program designed to equip investors with the frameworks, judgement and networks to invest for measurable social and environmental impact alongside financial return. Practitioner-led, blending foundational concepts with real-world case studies, unpacking the evolution from purely financial returns to today's risk-return-impact paradigm.
+  Segment: INVESTOR
+  Best for: Impact investors, foundation and philanthropic leaders, mission-driven family offices, social enterprise leaders exploring investment, current and aspiring angel investors seeking practical fluency in impact measurement, risk-return-impact trade-offs, and intentional capital deployment.
+  Match when role involves: impact investor, foundation leader, philanthropic manager, social enterprise leader exploring investment, ESG-focused investor, sustainability-focused investor
+  Match when challenge involves: social impact measurement, impact investing frameworks, ESG integration, mission-driven investment, sustainability, risk-return-impact trade-offs
+  DO NOT match when: user is a social enterprise founder (route to Growth Engine or MoE) or a corporate sustainability officer not involved in investment (route to Think Like an Entrepreneur or AI Conundrum).
+- **[VC Fundamentals](https://wadeinstitute.org.au/programs/investors/vc-fundamentals/)** | Digital, Self-paced (Online) | $500 | Next: Available now -- ongoing | Status: Pilot phase live
+  _Learn how venture capital works and whether it's right for you._
+  A fast-paced online course designed to demystify early-stage venture capital and build confidence in startup investing. Adapted from Wade's flagship VC Catalyst program. Understand what VC really is, how investors assess startups, what makes a good investment thesis, and how VCs think about return, failure, and portfolio strategy.
+  Segment: INVESTOR (entry-level)
+  Best for: Aspiring or first-time investors, corporate professionals exploring startup investment as a personal interest, family office managers new to venture, early-career analysts interested in VC, professionals curious about angel investing.
+  Match when role involves: aspiring investor, curious professional interested in investing, early-career analyst, someone exploring angel investing
+  Match when challenge involves: understanding how VC works, exploring whether investing is right for them, learning investor fundamentals, understanding how startups are evaluated
+  DO NOT match when: user is a founder wanting to understand investor thinking in order to raise capital -- instead recommend a Founder program and suggest the article "Decoding the pitch deck" or connect them with a relevant Wade community member. Do not route founders to investor programs.
+- **[VCF+ (VC Fundamentals Cohort)](https://wadeinstitute.org.au/programs/investors/vc-fundamentals/)** | Digital + 5 sessions (Hybrid) | $750+ | Next: Apr-May 2026 | Status: Pilot phase live
+  _Go deeper on VC fundamentals with a peer cohort._
+  A cohort-based extension of VC Fundamentals. Investors who know risk/return differs from traditional assets in theory benefit from a peer group with varied backgrounds to surface different experiences. Without group discussion, investors copy others instead of fitting to their needs.
+  Segment: INVESTOR
+  Best for: Investors who've completed VC Fundamentals seeking peer context on risk/return trade-offs, term sheets, board dynamics, and investment frameworks.
+  Match when role involves: investor, VC, angel, fund manager, family office -- who has already completed or is completing VC Fundamentals
+  Match when challenge involves: peer learning on investment frameworks, term sheets, board dynamics, deepening VC methodology with a cohort
+  DO NOT match when: user has not yet engaged with VC Fundamentals (route to VC Fundamentals first) or is not an investor.
+
+EDUCATOR PROGRAMS:
+- **[UpSchool Complete](https://wadeinstitute.org.au/programs/schools/upschool-complete/)** | 3 days (In-person) | $1,650 | Next: 10-13 Jun 2026 | Status: Open
+  _The tools and confidence to teach entrepreneurship._
+  Through experiential learning, participants engage first-hand with material essential to supporting Australia's next generation of thinkers, doers and creative problem solvers. Unlike traditional professional development, UpSchool Complete is intense and immersive -- you experience as a student the methods involved in building a sustainable business, then step back into teacher mode for actionable implementation strategies. Mapped to AITSL Standards, Australian and Victorian Curriculum.
+  Segment: EDUCATOR
+  Best for: F-10 educators across all disciplines who want to incorporate entrepreneurship into their classrooms, educators currently teaching entrepreneurship or enterprise, program managers, heads of centres, and leadership positions.
+  Match when role involves: teacher, educator, principal, school leader, head of department
+  Match when challenge involves: teaching entrepreneurship, classroom delivery, school program, student engagement, curriculum design
+  DO NOT match when: user is a university lecturer (route to Bespoke) or a corporate trainer (route to Bespoke or Think Like an Entrepreneur).
+- **[UpSchool Introduction](https://wadeinstitute.org.au/programs/schools/upschool-introduction/)** | 1-Day Workshop (In-person) | Speak to Wade | Next: Ongoing | Status: Open
+  _A practical starting point for teaching entrepreneurship in your classroom._
+  Segment: EDUCATOR
+  Best for: F-10 educators and school leaders who are new to entrepreneurship education and want a low-commitment entry point -- practical activities, classroom confidence, and a clear starting framework.
+  Match when role involves: teacher, educator, school leader, curriculum coordinator
+  Match when challenge involves: getting started with entrepreneurship, introductory teacher program, classroom activities, first time teaching enterprise
+  DO NOT match when: user already teaches entrepreneurship and wants depth (route to UpSchool Complete).
 
 WADE COMMUNITY PEOPLE — MATCHING GUIDE:
 Recommend 1-2 people whose story speaks directly to the specific challenge this person brought to the session.
-Step 1: Use their cluster (investor / innovator / educator), role, and the challenge they're navigating.
-Step 2: Read the "Recommend when" field — only recommend someone if the description genuinely fits this session.
+Step 1: Use their segment (FOUNDER / INVESTOR / CORPORATE / EDUCATOR), role, and the challenge they're navigating.
+Step 2: Read the "Recommend when" field -- only recommend someone if the description genuinely fits this session AND their segment aligns. Do not recommend investor profiles to founders or founder profiles to corporate users unless the crossover is explicitly relevant.
 Step 3: Explain the connection in one sentence using something specific from the conversation, not a generic role match.
 
-{people_text}
-"""
+FOUNDER-RELEVANT PEOPLE:
+- **[Leigh Jasper](https://wadeinstitute.org.au/making-mistakes-and-staying-humble-lessons-from-leigh-jasper/)** (Co-founder, Aconex (acquired by Oracle for $1.6B); Chair, LaunchVic)
+  _Built one of Australia's landmark SaaS exits and models intellectual humility: 'I've made heaps of mistakes and I'm going to keep making them.'_
+  Segment: FOUNDER
+  Match when role involves: founder, CEO, co-founder, startup, scale-up
+  Match when challenge involves: scaling, resilience, dealing with failure, SaaS growth, building culture
+  Recommend when: User is a founder navigating scaling challenges, setbacks, or building a tech/SaaS product and needs a model of resilient, humble leadership.
+- **[Cyan Ta'eed](https://wadeinstitute.org.au/11-years-to-build-an-overnight-success-cyan-taeed-envato/)** (Co-founder, Envato; 2015 EY Australian Entrepreneur of the Year)
+  _Took 11 years to build what looked like an overnight success -- a marketplace for creative assets that transformed the global design economy._
+  Segment: FOUNDER
+  Match when role involves: founder, co-founder, CEO, platform builder, marketplace
+  Match when challenge involves: marketplace, platform business, creative economy, community building, long game, patience in scaling
+  Recommend when: User is building a platform or marketplace and wrestling with the slow, unglamorous path between starting and scale.
+- **[Margie Moroney](https://wadeinstitute.org.au/starting-a-business-after-a-full-career-and-kids-margie-moroney-holos-knitwear/)** (Founder, HOLOS Luxury Knitwear; former investment banker; started at 52)
+  _Launched a luxury fashion brand after a full banking career and raising kids -- 'Courage is essential. For me, it was an incremental road towards courage.'_
+  Segment: FOUNDER
+  Match when role involves: career changer, senior professional starting a venture, mid-career founder, late-career founder
+  Match when challenge involves: reinvention, starting later in life, first venture, courage, career change into entrepreneurship
+  Recommend when: User is mid-career or later, questioning whether it's too late to start, or making a significant identity transition into entrepreneurship.
+- **[Laura Youngson](https://wadeinstitute.org.au/laura-youngson-is-changing-the-game-for-women-in-sport/)** (Co-founder, Ida Sports (football boots for women); Master of Entrepreneurship alumna (2017))
+  _Set two Guinness World Records and opened a flagship store on London's Regent Street -- starting from a simple question: why don't boots fit women properly?_
+  Segment: FOUNDER
+  Match when role involves: founder, social entrepreneur, product designer, mission-driven founder, purpose-led founder
+  Match when challenge involves: purpose-driven business, underserved market, gender equity, product design, balancing social impact with commercial viability
+  Recommend when: User is building a mission-driven or purpose-led product and navigating the tension between social impact and commercial viability.
+- **[Karolina Petkovic](https://wadeinstitute.org.au/when-science-meets-business-from-innovation-to-enterprise/)** (Research Scientist, CSIRO; Founder, Iron WoMan; Master of Entrepreneurship alumna (2020))
+  _Developed an at-home iron deficiency test using saliva instead of blood -- 'Wade was a playground for connecting science and business.'_
+  Segment: FOUNDER
+  Match when role involves: researcher, scientist, academic, CSIRO, university researcher turning entrepreneur
+  Match when challenge involves: commercialisation, research to market, IP, health tech, translating research into a business
+  Recommend when: User has a research or scientific background and is trying to commercialise an idea or bridge the gap between science and business.
+- **[Sangeeta Mulchandani](https://wadeinstitute.org.au/the-argument-for-reinvention/)** (Director, Jumpstart Studio; Co-founder, Press Play Ventures; author of Start Right)
+  _Third-generation entrepreneur who moved from ANZ Bank to supporting 250 founders annually -- aiming to empower one million entrepreneurs globally._
+  Segment: FOUNDER
+  Match when role involves: aspiring founder, early-stage founder, career changer, first-time founder
+  Match when challenge involves: getting started, finding confidence, first venture, reinvention, overcoming self-doubt
+  Recommend when: User is at the very beginning of their entrepreneurial journey, lacks confidence, or is in the process of reinventing themselves professionally.
+- **[Aaron Batalion](https://wadeinstitute.org.au/making-the-transition-from-builder-to-backer/)** (Co-founder, LivingSocial (80M+ consumers); former Partner, Lightspeed Venture Partners)
+  _Built LivingSocial to 80M users across 25 countries, then stepped back -- 'Focus is everything' is his message to founders now._
+  Segment: FOUNDER (also relevant to INVESTOR if founder-to-investor transition)
+  Match when role involves: founder, serial entrepreneur, scaling CEO, founder considering transition to investing
+  Match when challenge involves: focus, too many opportunities, scaling consumer product, marketplace growth, transitioning from building to investing
+  Recommend when: User is a scaling founder struggling with focus and prioritisation, or a founder thinking about transitioning from operator to investor.
+- **[Christian Bien](https://wadeinstitute.org.au/levelling-the-educational-playing-field-one-online-lesson-at-a-time/)** (Founder, Elucidate (82,000 users globally); Westpac Future Leaders Scholar; Master of Entrepreneurship student)
+  _'What if the cure for cancer was trapped in the mind of a child living in poverty?' -- built a free e-learning platform serving 82,000 users worldwide._
+  Segment: FOUNDER
+  Match when role involves: edtech founder, student founder, young founder, social enterprise founder
+  Match when challenge involves: edtech, social impact, free product model, education equity, scaling with limited resources
+  Recommend when: User is building in education or social impact, or is an early-stage founder with ambitious goals and limited resources who needs proof that scale is possible.
+- **[Annie Zhou](https://wadeinstitute.org.au/just-start-now-how-annie-zhou-turned-a-school-project-into-a-platform-for-youth-voice/)** (Founder, Brighter Futures Youth Podcast (50,000+ listeners); author, Money Made Simple)
+  _'You don't need anyone's permission to start. Just start now.' -- built a 50,000-listener podcast while still in Year 12._
+  Segment: FOUNDER
+  Match when role involves: young founder, student, content creator, media founder, aspiring entrepreneur
+  Match when challenge involves: getting started, fear of starting, youth entrepreneurship, content business, podcasting
+  Recommend when: User is hesitant to start, feels too young or inexperienced, or is building a content, media, or community-driven venture.
+- **[Nicole Gibson](https://wadeinstitute.org.au/mixing-innovation-with-empathy/)** (CEO and Founder, InTruth Technologies; former Federal Mental Health Commissioner)
+  _Building the world's first software to track emotions through consumer-grade wearables -- 'emotions drive 80% of our decision-making.'_
+  Segment: FOUNDER
+  Match when role involves: health tech founder, deep tech founder, social innovator, government-to-startup transition, mental health innovator
+  Match when challenge involves: health tech, wearables, empathy-driven innovation, mental health, deeply human problems
+  Recommend when: User is working on health tech, mental health, or deeply human problems that require both empathy and technical innovation -- or is making the leap from government or public sector to a startup.
+- **[Peter Wade](https://wadeinstitute.org.au/we-have-to-increase-the-rate-of-startup-success-peter-wade-entrepreneur/)** (Benefactor, Wade Institute; Founder, Travelbag; part of founding group, Intrepid and Flight Centre)
+  _'Got frustrated giving it my all but having to bend to institutional rules' -- founded the institute to change the culture of entrepreneurship in Australia._
+  Segment: FOUNDER
+  Match when role involves: frustrated corporate considering entrepreneurship, first-time founder, someone at the threshold of leaving to start something
+  Match when challenge involves: taking the leap, breaking from institutions, founder mindset, first venture, building entrepreneurial culture
+  Recommend when: User is frustrated within a corporate or institutional structure and is at the threshold of beginning their entrepreneurial path.
 
-WADE_KNOWLEDGE_BLOCK = build_wade_knowledge_block()
+CORPORATE-RELEVANT PEOPLE:
+- **[Pedram Mokrian](https://wadeinstitute.org.au/from-chaos-to-control-putting-a-framework-around-corporate-innovation-with-pedram-mokrian/)** (Adjunct Professor, Stanford; VC Catalyst Lead Facilitator; CEO, Innovera)
+  _Argues corporate innovation needs the same discipline as venture -- measurable, budget-conscious, and systematic, not just 'Mad Men-era conversations.'_
+  Segment: CORPORATE (also relevant to INVESTOR)
+  Match when role involves: corporate innovation lead, strategy director, corporate venture, innovation manager
+  Match when challenge involves: corporate innovation discipline, measuring innovation ROI, building systematic innovation frameworks, making innovation accountable
+  Recommend when: User is trying to bring rigour and structure to innovation inside a large organisation, or is frustrated that innovation efforts lack discipline and measurable outcomes.
+- **[Jessica Christiansen-Franks](https://wadeinstitute.org.au/meet-jessica-christiansen-franks-wades-new-director/)** (Director, Wade Institute; Co-founder, Neighbourlytics)
+  _Startup founder turned institute director -- 'inspired by Wade's mission from afar for years' before joining to lead it._
+  Segment: CORPORATE, FOUNDER
+  Match when role involves: urban tech innovator, social impact leader, education leader, data-driven innovator
+  Match when challenge involves: urban innovation, data-driven social impact, human-centered design, entrepreneurship education, tech for good
+  Recommend when: User is working at the intersection of technology, cities, and social impact -- or leading programs that develop innovation capability.
+
+INVESTOR-RELEVANT PEOPLE:
+- **[Rachael Neumann](https://wadeinstitute.org.au/investing-in-deep-human-fundamentals-meet-rachael-neumann-vc-catalyst-lead-facilitator/)** (Co-Founding Partner, Flying Fox Ventures; VC Catalyst Founding Lead Facilitator)
+  _Believes the industry 'reinvents itself every six to twelve months' -- backs founders solving deep human fundamentals, not surface-level problems._
+  Segment: INVESTOR
+  Match when role involves: investor, VC, angel, fund manager, early-stage investor
+  Match when challenge involves: early-stage investing, founder selection, investment thesis development, distinguishing real problems from trends
+  Recommend when: User is an early-stage investor developing or stress-testing their thesis, or trying to distinguish problems worth backing from surface-level trends.
+- **[Lauren Capelin](https://wadeinstitute.org.au/plying-our-own-path-how-australia-is-rewriting-the-venture-capital-playbook/)** (VC Catalyst Lead Facilitator; Business Development Manager, AWS Startups ANZ)
+  _Observes that Australia was 'definitely risk averse' in VC -- and is watching that change fundamentally in real time._
+  Segment: INVESTOR
+  Match when role involves: investor, VC, tech investor, fintech investor
+  Match when challenge involves: generative AI investing, web3, fintech, Australian VC landscape, navigating emerging technology sectors
+  Recommend when: User is investing in AI, fintech, or emerging tech, or navigating the Australian VC landscape and wants perspective on how it's evolving.
+- **[Rachel Yang](https://wadeinstitute.org.au/solving-the-worlds-most-pressing-problems-with-giant-leap-partner-rachel-yang/)** (Partner, Giant Leap (Australia's first VC dedicated to impact investing))
+  _Backs mission-driven founders solving the world's most pressing problems -- across climate, health, and social empowerment._
+  Segment: INVESTOR
+  Match when role involves: impact investor, mission-driven investor, climate investor, health investor
+  Match when challenge involves: impact investing, climate, health innovation, aligning capital with impact, mission-aligned investing
+  Recommend when: User is investing in or building a mission-driven venture and needs to understand how capital can be aligned with impact alongside returns.
+- **[Rayn Ong](https://wadeinstitute.org.au/founders-take-wisdom-from-the-wiggles-rayn-ong/)** (Partner, Archangel Ventures; 100+ angel investments; AFR Young Rich List 2022)
+  _Portfolio includes Morse Micro, Eucalyptus, and HappyCo -- all valued over $100M. Advises founders to 'take wisdom from The Wiggles' on consistency._
+  Segment: INVESTOR
+  Match when role involves: angel investor, active investor, deep tech investor, SaaS investor
+  Match when challenge involves: angel investing, portfolio building, deep tech evaluation, SaaS metrics, investment discipline
+  Recommend when: User is an angel investor building a portfolio, or an investor who needs to understand what disciplined angel investing looks like at scale.
+- **[Jodie Imam](https://wadeinstitute.org.au/shaking-off-imposter-syndrome-to-invest-in-profitable-founders/)** (Co-founder/Co-CEO, Tractor Ventures; VC Catalyst alumna)
+  _Felt 'like an imposter' at VC Catalyst -- now runs a fund committed to 50% female-led portfolio companies._
+  Segment: INVESTOR (also relevant to FOUNDER dealing with imposter syndrome)
+  Match when role involves: aspiring investor, female investor, startup investor, career changer into investing
+  Match when challenge involves: imposter syndrome in investing, revenue-based financing, alternative funding models, diversity in VC, belonging
+  Recommend when: User is struggling with confidence or belonging as an investor, or exploring alternative investment models like revenue-based financing.
+- **[Rick Baker](https://wadeinstitute.org.au/the-muscle-weve-built-lessons-from-a-decade-of-belief-in-australian-venture/)** (Co-founder, Blackbird Ventures)
+  _Conducted 500 coffee meetings in 2011 to pitch Blackbird's first fund -- 'Storytelling built this industry.'_
+  Segment: INVESTOR
+  Match when role involves: VC, fund manager, investor, fund builder, GP
+  Match when challenge involves: fund building, storytelling for investment, conviction, early-stage VC, building the Australian tech ecosystem
+  Recommend when: User is building or growing a VC fund, or an investor working on how to develop and communicate conviction -- especially in the Australian market.
+- **[Dr Kate Cornick](https://wadeinstitute.org.au/continued-investment-into-an-innovation-ecosystem-launchvic-ceo-dr-kate-cornick/)** (CEO, LaunchVic; VC Catalyst alumna; former founder and academic)
+  _'Ten years ago, there was a brain drain to Silicon Valley -- you don't hear that as much now.' Has spent a decade building the Australian startup ecosystem._
+  Segment: INVESTOR, CORPORATE
+  Match when role involves: government innovator, ecosystem builder, policy maker, innovation lead, angel investor
+  Match when challenge involves: ecosystem building, government innovation policy, startup community, public sector innovation
+  Recommend when: User works at the intersection of government, policy, and innovation -- or is building the conditions for an innovation ecosystem rather than a single venture.
+- **[Paul Naphtali](https://wadeinstitute.org.au/programs/investors/vc-catalyst/)** (Co-Founder and Managing Partner, rampersand; VC Catalyst speaker)
+  _Co-leads rampersand, one of Australia's most active early-stage funds backing the next generation of category-defining companies._
+  Segment: INVESTOR
+  Match when role involves: VC, investor, fund manager, institutional investor
+  Match when challenge involves: early-stage VC strategy, identifying category-defining companies, fund strategy, startup investing at scale
+  Recommend when: User is an investor focused on identifying and backing category-defining Australian companies, or building an institutional investment practice.
+- **[Sarah Nolet](https://wadeinstitute.org.au/tenacious-ventures-transforming-agriculture-through-innovation-and-investment/)** (CEO, Tenacious Ventures Group; Ag Ventures facilitator)
+  _'A well-crafted investment thesis is more than a strategy -- it's the foundation of your sourcing, co-investment relationships, and value-add.'_
+  Segment: INVESTOR (also relevant to FOUNDER in AgTech)
+  Match when role involves: investor, AgTech investor, sector specialist investor, rural innovator
+  Match when challenge involves: investment thesis building, AgTech, agrifood, sector-specific investing, rural innovation
+  Recommend when: User is building a sector-specific investment thesis, or innovating/investing in agriculture, food systems, or rural communities.
+- **[Prof Colin McLeod](https://wadeinstitute.org.au/welcoming-new-facilitators-to-vc-catalyst/)** (VC Catalyst Lead Academic; Professor, Melbourne Business School; Executive Director, Melbourne Entrepreneurial Centre)
+  _Described by VC Catalyst participants as 'transformative' -- an investor, educator, and director of six early-stage companies._
+  Segment: INVESTOR
+  Match when role involves: investor, VC, academic investor, fund manager
+  Match when challenge involves: VC education, investment frameworks, academic rigour in investing, startup investing methodology
+  Recommend when: User is an investor who wants rigorous, academically-grounded frameworks for their practice -- or is building both investing and operational capability simultaneously.
+- **[Dan Madhavan](https://wadeinstitute.org.au/welcoming-new-facilitators-to-vc-catalyst/)** (Founding Partner, Ecotone Partners; VC Catalyst Facilitator; former CEO, Impact Investment Group)
+  _Dedicated to 'using business and finance to create a sustainable and equitable future' -- 13 years at Goldman Sachs before pivoting to impact._
+  Segment: INVESTOR
+  Match when role involves: impact investor, ESG professional, sustainable finance professional, former banker transitioning to impact
+  Match when challenge involves: impact investing, ESG, sustainable finance, transitioning from traditional finance to impact, deploying capital with social goals
+  Recommend when: User is navigating the transition from traditional finance to impact investing, or deploying capital with explicit social and environmental goals.
+- **[Tick Jiang](https://wadeinstitute.org.au/closing-the-funding-gap-and-commercialising-ai-with-tick-jiang/)** (Entrepreneur in Residence, Wade Institute; Founder, NUVC.ai; VC Catalyst alumna (2023))
+  _'Emotion is so important. It's not just the business; it is about the story.' -- using AI to close the funding gap for diverse founders._
+  Segment: INVESTOR, FOUNDER
+  Match when role involves: AI founder, angel investor, diverse founder, tech founder, data-driven investor
+  Match when challenge involves: AI commercialisation, diverse founder funding gaps, data-driven deal sourcing, angel investing with AI tools
+  Recommend when: User is an AI founder commercialising a product, a diverse founder navigating funding gaps, or an investor exploring data-driven deal sourcing.
+"""
 
 
 # === REPORT GENERATION ===
