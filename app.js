@@ -1388,18 +1388,8 @@ async function streamResponse() {
     if (fullText && agentDiv) {
         let optMatch = fullText.match(/\[OPTIONS:\s*([^\]]+)\]/);
 
-        // FALLBACK 1: routing-aware — inject buttons by exchange count during quick-fire
-        if (!optMatch && state.routing && state.exchangeCount <= 3) {
-            const routingButtons = [
-                'Idea Jam|Problem Solve',
-                'Napkin sketch|Blueprint',
-                'Just me|Other people',
-                'Quick and scrappy|Polished and tight'
-            ];
-            optMatch = [null, routingButtons[state.exchangeCount]];
-        }
-
-        // FALLBACK 2: text-matching — catch quick-fire phrases if routing flag missed
+        // FALLBACK: text-matching — inject quickfire buttons when Pete uses quickfire phrases
+        // (only fires if Pete enters quickfire mode via Path B, not on the open question)
         if (!optMatch && fullText) {
             const normalised = fullText.replace(/[\u2018\u2019\u201C\u201D]/g, "'").toLowerCase();
             const quickFireFallbacks = [
