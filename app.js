@@ -1637,6 +1637,11 @@ async function streamResponse() {
     inputField.focus();
     renderSessionActions();
     saveSession();
+
+    // Mid-session auto-save to PostgreSQL every 4 exchanges (so Pete remembers if user leaves)
+    if (state.deviceId && state.exchangeCount > 0 && state.exchangeCount % 4 === 0 && !state.wrapped) {
+        autoSaveSessionSummary();
+    }
 }
 
 // === REPORT GENERATION + LEAD CAPTURE ===
@@ -1717,9 +1722,10 @@ function showReportProgress() {
     };
 }
 
-// Auto-save session summary to PostgreSQL (called on wrap, no email needed)
+// Auto-save session summary to PostgreSQL (called mid-session + on wrap)
+let _currentSessionDbId = null;  // tracks the DB row to update (not create duplicates)
 function autoSaveSessionSummary() {
-    if (!state.deviceId || state.messages.length < 4) return;  // skip trivial sessions
+    if (!state.deviceId || state.messages.length < 4) return;
     fetch('/api/summary', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -1728,10 +1734,15 @@ function autoSaveSessionSummary() {
             email: state.userEmail || null,
             mode: state.mode,
             exercise: state.exercise,
-            messages: state.messages
+            messages: state.messages,
+            session_db_id: _currentSessionDbId,  // null = create new, id = update existing
+            is_final: state.wrapped  // true = session complete, update profile patterns
         })
     }).then(res => res.json())
-      .then(data => { if (data.summary) console.log('[Memory] Session saved:', data.summary.topic); })
+      .then(data => {
+          if (data.session_id) _currentSessionDbId = data.session_id;
+          if (data.summary) console.log('[Memory] Session saved:', data.summary.topic);
+      })
       .catch(err => console.warn('[Memory] Auto-save failed:', err));
 }
 

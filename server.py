@@ -137,8 +137,42 @@ def get_recent_sessions(device_id, limit=3):
         return []
 
 
-def save_session_summary(device_id, summary_data, email=None):
-    """Store a session summary and update the founder profile."""
+def update_session_summary(session_id, summary_data):
+    """Update an existing session summary row (mid-session save)."""
+    conn = get_db()
+    if not conn:
+        return session_id
+    try:
+        cur = conn.cursor()
+        cur.execute("""
+            UPDATE session_summaries SET
+                topic = %s, key_insight = %s, conversation_summary = %s,
+                assumptions_tested = %s, decisions_made = %s, open_questions = %s,
+                suggested_next_step = %s, suggested_next_tool = %s
+            WHERE id = %s
+        """, (
+            summary_data.get('topic', 'Session'),
+            summary_data.get('key_insight'),
+            summary_data.get('conversation_summary'),
+            json.dumps(summary_data.get('assumptions_tested', [])),
+            json.dumps(summary_data.get('decisions_made', [])),
+            json.dumps(summary_data.get('open_questions', [])),
+            summary_data.get('suggested_next_step'),
+            summary_data.get('suggested_next_tool'),
+            session_id
+        ))
+        cur.close()
+        conn.close()
+        print(f"[DB] Session {session_id} updated")
+        return session_id
+    except Exception as e:
+        print(f"[DB] update_session error: {e}")
+        if conn: conn.close()
+        return session_id
+
+
+def save_session_summary(device_id, summary_data, email=None, update_profile=True):
+    """Store a session summary and optionally update the founder profile. Returns session ID."""
     conn = get_db()
     if not conn:
         return
@@ -168,6 +202,7 @@ def save_session_summary(device_id, summary_data, email=None):
                 assumptions_tested, decisions_made, open_questions,
                 suggested_next_step, suggested_next_tool, conversation_summary)
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            RETURNING id
         """, (
             device_id, email, profile_id,
             summary_data.get('mode', 'conversation'),
@@ -180,6 +215,14 @@ def save_session_summary(device_id, summary_data, email=None):
             summary_data.get('suggested_next_tool'),
             summary_data.get('conversation_summary')
         ))
+        session_row = cur.fetchone()
+        session_id = session_row['id'] if session_row else None
+
+        if not update_profile:
+            cur.close()
+            conn.close()
+            print(f"[DB] Session saved (mid-session) for {device_id}")
+            return session_id
 
         # Update founder profile with new data
         updates = summary_data.get('profile_updates', {})
@@ -218,10 +261,12 @@ def save_session_summary(device_id, summary_data, email=None):
 
         cur.close()
         conn.close()
-        print(f"[DB] Session saved for {email}")
+        print(f"[DB] Session saved for {device_id}")
+        return session_id
     except Exception as e:
         print(f"[DB] save_session error: {e}")
         if conn: conn.close()
+        return None
 
 
 def format_memory_for_prompt(device_id):
@@ -3872,12 +3917,15 @@ Rules:
 
 @app.route('/api/summary', methods=['POST'])
 def generate_session_summary():
-    """Generate and store a structured session summary after a session ends."""
+    """Generate and store a structured session summary. Supports mid-session updates."""
     data = request.json
     email = data.get('email')
+    device_id = data.get('device_id', '')
     messages = data.get('messages', [])
     mode = data.get('mode', 'conversation')
     exercise = data.get('exercise', '')
+    session_db_id = data.get('session_db_id')  # existing row to update (mid-session)
+    is_final = data.get('is_final', False)  # true = session complete
 
     if not messages:
         return jsonify({'error': 'No messages provided'}), 400
@@ -3911,12 +3959,17 @@ def generate_session_summary():
         summary_data = json.loads(summary_text)
         summary_data['mode'] = exercise or mode
 
-        # Store with device_id (primary) and email (optional)
-        device_id = data.get('device_id', '')
+        # Store/update in PostgreSQL
+        result_id = None
         if device_id:
-            save_session_summary(device_id, summary_data, email=email)
+            if session_db_id:
+                # Update existing session row (mid-session save)
+                result_id = update_session_summary(session_db_id, summary_data)
+            else:
+                # Create new session row
+                result_id = save_session_summary(device_id, summary_data, email=email, update_profile=is_final)
 
-        return jsonify({'summary': summary_data})
+        return jsonify({'summary': summary_data, 'session_id': str(result_id) if result_id else None})
 
     except json.JSONDecodeError as e:
         print(f"[SUMMARY] JSON parse error: {e}, raw: {summary_text[:200]}")
