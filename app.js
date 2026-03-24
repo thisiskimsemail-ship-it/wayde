@@ -1288,12 +1288,14 @@ function scrollToBottom() {
 // === SHOW REPORT CTA ===
 
 function maybeShowReportCta() {
-    if (state.exchangeCount >= 3 && !state.reportGenerated) {
+    // Only show report CTA after Pete's wrap-up (state.wrapped) or during conversation mode (4+ exchanges)
+    if (state.wrapped && !state.reportGenerated) {
+        reportCta.classList.remove('hidden');
         reportCtaBtn.disabled = false;
         reportCtaBtn.textContent = 'Generate my report →';
-        // Enable within-stage tool picker after first real exchange
-        setPickerEnabled(true);
     }
+    // Enable within-stage tool picker after first real exchange
+    if (state.exchangeCount >= 1) setPickerEnabled(true);
     // Refresh stage bar so tool label reflects current exercise
     updateStageProgress(state.mode);
 }
@@ -1760,12 +1762,18 @@ async function streamResponse() {
             // Show wrap-up card if facilitator signalled the exercise is complete
             if (wrapSignaled && !state.reportGenerated) {
                 state.wrapped = true;
-                // Hide input bar — session is over
-                if (inputArea) inputArea.style.display = 'none';
+                // Keep input bar open — user can still ask Pete questions
+                // Auto-open the Workshop Board for review
+                if (!state.board.visible && state.board.cards.length > 0) {
+                    toggleBoard();
+                }
+                // Show the wrap prompt with report CTA
                 renderWrapPrompt();
-                // Auto-generate report in the background while user reads Pete's closing message
-                generateReport();
-                // Auto-save session summary to memory (no email needed)
+                // Show report CTA prominently
+                reportCta.classList.remove('hidden');
+                reportCtaBtn.disabled = false;
+                reportCtaBtn.textContent = 'Generate my report →';
+                // Auto-save session summary to memory
                 autoSaveSessionSummary();
             }
         }

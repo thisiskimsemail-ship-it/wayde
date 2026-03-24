@@ -882,6 +882,9 @@ body.in-session .site-footer,
 body[data-mode] #wadeCta,
 body.in-session #wadeCta { display: none !important; }
 
+/* Hide input bar on welcome page — only show during sessions */
+body:not(.in-session) .input-area { display: none !important; }
+
 /* No background images on session page — clean dark navy */
 
 /* Ensure chat content sits above the background */
