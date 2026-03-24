@@ -3980,7 +3980,7 @@ def _notify_wade(lead):
     user_html = f"""<!DOCTYPE html><html><head><meta charset="UTF-8"></head>
 <body style="font-family:Arial,sans-serif;max-width:680px;margin:0 auto;padding:20px;color:#1a1a2e;">
   <div style="background:#F15A22;padding:18px 24px;border-radius:6px 6px 0 0;">
-    <h2 style="margin:0;color:#fff;font-size:17px;">Your Innovation Coaching Session Report</h2>
+    <h2 style="margin:0;color:#fff;font-size:17px;">Studio Workshop Summary</h2>
     <p style="margin:3px 0 0;color:rgba(255,255,255,0.85);font-size:12px;">{lead['mode']} &middot; {lead['exercise']}</p>
   </div>
   <div style="border:1px solid #e0e0e0;border-top:none;border-radius:0 0 6px 6px;padding:22px;">

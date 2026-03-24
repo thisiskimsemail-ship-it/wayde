@@ -1004,6 +1004,11 @@ document.addEventListener('DOMContentLoaded', () => {
         enterBtn.addEventListener('click', enterStudio);
         // Hide the input bar on the welcome page — it appears when you enter the studio
         if (inputArea) inputArea.style.display = 'none';
+        // Always hide report elements on welcome page — prevents stale state from showing
+        document.getElementById('reportSynopsis')?.classList.add('hidden');
+        document.getElementById('reportUnlock')?.classList.add('hidden');
+        document.getElementById('reportFormatChoice')?.classList.add('hidden');
+        document.getElementById('reportCard')?.classList.add('hidden');
     }
     // Bind all secondary CTA buttons (e.g. bottom CTA on landing page)
     document.querySelectorAll('.enter-studio-trigger').forEach(btn => {
@@ -2644,23 +2649,22 @@ function switchBoardLayout(mode) {
 }
 
 function addBoardCard(text, zone, stage, source) {
-    // Deduplicate: skip if a very similar card already exists in the same zone
-    const normalise = s => s.toLowerCase().replace(/[^a-z0-9]/g, '');
+    // Deduplicate: skip if a very similar card already exists (any zone)
+    const normalise = s => s.toLowerCase().replace(/[^a-z0-9\s]/g, '').trim();
     const newNorm = normalise(text);
+    const newWords = new Set(text.toLowerCase().split(/\s+/).filter(w => w.length > 2));
     const isDupe = state.board.cards.some(c => {
-        if (c.zone !== zone) return false;
         const existNorm = normalise(c.text);
         // Exact match after normalisation
         if (existNorm === newNorm) return true;
         // One contains the other (catches "LinkedIn outbound" vs "LinkedIn outbound campaign")
         if (existNorm.includes(newNorm) || newNorm.includes(existNorm)) return true;
-        // High similarity — compare overlapping words
-        const wordsA = new Set(text.toLowerCase().split(/\s+/).filter(w => w.length > 2));
-        const wordsB = new Set(c.text.toLowerCase().split(/\s+/).filter(w => w.length > 2));
-        if (wordsA.size === 0 || wordsB.size === 0) return false;
-        const overlap = [...wordsA].filter(w => wordsB.has(w)).length;
-        const similarity = overlap / Math.max(wordsA.size, wordsB.size);
-        return similarity >= 0.75;
+        // Word overlap similarity — 60% threshold catches most near-duplicates
+        const existWords = new Set(c.text.toLowerCase().split(/\s+/).filter(w => w.length > 2));
+        if (newWords.size === 0 || existWords.size === 0) return false;
+        const overlap = [...newWords].filter(w => existWords.has(w)).length;
+        const similarity = overlap / Math.min(newWords.size, existWords.size);
+        return similarity >= 0.6;
     });
     if (isDupe) return null;
 
