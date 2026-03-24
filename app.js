@@ -1388,34 +1388,8 @@ async function streamResponse() {
     if (fullText && agentDiv) {
         let optMatch = fullText.match(/\[OPTIONS:\s*([^\]]+)\]/);
 
-        // FALLBACK 1: routing-aware — inject buttons by exchange count during quick-fire
-        if (!optMatch && state.routing && state.exchangeCount <= 3) {
-            const routingButtons = [
-                'Idea Jam|Problem Solve',         // Q1 (exchangeCount=0)
-                'Napkin sketch|Blueprint',         // Q2 (exchangeCount=1)
-                'Just me|Other people',            // Q3 (exchangeCount=2)
-                'Quick and scrappy|Polished and tight' // Q4 (exchangeCount=3)
-            ];
-            optMatch = [null, routingButtons[state.exchangeCount]];
-        }
-
-        // FALLBACK 2: text-matching — catch quick-fire phrases outside routing
-        if (!optMatch && fullText) {
-            const normalised = fullText.replace(/[\u2018\u2019\u201C\u201D]/g, "'").toLowerCase();
-            const quickFireFallbacks = [
-                { test: /how can i help/i, options: 'Idea Jam|Problem Solve' },
-                { test: /where are you at/i, options: 'Napkin sketch|Blueprint' },
-                { test: /who needs convincing/i, options: 'Just me|Other people' },
-                { test: /what.{0,5}(the )?vibe/i, options: 'Quick and scrappy|Polished and tight' },
-                { test: /how much time/i, options: '5-10 minutes|15-20 minutes' }
-            ];
-            for (const fb of quickFireFallbacks) {
-                if (fb.test.test(normalised)) {
-                    optMatch = [null, fb.options];
-                    break;
-                }
-            }
-        }
+        // No forced quickfire buttons — Pete's 3-turn classification is conversational.
+        // Pete uses [OPTIONS] tags when he wants to offer choices, handled by the parser above.
 
         if (optMatch) {
             fullText = fullText.replace(/\n?\[OPTIONS:\s*[^\]]+\]/, '').trim();
@@ -3375,13 +3349,9 @@ const qfObserver = new MutationObserver(() => {
         msg.dataset.qfChecked = '1';
         if (msg.nextElementSibling && msg.nextElementSibling.classList.contains('option-chips')) return;
         const text = (msg.textContent || '').replace(/[\u2018\u2019\u201C\u201D]/g, "'").toLowerCase();
-        const fallbacks = [
-            { test: /how can i help/i, options: ['Idea Jam', 'Problem Solve'] },
-            { test: /where are you at/i, options: ['Napkin sketch', 'Blueprint'] },
-            { test: /who needs convincing/i, options: ['Just me', 'Other people'] },
-            { test: /what.{0,5}(the )?vibe/i, options: ['Quick and scrappy', 'Polished and tight'] },
-            { test: /how much time/i, options: ['5-10 minutes', '15-20 minutes'] }
-        ];
+        // No forced quickfire buttons — 3-turn classification is conversational.
+        // Pete uses [OPTIONS] tags inline when he wants to offer choices.
+        const fallbacks = [];
         for (const fb of fallbacks) {
             if (fb.test.test(text)) {
                 const chipRow = document.createElement('div');
