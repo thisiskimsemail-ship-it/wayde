@@ -1385,7 +1385,11 @@ body.in-session .header-nav { display: none; }
     padding: 0.2rem 0.6rem;
     border-radius: 999px;
     border: 1px solid;
+    text-decoration: none;
+    transition: background 0.15s, transform 0.15s;
+    cursor: pointer;
 }
+.lp-tool-pill:hover { background: rgba(255,255,255,0.08); transform: translateY(-1px); }
 .lp-cat-untangle .lp-tool-pill { color: var(--teal); border-color: rgba(39,189,190,0.3); }
 .lp-cat-spark .lp-tool-pill { color: var(--orange); border-color: rgba(241,90,34,0.3); }
 .lp-cat-test .lp-tool-pill { color: var(--pink); border-color: rgba(237,54,148,0.3); }
