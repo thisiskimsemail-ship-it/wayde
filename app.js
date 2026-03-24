@@ -363,8 +363,15 @@ const state = {
     boardMode: 'default',  // 'default' | 'lean-canvas'
     pitch: { customer: null, problem: null, solution: null, benefit: null, differentiator: null },  // elevator pitch components
     wrapped: false,  // true when [WRAP] signal received — hides Help/Challenge buttons
-    userEmail: localStorage.getItem('wade_user_email') || ''  // persisted for memory
+    userEmail: localStorage.getItem('wade_user_email') || '',  // persisted for memory
+    deviceId: localStorage.getItem('wade_device_id') || ''  // anonymous identity for memory
 };
+
+// Generate device ID on first visit (anonymous — no email needed)
+if (!state.deviceId) {
+    state.deviceId = 'dev_' + crypto.randomUUID();
+    localStorage.setItem('wade_device_id', state.deviceId);
+}
 
 // === DOM ===
 const $ = (sel) => document.querySelector(sel);
@@ -1331,7 +1338,8 @@ async function streamResponse() {
                 messages: state.messages,
                 project_context: state.projectContext,
                 push_harder: state.pushHarder,
-                user_email: state.userEmail
+                user_email: state.userEmail,
+                device_id: state.deviceId
             })
         });
 
@@ -2073,6 +2081,7 @@ document.getElementById('unlockForm')?.addEventListener('submit', async (e) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
             email,
+            device_id: state.deviceId,
             mode: state.mode,
             exercise: state.exercise,
             messages: state.messages

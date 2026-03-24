@@ -45,7 +45,8 @@ def init_db():
         cur.execute("""
             CREATE TABLE IF NOT EXISTS founder_profiles (
                 id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-                user_email TEXT NOT NULL UNIQUE,
+                device_id TEXT NOT NULL UNIQUE,
+                user_email TEXT,
                 venture_name TEXT,
                 venture_description TEXT,
                 stage TEXT,
@@ -65,7 +66,8 @@ def init_db():
 
             CREATE TABLE IF NOT EXISTS session_summaries (
                 id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-                user_email TEXT NOT NULL,
+                device_id TEXT NOT NULL,
+                user_email TEXT,
                 profile_id UUID REFERENCES founder_profiles(id),
                 session_date TIMESTAMPTZ DEFAULT now(),
                 mode TEXT NOT NULL,
@@ -81,7 +83,7 @@ def init_db():
                 created_at TIMESTAMPTZ DEFAULT now()
             );
 
-            CREATE INDEX IF NOT EXISTS idx_session_summaries_email ON session_summaries(user_email);
+            CREATE INDEX IF NOT EXISTS idx_session_summaries_device ON session_summaries(device_id);
             CREATE INDEX IF NOT EXISTS idx_session_summaries_date ON session_summaries(session_date DESC);
         """)
         cur.close()
@@ -96,14 +98,14 @@ def init_db():
 init_db()
 
 
-def get_founder_profile(email):
-    """Fetch founder profile by email. Returns dict or None."""
+def get_founder_profile(device_id):
+    """Fetch founder profile by device_id. Returns dict or None."""
     conn = get_db()
     if not conn:
         return None
     try:
         cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-        cur.execute("SELECT * FROM founder_profiles WHERE user_email = %s", (email,))
+        cur.execute("SELECT * FROM founder_profiles WHERE device_id = %s", (device_id,))
         profile = cur.fetchone()
         cur.close()
         conn.close()
@@ -114,7 +116,7 @@ def get_founder_profile(email):
         return None
 
 
-def get_recent_sessions(email, limit=3):
+def get_recent_sessions(device_id, limit=3):
     """Fetch last N session summaries for a user."""
     conn = get_db()
     if not conn:
@@ -122,8 +124,8 @@ def get_recent_sessions(email, limit=3):
     try:
         cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
         cur.execute(
-            "SELECT * FROM session_summaries WHERE user_email = %s ORDER BY session_date DESC LIMIT %s",
-            (email, limit)
+            "SELECT * FROM session_summaries WHERE device_id = %s ORDER BY session_date DESC LIMIT %s",
+            (device_id, limit)
         )
         sessions = [dict(row) for row in cur.fetchall()]
         cur.close()
@@ -135,7 +137,7 @@ def get_recent_sessions(email, limit=3):
         return []
 
 
-def save_session_summary(email, summary_data):
+def save_session_summary(device_id, summary_data, email=None):
     """Store a session summary and update the founder profile."""
     conn = get_db()
     if not conn:
@@ -143,25 +145,31 @@ def save_session_summary(email, summary_data):
     try:
         cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
-        # Ensure founder profile exists
-        cur.execute("SELECT id FROM founder_profiles WHERE user_email = %s", (email,))
+        # Ensure founder profile exists (keyed by device_id)
+        cur.execute("SELECT id FROM founder_profiles WHERE device_id = %s", (device_id,))
         profile_row = cur.fetchone()
         if not profile_row:
             cur.execute(
-                "INSERT INTO founder_profiles (user_email) VALUES (%s) RETURNING id",
-                (email,)
+                "INSERT INTO founder_profiles (device_id, user_email) VALUES (%s, %s) RETURNING id",
+                (device_id, email)
             )
             profile_row = cur.fetchone()
+        elif email:
+            # Link email to existing profile if not already set
+            cur.execute(
+                "UPDATE founder_profiles SET user_email = COALESCE(user_email, %s) WHERE device_id = %s",
+                (email, device_id)
+            )
         profile_id = profile_row['id']
 
         # Insert session summary
         cur.execute("""
-            INSERT INTO session_summaries (user_email, profile_id, mode, topic, key_insight,
+            INSERT INTO session_summaries (device_id, user_email, profile_id, mode, topic, key_insight,
                 assumptions_tested, decisions_made, open_questions,
                 suggested_next_step, suggested_next_tool, conversation_summary)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         """, (
-            email, profile_id,
+            device_id, email, profile_id,
             summary_data.get('mode', 'conversation'),
             summary_data.get('topic', 'Session'),
             summary_data.get('key_insight'),
@@ -216,13 +224,15 @@ def save_session_summary(email, summary_data):
         if conn: conn.close()
 
 
-def format_memory_for_prompt(email):
+def format_memory_for_prompt(device_id):
     """Build the memory block to inject into Pete's system prompt."""
-    profile = get_founder_profile(email)
+    if not device_id:
+        return ""
+    profile = get_founder_profile(device_id)
     if not profile or profile.get('session_count', 0) == 0:
         return ""
 
-    sessions = get_recent_sessions(email, limit=3)
+    sessions = get_recent_sessions(device_id, limit=3)
 
     lines = ["\n\n--- FOUNDER MEMORY (this user has been here before) ---\n"]
 
@@ -1252,10 +1262,10 @@ def chat():
     prompt_key = f"{mode}:{exercise}" if exercise else mode
     system_prompt = SYSTEM_PROMPTS.get(prompt_key, SYSTEM_PROMPTS['untangle:five-whys'])
 
-    # Inject memory for returning users (if email provided)
-    user_email = data.get('user_email', '')
-    if user_email:
-        memory_block = format_memory_for_prompt(user_email)
+    # Inject memory for returning users (device_id or email)
+    device_id = data.get('device_id', '')
+    if device_id:
+        memory_block = format_memory_for_prompt(device_id)
         if memory_block:
             system_prompt += memory_block
 
@@ -3901,9 +3911,10 @@ def generate_session_summary():
         summary_data = json.loads(summary_text)
         summary_data['mode'] = exercise or mode
 
-        # Store if we have an email
-        if email:
-            save_session_summary(email, summary_data)
+        # Store with device_id (primary) and email (optional)
+        device_id = data.get('device_id', '')
+        if device_id:
+            save_session_summary(device_id, summary_data, email=email)
 
         return jsonify({'summary': summary_data})
 
@@ -3919,11 +3930,11 @@ def generate_session_summary():
 def get_memory():
     """Fetch memory block for a returning user (called at session start)."""
     data = request.json
-    email = data.get('email', '')
-    if not email:
+    device_id = data.get('device_id', '')
+    if not device_id:
         return jsonify({'memory': ''})
 
-    memory_block = format_memory_for_prompt(email)
+    memory_block = format_memory_for_prompt(device_id)
     return jsonify({'memory': memory_block})
 
 
