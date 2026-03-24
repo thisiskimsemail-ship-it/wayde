@@ -1715,11 +1715,7 @@ async function streamResponse() {
             fullText = fullText.replace(/\n?\[PHASE:\s*(?:diverge|converge)\]/g, '').trim();
             if (agentDiv) agentDiv.innerHTML = renderMarkdown(fullText);
             updatePhaseIndicator(state.currentPhase);
-            // Insert phase transition divider in chat
-            const transDiv = document.createElement('div');
-            transDiv.className = `phase-transition phase-${state.currentPhase}`;
-            transDiv.innerHTML = `<span class="phase-transition-text">— ${state.currentPhase === 'diverge' ? 'Opening up' : 'Time to narrow down'} —</span>`;
-            messagesEl.appendChild(transDiv);
+            // Phase transition is internal — not shown to users
         }
 
         // Parse [CELEBRATE] tag — breakthrough moment effect
@@ -1803,6 +1799,13 @@ function showReportProgress() {
                 <div class="report-progress-bar-fill" id="reportProgressFill"></div>
             </div>
             <div class="report-progress-status" id="reportProgressStatus">Analysing your session...</div>
+            <div class="report-progress-time">This usually takes about 2 minutes</div>
+            <div class="report-wait-cta">
+                <p class="report-wait-heading">While you wait — explore Wade programs</p>
+                <p class="report-wait-desc">Wade Institute runs intensive programs for founders, innovators, and intrapreneurs. See which one fits your stage.</p>
+                <a class="report-wait-btn" href="https://wadeinstitute.org.au/programs/" target="_blank" rel="noopener">Explore programs →</a>
+                <a class="report-wait-link" href="mailto:enquiries@wadeinstitute.org.au">Want to go deeper? Talk to the Wade team →</a>
+            </div>
         `;
         if (wrapPrompt) {
             // Insert after the wrap-prompt-text
