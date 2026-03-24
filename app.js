@@ -1735,6 +1735,7 @@ function autoSaveSessionSummary() {
             mode: state.mode,
             exercise: state.exercise,
             messages: state.messages,
+            board_cards: state.board.cards,  // save workshop board to memory
             session_db_id: _currentSessionDbId,  // null = create new, id = update existing
             is_final: state.wrapped  // true = session complete, update profile patterns
         })

@@ -80,11 +80,15 @@ def init_db():
                 suggested_next_step TEXT,
                 suggested_next_tool TEXT,
                 conversation_summary TEXT,
+                board_cards JSONB DEFAULT '[]',
                 created_at TIMESTAMPTZ DEFAULT now()
             );
 
             CREATE INDEX IF NOT EXISTS idx_session_summaries_device ON session_summaries(device_id);
             CREATE INDEX IF NOT EXISTS idx_session_summaries_date ON session_summaries(session_date DESC);
+
+            -- Add board_cards column if missing (for existing tables)
+            ALTER TABLE session_summaries ADD COLUMN IF NOT EXISTS board_cards JSONB DEFAULT '[]';
         """)
         cur.close()
         conn.close()
@@ -148,7 +152,7 @@ def update_session_summary(session_id, summary_data):
             UPDATE session_summaries SET
                 topic = %s, key_insight = %s, conversation_summary = %s,
                 assumptions_tested = %s, decisions_made = %s, open_questions = %s,
-                suggested_next_step = %s, suggested_next_tool = %s
+                suggested_next_step = %s, suggested_next_tool = %s, board_cards = %s
             WHERE id = %s
         """, (
             summary_data.get('topic', 'Session'),
@@ -159,6 +163,7 @@ def update_session_summary(session_id, summary_data):
             json.dumps(summary_data.get('open_questions', [])),
             summary_data.get('suggested_next_step'),
             summary_data.get('suggested_next_tool'),
+            json.dumps(summary_data.get('board_cards', [])),
             session_id
         ))
         cur.close()
@@ -200,8 +205,8 @@ def save_session_summary(device_id, summary_data, email=None, update_profile=Tru
         cur.execute("""
             INSERT INTO session_summaries (device_id, user_email, profile_id, mode, topic, key_insight,
                 assumptions_tested, decisions_made, open_questions,
-                suggested_next_step, suggested_next_tool, conversation_summary)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                suggested_next_step, suggested_next_tool, conversation_summary, board_cards)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
             RETURNING id
         """, (
             device_id, email, profile_id,
@@ -213,7 +218,8 @@ def save_session_summary(device_id, summary_data, email=None, update_profile=Tru
             json.dumps(summary_data.get('open_questions', [])),
             summary_data.get('suggested_next_step'),
             summary_data.get('suggested_next_tool'),
-            summary_data.get('conversation_summary')
+            summary_data.get('conversation_summary'),
+            json.dumps(summary_data.get('board_cards', []))
         ))
         session_row = cur.fetchone()
         session_id = session_row['id'] if session_row else None
@@ -336,6 +342,20 @@ def format_memory_for_prompt(device_id):
                 lines.append(f"**Suggested next step:** {s['suggested_next_step']}")
             if s.get('conversation_summary'):
                 lines.append(f"**Summary:** {s['conversation_summary']}")
+            # Include board cards from previous sessions
+            board = s.get('board_cards') or []
+            if isinstance(board, str):
+                try: board = json.loads(board)
+                except: board = []
+            if board:
+                grouped = {}
+                for c in board:
+                    zone = c.get('zone', 'ideas') if isinstance(c, dict) else 'ideas'
+                    text = c.get('text', str(c)) if isinstance(c, dict) else str(c)
+                    grouped.setdefault(zone, []).append(text)
+                lines.append("**Board cards from this session:**")
+                for zone, items in grouped.items():
+                    lines.append(f"  {zone.replace('-',' ').title()}: {'; '.join(items)}")
             lines.append("")
 
     lines.append("IMPORTANT: Reference this memory naturally. If they had a next step from last session, ask about it. Don't say 'Welcome back!' — just pick up where you left off like a mentor who remembers.")
@@ -3958,6 +3978,7 @@ def generate_session_summary():
         # Parse JSON
         summary_data = json.loads(summary_text)
         summary_data['mode'] = exercise or mode
+        summary_data['board_cards'] = data.get('board_cards', [])
 
         # Store/update in PostgreSQL
         result_id = None
