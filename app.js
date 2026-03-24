@@ -1537,23 +1537,8 @@ async function streamResponse() {
     if (fullText && agentDiv) {
         let optMatch = fullText.match(/\[OPTIONS:\s*([^\]]+)\]/);
 
-        // FALLBACK: text-matching — inject quickfire buttons when Pete uses quickfire phrases
-        // (only fires if Pete enters quickfire mode via Path B, not on the open question)
-        if (!optMatch && fullText) {
-            const normalised = fullText.replace(/[\u2018\u2019\u201C\u201D]/g, "'").toLowerCase();
-            const quickFireFallbacks = [
-                { test: /how can i help/i, options: 'Idea Jam|Problem Solve' },
-                { test: /where are you at/i, options: 'Napkin sketch|Blueprint' },
-                { test: /who needs convincing/i, options: 'Just me|Other people' },
-                { test: /what.{0,5}(the )?vibe/i, options: 'Quick and scrappy|Polished and tight' }
-            ];
-            for (const fb of quickFireFallbacks) {
-                if (fb.test.test(normalised)) {
-                    optMatch = [null, fb.options];
-                    break;
-                }
-            }
-        }
+        // Conversation-first: no forced quickfire buttons.
+        // Pete uses [OPTIONS] tags inline only when he wants to offer specific choices.
 
         if (optMatch) {
             fullText = fullText.replace(/\n?\[OPTIONS:\s*[^\]]+\]/, '').trim();
@@ -3552,40 +3537,9 @@ function maybeStartTour() {
 }
 
 // === QUICK-FIRE BUTTON INJECTION (backup for missed OPTIONS) ===
-// Watch for new agent messages and inject buttons if they match quick-fire phrases
-// Skip messages that are still being streamed to avoid premature checking
-const qfObserver = new MutationObserver(() => {
-    if (state.streaming) return; // Don't check mid-stream — inline fallback handles it after completion
-    document.querySelectorAll('.msg-agent').forEach(msg => {
-        if (msg.dataset.qfChecked) return;
-        msg.dataset.qfChecked = '1';
-        if (msg.nextElementSibling && msg.nextElementSibling.classList.contains('option-chips')) return;
-        const text = (msg.textContent || '').replace(/[\u2018\u2019\u201C\u201D]/g, "'").toLowerCase();
-        const fallbacks = [
-            { test: /how can i help/i, options: ['Idea Jam', 'Problem Solve'] },
-            { test: /where are you at/i, options: ['Napkin sketch', 'Blueprint'] },
-            { test: /who needs convincing/i, options: ['Just me', 'Other people'] },
-            { test: /what.{0,5}(the )?vibe/i, options: ['Quick and scrappy', 'Polished and tight'] }
-        ];
-        for (const fb of fallbacks) {
-            if (fb.test.test(text)) {
-                const chipRow = document.createElement('div');
-                chipRow.className = 'option-chips';
-                fb.options.forEach(label => {
-                    const btn = document.createElement('button');
-                    btn.className = 'option-chip';
-                    btn.textContent = label;
-                    btn.addEventListener('click', () => { chipRow.remove(); sendMessage(label); });
-                    chipRow.appendChild(btn);
-                });
-                msg.after(chipRow);
-                scrollToBottom();
-                break;
-            }
-        }
-    });
-});
-qfObserver.observe(document.querySelector('.messages') || document.body, { childList: true, subtree: true });
+// Conversation-first: MutationObserver for quickfire removed.
+// Pete uses [OPTIONS] tags inline when he wants to offer choices.
+// The OPTIONS parser in streamResponse handles rendering.
 
 // === FEATURE HINTS (one-time tooltips for new UI elements) ===
 function showFeatureHint(targetSelector, text, hintKey) {
