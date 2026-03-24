@@ -1737,6 +1737,12 @@ async function streamResponse() {
                 });
                 messagesEl.appendChild(suggestDiv);
             }
+            // Show report CTA even during conversation (no tool needed)
+            if (state.exchangeCount >= 4 && !state.reportGenerated) {
+                reportCta.classList.remove('hidden');
+                reportCtaBtn.disabled = false;
+                reportCtaBtn.textContent = 'Get your session summary →';
+            }
             scrollToBottom();
         } else {
             state.exchangeCount++;
