@@ -2,11 +2,15 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wade Institute — Creative Thinking Agent</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
+    <title>The Studio — A Virtual Workshop, Led by Wade</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="preload" href="fonts/GT-Walsheim-Regular.woff" as="font" type="font/woff" crossorigin>
+    <link rel="preload" href="banner.webp" as="image" type="image/webp">
+    <link rel="stylesheet" href="styles.css?v=144">
 </head>
 <body>
 
@@ -14,9 +18,27 @@
 
     <header class="header">
         <img class="logo" src="logo.png" alt="Wade Institute">
-        <button class="theme-toggle" id="themeToggle" title="Toggle light/dark mode" aria-label="Toggle light/dark mode">
-            <span class="theme-icon">☀</span>
-        </button>
+        <nav class="header-nav" id="headerNav">
+            <a class="header-nav-link active" href="#">The Studio</a>
+            <a class="header-nav-link" href="toolbox.html">Toolbox</a>
+        </nav>
+        <div class="header-controls">
+            <div class="text-size-control" id="textSizeControl">
+                <button class="text-size-btn" id="textSizeToggle" title="Adjust text size">Aa</button>
+                <div class="text-size-picker hidden" id="textSizePicker">
+                    <button class="text-size-option" data-size="small">A<span class="text-size-label">Small</span></button>
+                    <button class="text-size-option active" data-size="medium">A<span class="text-size-label">Medium</span></button>
+                    <button class="text-size-option" data-size="large">A<span class="text-size-label">Large</span></button>
+                </div>
+            </div>
+            <button class="theme-toggle" id="themeToggle" title="Toggle light/dark mode" aria-label="Toggle light/dark mode">
+                <span class="theme-icon">☀</span>
+            </button>
+            <button class="tour-help-btn" id="tourHelpBtn" title="Take a tour">?</button>
+            <button class="header-save-btn hidden" id="saveSessionBtn" title="Save session">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            </button>
+        </div>
     </header>
 
     <!-- Active session bar (hidden until an exercise is selected) -->
@@ -25,193 +47,421 @@
         <span class="js-state" id="sessionMode"></span>
         <span class="js-state" id="sessionExercise"></span>
         <button class="js-state" id="toolPickerBtn" disabled></button>
-        <!-- Stage nav — takes full width; active stage shows current tool + acts as picker -->
-        <div class="stage-progress" id="stageProgress">
-            <div class="stage-step" data-stage="reframe"><span class="stage-dot"></span><span class="stage-name">Clarify</span></div>
-            <div class="stage-conn"></div>
-            <div class="stage-step" data-stage="ideate"><span class="stage-dot"></span><span class="stage-name">Ideate</span></div>
-            <div class="stage-conn"></div>
-            <div class="stage-step" data-stage="debate"><span class="stage-dot"></span><span class="stage-name">Validate</span></div>
-            <div class="stage-conn"></div>
-            <div class="stage-step" data-stage="framework"><span class="stage-dot"></span><span class="stage-name">Develop</span></div>
+        <!-- Session breadcrumb with dropdown -->
+        <div class="session-breadcrumb" id="sessionBreadcrumb">
+            <span class="breadcrumb-stage" id="breadcrumbStage">CLARIFY</span>
+            <span class="breadcrumb-arrow">→</span>
+            <button class="breadcrumb-tool" id="breadcrumbTool">Five Whys <svg class="breadcrumb-chevron" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg></button>
+            <div class="breadcrumb-dropdown hidden" id="breadcrumbDropdown">
+                <div class="breadcrumb-dropdown-inner" id="breadcrumbDropdownInner"></div>
+                <a class="breadcrumb-toolbox-link" href="toolbox.html" target="_blank" rel="noopener">Explore all tools →</a>
+            </div>
+        </div>
+        <!-- Hidden legacy elements for compatibility -->
+        <div class="stage-progress hidden" id="stageProgress">
             <div class="tool-picker-menu hidden" id="toolPickerMenu"></div>
         </div>
+        <span class="phase-indicator" id="phaseIndicator"></span>
+        <div class="progress-indicator hidden" id="progressIndicator"></div>
+        <button class="board-toggle" id="boardToggle" title="Workshop Board">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+            <span class="board-count hidden" id="boardCount">0</span>
+        </button>
         <button class="session-close" id="sessionClose" title="Back to menu">✕</button>
     </div>
 
-    <main class="chat-area" id="chatArea">
-        <div class="welcome" id="welcome">
-            <h1 class="welcome-title">Meet WAiDE</h1>
-            <p class="welcome-sub">Your AI innovation coach.</p>
-            <p class="welcome-tagline">Bring yourself and your challenge. WAiDE will guide you to the right framework, so you can ask the right questions, and generate practical actions to start building what's next.</p>
-
-            <!-- Resume pill (shown below prompt box if a saved session exists) -->
-            <div class="resume-banner hidden" id="resumeBanner">
-                <span class="resume-text"><strong id="resumeLabel"></strong></span>
-                <button class="resume-btn" id="resumeBtn">Continue →</button>
-                <button class="resume-dismiss" id="resumeDismiss">✕</button>
-            </div>
-
-            <div class="welcome-cards">
-                <p class="cards-heading" id="cardsHeading">Wade Innovation Toolbox <span class="cards-chevron">▾</span></p>
-                <p class="cards-sub">Harness insights drawn from the Wade Institute community, paired with practical tools from the world's leading institutions and companies — from Stanford to INSEAD, Google to Toyota. Choose a framework yourself, or let WAiDE recommend one based on your challenge. <a class="cards-sub-link" href="toolbox.html" target="_blank" rel="noopener">Learn more →</a></p>
-
-                <div class="welcome-card card-reframe">
-                    <div class="card-header">
-                        <span class="card-mode-name">Clarify</span>
-                        <span class="card-mode-desc">Understand the problem before solving it.</span>
-                    </div>
-                    <div class="card-exercises">
-                        <button class="card-exercise-btn" data-mode="reframe" data-exercise="five-whys">
-                            <div class="exercise-header">
-                                <span class="exercise-name">Five Whys</span>
-                                <span class="exercise-time">~15 min</span>
-                            </div>
-                            <p class="exercise-desc">Dig past the surface problem to uncover root causes.</p>
-                        </button>
-                        <button class="card-exercise-btn" data-mode="reframe" data-exercise="jtbd">
-                            <div class="exercise-header">
-                                <span class="exercise-name">Jobs to Be Done</span>
-                                <span class="exercise-time">~20 min</span>
-                            </div>
-                            <p class="exercise-desc">Identify what your customer is really trying to achieve.</p>
-                        </button>
-                        <button class="card-exercise-btn" data-mode="reframe" data-exercise="empathy-map">
-                            <div class="exercise-header">
-                                <span class="exercise-name">Empathy Map</span>
-                                <span class="exercise-time">~20 min</span>
-                            </div>
-                            <p class="exercise-desc">Explore what your users think, feel, see and do.</p>
-                        </button>
-                    </div>
-                    <a class="card-learn-more" href="toolbox.html#five-whys" target="_blank" rel="noopener">Learn more →</a>
-                </div>
-
-                <div class="welcome-card card-ideate">
-                    <div class="card-header">
-                        <span class="card-mode-name">Ideate</span>
-                        <span class="card-mode-desc">Generate possibilities before narrowing your focus.</span>
-                    </div>
-                    <div class="card-exercises">
-                        <button class="card-exercise-btn" data-mode="ideate" data-exercise="hmw">
-                            <div class="exercise-header">
-                                <span class="exercise-name">How Might We</span>
-                                <span class="exercise-time">~20 min</span>
-                            </div>
-                            <p class="exercise-desc">Turn challenges into opportunity-focused questions.</p>
-                        </button>
-                        <button class="card-exercise-btn" data-mode="ideate" data-exercise="scamper">
-                            <div class="exercise-header">
-                                <span class="exercise-name">SCAMPER</span>
-                                <span class="exercise-time">~20 min</span>
-                            </div>
-                            <p class="exercise-desc">Push an idea further by adapting, combining, and reimagining it.</p>
-                        </button>
-                        <button class="card-exercise-btn" data-mode="ideate" data-exercise="crazy-8s">
-                            <div class="exercise-header">
-                                <span class="exercise-name">Crazy 8s</span>
-                                <span class="exercise-time">~15 min</span>
-                            </div>
-                            <p class="exercise-desc">Rapid-fire ideation to unlock creative momentum.</p>
-                        </button>
-                    </div>
-                    <a class="card-learn-more" href="toolbox.html#hmw" target="_blank" rel="noopener">Learn more →</a>
-                </div>
-
-                <div class="welcome-card card-debate">
-                    <div class="card-header">
-                        <span class="card-mode-name">Validate</span>
-                        <span class="card-mode-desc">Test your thinking before committing resources.</span>
-                    </div>
-                    <div class="card-exercises">
-                        <button class="card-exercise-btn" data-mode="debate" data-exercise="pre-mortem">
-                            <div class="exercise-header">
-                                <span class="exercise-name">Pre-Mortem</span>
-                                <span class="exercise-time">~20 min</span>
-                            </div>
-                            <p class="exercise-desc">Imagine the idea failed. What caused it?</p>
-                        </button>
-                        <button class="card-exercise-btn" data-mode="debate" data-exercise="devils-advocate">
-                            <div class="exercise-header">
-                                <span class="exercise-name">Devil's Advocate</span>
-                                <span class="exercise-time">~25 min</span>
-                            </div>
-                            <p class="exercise-desc">Challenge assumptions and strengthen your case.</p>
-                        </button>
-                        <button class="card-exercise-btn" data-mode="debate" data-exercise="rapid-experiment">
-                            <div class="exercise-header">
-                                <span class="exercise-name">Rapid Experiment</span>
-                                <span class="exercise-time">~20 min</span>
-                            </div>
-                            <p class="exercise-desc">Design small tests to learn quickly.</p>
-                        </button>
-                    </div>
-                    <a class="card-learn-more" href="toolbox.html#pre-mortem" target="_blank" rel="noopener">Learn more →</a>
-                </div>
-
-                <div class="welcome-card card-framework">
-                    <div class="card-header">
-                        <span class="card-mode-name">Develop</span>
-                        <span class="card-mode-desc">Turn insight into action.</span>
-                    </div>
-                    <div class="card-exercises">
-                        <button class="card-exercise-btn" data-mode="framework" data-exercise="lean-canvas">
-                            <div class="exercise-header">
-                                <span class="exercise-name">Lean Canvas</span>
-                                <span class="exercise-time">~30 min</span>
-                            </div>
-                            <p class="exercise-desc">Map your venture or initiative on a single page.</p>
-                        </button>
-                        <button class="card-exercise-btn" data-mode="framework" data-exercise="effectuation">
-                            <div class="exercise-header">
-                                <span class="exercise-name">Effectuation</span>
-                                <span class="exercise-time">~20 min</span>
-                            </div>
-                            <p class="exercise-desc">Start with what you have and build from there.</p>
-                        </button>
-                        <button class="card-exercise-btn" data-mode="framework" data-exercise="analogical">
-                            <div class="exercise-header">
-                                <span class="exercise-name">Analogical Thinking</span>
-                                <span class="exercise-time">~20 min</span>
-                            </div>
-                            <p class="exercise-desc">Look to other industries for inspiration and solutions.</p>
-                        </button>
-                    </div>
-                    <a class="card-learn-more" href="toolbox.html#lean-canvas" target="_blank" rel="noopener">Learn more →</a>
-                </div>
-
-            </div>
+    <!-- Save Session Modal -->
+    <div class="save-modal-overlay hidden" id="saveModalOverlay">
+        <div class="save-modal">
+            <button class="save-modal-close" id="saveModalClose">✕</button>
+            <h3>Save your session</h3>
+            <p>We'll email you a link to pick up exactly where you left off.</p>
+            <input type="email" class="save-modal-email" id="saveModalEmail" placeholder="your@email.com" autocomplete="email">
+            <button class="save-modal-submit" id="saveModalSubmit">Send link</button>
+            <p class="save-modal-status hidden" id="saveModalStatus"></p>
         </div>
+    </div>
+
+    <!-- Parking Lot slide-out panel -->
+    <div class="parking-lot-panel hidden" id="parkingLotPanel">
+        <div class="parking-lot-header">
+            <h3>Parking Lot</h3>
+            <button class="parking-lot-close" id="parkingLotClose">✕</button>
+        </div>
+        <p class="parking-lot-desc">Ideas worth revisiting later.</p>
+        <div class="parking-lot-items" id="parkingLotItems"></div>
+        <button class="parking-lot-add" id="parkingLotAdd">+ Add an idea</button>
+    </div>
+
+    <main class="chat-area" id="chatArea">
+      <div class="workshop-layout" id="workshopLayout">
+        <div class="chat-pane" id="chatPane">
+        <div class="welcome" id="welcome">
+
+            <!-- HERO — Two-column editorial -->
+            <section class="lp-hero">
+                <div class="lp-container lp-hero-inner">
+                    <div class="lp-hero-text">
+                        <h1 class="lp-hero-heading">The Studio</h1>
+                        <p class="lp-hero-sub">An innovation workshop, led by Wade.</p>
+                        <p class="lp-hero-lead">More AI answers won't fix it. Better human thinking will.</p>
+                        <p class="lp-hero-desc">Bring whatever you're working on. We'll help you unpack it, reframe it, and decide what to do next. You'll be guided through proven tools, challenged where it matters, and leave with something you can actually use.</p>
+                        <button class="lp-cta enter-studio-trigger" id="enterStudioBtn">Talk to Pete →</button>
+                        <p class="lp-cta-caption">No sign-up required · 15–30 minutes</p>
+                        <!-- Resume pill -->
+                        <div class="resume-banner hidden" id="resumeBanner">
+                            <span class="resume-text"><strong id="resumeLabel"></strong></span>
+                            <button class="resume-btn" id="resumeBtn">Continue →</button>
+                            <button class="resume-dismiss" id="resumeDismiss">✕</button>
+                        </div>
+                    </div>
+                    <div class="lp-hero-visual">
+                        <picture>
+                            <source type="image/webp" srcset="banner-sm.webp 640w, banner-md.webp 1024w, banner.webp 1920w" sizes="(max-width: 640px) 100vw, 50vw">
+                            <img src="banner.jpg" alt="Wade Institute workshop space" class="lp-hero-img" width="1920" height="1280" loading="eager" fetchpriority="high">
+                        </picture>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CATEGORIES — 2×2 grid -->
+            <section class="lp-process">
+                <div class="lp-container">
+                    <h2 class="lp-section-heading">What are you working on?</h2>
+                    <p class="lp-section-sub">Pick the one that fits. Pete will take it from there.</p>
+                    <div class="lp-process-grid lp-grid-2x2">
+                        <div class="lp-process-card lp-cat-untangle">
+                            <span class="lp-cat-icon" style="color:var(--teal)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+                            <span class="lp-cat-badge" style="color:var(--teal)">THE UNTANGLE</span>
+                            <h3 class="lp-process-tagline">I need to understand the real problem before I move forward</h3>
+                            <p class="lp-process-desc">Whether you're getting started or stuck, these tools help you dig into what's really going on.</p>
+                            <div class="lp-process-tools">
+                                <a class="lp-tool-pill" href="tool-detail-five-whys.html">Five Whys</a>
+                                <a class="lp-tool-pill" href="tool-detail-empathy-map.html">Empathy Map</a>
+                                <a class="lp-tool-pill" href="tool-detail-jobs-to-be-done.html">Jobs to Be Done</a>
+                            </div>
+                        </div>
+                        <div class="lp-process-card lp-cat-spark">
+                            <span class="lp-cat-icon" style="color:var(--orange)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>
+                            <span class="lp-cat-badge" style="color:var(--orange)">THE SPARK</span>
+                            <h3 class="lp-process-tagline">I have the beginning of an idea — help me explore it</h3>
+                            <p class="lp-process-desc">You've got a seed of something. Pete will help you explore it from angles you haven't tried.</p>
+                            <div class="lp-process-tools">
+                                <a class="lp-tool-pill" href="tool-detail-crazy-8s.html">Crazy 8s</a>
+                                <a class="lp-tool-pill" href="tool-detail-how-might-we.html">How Might We</a>
+                                <a class="lp-tool-pill" href="tool-detail-scamper.html">SCAMPER</a>
+                            </div>
+                        </div>
+                        <div class="lp-process-card lp-cat-test">
+                            <span class="lp-cat-icon" style="color:var(--pink)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg></span>
+                            <span class="lp-cat-badge" style="color:var(--pink)">THE TEST</span>
+                            <h3 class="lp-process-tagline">I have a proposal — help me break it before I build it</h3>
+                            <p class="lp-process-desc">Pete will stress-test it, argue against it, and surface proven patterns from other fields.</p>
+                            <div class="lp-process-tools">
+                                <a class="lp-tool-pill" href="tool-detail-pre-mortem.html">Pre-Mortem</a>
+                                <a class="lp-tool-pill" href="tool-detail-devils-advocate.html">Devil's Advocate</a>
+                                <a class="lp-tool-pill" href="tool-detail-analogical-thinking.html">Analogical Thinking</a>
+                            </div>
+                        </div>
+                        <div class="lp-process-card lp-cat-build">
+                            <span class="lp-cat-icon" style="color:var(--yellow)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg></span>
+                            <span class="lp-cat-badge" style="color:var(--yellow)">THE BUILD</span>
+                            <h3 class="lp-process-tagline">I have a solution — help me turn it into a plan</h3>
+                            <p class="lp-process-desc">Pete will help you map the model, start with what you have, and design a test for your riskiest assumption.</p>
+                            <div class="lp-process-tools">
+                                <a class="lp-tool-pill" href="tool-detail-lean-canvas.html">Lean Canvas</a>
+                                <a class="lp-tool-pill" href="tool-detail-effectuation.html">Effectuation</a>
+                                <a class="lp-tool-pill" href="tool-detail-rapid-experiment.html">Rapid Experiment</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- IMPACT STATS -->
+            <section class="lp-stats">
+                <div class="lp-container">
+                    <div class="lp-stats-grid">
+                        <div class="lp-stat">
+                            <span class="lp-stat-number">12</span>
+                            <span class="lp-stat-label">Innovation tools</span>
+                        </div>
+                        <div class="lp-stat">
+                            <span class="lp-stat-number">4</span>
+                            <span class="lp-stat-label">Challenge types</span>
+                        </div>
+                        <div class="lp-stat">
+                            <span class="lp-stat-number">~15 min</span>
+                            <span class="lp-stat-label">Average session</span>
+                        </div>
+                        <div class="lp-stat">
+                            <span class="lp-stat-number">Free</span>
+                            <span class="lp-stat-label">Always</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- WHAT YOU GET — Two-column -->
+            <!-- FEATURES — 6-item grid + Workshop Board visual -->
+            <section class="lp-features">
+                <div class="lp-container">
+                    <h2 class="lp-section-heading">Not just a chat. A workshop.</h2>
+                    <p class="lp-features-lead">Pete, your AI facilitator, guides you through the same structured exercises used by founders, investors, and corporate innovators at Wade Institute. You leave with something real.</p>
+                    <div class="lp-features-grid">
+                        <div class="lp-feature-card">
+                            <span class="lp-feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></span>
+                            <strong>12 structured tools</strong>
+                            <p class="lp-feature-desc">Not open-ended chat — real innovation frameworks with proven methodology. Five Whys, Lean Canvas, Pre-Mortem, and 9 more.</p>
+                        </div>
+                        <div class="lp-feature-card">
+                            <span class="lp-feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg></span>
+                            <strong>Workshop Board</strong>
+                            <p class="lp-feature-desc">Your insights, ideas, and actions organised visually as you work — a digital whiteboard that builds itself.</p>
+                        </div>
+                        <div class="lp-feature-card">
+                            <span class="lp-feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span>
+                            <strong>Downloadable report</strong>
+                            <p class="lp-feature-desc">The kind of document you'd normally get from a paid facilitator — observations, reframes, and concrete next steps. Share it with your team.</p>
+                        </div>
+                        <div class="lp-feature-card">
+                            <span class="lp-feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>
+                            <strong>Help me / Challenge me</strong>
+                            <p class="lp-feature-desc">You set the tone. Need encouragement? Hit "Help me." Ready to stress-test? Hit "Challenge me." Pete adapts to where you are.</p>
+                        </div>
+                        <div class="lp-feature-card">
+                            <span class="lp-feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span>
+                            <strong>AI Consolidation</strong>
+                            <p class="lp-feature-desc">Scattered thinking, synthesised. One click turns a messy board into clear, prioritised insights.</p>
+                        </div>
+                        <div class="lp-feature-card">
+                            <span class="lp-feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg></span>
+                            <strong>Session persistence</strong>
+                            <p class="lp-feature-desc">Sessions save automatically. Close the tab, come back tomorrow — pick up where you left off.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- WORKSHOP BOARD VISUAL -->
+            <section class="lp-board-showcase">
+                <div class="lp-container lp-board-inner">
+                    <div class="lp-board-text">
+                        <h2 class="lp-section-heading">See your thinking take shape</h2>
+                        <p class="lp-board-lead">As you work, Pete organises your insights, ideas, and actions onto a live Workshop Board. Not a chat log — a visual record you can edit, rearrange, and download.</p>
+                    </div>
+                    <div class="lp-board-mockup">
+                        <div class="lp-board-mock-header">
+                            <span class="lp-board-mock-title">Workshop Board</span>
+                            <span class="lp-board-mock-actions">+ Add card &nbsp; ✦ Consolidate</span>
+                        </div>
+                        <div class="lp-board-mock-zones">
+                            <div class="lp-board-mock-zone">
+                                <span class="lp-board-mock-zone-label" style="color:var(--orange)">KEY INSIGHTS</span>
+                                <div class="lp-board-mock-card">Champions love the product but lack budget authority</div>
+                                <div class="lp-board-mock-card">Pilots succeed on UX but fail on procurement fit</div>
+                            </div>
+                            <div class="lp-board-mock-zone">
+                                <span class="lp-board-mock-zone-label" style="color:var(--orange)">IDEAS</span>
+                                <div class="lp-board-mock-card">Reposition as an IT infrastructure tool</div>
+                                <div class="lp-board-mock-card">Create a procurement-ready business case template</div>
+                                <div class="lp-board-mock-card">Partner with an existing vendor in their stack</div>
+                            </div>
+                            <div class="lp-board-mock-zone">
+                                <span class="lp-board-mock-zone-label" style="color:var(--orange)">PARKING LOT</span>
+                                <div class="lp-board-mock-card">Explore white-label option for larger partners</div>
+                            </div>
+                            <div class="lp-board-mock-zone">
+                                <span class="lp-board-mock-zone-label" style="color:var(--orange)">ACTIONS</span>
+                                <div class="lp-board-mock-card">Interview 3 procurement leads this week</div>
+                                <div class="lp-board-mock-card">Map the actual buying process at one target account</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- REPORT PREVIEW -->
+            <section class="lp-report-preview">
+                <div class="lp-container lp-report-inner">
+                    <div class="lp-report-mockup">
+                        <div class="lp-report-mock-header">
+                            <span class="lp-report-mock-logo" style="color:var(--orange)">WADE INSTITUTE</span>
+                            <span class="lp-report-mock-meta">THE UNTANGLE · FIVE WHYS · MARCH 2026</span>
+                        </div>
+                        <div class="lp-report-mock-title">Built for Pilots, Not for Procurement</div>
+                        <div class="lp-report-mock-hook">Your product won the hearts of pilot users but lost at the budget table — because you optimised for user delight instead of enterprise buying structures.</div>
+                        <div class="lp-report-mock-section">
+                            <span class="lp-report-mock-h3">The Root Cause Chain</span>
+                            <div class="lp-report-mock-chain">
+                                <span>Original problem</span> → <span>Why?</span> → <span>Why?</span> → <span>Why?</span> → <span class="lp-report-mock-root">Root cause</span>
+                            </div>
+                        </div>
+                        <div class="lp-report-mock-fade"></div>
+                    </div>
+                    <div class="lp-report-text">
+                        <h2 class="lp-section-heading">Leave with something real</h2>
+                        <p class="lp-report-lead">Every session produces a professional report — the kind you'd normally get from a paid facilitator. Structured insights, coaching observations, and concrete next steps. Download it, email it, share it with your team.</p>
+                        <p class="lp-report-sub">You came in with a fuzzy problem. You leave with a structured breakdown, fresh insights, and a plan you can act on.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- WHO IT'S FOR -->
+            <section class="lp-audience">
+                <div class="lp-container">
+                    <h2 class="lp-section-heading" style="text-align:center">Who uses The Studio</h2>
+                    <div class="lp-audience-grid">
+                        <div class="lp-audience-card">
+                            <strong>Founders</strong>
+                            <p>Stress-testing a business model before you pitch. Finding the real problem before you build.</p>
+                        </div>
+                        <div class="lp-audience-card">
+                            <strong>Corporate innovators</strong>
+                            <p>Reframing a stalled initiative. Building a case that survives the boardroom.</p>
+                        </div>
+                        <div class="lp-audience-card">
+                            <strong>Researchers</strong>
+                            <p>Exploring how your research becomes a venture. Translating discovery into commercial potential.</p>
+                        </div>
+                        <div class="lp-audience-card">
+                            <strong>Students</strong>
+                            <p>Learning innovation methodology by doing, not reading. Building real skills with real frameworks.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- QUOTE -->
+            <section class="lp-quote">
+                <div class="lp-container">
+                    <blockquote class="lp-blockquote">
+                        <span class="lp-quote-mark">"</span>
+                        <p class="lp-quote-text">Wade was a playground for connecting science and business — the kind of thinking you can't get from a textbook.</p>
+                        <cite class="lp-quote-cite">— Karolina Petkovic, Research Scientist, CSIRO; Founder, Iron WoMan; MoE Alumna</cite>
+                    </blockquote>
+                </div>
+            </section>
+
+            <!-- BOTTOM CTA -->
+            <section class="lp-bottom-cta">
+                <div class="lp-container">
+                    <h2 class="lp-bottom-heading">Ready to think differently?</h2>
+                    <p class="lp-bottom-sub">Free. No login. Takes about 15 minutes.</p>
+                    <button class="lp-cta enter-studio-trigger">Talk to Pete →</button>
+                    <p class="lp-bottom-link"><a href="toolbox.html">Browse the toolbox →</a></p>
+                </div>
+            </section>
+
+            <!-- LANDING FOOTER -->
+            <footer class="lp-footer">
+                <div class="lp-container lp-footer-inner">
+                    <div class="lp-footer-brand">
+                        <img class="lp-footer-logo" src="wade-icon.png" alt="Wade Institute">
+                        <span class="lp-footer-orgname">Wade Institute of Entrepreneurship</span>
+                    </div>
+                    <div class="lp-footer-links">
+                        <a href="https://wadeinstitute.org.au" target="_blank" rel="noopener">wadeinstitute.org.au</a>
+                        <a href="mailto:enquiries@wadeinstitute.org.au">Contact</a>
+                        <a href="/privacy.html">Privacy</a>
+                    </div>
+                    <span class="lp-footer-copy">© 2026 Wade Institute of Entrepreneurship</span>
+                </div>
+            </footer>
+
+        </div>
+        <!-- Pitch Preview Card (hidden until elevator-pitch exercise starts) -->
+        <div class="pitch-preview hidden" id="pitchPreview">
+            <div class="pitch-preview-header">
+                <span>Your pitch</span>
+                <div class="pitch-progress-dots">
+                    <span class="pitch-progress-dot" title="Customer"></span>
+                    <span class="pitch-progress-dot" title="Problem"></span>
+                    <span class="pitch-progress-dot" title="Solution"></span>
+                    <span class="pitch-progress-dot" title="Benefit"></span>
+                    <span class="pitch-progress-dot" title="Differentiator"></span>
+                </div>
+                <button class="pitch-preview-toggle" id="pitchPreviewToggle">-</button>
+            </div>
+            <p class="pitch-preview-text" id="pitchPreviewText">
+                For <span class="pitch-slot" data-slot="customer">___</span>
+                who <span class="pitch-slot" data-slot="problem">___</span>,
+                <span class="pitch-slot" data-slot="solution">___</span>
+                that <span class="pitch-slot" data-slot="benefit">___</span>.
+                Unlike the alternatives, we <span class="pitch-slot" data-slot="differentiator">___</span>.
+            </p>
+        </div>
+
         <div class="messages" id="messages"></div>
 
-        <!-- Report card (shown after lead capture) -->
-        <div class="report-card hidden" id="reportCard">
-            <div class="report-header">
-                <img class="report-logo-top" src="logo.png" alt="Wade Institute of Entrepreneurship">
-                <div class="report-meta" id="reportMeta">Innovation Coaching Session</div>
+        <!-- Synopsis card (shown immediately after report generates) -->
+        <div class="report-synopsis hidden" id="reportSynopsis">
+            <button class="synopsis-close" id="synopsisCloseBtn" title="Dismiss">✕</button>
+            <div class="synopsis-header">
+                <img class="synopsis-logo" src="logo.png" alt="Wade Institute of Entrepreneurship">
+                <div class="synopsis-meta" id="synopsisMeta">CLARIFY · FIVE WHYS · 23 MARCH 2026</div>
             </div>
-            <div class="report-content" id="reportContent"></div>
-            <div class="report-footer">
-                <img class="report-logo" src="logo.png" alt="Wade Institute">
-                <span>Wade Institute of Entrepreneurship</span>
-                <span class="report-disclaimer">Generated by WAiDE AI · For educational purposes only · Decisions remain yours.</span>
-                <button class="report-action-btn hidden" id="reportDownloadBtn">↓ Save as PDF</button>
-                <button class="report-action-btn hidden" id="reportShareBtn">Share report →</button>
-                <button class="report-action-btn hidden" id="reportLinkedInBtn">Copy for LinkedIn</button>
-                <button class="report-action-btn" id="reportNewSessionBtn">Start new session ↩</button>
+            <h2 class="synopsis-title" id="synopsisTitle">Your Report is Ready</h2>
+            <p class="synopsis-hook" id="synopsisHook"></p>
+            <ul class="synopsis-bullets" id="synopsisBullets"></ul>
+            <div class="synopsis-cta">
+                <button class="synopsis-download-btn" id="synopsisDownloadBtn">Download my report</button>
             </div>
+            <p class="synopsis-privacy">We'll also email you a copy. Wade Institute will use your details to send your report and share relevant programs. No spam, no third parties.</p>
         </div>
 
-        <!-- Inline unlock form (appears below report preview) -->
+        <!-- Lead capture form (appears when download clicked) -->
         <div class="report-unlock hidden" id="reportUnlock">
-            <p class="report-unlock-sub">Enter your details to unlock your full report. Wade Institute will use this information to send you a copy of your report and, where relevant, share information about programs and events that match your challenge. Your details won't be shared with third parties or used for unrelated marketing.</p>
+            <h3 class="report-unlock-heading">Almost there — where should we send it?</h3>
             <form class="lead-form" id="unlockForm">
                 <input type="text" class="lead-input" id="unlockName" placeholder="Name" required>
                 <input type="email" class="lead-input" id="unlockEmail" placeholder="Email" required>
                 <input type="text" class="lead-input" id="unlockCompany" placeholder="Company / Organisation">
                 <input type="text" class="lead-input" id="unlockRole" placeholder="Role">
-                <button type="submit" class="lead-submit" id="unlockSubmit">Unlock my report →</button>
+                <button type="submit" class="lead-submit" id="unlockSubmit">Send me my report →</button>
             </form>
+        </div>
+
+        <!-- Format choice (appears after lead form submit) -->
+        <div class="report-format-choice hidden" id="reportFormatChoice">
+            <h3 class="report-format-heading">Your report is on its way ✓</h3>
+            <p class="report-format-subtext">We've emailed you a copy. Choose a format to download now:</p>
+            <div class="report-format-buttons">
+                <button class="report-format-btn" id="formatWordBtn">Word (.doc)</button>
+                <button class="report-format-btn" id="formatPdfBtn">PDF</button>
+            </div>
+        </div>
+
+        <!-- Full report card (hidden until after lead capture) -->
+        <div class="report-card hidden" id="reportCard">
+            <div class="report-header">
+                <button class="report-new-session" id="reportNewSessionBtn">← New session</button>
+                <img class="report-logo-top" src="logo.png" alt="Wade Institute of Entrepreneurship">
+                <div class="report-meta" id="reportMeta">Workshop Output</div>
+            </div>
+            <div class="report-actions" id="reportActionsTop">
+                <div class="report-action-dropdown">
+                    <button class="report-action-btn report-action-primary" data-action="download-toggle">↓ Download ▾</button>
+                    <div class="report-dropdown-menu hidden">
+                        <button class="report-dropdown-option" data-action="download-word">Word (.doc)</button>
+                        <button class="report-dropdown-option" data-action="download-pdf">PDF</button>
+                    </div>
+                </div>
+            </div>
+            <div class="report-content" id="reportContent"></div>
+            <div class="report-actions" id="reportActionsBottom">
+                <div class="report-action-dropdown">
+                    <button class="report-action-btn report-action-primary" data-action="download-toggle">↓ Download ▾</button>
+                    <div class="report-dropdown-menu hidden">
+                        <button class="report-dropdown-option" data-action="download-word">Word (.doc)</button>
+                        <button class="report-dropdown-option" data-action="download-pdf">PDF</button>
+                    </div>
+                </div>
+            </div>
+            <div class="report-footer">
+                <span class="report-footer-line">Generated by Wade Studio · Wade Institute of Entrepreneurship · <a href="https://wadeinstitute.org.au" target="_blank" rel="noopener">wadeinstitute.org.au</a></span>
+                <span class="report-footer-contact">Want to go deeper? <a href="mailto:enquiries@wadeinstitute.org.au">enquiries@wadeinstitute.org.au</a> · <a href="/privacy.html" style="color:var(--text-dim)">Privacy</a></span>
+            </div>
         </div>
 
         <!-- Routing back to tools (shown after WAiDE's tool suggestion) -->
@@ -219,12 +469,48 @@
             <button class="routing-back-btn" id="routingBackBtn">← Back to tools</button>
         </div>
 
+        </div><!-- /chat-pane -->
+
+        <!-- Workshop Board -->
+        <div class="board-pane hidden" id="boardPane">
+            <div class="board-header">
+                <h3 class="board-title">Workshop Board</h3>
+                <button class="board-add-card-btn" id="boardAddCard">+ Add card</button>
+                <button class="board-consolidate-btn" id="boardConsolidate" title="AI consolidate — merge duplicates and sharpen">✦ Consolidate</button>
+                <button class="board-maximise-btn" id="boardMaxBtn" title="Maximise board">⛶</button>
+                <button class="board-close-btn" id="boardCloseBtn" title="Close board">✕</button>
+            </div>
+            <div class="board-zones" id="boardZones">
+                <div class="board-zone" data-zone="insights">
+                    <div class="zone-header"><span class="zone-name">Key Insights</span><span class="zone-count" data-zone="insights">0</span></div>
+                    <div class="zone-cards" data-zone="insights"></div>
+                    <div class="zone-empty">No insights yet — keep digging</div>
+                </div>
+                <div class="board-zone" data-zone="ideas">
+                    <div class="zone-header"><span class="zone-name">Ideas</span><span class="zone-count" data-zone="ideas">0</span></div>
+                    <div class="zone-cards" data-zone="ideas"></div>
+                    <div class="zone-empty">Ideas will land here</div>
+                </div>
+                <div class="board-zone" data-zone="parking">
+                    <div class="zone-header"><span class="zone-name">Parking Lot</span><span class="zone-count" data-zone="parking">0</span></div>
+                    <div class="zone-cards" data-zone="parking"></div>
+                    <div class="zone-empty">Park tangential ideas here</div>
+                </div>
+                <div class="board-zone" data-zone="actions">
+                    <div class="zone-header"><span class="zone-name">Actions</span><span class="zone-count" data-zone="actions">0</span></div>
+                    <div class="zone-cards" data-zone="actions"></div>
+                    <div class="zone-empty">Concrete next steps go here</div>
+                </div>
+            </div>
+        </div><!-- /board-pane -->
+
+      </div><!-- /workshop-layout -->
     </main>
 
     <!-- Lead capture modal overlay -->
     <div class="lead-modal-overlay hidden" id="leadModal">
         <div class="lead-modal">
-            <h2 class="lead-modal-title">Your Innovation Coaching Session report is ready</h2>
+            <h2 class="lead-modal-title">Your Studio Session report is ready</h2>
             <p class="lead-modal-sub">Enter your details to receive your report. A copy will also be shared with the Wade Institute team.</p>
             <form class="lead-form" id="leadForm">
                 <input type="text" class="lead-input" id="leadName" placeholder="Name" required>
@@ -237,7 +523,6 @@
     </div>
 
 
-</div><!-- /app-shell -->
 
     <!-- Universal site footer — below prompt bar, scroll to reach -->
     <div class="site-footer" id="wadeCta">
@@ -258,13 +543,24 @@
                 <a class="site-footer-cta" href="https://wadeinstitute.org.au/start/" target="_blank" rel="noopener noreferrer">Explore Wade Programs →</a>
             </div>
         </div>
+        <div class="site-footer-legal">
+            <a href="/privacy.html">Privacy</a>
+        </div>
     </div>
+
+</div><!-- /app-shell -->
 
     <!-- Prompt bar — fixed at viewport bottom, always accessible -->
     <footer class="input-area">
         <form class="input-form" id="inputForm">
-            <textarea class="input-field" id="inputField" placeholder="Your problem, idea, or opportunity..." rows="1"></textarea>
+            <textarea class="input-field" id="inputField" placeholder="What's on your mind?" rows="1"></textarea>
+            <input type="file" id="fileInput" class="file-input-hidden" accept="image/*,.pdf,.docx,.doc,.pptx,.xlsx,.csv,.txt,.md,.json" multiple>
             <div class="input-btns">
+                <button class="upload-btn" type="button" id="uploadBtn" title="Upload a file" aria-label="Upload a file">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path>
+                    </svg>
+                </button>
                 <button class="mic-btn" type="button" id="micBtn" title="Voice input" aria-label="Voice input">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
@@ -281,19 +577,59 @@
                 </button>
             </div>
         </form>
-        <p class="input-disclaimer">Wade Institute of Entrepreneurship · 2026 · Powered by Claude AI · Your decisions, always.</p>
+        <p class="input-disclaimer">Wade Institute of Entrepreneurship · 2026 · Powered by Claude AI · Your thinking, always.</p>
         <div class="input-hint">
             <span>
-                <span class="mode-label" id="modeLabel"></span>
+                <a class="mode-label" id="modeLabel" href="toolbox.html" target="_blank" rel="noopener">The Studio ·</a>
+                <a class="tool-learn-link hidden" id="toolLearnLink" target="_blank" rel="noopener">Learn more →</a>
+                <a class="privacy-link" id="privacyLink" href="/privacy.html" target="_blank" rel="noopener">Privacy</a>
             </span>
             <div class="input-hint-actions">
                 <div class="report-cta hidden" id="reportCta">
-                    <button class="report-cta-btn" id="reportCtaBtn">Talk to WAiDE to build your report</button>
+                    <button class="report-cta-btn" id="reportCtaBtn">Workshop your thinking to build your report</button>
                 </div>
             </div>
         </div>
     </footer>
 
-    <script src="app.js?v=60"></script>
+    <!-- Tour overlay -->
+    <div class="tour-overlay hidden" id="tourOverlay">
+        <div class="tour-spotlight" id="tourSpotlight"></div>
+        <div class="tour-tooltip" id="tourTooltip">
+            <p class="tour-text" id="tourText"></p>
+            <div class="tour-nav">
+                <span class="tour-step-count" id="tourStepCount"></span>
+                <div class="tour-btns">
+                    <button class="tour-skip" id="tourSkip">Skip</button>
+                    <button class="tour-next" id="tourNext">Next →</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Feedback widget -->
+    <button class="feedback-tab" id="feedbackTab">Feedback</button>
+    <div class="feedback-panel hidden" id="feedbackPanel">
+        <div class="feedback-header">
+            <span>How was your experience?</span>
+            <button class="feedback-close" id="feedbackClose">&times;</button>
+        </div>
+        <p class="feedback-beta">The Studio is in beta. Help us make it amazing by sharing your experience.</p>
+        <div class="feedback-rating" id="feedbackRating">
+            <button class="feedback-star" data-rating="1">1</button>
+            <button class="feedback-star" data-rating="2">2</button>
+            <button class="feedback-star" data-rating="3">3</button>
+            <button class="feedback-star" data-rating="4">4</button>
+            <button class="feedback-star" data-rating="5">5</button>
+        </div>
+        <div class="feedback-rating-labels">
+            <span>Not great</span>
+            <span>Loved it</span>
+        </div>
+        <textarea class="feedback-input" id="feedbackInput" placeholder="Tell us more... what worked, what didn't, what you'd change." rows="3"></textarea>
+        <button class="feedback-submit" id="feedbackSubmit">Send feedback</button>
+    </div>
+
+    <script src="app.js?v=142"></script>
 </body>
 </html>
