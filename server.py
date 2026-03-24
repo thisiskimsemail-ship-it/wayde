@@ -15,10 +15,15 @@ import anthropic
 load_dotenv()
 
 app = Flask(__name__, static_folder='.', static_url_path='')
+app.config['MAX_CONTENT_LENGTH'] = 20 * 1024 * 1024  # 20MB max upload
 
 # === DATABASE (PostgreSQL on Railway) ===
 import psycopg2
 import psycopg2.extras
+import csv
+import io
+import base64
+import mimetypes
 
 DATABASE_URL = os.environ.get('DATABASE_URL')
 
@@ -4086,6 +4091,187 @@ def get_memory():
 
     memory_block = format_memory_for_prompt(device_id)
     return jsonify({'memory': memory_block})
+
+
+# === FILE UPLOAD ===
+
+MAX_UPLOAD_SIZE = 10 * 1024 * 1024  # 10MB
+
+@app.route('/api/upload', methods=['POST'])
+def upload_file():
+    """Process uploaded files and return content for chat injection."""
+    if 'file' not in request.files:
+        return jsonify({'error': 'No file provided'}), 400
+
+    file = request.files['file']
+    if not file.filename:
+        return jsonify({'error': 'No filename'}), 400
+
+    # Check size
+    file.seek(0, 2)
+    size = file.tell()
+    file.seek(0)
+    if size > MAX_UPLOAD_SIZE:
+        return jsonify({'error': f'File too large (max {MAX_UPLOAD_SIZE // 1024 // 1024}MB)'}), 413
+
+    filename = file.filename
+    mime = mimetypes.guess_type(filename)[0] or 'application/octet-stream'
+    ext = filename.rsplit('.', 1)[-1].lower() if '.' in filename else ''
+
+    try:
+        # IMAGES — return base64 for Claude vision API
+        if mime.startswith('image/'):
+            data = file.read()
+            b64 = base64.b64encode(data).decode('utf-8')
+            media_type = mime
+            # Ensure valid media type for Claude
+            if media_type not in ('image/jpeg', 'image/png', 'image/gif', 'image/webp'):
+                media_type = 'image/jpeg'
+            return jsonify({
+                'type': 'image',
+                'filename': filename,
+                'media_type': media_type,
+                'data': b64,
+                'size': size
+            })
+
+        # CSV — parse and return structured summary
+        if ext == 'csv':
+            raw = file.read().decode('utf-8', errors='replace')
+            reader = csv.reader(io.StringIO(raw))
+            rows = list(reader)
+            if not rows:
+                return jsonify({'type': 'text', 'filename': filename, 'content': '(empty CSV file)', 'size': size})
+            headers = rows[0]
+            data_rows = rows[1:]
+            # Build a summary: headers + first 20 rows + stats
+            summary_parts = [f"CSV file: {filename} ({len(data_rows)} rows, {len(headers)} columns)"]
+            summary_parts.append(f"Columns: {', '.join(headers)}")
+            if len(data_rows) <= 20:
+                for r in data_rows:
+                    summary_parts.append(' | '.join(r))
+            else:
+                summary_parts.append(f"\nFirst 20 rows:")
+                for r in data_rows[:20]:
+                    summary_parts.append(' | '.join(r))
+                summary_parts.append(f"\n... ({len(data_rows) - 20} more rows)")
+            return jsonify({
+                'type': 'text',
+                'filename': filename,
+                'content': '\n'.join(summary_parts),
+                'size': size
+            })
+
+        # XLSX — try to read with openpyxl (lightweight)
+        if ext in ('xlsx', 'xls'):
+            try:
+                import openpyxl
+                wb = openpyxl.load_workbook(io.BytesIO(file.read()), data_only=True)
+                summary_parts = [f"Spreadsheet: {filename} ({len(wb.sheetnames)} sheets)"]
+                for sheet_name in wb.sheetnames[:5]:
+                    ws = wb[sheet_name]
+                    summary_parts.append(f"\n--- Sheet: {sheet_name} ({ws.max_row} rows, {ws.max_column} cols) ---")
+                    for row in ws.iter_rows(min_row=1, max_row=min(25, ws.max_row or 1), values_only=True):
+                        summary_parts.append(' | '.join(str(c) if c is not None else '' for c in row))
+                    if (ws.max_row or 0) > 25:
+                        summary_parts.append(f"... ({ws.max_row - 25} more rows)")
+                return jsonify({
+                    'type': 'text',
+                    'filename': filename,
+                    'content': '\n'.join(summary_parts),
+                    'size': size
+                })
+            except ImportError:
+                return jsonify({'type': 'text', 'filename': filename, 'content': f'(Excel file: {filename} — openpyxl not available for parsing)', 'size': size})
+
+        # PDF — extract text
+        if ext == 'pdf':
+            try:
+                import PyPDF2
+                reader_pdf = PyPDF2.PdfReader(io.BytesIO(file.read()))
+                text_parts = [f"PDF: {filename} ({len(reader_pdf.pages)} pages)"]
+                for i, page in enumerate(reader_pdf.pages[:20]):
+                    page_text = page.extract_text() or ''
+                    if page_text.strip():
+                        text_parts.append(f"\n--- Page {i+1} ---\n{page_text.strip()}")
+                if len(reader_pdf.pages) > 20:
+                    text_parts.append(f"\n... ({len(reader_pdf.pages) - 20} more pages)")
+                return jsonify({
+                    'type': 'text',
+                    'filename': filename,
+                    'content': '\n'.join(text_parts),
+                    'size': size
+                })
+            except ImportError:
+                # Fallback — return as raw text attempt
+                raw = file.read().decode('utf-8', errors='replace')
+                return jsonify({'type': 'text', 'filename': filename, 'content': f'(PDF file: {filename} — PDF parser not available)', 'size': size})
+
+        # DOCX — extract text
+        if ext in ('docx', 'doc'):
+            try:
+                import docx
+                doc = docx.Document(io.BytesIO(file.read()))
+                text_parts = [f"Document: {filename}"]
+                for para in doc.paragraphs:
+                    if para.text.strip():
+                        text_parts.append(para.text)
+                return jsonify({
+                    'type': 'text',
+                    'filename': filename,
+                    'content': '\n'.join(text_parts),
+                    'size': size
+                })
+            except ImportError:
+                return jsonify({'type': 'text', 'filename': filename, 'content': f'(Word file: {filename} — docx parser not available)', 'size': size})
+
+        # PPTX — extract slide text
+        if ext == 'pptx':
+            try:
+                from pptx import Presentation
+                prs = Presentation(io.BytesIO(file.read()))
+                text_parts = [f"Presentation: {filename} ({len(prs.slides)} slides)"]
+                for i, slide in enumerate(prs.slides):
+                    slide_text = []
+                    for shape in slide.shapes:
+                        if hasattr(shape, 'text') and shape.text.strip():
+                            slide_text.append(shape.text.strip())
+                    if slide_text:
+                        text_parts.append(f"\n--- Slide {i+1} ---\n" + '\n'.join(slide_text))
+                return jsonify({
+                    'type': 'text',
+                    'filename': filename,
+                    'content': '\n'.join(text_parts),
+                    'size': size
+                })
+            except ImportError:
+                return jsonify({'type': 'text', 'filename': filename, 'content': f'(PowerPoint file: {filename} — pptx parser not available)', 'size': size})
+
+        # PLAIN TEXT / JSON / MARKDOWN — read directly
+        if ext in ('txt', 'md', 'json', 'text'):
+            raw = file.read().decode('utf-8', errors='replace')
+            return jsonify({
+                'type': 'text',
+                'filename': filename,
+                'content': f"File: {filename}\n\n{raw[:50000]}",
+                'size': size
+            })
+
+        # FALLBACK — try to read as text
+        try:
+            raw = file.read().decode('utf-8', errors='replace')
+            return jsonify({
+                'type': 'text',
+                'filename': filename,
+                'content': f"File: {filename}\n\n{raw[:50000]}",
+                'size': size
+            })
+        except Exception:
+            return jsonify({'error': f'Unsupported file type: {ext}'}), 415
+
+    except Exception as e:
+        print(f"[UPLOAD] Error processing {filename}: {str(e)}")
+        return jsonify({'error': f'Error processing file: {str(e)}'}), 500
 
 
 @app.route('/api/lead', methods=['POST'])

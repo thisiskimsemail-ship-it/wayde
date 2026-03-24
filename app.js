@@ -383,6 +383,8 @@ const welcome = $('#welcome');
 const inputForm = $('#inputForm');
 const inputField = $('#inputField');
 const sendBtn = $('#sendBtn');
+const uploadBtn = $('#uploadBtn');
+const fileInput = $('#fileInput');
 const modeLabel = $('#modeLabel');
 const toolLearnLink = $('#toolLearnLink');
 const sessionBar = $('#sessionBar');
@@ -1060,15 +1062,97 @@ routingBackBtn.addEventListener('click', () => {
     chatArea.scrollTop = 0;
 });
 
+// === FILE UPLOAD ===
+
+let pendingUploads = []; // { filename, type, content, data, media_type }
+
+if (uploadBtn && fileInput) {
+    uploadBtn.addEventListener('click', () => fileInput.click());
+
+    fileInput.addEventListener('change', async () => {
+        const files = Array.from(fileInput.files);
+        if (!files.length) return;
+
+        uploadBtn.classList.add('has-file');
+
+        for (const file of files) {
+            const formData = new FormData();
+            formData.append('file', file);
+
+            try {
+                const res = await fetch('/api/upload', { method: 'POST', body: formData });
+                if (!res.ok) { console.error('Upload failed:', res.status); continue; }
+                const result = await res.json();
+                if (result.error) { console.error('Upload error:', result.error); continue; }
+                pendingUploads.push(result);
+            } catch (err) {
+                console.error('Upload error:', err);
+            }
+        }
+
+        // Show preview strip
+        updateFilePreview();
+        fileInput.value = ''; // Reset so same file can be re-selected
+        sendBtn.disabled = false; // Enable send even with no text
+    });
+}
+
+function updateFilePreview() {
+    let strip = document.querySelector('.file-preview-strip');
+    if (!strip) {
+        strip = document.createElement('div');
+        strip.className = 'file-preview-strip';
+        inputForm.insertBefore(strip, inputForm.firstChild);
+    }
+    strip.innerHTML = '';
+
+    if (pendingUploads.length === 0) {
+        strip.remove();
+        if (uploadBtn) uploadBtn.classList.remove('has-file');
+        return;
+    }
+
+    for (let i = 0; i < pendingUploads.length; i++) {
+        const u = pendingUploads[i];
+        const chip = document.createElement('div');
+        chip.className = 'file-preview-chip';
+
+        if (u.type === 'image') {
+            chip.innerHTML = `<img src="data:${u.media_type};base64,${u.data.slice(0, 100)}..." alt="">`;
+            // Use a tiny thumbnail
+            const img = document.createElement('img');
+            img.src = `data:${u.media_type};base64,${u.data}`;
+            chip.innerHTML = '';
+            chip.appendChild(img);
+        }
+
+        const name = document.createElement('span');
+        name.className = 'file-preview-name';
+        name.textContent = u.filename;
+        chip.appendChild(name);
+
+        const remove = document.createElement('button');
+        remove.className = 'file-preview-remove';
+        remove.textContent = '✕';
+        remove.dataset.idx = i;
+        remove.addEventListener('click', (e) => {
+            pendingUploads.splice(parseInt(e.target.dataset.idx), 1);
+            updateFilePreview();
+        });
+        chip.appendChild(remove);
+
+        strip.appendChild(chip);
+    }
+}
+
 // === SEND MESSAGE ===
 
 inputForm.addEventListener('submit', (e) => {
     e.preventDefault();
     const text = inputField.value.trim();
-    if (!text || state.streaming) return;
+    if ((!text && !pendingUploads.length) || state.streaming) return;
     if (!state.exercise) {
         if (state.routing) {
-            // Continue the routing conversation
             sendMessage(text);
         } else {
             startRouting(text);
@@ -1082,10 +1166,10 @@ inputForm.addEventListener('submit', (e) => {
 inputField.addEventListener('input', () => {
     inputField.style.height = 'auto';
     inputField.style.height = Math.min(inputField.scrollHeight, 200) + 'px';
-    sendBtn.disabled = !inputField.value.trim();
+    sendBtn.disabled = !inputField.value.trim() && !pendingUploads.length;
 });
 
-// Initial state — button disabled until user types
+// Initial state — button disabled until user types or uploads
 sendBtn.disabled = true;
 
 // Enter to send, Shift+Enter for newline
@@ -1097,9 +1181,59 @@ inputField.addEventListener('keydown', (e) => {
 });
 
 async function sendMessage(text) {
-    // Add user message
-    state.messages.push({ role: 'user', content: text });
-    appendMessage('user', text);
+    // Handle file uploads — build message content
+    const uploads = [...pendingUploads];
+    pendingUploads = [];
+    updateFilePreview();
+
+    // Build display text for user message
+    let displayText = text || '';
+    const fileNames = uploads.map(u => u.filename);
+    if (fileNames.length) {
+        const fileLabel = fileNames.map(f => `📎 ${f}`).join('\n');
+        displayText = displayText ? `${fileLabel}\n\n${displayText}` : fileLabel;
+    }
+
+    // Build API message content — Claude API supports multi-part content
+    let messageContent;
+    if (uploads.length > 0) {
+        const contentParts = [];
+
+        // Add images as vision blocks, text files as text blocks
+        for (const u of uploads) {
+            if (u.type === 'image') {
+                contentParts.push({
+                    type: 'image',
+                    source: {
+                        type: 'base64',
+                        media_type: u.media_type,
+                        data: u.data
+                    }
+                });
+            } else if (u.type === 'text') {
+                contentParts.push({
+                    type: 'text',
+                    text: `[Uploaded file: ${u.filename}]\n\n${u.content}`
+                });
+            }
+        }
+
+        // Add user's text message
+        if (text) {
+            contentParts.push({ type: 'text', text: text });
+        } else if (contentParts.every(p => p.type === 'image')) {
+            // Images need at least one text block
+            contentParts.push({ type: 'text', text: 'Here\'s what I uploaded — what do you see?' });
+        }
+
+        messageContent = contentParts;
+    } else {
+        messageContent = text;
+    }
+
+    // Add to conversation state
+    state.messages.push({ role: 'user', content: messageContent });
+    appendMessage('user', displayText);
 
     inputField.value = ''; sendBtn.disabled = true;
     inputField.style.height = 'auto';
