@@ -3,33 +3,34 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preload" href="fonts/GT-Walsheim-Regular.woff" as="font" type="font/woff" crossorigin>
 <title>Five Whys — Wade Innovation Toolbox</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700&family=DM+Serif+Display:ital@0;1&display=swap');
+  @font-face { font-family: "GT Walsheim"; src: url("fonts/GT-Walsheim-Regular.woff") format("woff"), url("fonts/GT-Walsheim-Regular.ttf") format("truetype"); font-weight: 400; font-style: normal; font-display: swap; }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   :root {
-    --navy: #1B2A4A;
-    --navy-deep: #131E35;
-    --orange: #E85D26;
-    --orange-hover: #D14E1B;
+    --navy: #1E194F;
+    --navy-deep: #12103a;
+    --orange: #F15A22;
+    --orange-hover: #d14e1b;
     --white: #FFFFFF;
-    --text-body: #B8BCC8;
-    --text-light: #7A7F8E;
-    --border: #2A3656;
-    --border-light: #3A4666;
-    --card-bg: #1F2E4D;
-    --card-hover: #253658;
-    --cat-color: #3B82F6;
-    --untangle: #3B82F6;
-    --spark: #E85D26;
-    --test: #A855F7;
-    --build: #22C55E;
+    --text-body: #b8b5d0;
+    --text-light: #6e6a8a;
+    --border: rgba(255,255,255,0.08);
+    --border-light: rgba(255,255,255,0.15);
+    --card-bg: #1a1750;
+    --card-hover: #221d5a;
+    --cat-color: #27BDBE;
+    --untangle: #27BDBE;
+    --spark: #F15A22;
+    --test: #ED3694;
+    --build: #E4E517;
   }
 
   body {
-    font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: 'GT Walsheim', 'Space Grotesk', sans-serif;
     color: var(--text-body);
     background: var(--navy-deep);
     -webkit-font-smoothing: antialiased;
@@ -45,7 +46,7 @@
   }
   .logo { font-weight: 700; font-size: 15px; line-height: 1.15; color: var(--orange); letter-spacing: 0.4px; text-transform: uppercase; }
   .header-nav { display: flex; gap: 12px; align-items: center; }
-  .nav-pill { font-size: 14px; font-weight: 500; padding: 8px 20px; border-radius: 100px; border: 1.5px solid rgba(255,255,255,0.25); background: transparent; color: var(--white); cursor: pointer; text-decoration: none; transition: all 0.2s; font-family: 'DM Sans', sans-serif; }
+  .nav-pill { font-size: 14px; font-weight: 500; padding: 8px 20px; border-radius: 100px; border: 1.5px solid rgba(255,255,255,0.25); background: transparent; color: var(--white); cursor: pointer; text-decoration: none; transition: all 0.2s; font-family: 'GT Walsheim', 'Space Grotesk', sans-serif; }
   .nav-pill:hover { background: rgba(255,255,255,0.1); }
   .nav-pill.active { background: var(--white); color: var(--navy); border-color: var(--white); }
   .nav-icon { width: 36px; height: 36px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,0.25); display: flex; align-items: center; justify-content: center; color: var(--white); font-size: 14px; text-decoration: none; }
@@ -80,13 +81,13 @@
   }
 
   .tool-hero-left h1 {
-    font-family: 'DM Serif Display', Georgia, serif;
+    font-family: 'GT Walsheim', 'Space Grotesk', sans-serif;
     font-size: 56px; font-weight: 400; color: var(--white);
     line-height: 1.1; margin-bottom: 12px;
   }
 
   .tool-headline {
-    font-family: 'DM Serif Display', Georgia, serif;
+    font-family: 'GT Walsheim', 'Space Grotesk', sans-serif;
     font-size: 24px; font-weight: 400; color: var(--cat-color);
     font-style: italic; margin-bottom: 24px;
   }
@@ -136,17 +137,17 @@
   .pathway-tag {
     font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 100px; border: 1px solid;
   }
-  .pathway-tag.untangle { border-color: rgba(59,130,246,0.4); color: var(--untangle); }
-  .pathway-tag.spark { border-color: rgba(232,93,38,0.4); color: var(--spark); }
-  .pathway-tag.test { border-color: rgba(168,85,247,0.4); color: var(--test); }
-  .pathway-tag.build { border-color: rgba(34,197,94,0.4); color: var(--build); }
+  .pathway-tag.untangle { border-color: rgba(39,189,190,0.4); color: var(--untangle); }
+  .pathway-tag.spark { border-color: rgba(241,90,34,0.4); color: var(--spark); }
+  .pathway-tag.test { border-color: rgba(237,54,148,0.4); color: var(--test); }
+  .pathway-tag.build { border-color: rgba(228,229,23,0.4); color: var(--build); }
 
   .qf-cta {
     display: block; width: 100%; text-align: center;
     margin-top: 24px; padding: 14px 24px;
     background: var(--cat-color); color: var(--white);
     border-radius: 100px; border: none;
-    font-size: 16px; font-weight: 600; font-family: 'DM Sans', sans-serif;
+    font-size: 16px; font-weight: 600; font-family: 'GT Walsheim', 'Space Grotesk', sans-serif;
     cursor: pointer; text-decoration: none; transition: all 0.2s;
   }
   .qf-cta:hover { filter: brightness(0.9); }
@@ -171,7 +172,7 @@
   }
 
   .section-block h2 {
-    font-family: 'DM Serif Display', Georgia, serif;
+    font-family: 'GT Walsheim', 'Space Grotesk', sans-serif;
     font-size: 32px; font-weight: 400; color: var(--white);
     margin-bottom: 20px;
   }
@@ -266,7 +267,7 @@
   }
 
   .sample-root-text {
-    font-family: 'DM Serif Display', Georgia, serif;
+    font-family: 'GT Walsheim', 'Space Grotesk', sans-serif;
     font-size: 20px; color: var(--white); line-height: 1.4;
   }
 
@@ -316,10 +317,10 @@
     display: flex; align-items: center; justify-content: center;
     font-size: 14px; font-weight: 700; flex-shrink: 0;
   }
-  .related-tool-icon.untangle { background: rgba(59,130,246,0.15); color: #3B82F6; }
-  .related-tool-icon.spark { background: rgba(232,93,38,0.15); color: #E85D26; }
-  .related-tool-icon.test { background: rgba(168,85,247,0.15); color: #A855F7; }
-  .related-tool-icon.build { background: rgba(34,197,94,0.15); color: #22C55E; }
+  .related-tool-icon.untangle { background: rgba(39,189,190,0.15); color: #27BDBE; }
+  .related-tool-icon.spark { background: rgba(241,90,34,0.15); color: #F15A22; }
+  .related-tool-icon.test { background: rgba(237,54,148,0.15); color: #ED3694; }
+  .related-tool-icon.build { background: rgba(228,229,23,0.15); color: #E4E517; }
 
   .related-tool-text h4 {
     font-size: 14px; font-weight: 600; color: var(--white); margin-bottom: 2px;
@@ -330,8 +331,8 @@
 
   /* Pete's coaching note */
   .pete-note {
-    background: linear-gradient(135deg, rgba(59,130,246,0.08), rgba(59,130,246,0.04));
-    border: 1px solid rgba(59,130,246,0.25);
+    background: linear-gradient(135deg, rgba(39,189,190,0.08), rgba(39,189,190,0.04));
+    border: 1px solid rgba(39,189,190,0.25);
     border-radius: 14px;
     padding: 24px;
   }
@@ -365,7 +366,7 @@
   }
 
   .tool-bottom-left h3 {
-    font-family: 'DM Serif Display', Georgia, serif;
+    font-family: 'GT Walsheim', 'Space Grotesk', sans-serif;
     font-size: 28px; font-weight: 400; color: var(--white);
     margin-bottom: 6px;
   }
@@ -409,7 +410,7 @@
 
 <!-- HEADER -->
 <header>
-  <div class="logo">WADE<br>INSTITUTE</div>
+  <a href="index.html"><img class="logo" src="logo.png" alt="Wade Institute" style="height:50px;width:auto;"></a>
   <nav class="header-nav">
     <a href="index.html" class="nav-pill">The Studio</a>
     <a href="toolbox.html" class="nav-pill active">Toolbox</a>
@@ -655,7 +656,7 @@
 <!-- FOOTER -->
 <footer>
   <div class="footer-left">
-    <div class="footer-logo">WADE<br>INSTITUTE</div>
+    <a href="index.html"><img src="wade-icon.png" alt="Wade Institute" style="height:28px;width:auto;"></a>
     <div class="footer-links">
       <a href="https://wadeinstitute.org.au">wadeinstitute.org.au</a>
       <a href="mailto:enquiries@wadeinstitute.org.au">Contact</a>
