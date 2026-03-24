@@ -94,6 +94,18 @@ def init_db():
 
             -- Add board_cards column if missing (for existing tables)
             ALTER TABLE session_summaries ADD COLUMN IF NOT EXISTS board_cards JSONB DEFAULT '[]';
+
+            CREATE TABLE IF NOT EXISTS analytics_events (
+                id BIGSERIAL PRIMARY KEY,
+                event TEXT NOT NULL,
+                device_id TEXT,
+                mode TEXT,
+                exercise TEXT,
+                meta JSONB DEFAULT '{}',
+                created_at TIMESTAMPTZ DEFAULT now()
+            );
+            CREATE INDEX IF NOT EXISTS idx_analytics_event ON analytics_events(event);
+            CREATE INDEX IF NOT EXISTS idx_analytics_date ON analytics_events(created_at DESC);
         """)
         cur.close()
         conn.close()
@@ -4376,6 +4388,71 @@ def upload_file():
     except Exception as e:
         print(f"[UPLOAD] Error processing {filename}: {str(e)}")
         return jsonify({'error': f'Error processing file: {str(e)}'}), 500
+
+
+# === ANALYTICS ===
+
+@app.route('/api/event', methods=['POST'])
+def track_event():
+    """Lightweight analytics event tracking."""
+    data = request.json or {}
+    event = data.get('event', '')
+    if not event:
+        return jsonify({'ok': False}), 400
+    conn = get_db()
+    if not conn:
+        return jsonify({'ok': True})  # Silently succeed if no DB
+    try:
+        cur = conn.cursor()
+        cur.execute(
+            "INSERT INTO analytics_events (event, device_id, mode, exercise, meta) VALUES (%s, %s, %s, %s, %s)",
+            (event, data.get('device_id', ''), data.get('mode', ''), data.get('exercise', ''), json.dumps(data.get('meta', {})))
+        )
+        conn.close()
+    except Exception as e:
+        print(f"[ANALYTICS] Error: {e}")
+    return jsonify({'ok': True})
+
+
+@app.route('/api/analytics', methods=['GET'])
+def get_analytics():
+    """Simple analytics dashboard data."""
+    conn = get_db()
+    if not conn:
+        return jsonify({'error': 'No database'}), 503
+    try:
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        # Event counts by type (last 30 days)
+        cur.execute("""
+            SELECT event, COUNT(*) as count
+            FROM analytics_events
+            WHERE created_at > now() - interval '30 days'
+            GROUP BY event
+            ORDER BY count DESC
+        """)
+        events = cur.fetchall()
+        # Tool popularity
+        cur.execute("""
+            SELECT exercise, COUNT(*) as count
+            FROM analytics_events
+            WHERE event = 'tool_start' AND created_at > now() - interval '30 days'
+            GROUP BY exercise
+            ORDER BY count DESC
+        """)
+        tools = cur.fetchall()
+        # Daily sessions (last 30 days)
+        cur.execute("""
+            SELECT DATE(created_at) as date, COUNT(*) as count
+            FROM analytics_events
+            WHERE event = 'session_start' AND created_at > now() - interval '30 days'
+            GROUP BY DATE(created_at)
+            ORDER BY date DESC
+        """)
+        daily = cur.fetchall()
+        conn.close()
+        return jsonify({'events': events, 'tools': tools, 'daily': [{'date': str(d['date']), 'count': d['count']} for d in daily]})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 
 @app.route('/api/lead', methods=['POST'])

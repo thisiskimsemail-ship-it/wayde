@@ -204,6 +204,16 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+// === ANALYTICS ===
+function trackEvent(event, meta = {}) {
+    const deviceId = localStorage.getItem('studio_device_id') || '';
+    fetch('/api/event', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ event, device_id: deviceId, mode: state?.mode || '', exercise: state?.exercise || '', meta })
+    }).catch(() => {}); // Fire and forget
+}
+
 // === EXERCISE LABELS ===
 const EXERCISE_LABELS = {
     'five-whys': 'Five Whys',
@@ -608,6 +618,7 @@ $$('.card-exercise-btn').forEach(btn => {
 });
 
 function startExercise(mode, exercise, startMsg = null) {
+    trackEvent('tool_start', { tool: exercise });
     // If transitioning from routing, use the user's own description as the exercise kickoff
     // so WAiDE can respond in context without asking them to repeat themselves
     let autoStartMsg = startMsg;
@@ -962,6 +973,7 @@ function swapToTool(mode, exercise, swapEl) {
 
 function enterStudio() {
     // Enter the studio — facilitator speaks first with welcome + icebreaker
+    trackEvent('session_start');
     state.mode = 'routing';
     state.exercise = 'suggest';
     state.routing = true;
@@ -999,6 +1011,7 @@ function enterStudio() {
 
 // Wire up Enter Studio buttons + hide input on welcome
 document.addEventListener('DOMContentLoaded', () => {
+    trackEvent('page_view', { page: location.pathname });
     const enterBtn = document.getElementById('enterStudioBtn');
     if (enterBtn) {
         enterBtn.addEventListener('click', enterStudio);
@@ -1880,6 +1893,7 @@ function autoSaveSessionSummary() {
 let reportGenerating = false;
 async function generateReport() {
     if (reportGenerating || state.reportGenerated) return; // prevent double-generation
+    trackEvent('report_generate', { exchanges: state.exchangeCount });
     reportGenerating = true;
     reportCtaBtn.disabled = true;
     reportCtaBtn.textContent = 'Generating report...';
@@ -2223,6 +2237,7 @@ document.getElementById('synopsisCloseBtn')?.addEventListener('click', () => {
 // Lead capture form submit → email report, then show format choice
 document.getElementById('unlockForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
+    trackEvent('lead_capture');
     const submitBtn = document.getElementById('unlockSubmit');
     const email = document.getElementById('unlockEmail')?.value?.trim();
     const name = document.getElementById('unlockName')?.value?.trim();
