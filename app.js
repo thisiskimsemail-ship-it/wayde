@@ -1626,6 +1626,8 @@ async function streamResponse() {
                 renderWrapPrompt();
                 // Auto-generate report in the background while user reads Pete's closing message
                 generateReport();
+                // Auto-save session summary to memory (no email needed)
+                autoSaveSessionSummary();
             }
         }
     }
@@ -1713,6 +1715,24 @@ function showReportProgress() {
             progressContainer.classList.add('hidden');
         }
     };
+}
+
+// Auto-save session summary to PostgreSQL (called on wrap, no email needed)
+function autoSaveSessionSummary() {
+    if (!state.deviceId || state.messages.length < 4) return;  // skip trivial sessions
+    fetch('/api/summary', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            device_id: state.deviceId,
+            email: state.userEmail || null,
+            mode: state.mode,
+            exercise: state.exercise,
+            messages: state.messages
+        })
+    }).then(res => res.json())
+      .then(data => { if (data.summary) console.log('[Memory] Session saved:', data.summary.topic); })
+      .catch(err => console.warn('[Memory] Auto-save failed:', err));
 }
 
 let reportGenerating = false;
