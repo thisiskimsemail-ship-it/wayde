@@ -3,193 +3,317 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wade Innovation Toolbox</title>
+    <title>Innovation Toolbox — The Studio</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=120">
+    <link rel="preload" href="fonts/GT-Walsheim-Regular.woff" as="font" type="font/woff" crossorigin>
+    <link rel="stylesheet" href="styles.css?v=122">
+    <style>
+        /* Toolbox-specific overrides */
+        .toolbox-shell { height: auto; min-height: 100vh; overflow: visible; }
+        .toolbox-shell .header { position: sticky; top: 0; z-index: 100; background: var(--bg); }
+        .toolbox { max-width: 1120px; margin: 0 auto; padding: 2rem 2rem 0; }
+        .toolbox-back { display: inline-block; font-size: 0.85rem; color: var(--orange); text-decoration: none; margin-bottom: 1rem; transition: opacity 0.2s; }
+        .toolbox-back:hover { opacity: 0.8; text-decoration: underline; }
+        .toolbox-title { font-size: 2.5rem; font-weight: 700; color: var(--text); margin-bottom: 0.5rem; }
+        .toolbox-sub { font-size: 1.05rem; color: var(--text-dim); line-height: 1.6; max-width: 580px; margin-bottom: 2.5rem; }
+
+        /* 2×2 grid — force 2 columns */
+        .toolbox-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 4rem; }
+
+        /* Category cards */
+        .tb-card {
+            background: var(--bg-light);
+            border-radius: 12px;
+            padding: 2rem;
+            border-top: 3px solid;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        .tb-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
+        .tb-card-untangle { border-top-color: var(--teal); }
+        .tb-card-spark { border-top-color: var(--orange); }
+        .tb-card-test { border-top-color: var(--pink); }
+        .tb-card-build { border-top-color: var(--yellow); }
+
+        .tb-badge { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 0.75rem; }
+        .tb-tagline { font-size: 1.2rem; font-style: italic; color: var(--text); line-height: 1.35; margin-bottom: 0.75rem; font-weight: 400; }
+        .tb-desc { font-size: 0.9rem; color: var(--text-dim); line-height: 1.6; margin-bottom: 1.25rem; flex-grow: 1; }
+
+        .tb-tools { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1.5rem; }
+        .tb-tool-pill {
+            display: inline-block;
+            font-size: 0.8rem;
+            font-weight: 500;
+            padding: 0.3rem 0.75rem;
+            border-radius: 999px;
+            border: 1px solid;
+            text-decoration: none;
+            transition: background 0.15s, transform 0.15s;
+        }
+        .tb-tool-pill:hover { background: rgba(255,255,255,0.08); transform: translateY(-1px); }
+        .tb-card-untangle .tb-tool-pill { color: var(--teal); border-color: rgba(39,189,190,0.3); }
+        .tb-card-spark .tb-tool-pill { color: var(--orange); border-color: rgba(241,90,34,0.3); }
+        .tb-card-test .tb-tool-pill { color: var(--pink); border-color: rgba(237,54,148,0.3); }
+        .tb-card-build .tb-tool-pill { color: var(--yellow); border-color: rgba(228,229,23,0.3); }
+
+        .tb-cta {
+            display: inline-block;
+            background: var(--orange);
+            color: #fff;
+            font-family: var(--font);
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 0.7rem 1.5rem;
+            border-radius: 999px;
+            border: none;
+            text-decoration: none;
+            transition: all 0.2s;
+            align-self: flex-start;
+        }
+        .tb-cta:hover { background: #d14e1b; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(241,90,34,0.3); }
+
+        /* How it works strip */
+        .tb-how { padding: 3rem 0; border-top: 1px solid rgba(255,255,255,0.06); margin-bottom: 2rem; }
+        .tb-how-heading { font-size: 1.5rem; font-weight: 700; color: var(--text); margin-bottom: 2rem; text-align: center; }
+        .tb-how-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+        .tb-how-step { text-align: center; }
+        .tb-how-num {
+            width: 48px; height: 48px; border-radius: 50%;
+            border: 2px solid var(--orange);
+            display: inline-flex; align-items: center; justify-content: center;
+            font-size: 1.25rem; font-weight: 700; color: var(--text);
+            margin-bottom: 0.75rem;
+        }
+        .tb-how-title { font-size: 1rem; font-weight: 600; color: var(--text); margin-bottom: 0.4rem; }
+        .tb-how-desc { font-size: 0.875rem; color: var(--text-dim); line-height: 1.5; }
+
+        /* Fallback CTA */
+        .tb-fallback { text-align: center; padding: 3rem 0 4rem; }
+        .tb-fallback-heading { font-size: 1.75rem; font-weight: 700; color: var(--text); margin-bottom: 0.5rem; }
+        .tb-fallback-sub { font-size: 1rem; color: var(--text-dim); margin-bottom: 1.5rem; }
+
+        /* Footer */
+        .tb-footer { border-top: 2px solid var(--orange); padding: 2rem 0; max-width: 1120px; margin: 0 auto; padding-left: 2rem; padding-right: 2rem; }
+        .tb-footer-inner { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+        .tb-footer-brand { display: flex; align-items: center; gap: 0.5rem; }
+        .tb-footer-logo { height: 28px; width: auto; }
+        .tb-footer-orgname { font-size: 0.8rem; color: var(--text-dim); font-weight: 500; }
+        .tb-footer-links { display: flex; gap: 1.5rem; }
+        .tb-footer-links a { font-size: 0.8rem; color: var(--text-dim); text-decoration: none; transition: color 0.2s; }
+        .tb-footer-links a:hover { color: var(--text); }
+        .tb-footer-copy { font-size: 0.75rem; color: var(--text-muted); }
+
+        /* Light theme */
+        html[data-theme="light"] .tb-card { background: #fff; }
+        html[data-theme="light"] .tb-card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
+        html[data-theme="light"] .tb-tool-pill:hover { background: rgba(30,25,79,0.05); }
+        html[data-theme="light"] .tb-card-build .tb-tool-pill { color: #1E194F; border-color: rgba(30,25,79,0.2); }
+        html[data-theme="light"] .tb-how { border-top-color: rgba(30,25,79,0.06); }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .toolbox-grid { grid-template-columns: 1fr; }
+            .toolbox-title { font-size: 2rem; }
+            .tb-how-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+            .tb-footer-inner { flex-direction: column; text-align: center; }
+            .tb-footer-links { flex-direction: column; gap: 0.5rem; }
+        }
+
+        /* Header nav for toolbox */
+        .header-nav {
+            display: flex;
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 999px;
+            overflow: hidden;
+            margin-left: auto;
+            margin-right: 1rem;
+        }
+        .header-nav-link {
+            padding: 0.4rem 1.1rem;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--text-dim);
+            text-decoration: none;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .header-nav-link:hover { color: var(--text); background: rgba(255,255,255,0.05); }
+        .header-nav-link.active { color: var(--text); background: rgba(255,255,255,0.08); }
+        html[data-theme="light"] .header-nav { border-color: rgba(30,25,79,0.12); }
+        html[data-theme="light"] .header-nav-link { color: rgba(30,25,79,0.5); }
+        html[data-theme="light"] .header-nav-link:hover { color: #1E194F; background: rgba(30,25,79,0.04); }
+        html[data-theme="light"] .header-nav-link.active { color: #1E194F; background: rgba(30,25,79,0.07); }
+        @media (max-width: 640px) { .header-nav { display: none; } }
+    </style>
 </head>
 <body>
 <div class="app-shell toolbox-shell">
     <header class="header">
         <a href="index.html"><img class="logo" src="logo.png" alt="Wade Institute"></a>
-        <button class="theme-toggle" id="themeToggle" title="Toggle light/dark mode" aria-label="Toggle light/dark mode">
-            <span class="theme-icon">&#9728;</span>
-        </button>
+        <nav class="header-nav">
+            <a class="header-nav-link" href="index.html">The Studio</a>
+            <a class="header-nav-link active" href="toolbox.html">Toolbox</a>
+        </nav>
+        <div class="header-controls">
+            <button class="theme-toggle" id="themeToggle" title="Toggle light/dark mode" aria-label="Toggle light/dark mode">
+                <span class="theme-icon">&#9728;</span>
+            </button>
+        </div>
     </header>
+
     <main class="toolbox">
         <a class="toolbox-back" href="index.html">&larr; The Studio</a>
-        <h1 class="toolbox-page-title">Innovation Toolbox</h1>
-        <p class="toolbox-page-sub">What kind of challenge are you working on? Pick the one that fits and Pete will guide you to the right tools.</p>
+        <h1 class="toolbox-title">Innovation Toolbox</h1>
+        <p class="toolbox-sub">What kind of challenge are you working on? Pick the one that fits and Pete will guide you to the right tools.</p>
 
         <!-- 2×2 Category Grid -->
-        <div class="lp-process-grid lp-grid-2x2" style="margin-bottom:3rem;">
+        <div class="toolbox-grid">
 
-            <!-- THE UNTANGLE -->
-            <div class="lp-process-card lp-cat-untangle" style="padding:2rem;">
-                <span class="lp-cat-badge" style="color:var(--teal)">THE UNTANGLE</span>
-                <h2 class="lp-process-tagline" style="font-size:1.25rem;">I need to understand the real problem before I move forward</h2>
-                <p class="lp-process-desc">Whether you're just starting out or hitting a wall, these tools help you dig into what's really going on — for your customer, your market, or your own thinking.</p>
-                <div class="lp-process-tools" style="margin-bottom:1.25rem;">
-                    <a class="lp-tool-pill" href="index.html?tool=five-whys" style="text-decoration:none;">Five Whys</a>
-                    <a class="lp-tool-pill" href="index.html?tool=empathy-map" style="text-decoration:none;">Empathy Map</a>
-                    <a class="lp-tool-pill" href="index.html?tool=jtbd" style="text-decoration:none;">Jobs to Be Done</a>
+            <!-- THE UNTANGLE — top-left (problem-led, fuzzy) -->
+            <div class="tb-card tb-card-untangle">
+                <span class="tb-badge" style="color:var(--teal)">THE UNTANGLE</span>
+                <h2 class="tb-tagline">I need to understand the real problem before I move forward</h2>
+                <p class="tb-desc">Whether you're starting out or hitting a wall, these tools help you dig into what's really going on.</p>
+                <div class="tb-tools">
+                    <a class="tb-tool-pill" href="index.html?tool=five-whys">Five Whys</a>
+                    <a class="tb-tool-pill" href="index.html?tool=empathy-map">Empathy Map</a>
+                    <a class="tb-tool-pill" href="index.html?tool=jtbd">Jobs to Be Done</a>
                 </div>
-                <a class="lp-cta" href="index.html?tool=five-whys" style="font-size:0.9rem;padding:0.7rem 1.5rem;">Start here &rarr;</a>
+                <a class="tb-cta" href="index.html?tool=five-whys">Start here &rarr;</a>
             </div>
 
-            <!-- THE SPARK -->
-            <div class="lp-process-card lp-cat-spark" style="padding:2rem;">
-                <span class="lp-cat-badge" style="color:var(--orange)">THE SPARK</span>
-                <h2 class="lp-process-tagline" style="font-size:1.25rem;">I have the beginning of an idea — help me explore it</h2>
-                <p class="lp-process-desc">You've got a seed of something — maybe from a frustration, an observation, or a conversation. Pete will help you brainstorm possibilities, stretch the best ones, and find unexpected angles.</p>
-                <div class="lp-process-tools" style="margin-bottom:1.25rem;">
-                    <a class="lp-tool-pill" href="index.html?tool=crazy-8s" style="text-decoration:none;">Crazy 8s</a>
-                    <a class="lp-tool-pill" href="index.html?tool=hmw" style="text-decoration:none;">How Might We</a>
-                    <a class="lp-tool-pill" href="index.html?tool=scamper" style="text-decoration:none;">SCAMPER</a>
+            <!-- THE SPARK — top-right (idea-led, fuzzy) -->
+            <div class="tb-card tb-card-spark">
+                <span class="tb-badge" style="color:var(--orange)">THE SPARK</span>
+                <h2 class="tb-tagline">I have the beginning of an idea — help me explore it</h2>
+                <p class="tb-desc">You've got a seed of something. Pete will help you brainstorm possibilities and find unexpected angles.</p>
+                <div class="tb-tools">
+                    <a class="tb-tool-pill" href="index.html?tool=crazy-8s">Crazy 8s</a>
+                    <a class="tb-tool-pill" href="index.html?tool=hmw">How Might We</a>
+                    <a class="tb-tool-pill" href="index.html?tool=scamper">SCAMPER</a>
                 </div>
-                <a class="lp-cta" href="index.html?tool=crazy-8s" style="font-size:0.9rem;padding:0.7rem 1.5rem;">Start here &rarr;</a>
+                <a class="tb-cta" href="index.html?tool=crazy-8s">Start here &rarr;</a>
             </div>
 
-            <!-- THE TEST -->
-            <div class="lp-process-card lp-cat-test" style="padding:2rem;">
-                <span class="lp-cat-badge" style="color:var(--pink)">THE TEST</span>
-                <h2 class="lp-process-tagline" style="font-size:1.25rem;">I have a solution — help me break it before I ship it</h2>
-                <p class="lp-process-desc">You think you know the answer. Pete will stress-test it, argue against it, and find proven patterns from other fields — so you can commit with confidence or change course early.</p>
-                <div class="lp-process-tools" style="margin-bottom:1.25rem;">
-                    <a class="lp-tool-pill" href="index.html?tool=pre-mortem" style="text-decoration:none;">Pre-Mortem</a>
-                    <a class="lp-tool-pill" href="index.html?tool=devils-advocate" style="text-decoration:none;">Devil's Advocate</a>
-                    <a class="lp-tool-pill" href="index.html?tool=analogical" style="text-decoration:none;">Analogical Thinking</a>
+            <!-- THE TEST — bottom-left (problem-led, clear) -->
+            <div class="tb-card tb-card-test">
+                <span class="tb-badge" style="color:var(--pink)">THE TEST</span>
+                <h2 class="tb-tagline">I have a solution — help me break it before I ship it</h2>
+                <p class="tb-desc">Pete will stress-test it, argue against it, and find proven patterns from other fields.</p>
+                <div class="tb-tools">
+                    <a class="tb-tool-pill" href="index.html?tool=pre-mortem">Pre-Mortem</a>
+                    <a class="tb-tool-pill" href="index.html?tool=devils-advocate">Devil's Advocate</a>
+                    <a class="tb-tool-pill" href="index.html?tool=analogical">Analogical Thinking</a>
                 </div>
-                <a class="lp-cta" href="index.html?tool=pre-mortem" style="font-size:0.9rem;padding:0.7rem 1.5rem;">Start here &rarr;</a>
+                <a class="tb-cta" href="index.html?tool=pre-mortem">Start here &rarr;</a>
             </div>
 
-            <!-- THE BUILD -->
-            <div class="lp-process-card lp-cat-build" style="padding:2rem;">
-                <span class="lp-cat-badge" style="color:var(--yellow)">THE BUILD</span>
-                <h2 class="lp-process-tagline" style="font-size:1.25rem;">I have a clear idea — help me turn it into a plan</h2>
-                <p class="lp-process-desc">You know what you want to create. Pete will help you map out the model, start with what you have, and design the cheapest test to validate your riskiest assumption.</p>
-                <div class="lp-process-tools" style="margin-bottom:1.25rem;">
-                    <a class="lp-tool-pill" href="index.html?tool=lean-canvas" style="text-decoration:none;">Lean Canvas</a>
-                    <a class="lp-tool-pill" href="index.html?tool=effectuation" style="text-decoration:none;">Effectuation</a>
-                    <a class="lp-tool-pill" href="index.html?tool=rapid-experiment" style="text-decoration:none;">Rapid Experiment</a>
+            <!-- THE BUILD — bottom-right (idea-led, clear) -->
+            <div class="tb-card tb-card-build">
+                <span class="tb-badge" style="color:var(--yellow)">THE BUILD</span>
+                <h2 class="tb-tagline">I have a clear idea — help me turn it into a plan</h2>
+                <p class="tb-desc">Pete will help you map out the model, start with what you have, and design a test for your riskiest assumption.</p>
+                <div class="tb-tools">
+                    <a class="tb-tool-pill" href="index.html?tool=lean-canvas">Lean Canvas</a>
+                    <a class="tb-tool-pill" href="index.html?tool=effectuation">Effectuation</a>
+                    <a class="tb-tool-pill" href="index.html?tool=rapid-experiment">Rapid Experiment</a>
                 </div>
-                <a class="lp-cta" href="index.html?tool=lean-canvas" style="font-size:0.9rem;padding:0.7rem 1.5rem;">Start here &rarr;</a>
+                <a class="tb-cta" href="index.html?tool=lean-canvas">Start here &rarr;</a>
             </div>
 
+        </div>
+
+        <!-- How it works -->
+        <div class="tb-how">
+            <h2 class="tb-how-heading">How it works</h2>
+            <div class="tb-how-grid">
+                <div class="tb-how-step">
+                    <div class="tb-how-num">1</div>
+                    <p class="tb-how-title">Choose your challenge</p>
+                    <p class="tb-how-desc">Pick the category that fits, or let Pete route you.</p>
+                </div>
+                <div class="tb-how-step">
+                    <div class="tb-how-num">2</div>
+                    <p class="tb-how-title">Work through it with Pete</p>
+                    <p class="tb-how-desc">Pete guides you through the right tools, one question at a time.</p>
+                </div>
+                <div class="tb-how-step">
+                    <div class="tb-how-num">3</div>
+                    <p class="tb-how-title">Leave with something real</p>
+                    <p class="tb-how-desc">Download a report with your outputs, insights, and next steps.</p>
+                </div>
+            </div>
         </div>
 
         <!-- Fallback CTA -->
-        <div style="text-align:center; padding:2rem 0 3rem;">
-            <h2 class="lp-section-heading" style="font-size:1.75rem;">Not sure which one?</h2>
-            <p class="lp-section-sub">Pete will ask a few questions and route you to the right tools.</p>
-            <a class="lp-cta" href="index.html">Start a free session &rarr;</a>
+        <div class="tb-fallback">
+            <h2 class="tb-fallback-heading">Not sure which one?</h2>
+            <p class="tb-fallback-sub">Pete will ask a few questions and route you to the right tools.</p>
+            <a class="tb-cta" href="index.html">Start a free session &rarr;</a>
         </div>
     </main>
-</div>
 
-<div class="site-footer">
-    <div class="site-footer-inner">
-        <div class="site-footer-brand">
-            <img class="site-footer-icon" src="wade-icon.png" alt="Wade Institute">
-            <span class="site-footer-orgname">Wade Institute of Entrepreneurship</span>
-        </div>
-        <div class="site-footer-body">
-            <p class="site-footer-heading">Talk to the Wade team</p>
-            <p class="site-footer-text">Interested in talking to a member of the Wade team about your innovation challenge?</p>
-            <div class="site-footer-contacts">
-                <a class="site-footer-link" href="mailto:enquiries@wadeinstitute.org.au">enquiries@wadeinstitute.org.au</a>
-                <a class="site-footer-link" href="tel:+61393441100">+61 3 9344 1100</a>
+    <!-- Footer -->
+    <footer class="tb-footer">
+        <div class="tb-footer-inner">
+            <div class="tb-footer-brand">
+                <img class="tb-footer-logo" src="wade-icon.png" alt="Wade Institute">
+                <span class="tb-footer-orgname">Wade Institute of Entrepreneurship</span>
             </div>
+            <div class="tb-footer-links">
+                <a href="https://wadeinstitute.org.au" target="_blank" rel="noopener">wadeinstitute.org.au</a>
+                <a href="mailto:enquiries@wadeinstitute.org.au">Contact</a>
+                <a href="/privacy.html">Privacy</a>
+            </div>
+            <span class="tb-footer-copy">&copy; 2026 Wade Institute of Entrepreneurship</span>
         </div>
-        <div class="site-footer-cta-wrap">
-            <a class="site-footer-cta" href="https://wadeinstitute.org.au/start/" target="_blank" rel="noopener noreferrer">Explore Wade Programs &rarr;</a>
-        </div>
-    </div>
-    <div class="site-footer-legal">
-        <a href="/privacy.html">Privacy</a>
-    </div>
+    </footer>
 </div>
 
-<!-- Feedback widget -->
-<button class="feedback-tab" id="feedbackTab">Feedback</button>
-<div class="feedback-panel hidden" id="feedbackPanel">
-    <div class="feedback-header">
-        <span>How was your experience?</span>
-        <button class="feedback-close" id="feedbackClose">&times;</button>
-    </div>
-    <p class="feedback-beta">The Studio is in beta. Help us make it amazing by sharing your experience.</p>
-    <div class="feedback-rating" id="feedbackRating">
-        <button class="feedback-star" data-rating="1">1</button>
-        <button class="feedback-star" data-rating="2">2</button>
-        <button class="feedback-star" data-rating="3">3</button>
-        <button class="feedback-star" data-rating="4">4</button>
-        <button class="feedback-star" data-rating="5">5</button>
-    </div>
-    <div class="feedback-rating-labels">
-        <span>Not great</span>
-        <span>Loved it</span>
-    </div>
-    <textarea class="feedback-input" id="feedbackInput" placeholder="Tell us more... what worked, what didn't, what you'd change." rows="3"></textarea>
-    <button class="feedback-submit" id="feedbackSubmit">Send feedback</button>
-</div>
-
-<script>
-// Feedback widget (standalone — no app.js dependency)
-(function() {
-    var tab = document.getElementById('feedbackTab');
-    var panel = document.getElementById('feedbackPanel');
-    var closeBtn = document.getElementById('feedbackClose');
-    var submitBtn = document.getElementById('feedbackSubmit');
-    var input = document.getElementById('feedbackInput');
-    var stars = document.querySelectorAll('.feedback-star');
-    var selectedRating = 0;
-    if (!tab || !panel) return;
-    tab.addEventListener('click', function() { panel.classList.remove('hidden'); tab.style.display = 'none'; });
-    closeBtn.addEventListener('click', function() { panel.classList.add('hidden'); tab.style.display = ''; });
-    stars.forEach(function(star) {
-        star.addEventListener('click', function() {
-            selectedRating = parseInt(star.dataset.rating);
-            stars.forEach(function(s) { s.classList.toggle('active', parseInt(s.dataset.rating) <= selectedRating); });
-        });
-    });
-    submitBtn.addEventListener('click', function() {
-        var text = input.value.trim();
-        if (!selectedRating && !text) return;
-        submitBtn.disabled = true;
-        submitBtn.textContent = 'Sending...';
-        fetch('/api/feedback', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ rating: selectedRating, text: text, page: window.location.pathname, tool: null, stage: null, exchanges: 0, timestamp: new Date().toISOString() })
-        }).then(function() {
-            submitBtn.textContent = 'Thanks!';
-            input.value = '';
-            selectedRating = 0;
-            stars.forEach(function(s) { s.classList.remove('active'); });
-            setTimeout(function() { panel.classList.add('hidden'); tab.style.display = ''; submitBtn.textContent = 'Send feedback'; submitBtn.disabled = false; }, 1500);
-        }).catch(function() { submitBtn.textContent = 'Failed — try again'; submitBtn.disabled = false; });
-    });
-})();
-</script>
-
+<!-- Theme toggle (mirrors main site) -->
 <script>
 (function() {
     const saved = localStorage.getItem('theme');
-    if (saved === 'light') document.documentElement.setAttribute('data-theme', 'light');
-    document.getElementById('themeToggle').addEventListener('click', function() {
-        const isLight = document.documentElement.getAttribute('data-theme') === 'light';
-        if (isLight) {
-            document.documentElement.removeAttribute('data-theme');
-            localStorage.setItem('theme', 'dark');
-            this.querySelector('.theme-icon').textContent = '\u2600';
-        } else {
-            document.documentElement.setAttribute('data-theme', 'light');
-            localStorage.setItem('theme', 'light');
-            this.querySelector('.theme-icon').textContent = '\u263D';
+    if (saved) document.documentElement.setAttribute('data-theme', saved);
+    const btn = document.getElementById('themeToggle');
+    if (btn) {
+        const icon = btn.querySelector('.theme-icon');
+        function updateIcon() {
+            const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+            if (icon) icon.textContent = isLight ? '\u263E' : '\u2600';
         }
-    });
-    if (saved === 'light') document.querySelector('.theme-icon').textContent = '\u263D';
+        updateIcon();
+        btn.addEventListener('click', () => {
+            const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+            const next = isLight ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+            updateIcon();
+        });
+    }
 })();
 </script>
+
+<!-- Feedback tab -->
+<button class="feedback-tab" id="feedbackTab" onclick="document.getElementById('feedbackPanel').classList.toggle('hidden')">Feedback</button>
+<div class="feedback-panel hidden" id="feedbackPanel">
+    <div class="feedback-header">
+        <span>How's your experience?</span>
+        <button class="feedback-close" onclick="this.parentElement.parentElement.classList.add('hidden')">✕</button>
+    </div>
+    <div class="feedback-stars" id="feedbackStars">
+        <span class="feedback-star" data-rating="1">★</span>
+        <span class="feedback-star" data-rating="2">★</span>
+        <span class="feedback-star" data-rating="3">★</span>
+        <span class="feedback-star" data-rating="4">★</span>
+        <span class="feedback-star" data-rating="5">★</span>
+    </div>
+    <textarea class="feedback-input" id="feedbackInput" placeholder="Tell us what you think..."></textarea>
+    <button class="feedback-submit" id="feedbackSubmit">Send feedback</button>
+</div>
 </body>
 </html>

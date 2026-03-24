@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link rel="preload" href="fonts/GT-Walsheim-Regular.woff" as="font" type="font/woff" crossorigin>
     <link rel="preload" href="banner.webp" as="image" type="image/webp">
-    <link rel="stylesheet" href="styles.css?v=130">
+    <link rel="stylesheet" href="styles.css?v=131">
 </head>
 <body>
 
@@ -133,50 +133,90 @@
                 </div>
             </section>
 
-            <!-- CATEGORIES — 2×2 grid -->
+            <!-- INTERACTIVE 2×2 SELECTOR -->
             <section class="lp-process">
                 <div class="lp-container">
-                    <h2 class="lp-section-heading">What kind of challenge are you working on?</h2>
-                    <p class="lp-section-sub">Pick the one that fits. Pete will guide you to the right tools.</p>
-                    <div class="lp-process-grid lp-grid-2x2">
-                        <div class="lp-process-card lp-cat-untangle">
-                            <span class="lp-cat-badge" style="color:var(--teal)">THE UNTANGLE</span>
-                            <h3 class="lp-process-tagline">I need to understand the real problem before I move forward</h3>
-                            <p class="lp-process-desc">Whether you're just starting out or hitting a wall, these tools help you dig into what's really going on.</p>
-                            <div class="lp-process-tools">
-                                <span class="lp-tool-pill">Five Whys</span>
-                                <span class="lp-tool-pill">Empathy Map</span>
-                                <span class="lp-tool-pill">Jobs to Be Done</span>
+                    <!-- Step 1: Orientation -->
+                    <div class="lp-selector" id="lpSelector">
+                        <div class="lp-selector-step" id="selectorStep1">
+                            <h2 class="lp-selector-question">What are you working with?</h2>
+                            <div class="lp-selector-options">
+                                <button class="lp-selector-btn" data-axis="orientation" data-value="problem">
+                                    <span class="lp-selector-label">A problem</span>
+                                    <span class="lp-selector-hint">Something's not working and I need to figure out why</span>
+                                </button>
+                                <button class="lp-selector-btn" data-axis="orientation" data-value="idea">
+                                    <span class="lp-selector-label">An idea</span>
+                                    <span class="lp-selector-hint">I have the seed of something and want to develop it</span>
+                                </button>
                             </div>
                         </div>
-                        <div class="lp-process-card lp-cat-spark">
-                            <span class="lp-cat-badge" style="color:var(--orange)">THE SPARK</span>
-                            <h3 class="lp-process-tagline">I have the beginning of an idea — help me explore it</h3>
-                            <p class="lp-process-desc">You've got a seed of something. Pete will help you brainstorm possibilities and find unexpected angles.</p>
-                            <div class="lp-process-tools">
-                                <span class="lp-tool-pill">Crazy 8s</span>
-                                <span class="lp-tool-pill">How Might We</span>
-                                <span class="lp-tool-pill">SCAMPER</span>
+
+                        <!-- Step 2: Clarity (hidden until step 1 answered) -->
+                        <div class="lp-selector-step lp-selector-hidden" id="selectorStep2">
+                            <h2 class="lp-selector-question">How clear is it?</h2>
+                            <div class="lp-selector-options">
+                                <button class="lp-selector-btn" data-axis="clarity" data-value="fuzzy">
+                                    <span class="lp-selector-label">Still forming</span>
+                                    <span class="lp-selector-hint">Early days — I'm still figuring it out</span>
+                                </button>
+                                <button class="lp-selector-btn" data-axis="clarity" data-value="clear">
+                                    <span class="lp-selector-label">Pretty clear</span>
+                                    <span class="lp-selector-hint">I know what I want — I need to make it happen</span>
+                                </button>
                             </div>
                         </div>
-                        <div class="lp-process-card lp-cat-test">
-                            <span class="lp-cat-badge" style="color:var(--pink)">THE TEST</span>
-                            <h3 class="lp-process-tagline">I have a solution — help me break it before I ship it</h3>
-                            <p class="lp-process-desc">Pete will stress-test it, argue against it, and find proven patterns from other fields.</p>
-                            <div class="lp-process-tools">
-                                <span class="lp-tool-pill">Pre-Mortem</span>
-                                <span class="lp-tool-pill">Devil's Advocate</span>
-                                <span class="lp-tool-pill">Analogical Thinking</span>
-                            </div>
+
+                        <!-- Result card (hidden until both answered) -->
+                        <div class="lp-selector-result lp-selector-hidden" id="selectorResult">
+                            <!-- Populated by JS -->
                         </div>
-                        <div class="lp-process-card lp-cat-build">
-                            <span class="lp-cat-badge" style="color:var(--yellow)">THE BUILD</span>
-                            <h3 class="lp-process-tagline">I have a clear idea — help me turn it into a plan</h3>
-                            <p class="lp-process-desc">Pete will help you map out the model, start with what you have, and design a test for your riskiest assumption.</p>
-                            <div class="lp-process-tools">
-                                <span class="lp-tool-pill">Lean Canvas</span>
-                                <span class="lp-tool-pill">Effectuation</span>
-                                <span class="lp-tool-pill">Rapid Experiment</span>
+
+                        <!-- Reset link -->
+                        <div class="lp-selector-reset lp-selector-hidden" id="selectorReset">
+                            <button class="lp-selector-reset-btn" id="selectorResetBtn">Choose again</button>
+                        </div>
+                    </div>
+
+                    <!-- Static fallback: all 4 categories visible below -->
+                    <div class="lp-selector-all" id="selectorAll">
+                        <p class="lp-selector-all-label">Or browse all four categories:</p>
+                        <div class="lp-process-grid lp-grid-2x2">
+                            <div class="lp-process-card lp-cat-untangle lp-mini-card">
+                                <span class="lp-cat-badge" style="color:var(--teal)">THE UNTANGLE</span>
+                                <p class="lp-process-tagline">Something's not working — let's find out what.</p>
+                                <div class="lp-process-tools">
+                                    <span class="lp-tool-pill">Five Whys</span>
+                                    <span class="lp-tool-pill">Empathy Map</span>
+                                    <span class="lp-tool-pill">Jobs to Be Done</span>
+                                </div>
+                            </div>
+                            <div class="lp-process-card lp-cat-spark lp-mini-card">
+                                <span class="lp-cat-badge" style="color:var(--orange)">THE SPARK</span>
+                                <p class="lp-process-tagline">Got a seed of something — let's grow it.</p>
+                                <div class="lp-process-tools">
+                                    <span class="lp-tool-pill">Crazy 8s</span>
+                                    <span class="lp-tool-pill">How Might We</span>
+                                    <span class="lp-tool-pill">SCAMPER</span>
+                                </div>
+                            </div>
+                            <div class="lp-process-card lp-cat-test lp-mini-card">
+                                <span class="lp-cat-badge" style="color:var(--pink)">THE TEST</span>
+                                <p class="lp-process-tagline">Think you have the answer — let's break it.</p>
+                                <div class="lp-process-tools">
+                                    <span class="lp-tool-pill">Pre-Mortem</span>
+                                    <span class="lp-tool-pill">Devil's Advocate</span>
+                                    <span class="lp-tool-pill">Analogical Thinking</span>
+                                </div>
+                            </div>
+                            <div class="lp-process-card lp-cat-build lp-mini-card">
+                                <span class="lp-cat-badge" style="color:var(--yellow)">THE BUILD</span>
+                                <p class="lp-process-tagline">Know what you want — let's make it real.</p>
+                                <div class="lp-process-tools">
+                                    <span class="lp-tool-pill">Lean Canvas</span>
+                                    <span class="lp-tool-pill">Effectuation</span>
+                                    <span class="lp-tool-pill">Rapid Experiment</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -552,6 +592,6 @@
         <button class="feedback-submit" id="feedbackSubmit">Send feedback</button>
     </div>
 
-    <script src="app.js?v=130"></script>
+    <script src="app.js?v=131"></script>
 </body>
 </html>
