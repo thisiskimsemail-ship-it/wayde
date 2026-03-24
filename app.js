@@ -1290,7 +1290,7 @@ function scrollToBottom() {
 function maybeShowReportCta() {
     if (state.exchangeCount >= 3 && !state.reportGenerated) {
         reportCtaBtn.disabled = false;
-        reportCtaBtn.textContent = 'Access your Studio Session report →';
+        reportCtaBtn.textContent = 'Generate my report →';
         // Enable within-stage tool picker after first real exchange
         setPickerEnabled(true);
     }
@@ -1417,7 +1417,7 @@ function renderWrapPrompt() {
         const nextExName = EXERCISE_LABELS[next.exercise] || next.exercise;
         actionsHtml += `<button class="wrap-btn wrap-btn-continue">Continue to ${nextModeName} — ${nextExName} →</button>`;
     }
-    actionsHtml += '<button class="wrap-btn wrap-btn-report">Access your Studio Session report →</button>';
+    actionsHtml += '<button class="wrap-btn wrap-btn-report">Generate my report →</button>';
 
     wrapDiv.innerHTML = `
         <p class="wrap-prompt-text">Nice work. Your report is being generated now.</p>
@@ -1754,7 +1754,7 @@ async function streamResponse() {
             if (state.exchangeCount >= 4 && !state.reportGenerated) {
                 reportCta.classList.remove('hidden');
                 reportCtaBtn.disabled = false;
-                reportCtaBtn.textContent = 'Get your session summary →';
+                reportCtaBtn.textContent = 'Generate my report →';
             }
             scrollToBottom();
         } else {
@@ -1892,7 +1892,7 @@ function autoSaveSessionSummary() {
 
 let reportGenerating = false;
 async function generateReport() {
-    if (reportGenerating || state.reportGenerated) return; // prevent double-generation
+    if (reportGenerating || state.reportGenerated) return;
     trackEvent('report_generate', { exchanges: state.exchangeCount });
     reportGenerating = true;
     reportCtaBtn.disabled = true;
@@ -1900,121 +1900,138 @@ async function generateReport() {
 
     const progress = showReportProgress();
 
-    try {
-        const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 90000); // 90s timeout
-        // If user switched tools mid-session, send only current-tool messages + context summary
-        let reportMessages = [...state.messages];
-        const switchIdx = reportMessages.findLastIndex(m => m._switchPoint);
-        if (switchIdx > 0) {
-            const preSummary = reportMessages.slice(0, switchIdx)
-                .filter(m => m.role === 'user' && !m.content.startsWith('[SYSTEM]'))
-                .map(m => m.content).join(' | ');
-            reportMessages = [
-                { role: 'user', content: `[Context from previous exercise]: ${preSummary}` },
-                { role: 'assistant', content: 'Understood — I have the context from your previous exercise. Let me focus on this one.' },
-                ...reportMessages.slice(switchIdx).map(m => ({ role: m.role, content: m.content }))
-            ];
+    // Build message payload once
+    let reportMessages = [...state.messages];
+    const switchIdx = reportMessages.findLastIndex(m => m._switchPoint);
+    if (switchIdx > 0) {
+        const preSummary = reportMessages.slice(0, switchIdx)
+            .filter(m => m.role === 'user' && !m.content.startsWith('[SYSTEM]'))
+            .map(m => m.content).join(' | ');
+        reportMessages = [
+            { role: 'user', content: `[Context from previous exercise]: ${preSummary}` },
+            { role: 'assistant', content: 'Understood — I have the context from your previous exercise. Let me focus on this one.' },
+            ...reportMessages.slice(switchIdx).map(m => ({ role: m.role, content: m.content }))
+        ];
+    }
+
+    const retryMessages = ['Generating report...', 'Still working on your report...', 'Almost there, one more try...'];
+    const retryDelays = [0, 2000, 4000];
+    let data = null;
+
+    for (let attempt = 0; attempt < 3; attempt++) {
+        if (attempt > 0) {
+            reportCtaBtn.textContent = retryMessages[attempt];
+            await new Promise(r => setTimeout(r, retryDelays[attempt]));
         }
 
-        const res = await fetch('/api/report', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            signal: controller.signal,
-            body: JSON.stringify({
-                mode: state.mode,
-                exercise: state.exercise,
-                messages: reportMessages,
-                parking_lot: state.parkingLot,
-                board_cards: state.board.cards
-            })
-        });
-        clearTimeout(timeout);
+        try {
+            const controller = new AbortController();
+            const timeout = setTimeout(() => controller.abort(), 90000);
 
-        if (!res.ok) {
-            const errText = await res.text().catch(() => 'Unknown error');
-            console.error('[Report] Server error:', res.status, errText.slice(0, 200));
-            progress.error();
-            reportGenerating = false;
-            reportCtaBtn.textContent = 'Something went wrong — try again';
-            reportCtaBtn.disabled = false;
-            return;
+            const res = await fetch('/api/report', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                signal: controller.signal,
+                body: JSON.stringify({
+                    mode: state.mode,
+                    exercise: state.exercise,
+                    messages: reportMessages,
+                    parking_lot: state.parkingLot,
+                    board_cards: state.board.cards
+                })
+            });
+            clearTimeout(timeout);
+
+            if (!res.ok) {
+                console.error(`[Report] Attempt ${attempt + 1} server error:`, res.status);
+                continue; // retry
+            }
+
+            data = await res.json();
+            if (data.error || !data.report) {
+                console.error(`[Report] Attempt ${attempt + 1} empty/error:`, data.error);
+                data = null;
+                continue; // retry
+            }
+
+            break; // success
+        } catch (err) {
+            console.error(`[Report] Attempt ${attempt + 1} failed:`, err.message);
+            continue; // retry
         }
+    }
 
-        const data = await res.json();
-
-        if (data.error || !data.report) {
-            console.error('[Report] Error or empty:', data.error || 'empty report');
-            progress.error();
-            reportGenerating = false;
-            reportCtaBtn.textContent = 'Something went wrong — try again';
-            reportCtaBtn.disabled = false;
-            return;
-        }
-
-        progress.complete();
-        state.reportText = data.report;
-        state.reportSynopsis = data.synopsis || {};
-        state.reportGenerated = true;
-        console.log('[Report] Got report text, length:', data.report.length);
-
-        // Close board so report has full width
-        if (state.board.visible) {
-            toggleBoard();
-        }
-
-        // Clean up end-of-session clutter
-        document.querySelector('.chat-action-btns')?.remove();
-        document.querySelector('.option-chips')?.remove();
-        document.querySelector('.wrap-btn-report')?.remove();
-
-        // Populate synopsis card
-        const synopsisCard = document.getElementById('reportSynopsis');
-        const synopsisTitle = document.getElementById('synopsisTitle');
-        const synopsisHook = document.getElementById('synopsisHook');
-        const synopsisBullets = document.getElementById('synopsisBullets');
-        const synopsisMeta = document.getElementById('synopsisMeta');
-
-        const mName = MODE_LABELS[state.mode] || state.mode;
-        const exName = EXERCISE_LABELS[state.exercise] || state.exercise;
-        const date = new Date().toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' }).toUpperCase();
-        if (synopsisMeta) synopsisMeta.textContent = `${mName} · ${exName} · ${date}`;
-
-        if (state.reportSynopsis.title) synopsisTitle.textContent = state.reportSynopsis.title;
-        if (state.reportSynopsis.hook) synopsisHook.textContent = state.reportSynopsis.hook;
-        if (state.reportSynopsis.bullets && synopsisBullets) {
-            synopsisBullets.innerHTML = state.reportSynopsis.bullets
-                .map(b => `<li>${b}</li>`).join('');
-        }
-
-        // Show synopsis card (not the full report)
-        synopsisCard.classList.remove('hidden');
-        reportCta.classList.add('hidden');
-
-        // Prepare full report in background (hidden)
-        reportContent.innerHTML = renderMarkdown(state.reportText);
-        populateReportMeta();
-
-        // Scroll synopsis into view
-        setTimeout(() => {
-            synopsisCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }, 200);
-
-    } catch (err) {
+    if (!data || !data.report) {
         progress.error();
         reportGenerating = false;
-        reportCtaBtn.textContent = 'Connection error — try again';
+        reportCtaBtn.textContent = 'Taking longer than expected — try again';
         reportCtaBtn.disabled = false;
+        return;
     }
+
+    progress.complete();
+    state.reportText = data.report;
+    state.reportSynopsis = data.synopsis || {};
+    state.reportGenerated = true;
+    console.log('[Report] Got report text, length:', data.report.length);
+
+    // Close board so report has full width
+    if (state.board.visible) {
+        toggleBoard();
+    }
+
+    // Clean up end-of-session clutter
+    document.querySelector('.chat-action-btns')?.remove();
+    document.querySelector('.option-chips')?.remove();
+    document.querySelector('.wrap-btn-report')?.remove();
+
+    // Populate synopsis card
+    const synopsisCard = document.getElementById('reportSynopsis');
+    const synopsisTitle = document.getElementById('synopsisTitle');
+    const synopsisHook = document.getElementById('synopsisHook');
+    const synopsisBullets = document.getElementById('synopsisBullets');
+    const synopsisMeta = document.getElementById('synopsisMeta');
+
+    const mName = MODE_LABELS[state.mode] || state.mode;
+    const exName = EXERCISE_LABELS[state.exercise] || state.exercise;
+    const date = new Date().toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' }).toUpperCase();
+    if (synopsisMeta) synopsisMeta.textContent = `${mName} · ${exName} · ${date}`;
+
+    if (state.reportSynopsis.title) synopsisTitle.textContent = state.reportSynopsis.title;
+    if (state.reportSynopsis.hook) synopsisHook.textContent = state.reportSynopsis.hook;
+    if (state.reportSynopsis.bullets && synopsisBullets) {
+        synopsisBullets.innerHTML = state.reportSynopsis.bullets
+            .map(b => `<li>${b}</li>`).join('');
+    }
+
+    // Show synopsis card (not the full report)
+    synopsisCard.classList.remove('hidden');
+    reportCta.classList.add('hidden');
+
+    // Prepare full report in background (hidden)
+    reportContent.innerHTML = renderMarkdown(state.reportText);
+    populateReportMeta();
+
+    // Auto-scroll synopsis into view
+    setTimeout(() => {
+        synopsisCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 200);
 }
 
 reportCtaBtn.addEventListener('click', async () => {
-    // Skip pre-report handoff — go straight to report generation
-    // Course recommendation is already in the report itself
-    if (false && !state.preReportAsked && state.exchangeCount >= 3) {
-        state.preReportAsked = true;
-        reportCtaBtn.disabled = true;
-        reportCtaBtn.textContent = 'One moment...';
+    // Show lead capture form first, then generate report on submit
+    const unlockEl = document.getElementById('reportUnlock');
+    if (unlockEl && !state.leadCaptured) {
+        reportCta.classList.add('hidden');
+        unlockEl.classList.remove('hidden');
+        unlockEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        return;
+    }
+    generateReport();
+});
+
+// Dead code — pre-report handoff (disabled)
+if (false) { (async () => {
 
         let fullText = '';
         let agentDiv = null;
@@ -2085,7 +2102,7 @@ reportCtaBtn.addEventListener('click', async () => {
     }
 
     generateReport();
-});
+})(); }
 
 // === SHARED LEAD CAPTURE LOGIC ===
 
@@ -2223,10 +2240,15 @@ ${reportContent.innerHTML}
 
 let pendingDownloadFormat = null; // 'word' or 'pdf'
 
-// Synopsis "Download my report" button → show lead form
+// Synopsis "Download my report" button → go straight to format choice (lead already captured)
 document.getElementById('synopsisDownloadBtn')?.addEventListener('click', () => {
-    reportUnlock.classList.remove('hidden');
-    reportUnlock.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    document.getElementById('reportSynopsis')?.classList.add('hidden');
+    const formatChoice = document.getElementById('reportFormatChoice');
+    if (formatChoice) {
+        formatChoice.classList.remove('hidden');
+        formatChoice.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+    renderNextExercisePanel();
 });
 
 // Synopsis close button
@@ -2234,7 +2256,7 @@ document.getElementById('synopsisCloseBtn')?.addEventListener('click', () => {
     document.getElementById('reportSynopsis')?.classList.add('hidden');
 });
 
-// Lead capture form submit → email report, then show format choice
+// Lead capture form submit → capture lead, then generate report
 document.getElementById('unlockForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     trackEvent('lead_capture');
@@ -2246,13 +2268,15 @@ document.getElementById('unlockForm')?.addEventListener('submit', async (e) => {
 
     if (!email) return;
     submitBtn.disabled = true;
-    submitBtn.textContent = 'Sending your report...';
+    submitBtn.textContent = 'Building your report...';
 
-    // Store email for memory system
+    // Store lead data
     state.userEmail = email;
+    state.leadCaptured = true;
+    state.leadData = { email, name, company, role };
     localStorage.setItem('wade_user_email', email);
 
-    // Generate and store session summary (async, non-blocking)
+    // Generate session summary (async, non-blocking)
     fetch('/api/summary', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -2265,36 +2289,32 @@ document.getElementById('unlockForm')?.addEventListener('submit', async (e) => {
         })
     }).catch(err => console.warn('[Summary] Failed:', err));
 
-    // Send lead + email the report
-    try {
-        await fetch('/api/lead', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                email, name, company, role,
-                mode: state.mode,
-                exercise: state.exercise,
-                report: state.reportText,
-                rating: state.rating,
-                messages: state.messages
-            })
-        });
-    } catch (err) {
-        console.error('[Lead] Failed to send:', err);
-    }
-
-    // Hide form + synopsis, show format choice
+    // Hide form, show progress
     reportUnlock.classList.add('hidden');
-    document.getElementById('reportSynopsis')?.classList.add('hidden');
-    reportCta.classList.add('hidden');
-    const formatChoice = document.getElementById('reportFormatChoice');
-    if (formatChoice) {
-        formatChoice.classList.remove('hidden');
-        formatChoice.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+    // Now generate the report
+    await generateReport();
+
+    // After report generates, send the lead + email the report
+    if (state.reportGenerated && state.reportText) {
+        try {
+            await fetch('/api/lead', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email, name, company, role,
+                    mode: state.mode,
+                    exercise: state.exercise,
+                    report: state.reportText,
+                    rating: state.rating,
+                    messages: state.messages
+                })
+            });
+        } catch (err) {
+            console.error('[Lead] Failed to send:', err);
+        }
     }
 
-    // Show next exercise suggestion
-    renderNextExercisePanel();
     saveSession();
 
     submitBtn.disabled = false;
