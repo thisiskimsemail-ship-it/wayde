@@ -673,7 +673,7 @@ function startExercise(mode, exercise, startMsg = null) {
 
     // Update footer label + learn more link
     modeLabel.innerHTML = `${EXERCISE_LABELS[exercise] || exercise} ·`;
-    if (toolLearnLink) { toolLearnLink.href = `tool.html?tool=${exercise}`; toolLearnLink.classList.remove('hidden'); }
+    if (toolLearnLink) { toolLearnLink.href = `tool-detail-${exercise}.html`; toolLearnLink.classList.remove('hidden'); }
 
     // Update stage progress strip
     updateStageProgress(mode);
@@ -729,7 +729,7 @@ function startExercise(mode, exercise, startMsg = null) {
         introDiv.className = 'activity-brief';
         introDiv.dataset.mode = mode;
         const briefTime = EXERCISE_TIMES[exercise] || `~${Math.round(expectedExchanges * 2)} min`;
-        introDiv.innerHTML = `<div class="activity-brief-header"><span class="activity-brief-stage">${MODE_LABELS[mode] || mode}</span><span class="activity-brief-time">${briefTime}</span></div><h3 class="activity-brief-name"><a class="intro-label-link" href="toolbox.html#${exercise}" target="_blank" rel="noopener">${EXERCISE_LABELS[exercise] || exercise}</a></h3><p class="activity-brief-desc">${desc}</p>${arc ? `<p class="activity-brief-arc">${arc}</p>` : ''}<a class="activity-brief-learn" href="tool.html?tool=${exercise}" target="_blank" rel="noopener">Learn more about this tool →</a>`;
+        introDiv.innerHTML = `<div class="activity-brief-header"><span class="activity-brief-stage">${MODE_LABELS[mode] || mode}</span><span class="activity-brief-time">${briefTime}</span></div><h3 class="activity-brief-name"><a class="intro-label-link" href="toolbox.html#${exercise}" target="_blank" rel="noopener">${EXERCISE_LABELS[exercise] || exercise}</a></h3><p class="activity-brief-desc">${desc}</p>${arc ? `<p class="activity-brief-arc">${arc}</p>` : ''}<a class="activity-brief-learn" href="tool-detail-${exercise}.html" target="_blank" rel="noopener">Learn more about this tool →</a>`;
         messagesEl.appendChild(introDiv);
     }
     inputField.placeholder = EXERCISE_HINTS[exercise] || 'Describe your challenge or idea...';
@@ -769,7 +769,7 @@ function forceCloseSession() {
     inputField.disabled = false;
     inputField.placeholder = 'Describe your challenge or idea...';
     sendBtn.disabled = true;
-    modeLabel.textContent = 'Wade Innovation Toolbox · ';
+    modeLabel.textContent = 'The Studio · ';
     if (toolLearnLink) toolLearnLink.classList.add('hidden');
     // Clear all report UI
     document.getElementById('reportSynopsis')?.classList.add('hidden');
@@ -862,7 +862,7 @@ function doCloseSession() {
     messagesEl.innerHTML = '';
     inputField.value = ''; sendBtn.disabled = true;
     inputField.placeholder = 'Describe your challenge or idea...';
-    modeLabel.textContent = 'Wade Innovation Toolbox · ';
+    modeLabel.textContent = 'The Studio · ';
     if (toolLearnLink) toolLearnLink.classList.add('hidden');
     state.rating = null;
     state.pushHarder = false;
@@ -901,7 +901,7 @@ function swapToTool(mode, exercise, swapEl) {
     sessionMode.textContent = MODE_LABELS[mode] || mode;
     sessionExercise.textContent = EXERCISE_LABELS[exercise] || exercise;
     modeLabel.innerHTML = `<a class="mode-label-link" href="toolbox.html#${exercise}" target="_blank" rel="noopener">${EXERCISE_LABELS[exercise] || exercise}</a> ·`;
-    if (toolLearnLink) { toolLearnLink.href = `tool.html?tool=${exercise}`; toolLearnLink.classList.remove('hidden'); }
+    if (toolLearnLink) { toolLearnLink.href = `tool-detail-${exercise}.html`; toolLearnLink.classList.remove('hidden'); }
     updateStageProgress(mode);
 
     // Reset tool picker
@@ -969,7 +969,7 @@ function enterStudio() {
     // Hide input until Pete's first message arrives
     if (inputArea) inputArea.style.display = 'none';
     moveInputToSession();
-    modeLabel.textContent = 'Wade Innovation Toolbox · ';
+    modeLabel.textContent = 'The Studio · ';
     if (toolLearnLink) toolLearnLink.classList.add('hidden');
     inputField.placeholder = 'Type your response...';
 
@@ -1020,7 +1020,7 @@ function startRouting(text) {
     welcome.classList.add('hidden');
     moveInputToSession();
     routingBack.classList.remove('hidden');
-    modeLabel.textContent = 'Wade Innovation Toolbox · ';
+    modeLabel.textContent = 'The Studio · ';
     if (toolLearnLink) toolLearnLink.classList.add('hidden');
 
     state.messages.push({ role: 'user', content: text });
@@ -1046,7 +1046,7 @@ routingBackBtn.addEventListener('click', () => {
     messagesEl.innerHTML = '';
     inputField.value = ''; sendBtn.disabled = true;
     inputField.placeholder = 'Describe your challenge or idea...';
-    modeLabel.textContent = 'Wade Innovation Toolbox · ';
+    modeLabel.textContent = 'The Studio · ';
     if (toolLearnLink) toolLearnLink.classList.add('hidden');
     routingBack.classList.add('hidden');
     chatArea.scrollTop = 0;
@@ -1197,7 +1197,7 @@ function restoreSession(session) {
     sessionMode.textContent = MODE_LABELS[state.mode] || state.mode;
     sessionExercise.textContent = EXERCISE_LABELS[state.exercise] || state.exercise;
     modeLabel.innerHTML = `<a class="mode-label-link" href="toolbox.html#${state.exercise}" target="_blank" rel="noopener">${EXERCISE_LABELS[state.exercise] || state.exercise}</a> ·`;
-    if (toolLearnLink) { toolLearnLink.href = `tool.html?tool=${state.exercise}`; toolLearnLink.classList.remove('hidden'); }
+    if (toolLearnLink) { toolLearnLink.href = `tool-detail-${state.exercise}.html`; toolLearnLink.classList.remove('hidden'); }
     reportCta.classList.remove('hidden');
     updateStageProgress(state.mode);
     // Restore tool picker state
