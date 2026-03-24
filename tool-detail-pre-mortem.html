@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pre-Mortem — Wade Innovation Toolbox</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700&family=DM+Serif+Display:ital@0;1&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --navy: #1B2A4A; --navy-deep: #131E35; --orange: #E85D26; --orange-hover: #D14E1B;
+    --white: #FFFFFF; --text-body: #B8BCC8; --text-light: #7A7F8E;
+    --border: #2A3656; --border-light: #3A4666; --card-bg: #1F2E4D; --card-hover: #253658;
+    --cat-color: #A855F7; --untangle: #3B82F6; --spark: #E85D26; --test: #A855F7; --build: #22C55E;
+  }
+  body { font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif; color: var(--text-body); background: var(--navy-deep); -webkit-font-smoothing: antialiased; }
+  header { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: var(--navy-deep); border-bottom: 2px solid var(--orange); padding: 0 60px; height: 72px; display: flex; align-items: center; justify-content: space-between; }
+  .logo { font-weight: 700; font-size: 15px; line-height: 1.15; color: var(--orange); letter-spacing: 0.4px; text-transform: uppercase; }
+  .header-nav { display: flex; gap: 12px; align-items: center; }
+  .nav-pill { font-size: 14px; font-weight: 500; padding: 8px 20px; border-radius: 100px; border: 1.5px solid rgba(255,255,255,0.25); background: transparent; color: var(--white); cursor: pointer; text-decoration: none; transition: all 0.2s; font-family: 'DM Sans', sans-serif; }
+  .nav-pill:hover { background: rgba(255,255,255,0.1); }
+  .nav-pill.active { background: var(--white); color: var(--navy); border-color: var(--white); }
+  .nav-icon { width: 36px; height: 36px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,0.25); display: flex; align-items: center; justify-content: center; color: var(--white); font-size: 14px; text-decoration: none; }
+  .tool-hero { padding: 140px 60px 60px; max-width: 1300px; margin: 0 auto; }
+  .breadcrumb { font-size: 14px; color: var(--text-light); margin-bottom: 28px; }
+  .breadcrumb a { color: var(--cat-color); text-decoration: none; }
+  .breadcrumb a:hover { text-decoration: underline; }
+  .breadcrumb span { margin: 0 8px; color: var(--border-light); }
+  .tool-hero-grid { display: grid; grid-template-columns: 1fr 360px; gap: 60px; align-items: start; }
+  .tool-hero-left .stage-badge { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; padding: 5px 14px; border-radius: 100px; background: var(--cat-color); color: var(--white); margin-bottom: 16px; }
+  .tool-hero-left h1 { font-family: 'DM Serif Display', Georgia, serif; font-size: 56px; font-weight: 400; color: var(--white); line-height: 1.1; margin-bottom: 12px; }
+  .tool-headline { font-family: 'DM Serif Display', Georgia, serif; font-size: 24px; font-weight: 400; color: var(--cat-color); font-style: italic; margin-bottom: 24px; }
+  .tool-intro { font-size: 18px; line-height: 1.7; color: var(--text-body); max-width: 600px; }
+  .quick-facts { background: var(--card-bg); border-radius: 16px; border: 1px solid var(--border); padding: 32px; }
+  .qf-title { font-size: 13px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--text-light); margin-bottom: 20px; }
+  .qf-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border); }
+  .qf-row:last-of-type { border-bottom: none; }
+  .qf-label { font-size: 14px; color: var(--text-light); }
+  .qf-value { font-size: 14px; font-weight: 600; color: var(--white); }
+  .qf-pathways { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); }
+  .qf-pathways-label { font-size: 13px; color: var(--text-light); margin-bottom: 10px; }
+  .pathway-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .pathway-tag { font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 100px; border: 1px solid; }
+  .pathway-tag.test { border-color: rgba(168,85,247,0.4); color: var(--test); }
+  .qf-cta { display: block; width: 100%; text-align: center; margin-top: 24px; padding: 14px 24px; background: var(--cat-color); color: var(--white); border-radius: 100px; border: none; font-size: 16px; font-weight: 600; font-family: 'DM Sans', sans-serif; cursor: pointer; text-decoration: none; transition: all 0.2s; }
+  .qf-cta:hover { filter: brightness(0.9); }
+  .content-area { padding: 0 60px 80px; max-width: 1300px; margin: 0 auto; }
+  .content-grid { display: grid; grid-template-columns: 1fr 360px; gap: 60px; }
+  .content-main { max-width: 100%; }
+  .section-block { margin-bottom: 56px; }
+  .section-block h2 { font-family: 'DM Serif Display', Georgia, serif; font-size: 32px; font-weight: 400; color: var(--white); margin-bottom: 20px; }
+  .section-block p { font-size: 17px; line-height: 1.75; color: var(--text-body); margin-bottom: 16px; }
+  .section-block p strong { color: var(--white); }
+  .steps-timeline { position: relative; padding-left: 40px; }
+  .steps-timeline::before { content: ''; position: absolute; left: 14px; top: 8px; bottom: 8px; width: 2px; background: var(--border); }
+  .step-item { position: relative; padding-bottom: 32px; }
+  .step-item:last-child { padding-bottom: 0; }
+  .step-number { position: absolute; left: -40px; top: 0; width: 30px; height: 30px; border-radius: 50%; background: var(--card-bg); border: 2px solid var(--cat-color); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: var(--cat-color); }
+  .step-title { font-size: 17px; font-weight: 600; color: var(--white); margin-bottom: 6px; }
+  .step-desc { font-size: 15px; color: var(--text-body); line-height: 1.6; }
+  .sample-output { background: var(--card-bg); border-radius: 16px; border: 1px solid var(--border); padding: 32px; margin-top: 8px; }
+  .sample-label { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--cat-color); margin-bottom: 20px; }
+  .sample-root { margin-top: 20px; padding-top: 20px; border-top: 2px solid var(--cat-color); }
+  .sample-root-label { font-size: 12px; font-weight: 700; color: var(--cat-color); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px; }
+  .sample-root-text { font-family: 'DM Serif Display', Georgia, serif; font-size: 20px; color: var(--white); line-height: 1.4; }
+
+  /* Risk table */
+  .risk-table { width: 100%; border-collapse: collapse; margin-bottom: 0; }
+  .risk-table th { font-size: 11px; font-weight: 700; color: var(--cat-color); text-transform: uppercase; letter-spacing: 0.8px; text-align: left; padding: 8px 10px; border-bottom: 2px solid var(--border); }
+  .risk-table td { font-size: 13px; color: var(--text-body); padding: 12px 10px; border-bottom: 1px solid var(--border); vertical-align: top; line-height: 1.5; }
+  .risk-table tr:last-child td { border-bottom: none; }
+  .risk-table tr.selected td { background: rgba(168,85,247,0.06); }
+  .risk-table .risk-name { color: var(--white); font-weight: 500; }
+  .risk-high { color: #F87171; font-weight: 600; }
+  .risk-medium { color: #FBBF24; font-weight: 600; }
+  .risk-critical { color: #F87171; font-weight: 700; }
+
+  .foundation-logos { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 16px; }
+  .org-badge { font-size: 12px; font-weight: 600; padding: 8px 16px; border-radius: 10px; background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--text-light); }
+  .sidebar { display: flex; flex-direction: column; gap: 24px; }
+  .sidebar-card { background: var(--card-bg); border-radius: 14px; border: 1px solid var(--border); padding: 24px; transition: all 0.2s; }
+  .sidebar-card:hover { border-color: var(--border-light); background: var(--card-hover); }
+  .sidebar-card-label { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--text-light); margin-bottom: 16px; }
+  .related-tool { display: flex; gap: 14px; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid var(--border); text-decoration: none; }
+  .related-tool:last-child { border-bottom: none; }
+  .related-tool-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; flex-shrink: 0; }
+  .related-tool-icon.untangle { background: rgba(59,130,246,0.15); color: #3B82F6; }
+  .related-tool-icon.spark { background: rgba(232,93,38,0.15); color: #E85D26; }
+  .related-tool-icon.test { background: rgba(168,85,247,0.15); color: #A855F7; }
+  .related-tool-icon.build { background: rgba(34,197,94,0.15); color: #22C55E; }
+  .related-tool-text h4 { font-size: 14px; font-weight: 600; color: var(--white); margin-bottom: 2px; }
+  .related-tool-text p { font-size: 13px; color: var(--text-light); line-height: 1.4; }
+  .pete-note { background: linear-gradient(135deg, rgba(168,85,247,0.08), rgba(168,85,247,0.04)); border: 1px solid rgba(168,85,247,0.25); border-radius: 14px; padding: 24px; }
+  .pete-avatar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+  .pete-avatar { width: 32px; height: 32px; border-radius: 8px; background: var(--navy); display: flex; align-items: center; justify-content: center; color: var(--white); font-weight: 700; font-size: 13px; }
+  .pete-label { font-size: 13px; font-weight: 600; color: var(--white); }
+  .pete-text { font-size: 14px; color: var(--text-body); line-height: 1.6; font-style: italic; }
+  .tool-bottom-cta { padding: 60px; max-width: 1300px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border); }
+  .tool-bottom-left h3 { font-family: 'DM Serif Display', Georgia, serif; font-size: 28px; font-weight: 400; color: var(--white); margin-bottom: 6px; }
+  .tool-bottom-left p { font-size: 15px; color: var(--text-light); }
+  .tool-bottom-right { display: flex; gap: 16px; align-items: center; }
+  .back-link { font-size: 15px; color: var(--text-light); text-decoration: none; transition: color 0.2s; }
+  .back-link:hover { color: var(--white); }
+  footer { padding: 40px 60px; border-top: 2px solid var(--orange); display: flex; justify-content: space-between; align-items: center; }
+  .footer-left { display: flex; align-items: center; gap: 32px; }
+  .footer-logo { font-weight: 700; font-size: 13px; line-height: 1.15; color: var(--orange); letter-spacing: 0.4px; text-transform: uppercase; }
+  .footer-links { display: flex; gap: 24px; }
+  .footer-links a { font-size: 14px; color: var(--text-light); text-decoration: none; }
+  .footer-links a:hover { color: var(--white); }
+  .footer-right { font-size: 13px; color: var(--text-light); }
+  @media (max-width: 1000px) { .tool-hero-grid, .content-grid { grid-template-columns: 1fr; gap: 32px; } header { padding: 0 32px; } .tool-hero, .content-area, .tool-bottom-cta { padding-left: 32px; padding-right: 32px; } .risk-table { font-size: 12px; } }
+  @media (max-width: 600px) { .tool-hero-left h1 { font-size: 40px; } .section-block h2 { font-size: 28px; } footer { flex-direction: column; gap: 16px; text-align: center; } .tool-bottom-cta { flex-direction: column; gap: 24px; text-align: center; } }
+</style>
+</head>
+<body>
+<header><div class="logo">WADE<br>INSTITUTE</div><nav class="header-nav"><a href="index.html" class="nav-pill">The Studio</a><a href="toolbox.html" class="nav-pill active">Toolbox</a><a href="#" class="nav-icon">Aa</a><a href="#" class="nav-icon">&#x2731;</a><a href="#" class="nav-icon">?</a></nav></header>
+
+<section class="tool-hero">
+  <div class="breadcrumb"><a href="index.html">The Studio</a><span>/</span><a href="toolbox.html">Toolbox</a><span>/</span><a href="toolbox.html#test">The Test</a><span>/</span>Pre-Mortem</div>
+  <div class="tool-hero-grid">
+    <div class="tool-hero-left">
+      <div class="stage-badge">THE TEST</div>
+      <h1>Pre-Mortem</h1>
+      <p class="tool-headline">Imagine the project failed. What went wrong?</p>
+      <p class="tool-intro">Uses prospective hindsight — imagining a project has already failed, then working backwards to identify why. By assuming failure, bypasses optimism and groupthink. Participants asked "what did go wrong?" not "what could go wrong?"</p>
+    </div>
+    <div class="quick-facts">
+      <div class="qf-title">Quick Facts</div>
+      <div class="qf-row"><span class="qf-label">Duration</span><span class="qf-value">~20 minutes</span></div>
+      <div class="qf-row"><span class="qf-label">Category</span><span class="qf-value">The Test</span></div>
+      <div class="qf-row"><span class="qf-label">Origin</span><span class="qf-value">Cognitive psychology, 1989</span></div>
+      <div class="qf-row"><span class="qf-label">Created by</span><span class="qf-value">Gary Klein</span></div>
+      <div class="qf-pathways"><div class="qf-pathways-label">Used in pathways</div><div class="pathway-tags"><span class="pathway-tag test">The Test</span></div></div>
+      <a href="index.html?tool=pre-mortem" class="qf-cta">Try Pre-Mortem &rarr;</a>
+    </div>
+  </div>
+</section>
+
+<section class="content-area">
+  <div class="content-grid">
+    <div class="content-main">
+      <div class="section-block">
+        <h2>When to use it</h2>
+        <p>Use before a significant commitment — launching a product, hiring, investing, kicking off a project. Most valuable when the team is too aligned and risks aren't being surfaced.</p>
+        <p>Core tool in <strong>The Test</strong> when you need to break something before building it.</p>
+      </div>
+      <div class="section-block">
+        <h2>How it works in The Studio</h2>
+        <p>Pete guides you through a structured conversation. Here's what to expect:</p>
+        <div class="steps-timeline">
+          <div class="step-item"><div class="step-number">1</div><div class="step-title">Describe the initiative</div><div class="step-desc">What exactly are you about to commit to?</div></div>
+          <div class="step-item"><div class="step-number">2</div><div class="step-title">Assume failure</div><div class="step-desc">"It's 12 months from now. This failed. Spectacularly."</div></div>
+          <div class="step-item"><div class="step-number">3</div><div class="step-title">List all reasons for failure</div><div class="step-desc">Pete pushes for uncomfortable ones.</div></div>
+          <div class="step-item"><div class="step-number">4</div><div class="step-title">Prioritise by likelihood x impact</div><div class="step-desc">What's most likely AND most damaging?</div></div>
+          <div class="step-item"><div class="step-number">5</div><div class="step-title">Identify cheapest de-risk for top 3</div><div class="step-desc">What's the minimum test?</div></div>
+          <div class="step-item"><div class="step-number">6</div><div class="step-title">Coaching summary</div><div class="step-desc">Pete highlights blind spots.</div></div>
+        </div>
+      </div>
+      <div class="section-block">
+        <h2>Sample output</h2>
+        <p>Here's what a Pre-Mortem looks like in practice:</p>
+        <div class="sample-output">
+          <div class="sample-label">Example: New Product Launch</div>
+          <table class="risk-table">
+            <thead><tr><th>Risk</th><th>Likelihood</th><th>Impact</th><th>De-risk</th></tr></thead>
+            <tbody>
+              <tr><td class="risk-name">Key engineer quits before launch</td><td class="risk-high">High</td><td class="risk-critical">Critical</td><td>Cross-train now, document architecture</td></tr>
+              <tr><td class="risk-name">Enterprise customers need SSO we don't have</td><td class="risk-medium">Medium</td><td class="risk-high">High</td><td>Interview 3 target customers this week</td></tr>
+              <tr><td class="risk-name">Pricing too low for enterprise, too high for SMB</td><td class="risk-medium">Medium</td><td class="risk-high">High</td><td>Run 5 pricing conversations before setting</td></tr>
+              <tr><td class="risk-name">Marketing launch falls flat — no one notices</td><td class="risk-high">High</td><td class="risk-medium">Medium</td><td>Pre-sell to 10 beta users, get testimonials first</td></tr>
+              <tr class="selected"><td class="risk-name">We built for a problem that isn't urgent enough to pay for</td><td class="risk-medium">Medium</td><td class="risk-critical">Critical</td><td>Test willingness-to-pay before building</td></tr>
+            </tbody>
+          </table>
+          <div class="sample-root">
+            <div class="sample-root-label">Top Risk</div>
+            <div class="sample-root-text">"We built for a problem that isn't urgent enough to pay for." Every other risk is manageable if the core problem is real. Test willingness-to-pay this week.</div>
+          </div>
+        </div>
+      </div>
+      <div class="section-block">
+        <h2>What you get</h2>
+        <p>Prioritised list of top risks plus the cheapest way to de-risk each one before resources are committed. Often surfaces risks nobody had articulated openly.</p>
+      </div>
+      <div class="section-block">
+        <h2>Foundation</h2>
+        <p>Developed by <strong>Gary Klein</strong>, cognitive psychologist, in 1989. Published in Harvard Business Review (2007). Taught at Harvard Business School, INSEAD, and Stanford GSB. Used by Amazon, Google, and McKinsey.</p>
+        <div class="foundation-logos"><span class="org-badge">Harvard Business School</span><span class="org-badge">INSEAD</span><span class="org-badge">Stanford GSB</span><span class="org-badge">Amazon</span><span class="org-badge">Google</span><span class="org-badge">McKinsey</span></div>
+      </div>
+    </div>
+    <div class="sidebar">
+      <div class="pete-note"><div class="pete-avatar-row"><div class="pete-avatar">P</div><div class="pete-label">Pete's note</div></div><p class="pete-text">"I'm going to ask you to assume this has already failed. It feels weird, but it unlocks a different part of your brain. The risks you name in a Pre-Mortem are almost always more honest."</p></div>
+      <div class="sidebar-card">
+        <div class="sidebar-card-label">Often paired with</div>
+        <a href="tool-detail-devils-advocate.html" class="related-tool"><div class="related-tool-icon test">D</div><div class="related-tool-text"><h4>Devil's Advocate</h4><p>Challenge assumptions after identifying risks</p></div></a>
+        <a href="tool-detail-rapid-experiment.html" class="related-tool"><div class="related-tool-icon build">R</div><div class="related-tool-text"><h4>Rapid Experiment</h4><p>Design a test for your riskiest assumption</p></div></a>
+      </div>
+      <div class="sidebar-card">
+        <div class="sidebar-card-label">Also in The Test</div>
+        <a href="tool-detail-devils-advocate.html" class="related-tool"><div class="related-tool-icon test">D</div><div class="related-tool-text"><h4>Devil's Advocate</h4><p>Challenge your assumptions to strengthen your thinking</p></div></a>
+        <a href="tool-detail-analogical-thinking.html" class="related-tool"><div class="related-tool-icon test">A</div><div class="related-tool-text"><h4>Analogical Thinking</h4><p>Borrow solutions from unexpected places</p></div></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="tool-bottom-cta">
+  <div class="tool-bottom-left"><h3>Ready to try Pre-Mortem?</h3><p>Pete will guide you through it in about 20 minutes.</p></div>
+  <div class="tool-bottom-right"><a href="toolbox.html" class="back-link">&larr; Back to toolbox</a><a href="index.html?tool=pre-mortem" class="qf-cta" style="display:inline-block; width:auto;">Start Pre-Mortem &rarr;</a></div>
+</div>
+
+<footer><div class="footer-left"><div class="footer-logo">WADE<br>INSTITUTE</div><div class="footer-links"><a href="https://wadeinstitute.org.au">wadeinstitute.org.au</a><a href="mailto:enquiries@wadeinstitute.org.au">Contact</a><a href="privacy.html">Privacy</a></div></div><div class="footer-right">&copy; 2026 Wade Institute of Entrepreneurship</div></footer>
+</body>
+</html>
