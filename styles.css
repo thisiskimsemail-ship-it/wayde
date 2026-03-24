@@ -1360,7 +1360,7 @@ body.in-session .header-nav { display: none; }
 .lp-process { padding: 5rem 0; }
 .lp-process-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; }
 .lp-process-grid.lp-grid-2x2 { grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
-.lp-cat-badge { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; display: block; margin-bottom: 0.5rem; }
+.lp-cat-badge { font-size: 0.95rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; display: block; margin-bottom: 0.5rem; }
 .lp-process-tagline { font-size: 1.1rem; font-style: italic; color: var(--text); line-height: 1.4; margin-bottom: 0.75rem; font-weight: 400; }
 .lp-process-card {
     background: var(--bg-light);
