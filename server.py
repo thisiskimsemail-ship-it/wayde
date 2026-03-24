@@ -16,6 +16,278 @@ load_dotenv()
 
 app = Flask(__name__, static_folder='.', static_url_path='')
 
+# === DATABASE (PostgreSQL on Railway) ===
+import psycopg2
+import psycopg2.extras
+
+DATABASE_URL = os.environ.get('DATABASE_URL')
+
+def get_db():
+    """Get a database connection. Returns None if no DATABASE_URL configured."""
+    if not DATABASE_URL:
+        return None
+    try:
+        conn = psycopg2.connect(DATABASE_URL)
+        conn.autocommit = True
+        return conn
+    except Exception as e:
+        print(f"[DB] Connection error: {e}")
+        return None
+
+def init_db():
+    """Create tables if they don't exist."""
+    conn = get_db()
+    if not conn:
+        print("[DB] No DATABASE_URL — memory features disabled")
+        return
+    try:
+        cur = conn.cursor()
+        cur.execute("""
+            CREATE TABLE IF NOT EXISTS founder_profiles (
+                id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                user_email TEXT NOT NULL UNIQUE,
+                venture_name TEXT,
+                venture_description TEXT,
+                stage TEXT,
+                team TEXT,
+                core_problem TEXT,
+                target_customer TEXT,
+                key_assumptions JSONB DEFAULT '[]',
+                experiments_run JSONB DEFAULT '[]',
+                key_learnings JSONB DEFAULT '[]',
+                tools_completed JSONB DEFAULT '[]',
+                patterns JSONB DEFAULT '[]',
+                current_focus TEXT,
+                created_at TIMESTAMPTZ DEFAULT now(),
+                updated_at TIMESTAMPTZ DEFAULT now(),
+                session_count INTEGER DEFAULT 0
+            );
+
+            CREATE TABLE IF NOT EXISTS session_summaries (
+                id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                user_email TEXT NOT NULL,
+                profile_id UUID REFERENCES founder_profiles(id),
+                session_date TIMESTAMPTZ DEFAULT now(),
+                mode TEXT NOT NULL,
+                duration_mins INTEGER,
+                topic TEXT NOT NULL,
+                key_insight TEXT,
+                assumptions_tested JSONB DEFAULT '[]',
+                decisions_made JSONB DEFAULT '[]',
+                open_questions JSONB DEFAULT '[]',
+                suggested_next_step TEXT,
+                suggested_next_tool TEXT,
+                conversation_summary TEXT,
+                created_at TIMESTAMPTZ DEFAULT now()
+            );
+
+            CREATE INDEX IF NOT EXISTS idx_session_summaries_email ON session_summaries(user_email);
+            CREATE INDEX IF NOT EXISTS idx_session_summaries_date ON session_summaries(session_date DESC);
+        """)
+        cur.close()
+        conn.close()
+        print("[DB] Tables ready")
+    except Exception as e:
+        print(f"[DB] Init error: {e}")
+        if conn:
+            conn.close()
+
+# Run on startup
+init_db()
+
+
+def get_founder_profile(email):
+    """Fetch founder profile by email. Returns dict or None."""
+    conn = get_db()
+    if not conn:
+        return None
+    try:
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        cur.execute("SELECT * FROM founder_profiles WHERE user_email = %s", (email,))
+        profile = cur.fetchone()
+        cur.close()
+        conn.close()
+        return dict(profile) if profile else None
+    except Exception as e:
+        print(f"[DB] get_profile error: {e}")
+        if conn: conn.close()
+        return None
+
+
+def get_recent_sessions(email, limit=3):
+    """Fetch last N session summaries for a user."""
+    conn = get_db()
+    if not conn:
+        return []
+    try:
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        cur.execute(
+            "SELECT * FROM session_summaries WHERE user_email = %s ORDER BY session_date DESC LIMIT %s",
+            (email, limit)
+        )
+        sessions = [dict(row) for row in cur.fetchall()]
+        cur.close()
+        conn.close()
+        return sessions
+    except Exception as e:
+        print(f"[DB] get_sessions error: {e}")
+        if conn: conn.close()
+        return []
+
+
+def save_session_summary(email, summary_data):
+    """Store a session summary and update the founder profile."""
+    conn = get_db()
+    if not conn:
+        return
+    try:
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+
+        # Ensure founder profile exists
+        cur.execute("SELECT id FROM founder_profiles WHERE user_email = %s", (email,))
+        profile_row = cur.fetchone()
+        if not profile_row:
+            cur.execute(
+                "INSERT INTO founder_profiles (user_email) VALUES (%s) RETURNING id",
+                (email,)
+            )
+            profile_row = cur.fetchone()
+        profile_id = profile_row['id']
+
+        # Insert session summary
+        cur.execute("""
+            INSERT INTO session_summaries (user_email, profile_id, mode, topic, key_insight,
+                assumptions_tested, decisions_made, open_questions,
+                suggested_next_step, suggested_next_tool, conversation_summary)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        """, (
+            email, profile_id,
+            summary_data.get('mode', 'conversation'),
+            summary_data.get('topic', 'Session'),
+            summary_data.get('key_insight'),
+            json.dumps(summary_data.get('assumptions_tested', [])),
+            json.dumps(summary_data.get('decisions_made', [])),
+            json.dumps(summary_data.get('open_questions', [])),
+            summary_data.get('suggested_next_step'),
+            summary_data.get('suggested_next_tool'),
+            summary_data.get('conversation_summary')
+        ))
+
+        # Update founder profile with new data
+        updates = summary_data.get('profile_updates', {})
+        set_clauses = ["session_count = session_count + 1", "updated_at = now()"]
+        params = []
+
+        for field in ['venture_name', 'venture_description', 'stage', 'core_problem',
+                      'target_customer', 'current_focus', 'team']:
+            if updates.get(field):
+                set_clauses.append(f"{field} = %s")
+                params.append(updates[field])
+
+        # Append to array fields
+        for arr_field, key in [('key_assumptions', 'new_assumptions'),
+                                ('key_learnings', 'new_learnings'),
+                                ('patterns', 'new_patterns')]:
+            items = updates.get(key, [])
+            if items:
+                set_clauses.append(f"{arr_field} = {arr_field} || %s::jsonb")
+                params.append(json.dumps(items))
+
+        # Record tool usage
+        if summary_data.get('mode') and summary_data['mode'] != 'conversation':
+            set_clauses.append("tools_completed = tools_completed || %s::jsonb")
+            params.append(json.dumps([{
+                'tool_name': summary_data['mode'],
+                'date': datetime.now(timezone.utc).isoformat(),
+                'key_output': summary_data.get('key_insight', '')
+            }]))
+
+        params.append(profile_id)
+        cur.execute(
+            f"UPDATE founder_profiles SET {', '.join(set_clauses)} WHERE id = %s",
+            params
+        )
+
+        cur.close()
+        conn.close()
+        print(f"[DB] Session saved for {email}")
+    except Exception as e:
+        print(f"[DB] save_session error: {e}")
+        if conn: conn.close()
+
+
+def format_memory_for_prompt(email):
+    """Build the memory block to inject into Pete's system prompt."""
+    profile = get_founder_profile(email)
+    if not profile or profile.get('session_count', 0) == 0:
+        return ""
+
+    sessions = get_recent_sessions(email, limit=3)
+
+    lines = ["\n\n--- FOUNDER MEMORY (this user has been here before) ---\n"]
+
+    if profile.get('venture_name'):
+        lines.append(f"**Venture:** {profile['venture_name']}")
+        if profile.get('venture_description'):
+            lines[-1] += f" — {profile['venture_description']}"
+    if profile.get('stage'):
+        lines.append(f"**Stage:** {profile['stage']}")
+    if profile.get('core_problem'):
+        lines.append(f"**Problem:** {profile['core_problem']}")
+    if profile.get('target_customer'):
+        lines.append(f"**Customer:** {profile['target_customer']}")
+    if profile.get('current_focus'):
+        lines.append(f"**Currently working on:** {profile['current_focus']}")
+    lines.append(f"**Sessions to date:** {profile.get('session_count', 0)}")
+
+    # Key learnings (last 5)
+    learnings = (profile.get('key_learnings') or [])[-5:]
+    if learnings:
+        lines.append("\n**Key learnings:**")
+        for l in learnings:
+            insight = l.get('insight', l) if isinstance(l, dict) else str(l)
+            lines.append(f"- {insight}")
+
+    # Tools completed
+    tools = profile.get('tools_completed') or []
+    if tools:
+        lines.append("\n**Tools completed:**")
+        for t in tools[-6:]:
+            lines.append(f"- {t.get('tool_name', '?')} ({t.get('date', '?')[:10]}): {t.get('key_output', '')}")
+
+    # Patterns
+    patterns = [p for p in (profile.get('patterns') or []) if p.get('still_active', True)]
+    if patterns:
+        lines.append("\n**Patterns Pete has noticed:**")
+        for p in patterns[:5]:
+            lines.append(f"- {p.get('pattern', p) if isinstance(p, dict) else str(p)}")
+
+    # Recent sessions
+    if sessions:
+        lines.append("\n--- RECENT SESSIONS ---\n")
+        for i, s in enumerate(sessions):
+            label = "Last session" if i == 0 else f"{i+1} sessions ago"
+            date_str = str(s.get('session_date', ''))[:10]
+            lines.append(f"### {label} — {date_str}")
+            lines.append(f"**Topic:** {s.get('topic', '?')}")
+            if s.get('key_insight'):
+                lines.append(f"**Key insight:** {s['key_insight']}")
+            if s.get('open_questions'):
+                qs = s['open_questions']
+                if isinstance(qs, str):
+                    qs = json.loads(qs) if qs.startswith('[') else [qs]
+                lines.append(f"**Open questions:** {'; '.join(qs)}")
+            if s.get('suggested_next_step'):
+                lines.append(f"**Suggested next step:** {s['suggested_next_step']}")
+            if s.get('conversation_summary'):
+                lines.append(f"**Summary:** {s['conversation_summary']}")
+            lines.append("")
+
+    lines.append("IMPORTANT: Reference this memory naturally. If they had a next step from last session, ask about it. Don't say 'Welcome back!' — just pick up where you left off like a mentor who remembers.")
+    lines.append("--- END MEMORY ---\n")
+
+    return "\n".join(lines)
+
 # === CACHE HEADERS (Railway proxy handles gzip) ===
 @app.after_request
 def add_cache_headers(response):
@@ -979,6 +1251,13 @@ def chat():
     exercise = data.get('exercise') or data.get('framework')
     prompt_key = f"{mode}:{exercise}" if exercise else mode
     system_prompt = SYSTEM_PROMPTS.get(prompt_key, SYSTEM_PROMPTS['untangle:five-whys'])
+
+    # Inject memory for returning users (if email provided)
+    user_email = data.get('user_email', '')
+    if user_email:
+        memory_block = format_memory_for_prompt(user_email)
+        if memory_block:
+            system_prompt += memory_block
 
     # In routing mode: force a recommendation after the user has replied once
     if mode == 'routing' and len([m for m in messages if m.get('role') == 'user']) >= 2:
@@ -3541,6 +3820,111 @@ Return ONLY the JSON object, no other text."""
         return json.loads(raw.strip())
     except Exception:
         return {}
+
+
+# === SESSION SUMMARY + MEMORY ===
+
+SUMMARY_PROMPT = """You are generating a structured session summary for Pete's memory system.
+Based on the conversation above, produce ONLY valid JSON (no markdown, no other text):
+
+{
+  "topic": "one-line description of what this session was about",
+  "key_insight": "the single most important thing that emerged",
+  "assumptions_tested": [
+    { "assumption": "text", "status": "validated|invalidated|inconclusive", "evidence": "text" }
+  ],
+  "decisions_made": ["text"],
+  "open_questions": ["text"],
+  "suggested_next_step": "what the user should do before their next session",
+  "suggested_next_tool": "tool_name or null",
+  "conversation_summary": "3-5 sentence narrative summary",
+  "profile_updates": {
+    "venture_name": "update or null",
+    "venture_description": "update or null",
+    "stage": "update or null",
+    "core_problem": "update or null",
+    "target_customer": "update or null",
+    "current_focus": "update or null",
+    "new_assumptions": [{ "assumption": "text", "status": "untested" }],
+    "new_learnings": [{ "insight": "text" }],
+    "new_patterns": [{ "pattern": "text" }]
+  }
+}
+
+Rules:
+- Be specific, not generic. "Decided to focus on enterprise customers" not "Made strategic decisions."
+- Key insight should be actionable, not a conversation summary.
+- Profile updates: only include fields that actually changed or were newly revealed.
+- Patterns: cross-session observations about the user's recurring behaviour or thinking style.
+- Keep conversation_summary to 3-5 sentences max.
+- Return ONLY the JSON object. No markdown fences, no explanation."""
+
+
+@app.route('/api/summary', methods=['POST'])
+def generate_session_summary():
+    """Generate and store a structured session summary after a session ends."""
+    data = request.json
+    email = data.get('email')
+    messages = data.get('messages', [])
+    mode = data.get('mode', 'conversation')
+    exercise = data.get('exercise', '')
+
+    if not messages:
+        return jsonify({'error': 'No messages provided'}), 400
+
+    # Trim messages for summary generation
+    summary_messages = list(messages)
+    if len(summary_messages) > 16:
+        summary_messages = summary_messages[:2] + summary_messages[-12:]
+
+    # Ensure last message is from user
+    if summary_messages and summary_messages[-1].get('role') == 'assistant':
+        summary_messages.append({
+            'role': 'user',
+            'content': 'Please generate the session summary now.'
+        })
+
+    try:
+        response = client.messages.create(
+            model="claude-haiku-4-5-20251001",
+            max_tokens=1500,
+            system=SUMMARY_PROMPT,
+            messages=summary_messages,
+        )
+
+        summary_text = ''
+        for block in response.content:
+            if hasattr(block, 'text'):
+                summary_text += block.text
+
+        # Parse JSON
+        summary_data = json.loads(summary_text)
+        summary_data['mode'] = exercise or mode
+
+        # Store if we have an email
+        if email:
+            save_session_summary(email, summary_data)
+
+        return jsonify({'summary': summary_data})
+
+    except json.JSONDecodeError as e:
+        print(f"[SUMMARY] JSON parse error: {e}, raw: {summary_text[:200]}")
+        return jsonify({'error': 'Failed to parse summary'}), 500
+    except Exception as e:
+        print(f"[SUMMARY] Error: {e}")
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/memory', methods=['POST'])
+def get_memory():
+    """Fetch memory block for a returning user (called at session start)."""
+    data = request.json
+    email = data.get('email', '')
+    if not email:
+        return jsonify({'memory': ''})
+
+    memory_block = format_memory_for_prompt(email)
+    return jsonify({'memory': memory_block})
 
 
 @app.route('/api/lead', methods=['POST'])

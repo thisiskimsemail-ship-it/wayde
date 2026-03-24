@@ -362,7 +362,8 @@ const state = {
     board: { cards: [], visible: false },  // workshop board state
     boardMode: 'default',  // 'default' | 'lean-canvas'
     pitch: { customer: null, problem: null, solution: null, benefit: null, differentiator: null },  // elevator pitch components
-    wrapped: false  // true when [WRAP] signal received — hides Help/Challenge buttons
+    wrapped: false,  // true when [WRAP] signal received — hides Help/Challenge buttons
+    userEmail: localStorage.getItem('wade_user_email') || ''  // persisted for memory
 };
 
 // === DOM ===
@@ -1329,7 +1330,8 @@ async function streamResponse() {
                 exercise: state.exercise,
                 messages: state.messages,
                 project_context: state.projectContext,
-                push_harder: state.pushHarder
+                push_harder: state.pushHarder,
+                user_email: state.userEmail
             })
         });
 
@@ -2060,6 +2062,22 @@ document.getElementById('unlockForm')?.addEventListener('submit', async (e) => {
     if (!email) return;
     submitBtn.disabled = true;
     submitBtn.textContent = 'Sending your report...';
+
+    // Store email for memory system
+    state.userEmail = email;
+    localStorage.setItem('wade_user_email', email);
+
+    // Generate and store session summary (async, non-blocking)
+    fetch('/api/summary', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            email,
+            mode: state.mode,
+            exercise: state.exercise,
+            messages: state.messages
+        })
+    }).catch(err => console.warn('[Summary] Failed:', err));
 
     // Send lead + email the report
     try {
