@@ -397,6 +397,17 @@ const uploadBtn = $('#uploadBtn');
 const fileInput = $('#fileInput');
 const modeLabel = $('#modeLabel');
 const toolLearnLink = $('#toolLearnLink');
+
+// Map exercise keys to tool detail page filenames (handles mismatches)
+const TOOL_DETAIL_SLUG = {
+    'analogical': 'analogical-thinking',
+    'hmw': 'how-might-we',
+    'jtbd': 'jobs-to-be-done'
+};
+function toolDetailUrl(exercise) {
+    const slug = TOOL_DETAIL_SLUG[exercise] || exercise;
+    return `tool-detail-${slug}.html`;
+}
 const sessionBar = $('#sessionBar');
 const sessionMode = $('#sessionMode');
 const sessionExercise = $('#sessionExercise');
@@ -607,6 +618,42 @@ document.addEventListener('click', () => {
     toolPickerMenu.classList.add('hidden');
 });
 
+// === TOOL CONFIRMATION CARD ===
+function showToolConfirmation(mode, exercise) {
+    // Remove any existing confirmation card
+    document.querySelector('.tool-confirm-card')?.remove();
+
+    const name = EXERCISE_LABELS[exercise] || exercise;
+    const desc = EXERCISE_DESCS[exercise] || '';
+    const time = EXERCISE_TIMES[exercise] || '15 min';
+    const arc = EXERCISE_ARCS[exercise] || '';
+    const category = MODE_LABELS[mode] || mode;
+
+    const card = document.createElement('div');
+    card.className = `tool-confirm-card mode-${mode}`;
+    card.innerHTML = `
+        <div class="tool-confirm-header">
+            <span class="tool-confirm-category">${category}</span>
+            <span class="tool-confirm-time">${time}</span>
+        </div>
+        <h3 class="tool-confirm-name">${name}</h3>
+        <p class="tool-confirm-desc">${desc}</p>
+        <p class="tool-confirm-arc">${arc}</p>
+        <div class="tool-confirm-actions">
+            <button class="tool-confirm-start">Start ${name} →</button>
+            <a class="tool-confirm-learn" href="${toolDetailUrl(exercise)}" target="_blank" rel="noopener">Learn more about this tool</a>
+        </div>
+    `;
+
+    messagesEl.appendChild(card);
+    scrollToBottom();
+
+    card.querySelector('.tool-confirm-start').addEventListener('click', () => {
+        card.remove();
+        startExercise(mode, exercise);
+    });
+}
+
 // === CARD NAVIGATION ===
 
 $$('.card-exercise-btn').forEach(btn => {
@@ -694,7 +741,7 @@ function startExercise(mode, exercise, startMsg = null) {
 
     // Update footer label + learn more link
     modeLabel.innerHTML = `${EXERCISE_LABELS[exercise] || exercise} ·`;
-    if (toolLearnLink) { toolLearnLink.href = `tool-detail-${exercise}.html`; toolLearnLink.classList.remove('hidden'); }
+    if (toolLearnLink) { toolLearnLink.href = toolDetailUrl(exercise); toolLearnLink.classList.remove('hidden'); }
 
     // Update stage progress strip
     updateStageProgress(mode);
@@ -750,7 +797,7 @@ function startExercise(mode, exercise, startMsg = null) {
         introDiv.className = 'activity-brief';
         introDiv.dataset.mode = mode;
         const briefTime = EXERCISE_TIMES[exercise] || `~${Math.round(expectedExchanges * 2)} min`;
-        introDiv.innerHTML = `<div class="activity-brief-header"><span class="activity-brief-stage">${MODE_LABELS[mode] || mode}</span><span class="activity-brief-time">${briefTime}</span></div><h3 class="activity-brief-name"><a class="intro-label-link" href="toolbox.html#${exercise}" target="_blank" rel="noopener">${EXERCISE_LABELS[exercise] || exercise}</a></h3><p class="activity-brief-desc">${desc}</p>${arc ? `<p class="activity-brief-arc">${arc}</p>` : ''}<a class="activity-brief-learn" href="tool-detail-${exercise}.html" target="_blank" rel="noopener">Learn more about this tool →</a>`;
+        introDiv.innerHTML = `<div class="activity-brief-header"><span class="activity-brief-stage">${MODE_LABELS[mode] || mode}</span><span class="activity-brief-time">${briefTime}</span></div><h3 class="activity-brief-name"><a class="intro-label-link" href="${toolDetailUrl(exercise)}" target="_blank" rel="noopener">${EXERCISE_LABELS[exercise] || exercise}</a></h3><p class="activity-brief-desc">${desc}</p>${arc ? `<p class="activity-brief-arc">${arc}</p>` : ''}<a class="activity-brief-learn" href="tool-detail-${exercise}.html" target="_blank" rel="noopener">Learn more about this tool →</a>`;
         messagesEl.appendChild(introDiv);
     }
     inputField.placeholder = EXERCISE_HINTS[exercise] || 'Describe your challenge or idea...';
@@ -921,8 +968,8 @@ function swapToTool(mode, exercise, swapEl) {
     sessionBar.dataset.mode = mode;
     sessionMode.textContent = MODE_LABELS[mode] || mode;
     sessionExercise.textContent = EXERCISE_LABELS[exercise] || exercise;
-    modeLabel.innerHTML = `<a class="mode-label-link" href="toolbox.html#${exercise}" target="_blank" rel="noopener">${EXERCISE_LABELS[exercise] || exercise}</a> ·`;
-    if (toolLearnLink) { toolLearnLink.href = `tool-detail-${exercise}.html`; toolLearnLink.classList.remove('hidden'); }
+    modeLabel.innerHTML = `<a class="mode-label-link" href="${toolDetailUrl(exercise)}" target="_blank" rel="noopener">${EXERCISE_LABELS[exercise] || exercise}</a> ·`;
+    if (toolLearnLink) { toolLearnLink.href = toolDetailUrl(exercise); toolLearnLink.classList.remove('hidden'); }
     updateStageProgress(mode);
 
     // Reset tool picker
@@ -945,7 +992,7 @@ function swapToTool(mode, exercise, swapEl) {
 
     // Update the sticky exercise intro card at the top
     const exerciseDesc = EXERCISE_DESCS[exercise] || '';
-    const introHTML = `<div class="msg-intro-label"><a class="intro-label-link" href="toolbox.html#${exercise}" target="_blank" rel="noopener">${exerciseName}</a></div>${exerciseDesc}`;
+    const introHTML = `<div class="msg-intro-label"><a class="intro-label-link" href="${toolDetailUrl(exercise)}" target="_blank" rel="noopener">${exerciseName}</a></div>${exerciseDesc}`;
     const stickyIntro = messagesEl.querySelector('.msg-intro');
     if (stickyIntro) {
         stickyIntro.dataset.mode = mode;
@@ -1386,8 +1433,8 @@ function restoreSession(session) {
     sessionBar.dataset.mode = state.mode;
     sessionMode.textContent = MODE_LABELS[state.mode] || state.mode;
     sessionExercise.textContent = EXERCISE_LABELS[state.exercise] || state.exercise;
-    modeLabel.innerHTML = `<a class="mode-label-link" href="toolbox.html#${state.exercise}" target="_blank" rel="noopener">${EXERCISE_LABELS[state.exercise] || state.exercise}</a> ·`;
-    if (toolLearnLink) { toolLearnLink.href = `tool-detail-${state.exercise}.html`; toolLearnLink.classList.remove('hidden'); }
+    modeLabel.innerHTML = `<a class="mode-label-link" href="${toolDetailUrl(state.exercise)}" target="_blank" rel="noopener">${EXERCISE_LABELS[state.exercise] || state.exercise}</a> ·`;
+    if (toolLearnLink) { toolLearnLink.href = toolDetailUrl(state.exercise); toolLearnLink.classList.remove('hidden'); }
     reportCta.classList.remove('hidden');
     updateStageProgress(state.mode);
     // Restore tool picker state
@@ -1400,7 +1447,7 @@ function restoreSession(session) {
     const restoreIntro = document.createElement('div');
     restoreIntro.className = 'msg-intro';
     restoreIntro.dataset.mode = state.mode;
-    restoreIntro.innerHTML = `<div class="msg-intro-label"><a class="intro-label-link" href="toolbox.html#${state.exercise}" target="_blank" rel="noopener">${EXERCISE_LABELS[state.exercise] || state.exercise}</a></div>${restoreDesc}`;
+    restoreIntro.innerHTML = `<div class="msg-intro-label"><a class="intro-label-link" href="${toolDetailUrl(state.exercise)}" target="_blank" rel="noopener">${EXERCISE_LABELS[state.exercise] || state.exercise}</a></div>${restoreDesc}`;
     messagesEl.appendChild(restoreIntro);
 
     const SWAP_PREFIX = "Let's switch to ";
@@ -1414,7 +1461,7 @@ function restoreSession(session) {
             const breakEl = document.createElement('div');
             breakEl.className = 'msg-intro-break';
             if (swapMode) breakEl.dataset.mode = swapMode;
-            breakEl.innerHTML = `<div class="msg-intro-label"><a class="intro-label-link" href="toolbox.html#${exerciseKey}" target="_blank" rel="noopener">${swappedName}</a></div>${desc}`;
+            breakEl.innerHTML = `<div class="msg-intro-label"><a class="intro-label-link" href="${toolDetailUrl(exerciseKey)}" target="_blank" rel="noopener">${swappedName}</a></div>${desc}`;
             messagesEl.appendChild(breakEl);
         } else if (m.role === 'user' && (m.content === 'Please start the session.' || m.content.startsWith('[SYSTEM]'))) {
             // Skip synthetic kickoff — facilitator's opening response is enough
@@ -1771,7 +1818,7 @@ async function streamResponse() {
                     const btn = document.createElement('button');
                     btn.className = `routing-suggest-btn mode-${mode}`;
                     btn.textContent = EXERCISE_LABELS[key] || key;
-                    btn.addEventListener('click', () => startExercise(mode, key));
+                    btn.addEventListener('click', () => showToolConfirmation(mode, key));
                     suggestDiv.appendChild(btn);
                 });
                 messagesEl.appendChild(suggestDiv);
