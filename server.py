@@ -4968,6 +4968,45 @@ def track_event():
     return jsonify({'ok': True})
 
 
+@app.route('/api/sessions', methods=['GET'])
+def get_sessions():
+    """Return session history for a device ID."""
+    device_id = request.args.get('device_id', '')
+    if not device_id:
+        return jsonify({'sessions': []})
+    conn = get_db()
+    if not conn:
+        return jsonify({'sessions': []})
+    try:
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        cur.execute("""
+            SELECT id, session_date, mode, topic, key_insight, suggested_next_tool,
+                   conversation_summary, board_cards
+            FROM session_summaries
+            WHERE device_id = %s
+            ORDER BY session_date DESC
+            LIMIT 20
+        """, (device_id,))
+        rows = cur.fetchall()
+        cur.close()
+        conn.close()
+        sessions = []
+        for r in rows:
+            sessions.append({
+                'id': str(r['id']),
+                'date': str(r['session_date'])[:10] if r['session_date'] else '',
+                'mode': r['mode'] or '',
+                'topic': r['topic'] or '',
+                'insight': r['key_insight'] or '',
+                'next_tool': r['suggested_next_tool'] or '',
+                'summary': r['conversation_summary'] or '',
+                'board_count': len(r['board_cards']) if r['board_cards'] else 0
+            })
+        return jsonify({'sessions': sessions})
+    except Exception as e:
+        return jsonify({'sessions': [], 'error': str(e)})
+
+
 @app.route('/api/analytics', methods=['GET'])
 def get_analytics():
     """Simple analytics dashboard data."""
