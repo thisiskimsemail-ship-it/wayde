@@ -271,18 +271,18 @@ const EXERCISE_DESCS = {
 
 // Suggested prompt framings shown as input placeholder
 const EXERCISE_HINTS = {
-    'five-whys':        'e.g. "Our team keeps missing deadlines and no one really knows why"',
-    'jtbd':             'e.g. "I\'m redesigning our internal onboarding process for new staff"',
-    'empathy-map':      'e.g. "My stakeholder is a department head who keeps resisting the change we\'re proposing"',
-    'hmw':              'e.g. "People in our organisation aren\'t adopting the new process we rolled out"',
-    'scamper':          'e.g. "I want to reinvent how we run our quarterly planning meetings"',
-    'crazy-8s':         'e.g. "I need fresh ideas for improving collaboration between two teams that don\'t talk"',
-    'pre-mortem':       'e.g. "We\'re about to roll out a new programme across the whole organisation"',
-    'devils-advocate':  'e.g. "We\'re proposing a major shift in how we deliver services to clients"',
-    'rapid-experiment': 'e.g. "I think our clients would value a monthly insight briefing — but I\'m not sure"',
-    'lean-canvas':      'e.g. "I\'m developing a new service offering within our division"',
-    'effectuation':     'e.g. "I have deep expertise in policy and a strong network in government — where do I start?"',
-    'analogical':       'e.g. "How might we reduce handoff delays between teams the way Formula 1 does pit stops?"'
+    'five-whys':        'e.g. "We keep losing our best people and nobody can explain why"',
+    'jtbd':             'e.g. "I want to understand what our customers are really trying to achieve"',
+    'empathy-map':      'e.g. "The people I\'m building for keep saying one thing and doing another"',
+    'hmw':              'e.g. "We know the problem but can\'t find the right angle to solve it"',
+    'scamper':          'e.g. "I want to take something that works and push it in a new direction"',
+    'crazy-8s':         'e.g. "I need fresh ideas — I keep coming back to the same ones"',
+    'pre-mortem':       'e.g. "We\'re about to commit serious time and resources to this — what could go wrong?"',
+    'devils-advocate':  'e.g. "Everyone agrees this is a good idea — that makes me nervous"',
+    'rapid-experiment': 'e.g. "I think people would pay for this but I haven\'t tested it yet"',
+    'lean-canvas':      'e.g. "I have an idea for a product but I haven\'t mapped out the business model"',
+    'effectuation':     'e.g. "I have skills and connections but no clear plan — where do I start?"',
+    'analogical':       'e.g. "Has anyone in a completely different field solved a problem like mine?"'
 };
 
 // Exercise arc descriptions for activity brief cards
@@ -1041,6 +1041,12 @@ function enterStudio() {
     modeLabel.textContent = 'The Studio · ';
     if (toolLearnLink) toolLearnLink.classList.add('hidden');
     inputField.placeholder = 'Type your response...';
+
+    // Privacy trust message — shown before Pete speaks
+    const trustMsg = document.createElement('div');
+    trustMsg.className = 'trust-message';
+    trustMsg.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Your session is private. Nothing you share here is stored beyond this session unless you choose to save it. <a href="/privacy.html" target="_blank" rel="noopener">Privacy policy</a>';
+    messagesEl.appendChild(trustMsg);
 
     // Send a silent kickoff — never shown to user
     state.messages.push({ role: 'user', content: '[SYSTEM] User has just entered The Studio. Welcome them as Pete and run an icebreaker. Do not reference this message.' });

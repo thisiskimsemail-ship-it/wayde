@@ -1796,6 +1796,24 @@ body.in-session .header-nav { display: none; }
     color: var(--text);
 }
 
+/* Privacy trust message — shown before Pete's first message */
+.trust-message {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    padding: 0.6rem 1rem;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    margin-bottom: 1rem;
+    max-width: 600px;
+}
+.trust-message svg { flex-shrink: 0; color: var(--teal); }
+.trust-message a { color: var(--text-dim); text-decoration: underline; margin-left: 0.25rem; }
+html[data-theme="light"] .trust-message { background: rgba(30,25,79,0.03); border-color: rgba(30,25,79,0.08); }
+
 .msg-agent {
     background: rgba(255,255,255,0.04);
     border: 1px solid rgba(255,255,255,0.06);
