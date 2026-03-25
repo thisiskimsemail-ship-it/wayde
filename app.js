@@ -1028,6 +1028,20 @@ document.addEventListener('DOMContentLoaded', () => {
         if (btn !== enterBtn) btn.addEventListener('click', enterStudio);
     });
 
+    // Category card clicks — enter routing with context
+    document.querySelectorAll('.lp-process-card[data-category]').forEach(card => {
+        card.addEventListener('click', (e) => {
+            // Don't intercept clicks on tool pill links
+            if (e.target.closest('.lp-tool-pill')) return;
+            const context = card.dataset.context;
+            enterStudio();
+            // After Pete's welcome, inject the user's category context as their first message
+            if (context) {
+                setTimeout(() => sendMessage(context), 2000);
+            }
+        });
+    });
+
     // Scroll-triggered fade-in animations for landing page sections
     const fadeObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
