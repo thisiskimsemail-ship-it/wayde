@@ -3059,6 +3059,82 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    // Export: Copy all cards to clipboard as markdown
+    const copyBtn = document.getElementById('boardExportCopy');
+    if (copyBtn) {
+        copyBtn.addEventListener('click', () => {
+            const cards = state.board.cards;
+            if (!cards.length) { copyBtn.textContent = 'No cards yet'; setTimeout(() => { copyBtn.textContent = '📋 Copy'; }, 2000); return; }
+            const grouped = {};
+            cards.forEach(c => {
+                const zone = c.zone || 'general';
+                if (!grouped[zone]) grouped[zone] = [];
+                grouped[zone].push(c.text);
+            });
+            let md = `# Workshop Board — ${EXERCISE_LABELS[state.exercise] || 'Session'}\n\n`;
+            for (const [zone, items] of Object.entries(grouped)) {
+                md += `## ${zone.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}\n`;
+                items.forEach(item => { md += `- ${item}\n`; });
+                md += '\n';
+            }
+            md += `---\nThe Studio · Wade Institute of Entrepreneurship\n`;
+            navigator.clipboard.writeText(md).then(() => {
+                copyBtn.textContent = '✓ Copied';
+                setTimeout(() => { copyBtn.textContent = '📋 Copy'; }, 2000);
+            }).catch(() => {
+                copyBtn.textContent = 'Failed';
+                setTimeout(() => { copyBtn.textContent = '📋 Copy'; }, 2000);
+            });
+        });
+    }
+
+    // Export: Download board as PDF via server
+    const pdfBtn = document.getElementById('boardExportPdf');
+    if (pdfBtn) {
+        pdfBtn.addEventListener('click', async () => {
+            const cards = state.board.cards;
+            if (!cards.length) { pdfBtn.textContent = 'No cards yet'; setTimeout(() => { pdfBtn.textContent = '↓ PDF'; }, 2000); return; }
+            pdfBtn.disabled = true;
+            pdfBtn.textContent = '↓ Building...';
+            try {
+                // Build markdown from cards
+                const grouped = {};
+                cards.forEach(c => {
+                    const zone = c.zone || 'general';
+                    if (!grouped[zone]) grouped[zone] = [];
+                    grouped[zone].push(c.text);
+                });
+                let md = '';
+                for (const [zone, items] of Object.entries(grouped)) {
+                    md += `## ${zone.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}\n`;
+                    items.forEach(item => { md += `- ${item}\n`; });
+                    md += '\n';
+                }
+                const res = await fetch('/api/report/pdf', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        report: md,
+                        synopsis: { title: `Workshop Board — ${EXERCISE_LABELS[state.exercise] || 'Session'}` },
+                        exercise: state.exercise,
+                        mode: state.mode
+                    })
+                });
+                if (res.ok) {
+                    const blob = await res.blob();
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `Workshop Board - ${EXERCISE_LABELS[state.exercise] || 'Session'}.pdf`;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                }
+            } catch (e) { console.error('Board PDF export failed', e); }
+            pdfBtn.disabled = false;
+            pdfBtn.textContent = '↓ PDF';
+        });
+    }
 });
 
 // === PARKING LOT ===
@@ -3357,9 +3433,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const submitBtn = document.getElementById('saveModalSubmit');
     const statusEl = document.getElementById('saveModalStatus');
 
-    // Save session — open email modal
+    // Save session — open email modal with session context
     if (saveBtn) saveBtn.addEventListener('click', () => {
         if (overlay) overlay.classList.remove('hidden');
+        // Reset stale success state on reopen
+        if (statusEl) { statusEl.textContent = ''; statusEl.classList.add('hidden'); }
+        if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Send link'; }
+        // Add session context to modal title
+        const titleEl = document.getElementById('saveModalTitle');
+        if (titleEl && state.exercise && state.exercise !== 'suggest') {
+            const toolName = EXERCISE_LABELS[state.exercise] || state.exercise;
+            const progress = state.exchangeCount ? ` (${state.exchangeCount} exchanges)` : '';
+            titleEl.textContent = `Save your ${toolName} session${progress}`;
+        } else if (titleEl && state.mode === 'routing') {
+            titleEl.textContent = 'Save your conversation with Pete';
+        }
         if (emailInput) emailInput.focus();
     });
 
@@ -3398,10 +3486,16 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await res.json();
             if (data.id) {
                 if (statusEl) {
-                    statusEl.textContent = 'Link sent! Check your inbox.';
+                    statusEl.textContent = '✓ Link sent! Check your inbox.';
                     statusEl.classList.remove('hidden');
+                    statusEl.style.color = '#22C55E';
                 }
-                setTimeout(() => { if (overlay) overlay.classList.add('hidden'); }, 2000);
+                // Flash the save icon green briefly
+                if (saveBtn) { saveBtn.style.borderColor = '#22C55E'; saveBtn.style.color = '#22C55E'; }
+                setTimeout(() => {
+                    if (overlay) overlay.classList.add('hidden');
+                    if (saveBtn) { saveBtn.style.borderColor = ''; saveBtn.style.color = ''; }
+                }, 3000);
             } else {
                 if (statusEl) {
                     statusEl.textContent = data.error || 'Something went wrong';
@@ -3677,6 +3771,17 @@ hintObserver.observe(document.body, { childList: true, subtree: true, attributes
         }
     });
 })();
+
+// === EXIT-INTENT PROTECTION ===
+// Warn users before they accidentally close the tab during an active session
+window.addEventListener('beforeunload', (e) => {
+    // Only warn if user has an active session with real exchanges
+    if (state.mode && state.mode !== 'routing' && state.exchangeCount >= 2 && !state.wrapped) {
+        e.preventDefault();
+        // Modern browsers ignore custom messages, but this triggers the native dialog
+        e.returnValue = '';
+    }
+});
 
 // === iOS KEYBOARD VIEWPORT FIX ===
 // On iOS, the virtual keyboard shrinks the visual viewport but position:fixed

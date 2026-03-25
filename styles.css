@@ -719,36 +719,36 @@ html[data-theme="light"] .parking-lot-toggle:hover { border-color: rgba(30,25,79
 }
 
 /* Each stage in its own color, dimmed when inactive */
-.stage-step[data-stage="reframe"]   .stage-name { color: var(--orange); opacity: 0.28; }
-.stage-step[data-stage="ideate"]    .stage-name { color: var(--pink); opacity: 0.28; }
-.stage-step[data-stage="debate"]    .stage-name { color: var(--teal);   opacity: 0.28; }
-.stage-step[data-stage="framework"] .stage-name { color: var(--yellow);   opacity: 0.28; }
+.stage-step[data-stage="untangle"]   .stage-name { color: var(--orange); opacity: 0.28; }
+.stage-step[data-stage="spark"]    .stage-name { color: var(--pink); opacity: 0.28; }
+.stage-step[data-stage="test"]    .stage-name { color: var(--teal);   opacity: 0.28; }
+.stage-step[data-stage="build"] .stage-name { color: var(--yellow);   opacity: 0.28; }
 
 /* Done (visited) steps: slightly brighter */
 .stage-step.done .stage-name { opacity: 0.5; }
 
 /* Active step: full color + subtle card background matching home page cards */
-.stage-step.active[data-stage="reframe"],
-.stage-step.active[data-stage="ideate"],
-.stage-step.active[data-stage="debate"],
-.stage-step.active[data-stage="framework"] { background: rgba(241,90,34,0.1); border-color: rgba(241,90,34,0.2); --stage-pulse-color: rgba(241,90,34,0.22); animation: stagePulse 3s ease-in-out infinite; }
+.stage-step.active[data-stage="untangle"],
+.stage-step.active[data-stage="spark"],
+.stage-step.active[data-stage="test"],
+.stage-step.active[data-stage="build"] { background: rgba(241,90,34,0.1); border-color: rgba(241,90,34,0.2); --stage-pulse-color: rgba(241,90,34,0.22); animation: stagePulse 3s ease-in-out infinite; }
 
 .stage-step.active .stage-name { opacity: 1; }
 
 /* All steps open a picker — always pointer, hover tint in stage color */
 .stage-step { cursor: pointer; }
-.stage-step[data-stage="reframe"]:hover,
-.stage-step[data-stage="ideate"]:hover,
-.stage-step[data-stage="debate"]:hover,
-.stage-step[data-stage="framework"]:hover { background: rgba(241,90,34,0.06); }
-.stage-step[data-stage="ideate"]:hover    { background: rgba(236,54,147,0.06); }
-.stage-step[data-stage="debate"]:hover    { background: rgba(38,189,190,0.06);  }
-.stage-step[data-stage="framework"]:hover { background: rgba(228,229,23,0.06);  }
+.stage-step[data-stage="untangle"]:hover,
+.stage-step[data-stage="spark"]:hover,
+.stage-step[data-stage="test"]:hover,
+.stage-step[data-stage="build"]:hover { background: rgba(241,90,34,0.06); }
+.stage-step[data-stage="spark"]:hover    { background: rgba(236,54,147,0.06); }
+.stage-step[data-stage="test"]:hover    { background: rgba(38,189,190,0.06);  }
+.stage-step[data-stage="build"]:hover { background: rgba(228,229,23,0.06);  }
 .stage-step:hover .stage-name { opacity: 0.8; }
-.stage-step.active[data-stage="reframe"]:hover   { background: rgba(241,90,34,0.14);   }
-.stage-step.active[data-stage="ideate"]:hover    { background: rgba(236,54,147,0.14); }
-.stage-step.active[data-stage="debate"]:hover    { background: rgba(38,189,190,0.14);  }
-.stage-step.active[data-stage="framework"]:hover { background: rgba(228,229,23,0.14);  }
+.stage-step.active[data-stage="untangle"]:hover   { background: rgba(241,90,34,0.14);   }
+.stage-step.active[data-stage="spark"]:hover    { background: rgba(236,54,147,0.14); }
+.stage-step.active[data-stage="test"]:hover    { background: rgba(38,189,190,0.14);  }
+.stage-step.active[data-stage="build"]:hover { background: rgba(228,229,23,0.14);  }
 
 /* Tool label: matches active stage color */
 .stage-tool {
@@ -760,10 +760,10 @@ html[data-theme="light"] .parking-lot-toggle:hover { border-color: rgba(30,25,79
 }
 .stage-tool::after { content: ' ▾'; }
 
-.stage-step[data-stage="reframe"]   .stage-tool { color: var(--orange); }
-.stage-step[data-stage="ideate"]    .stage-tool { color: var(--pink); }
-.stage-step[data-stage="debate"]    .stage-tool { color: var(--teal);   }
-.stage-step[data-stage="framework"] .stage-tool { color: var(--yellow);   }
+.stage-step[data-stage="untangle"]   .stage-tool { color: var(--orange); }
+.stage-step[data-stage="spark"]    .stage-tool { color: var(--pink); }
+.stage-step[data-stage="test"]    .stage-tool { color: var(--teal);   }
+.stage-step[data-stage="build"] .stage-tool { color: var(--yellow);   }
 
 /* Once picker is enabled — active step becomes a clickable trigger */
 #stageProgress.tool-enabled .stage-step.active { cursor: pointer; }
@@ -4185,6 +4185,21 @@ body.board-maximised > .input-area {
     50% { opacity: 1; }
 }
 
+/* Board export buttons */
+.board-export-btn {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 6px;
+    padding: 0.2rem 0.5rem;
+    font-family: var(--font);
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.board-export-btn:hover { border-color: rgba(255,255,255,0.3); color: var(--text); }
+
 /* Board toggle button in session bar */
 .board-toggle {
     position: relative;
@@ -4446,10 +4461,10 @@ body.board-maximised > .input-area {
 .board-card-text { cursor: text; }
 
 /* Stage colours on card left border */
-.board-card[data-stage="reframe"],
-.board-card[data-stage="ideate"],
-.board-card[data-stage="debate"],
-.board-card[data-stage="framework"] { border-left-color: var(--orange); }
+.board-card[data-stage="untangle"],
+.board-card[data-stage="spark"],
+.board-card[data-stage="test"],
+.board-card[data-stage="build"] { border-left-color: var(--orange); }
 
 /* Add card inline form */
 .board-add-inline {
