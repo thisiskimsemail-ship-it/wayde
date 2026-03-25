@@ -7,4 +7,4 @@ openpyxl
 PyPDF2
 python-docx
 python-pptx
-weasyprint
+fpdf2
