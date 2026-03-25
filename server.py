@@ -106,6 +106,16 @@ def init_db():
             );
             CREATE INDEX IF NOT EXISTS idx_analytics_event ON analytics_events(event);
             CREATE INDEX IF NOT EXISTS idx_analytics_date ON analytics_events(created_at DESC);
+
+            CREATE TABLE IF NOT EXISTS shared_reports (
+                id TEXT PRIMARY KEY,
+                mode TEXT,
+                exercise TEXT,
+                report TEXT NOT NULL,
+                board_cards JSONB DEFAULT '[]',
+                synopsis JSONB DEFAULT '{}',
+                created_at TIMESTAMPTZ DEFAULT now()
+            );
         """)
         cur.close()
         conn.close()
@@ -704,7 +714,9 @@ EXERCISE ARC — follow this shape for every exercise:
 
    BEAT 2 — BOARD REVIEW: "Take a look at your Workshop Board — it's got your key insights, ideas, and actions. Anything you'd add or change? This is your working canvas." Emit [BOARD:open] so the board opens.
 
-   BEAT 3 — CELEBRATE + CLOSE: Synthesise the biggest shift in their thinking in one sentence. Acknowledge the work: "You did real thinking here." Then emit [WRAP].
+   BEAT 3 — NEXT TOOL OFFER: Based on what emerged, suggest ONE natural next tool. Frame it as a continuation, not a new session: "You found the root cause. Want to reframe it into opportunities? I can run you through How Might We — I'll carry everything forward." If they accept, transition smoothly (their board and context carry over). If they decline, move to Beat 4.
+
+   BEAT 4 — CELEBRATE + CLOSE: Synthesise the biggest shift in their thinking in one sentence. Acknowledge the work: "You did real thinking here." Then emit [WRAP].
 
    If the user wants to skip straight to their report at any point, that's fine — emit [WRAP] immediately.
 
@@ -4310,13 +4322,28 @@ SHARED_REPORTS_FILE = os.path.join(os.path.dirname(__file__), 'shared_reports.js
 def share_report():
     data = request.json
     report_id = str(uuid.uuid4())[:8]
-    entry = {
-        'id': report_id,
-        'mode': MODE_NAMES.get(data.get('mode', ''), data.get('mode', '')),
-        'exercise': EXERCISE_NAMES.get(data.get('exercise', ''), data.get('exercise', '')),
-        'report': data.get('report', ''),
-        'created': datetime.now(timezone.utc).isoformat()
-    }
+    mode_name = MODE_NAMES.get(data.get('mode', ''), data.get('mode', ''))
+    exercise_name = EXERCISE_NAMES.get(data.get('exercise', ''), data.get('exercise', ''))
+    report_text = data.get('report', '')
+    board_cards = data.get('board_cards', [])
+    synopsis = data.get('synopsis', {})
+
+    # Save to PostgreSQL (persistent across deploys)
+    conn = get_db()
+    if conn:
+        try:
+            cur = conn.cursor()
+            cur.execute(
+                "INSERT INTO shared_reports (id, mode, exercise, report, board_cards, synopsis) VALUES (%s, %s, %s, %s, %s, %s)",
+                (report_id, mode_name, exercise_name, report_text, json.dumps(board_cards), json.dumps(synopsis))
+            )
+            cur.close()
+            conn.close()
+        except Exception as e:
+            print(f"[SHARE] DB error: {e}")
+
+    # Also save to file as fallback
+    entry = {'id': report_id, 'mode': mode_name, 'exercise': exercise_name, 'report': report_text, 'created': datetime.now(timezone.utc).isoformat()}
     reports = {}
     if os.path.exists(SHARED_REPORTS_FILE):
         try:
@@ -4332,14 +4359,30 @@ def share_report():
 
 @app.route('/r/<report_id>')
 def view_shared_report(report_id):
-    if not os.path.exists(SHARED_REPORTS_FILE):
-        return 'Report not found', 404
-    try:
-        with open(SHARED_REPORTS_FILE, 'r') as f:
-            reports = json.load(f)
-    except (json.JSONDecodeError, IOError):
-        return 'Report not found', 404
-    entry = reports.get(report_id)
+    entry = None
+    # Try PostgreSQL first (persistent)
+    conn = get_db()
+    if conn:
+        try:
+            cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+            cur.execute("SELECT * FROM shared_reports WHERE id = %s", (report_id,))
+            row = cur.fetchone()
+            if row:
+                entry = {'exercise': row['exercise'], 'mode': row['mode'], 'report': row['report'], 'created': str(row['created_at'])}
+            cur.close()
+            conn.close()
+        except Exception:
+            pass
+    # Fallback to JSON file
+    if not entry:
+        if not os.path.exists(SHARED_REPORTS_FILE):
+            return 'Report not found', 404
+        try:
+            with open(SHARED_REPORTS_FILE, 'r') as f:
+                reports = json.load(f)
+        except (json.JSONDecodeError, IOError):
+            return 'Report not found', 404
+        entry = reports.get(report_id)
     if not entry:
         return 'Report not found', 404
     date_str = entry['created'][:10]
