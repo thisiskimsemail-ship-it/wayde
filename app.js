@@ -1027,6 +1027,20 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.enter-studio-trigger').forEach(btn => {
         if (btn !== enterBtn) btn.addEventListener('click', enterStudio);
     });
+
+    // Scroll-triggered fade-in animations for landing page sections
+    const fadeObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('lp-visible');
+                fadeObserver.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.lp-process, .lp-stats, .lp-features, .lp-board-section, .lp-report-section, .lp-personas, .lp-quote, .lp-bottom-cta').forEach(el => {
+        el.classList.add('lp-fade-in');
+        fadeObserver.observe(el);
+    });
 });
 
 function startRouting(text) {
@@ -2505,31 +2519,61 @@ $('#reportNewSessionBtn')?.addEventListener('click', () => {
 // === NEXT EXERCISE PANEL (shown after full report revealed) ===
 
 function renderNextExercisePanel() {
-    const next = NEXT_STAGE[state.mode];
-    if (!next) return; // Develop is the last stage
-    if ($('#nextExercisePanel')) return; // already shown
+    if ($('#postDownloadPanel')) return; // already shown
 
     const panel = document.createElement('div');
-    panel.id = 'nextExercisePanel';
-    panel.className = 'next-exercise-panel';
-    const nextModeName = MODE_LABELS[next.mode] || next.mode;
-    const nextExName = EXERCISE_LABELS[next.exercise] || next.exercise;
-    const modeColor = next.mode; // untangle/spark/test/build
+    panel.id = 'postDownloadPanel';
+    panel.className = 'post-download-panel';
 
-    panel.innerHTML = `
-        <div class="next-exercise-label">Ready to keep going?</div>
-        <div class="next-exercise-stage mode-${modeColor}">${nextModeName}</div>
-        <div class="next-exercise-name">${nextExName}</div>
-        <p class="next-exercise-desc">${EXERCISE_DESCS[next.exercise] || ''}</p>
-        <button class="next-exercise-btn next-exercise-btn-${modeColor}" id="nextExerciseBtn">Start ${nextExName} →</button>
+    // Thank-you message
+    let html = `<div class="post-download-thanks">Your report is on its way. Nice work today.</div>`;
+
+    // Next tool suggestion (if not the last category)
+    const next = NEXT_STAGE[state.mode];
+    if (next) {
+        const nextModeName = MODE_LABELS[next.mode] || next.mode;
+        const nextExName = EXERCISE_LABELS[next.exercise] || next.exercise;
+        const modeColor = next.mode;
+        html += `
+            <div class="post-download-section">
+                <div class="post-download-label">Keep going?</div>
+                <div class="post-download-next">
+                    <span class="post-download-stage mode-${modeColor}">${nextModeName}</span>
+                    <span class="post-download-tool">${nextExName}</span>
+                    <span class="post-download-desc">${EXERCISE_DESCS[next.exercise] || ''}</span>
+                </div>
+                <button class="post-download-btn post-download-btn-${modeColor}" id="nextExerciseBtn">Start ${nextExName} →</button>
+            </div>
+        `;
+    }
+
+    // Browse toolbox + Wade team
+    html += `
+        <div class="post-download-links">
+            <a class="post-download-link" href="toolbox.html">Browse all 12 tools in the Toolbox →</a>
+            <a class="post-download-link" href="mailto:enquiries@wadeinstitute.org.au">Talk to the Wade team about your challenge →</a>
+            <a class="post-download-link" href="https://wadeinstitute.org.au/programs/" target="_blank" rel="noopener">Explore Wade programs →</a>
+        </div>
     `;
 
-    reportCard.insertAdjacentElement('afterend', panel);
+    panel.innerHTML = html;
 
-    panel.querySelector('#nextExerciseBtn').addEventListener('click', () => {
-        panel.remove();
-        navigateToStage(next.mode, next.exercise);
-    });
+    // Insert after the format choice or synopsis card
+    const anchor = document.getElementById('reportFormatChoice') || document.getElementById('reportSynopsis');
+    if (anchor) {
+        anchor.insertAdjacentElement('afterend', panel);
+    }
+
+    // Wire up next exercise button
+    const nextBtn = panel.querySelector('#nextExerciseBtn');
+    if (nextBtn && next) {
+        nextBtn.addEventListener('click', () => {
+            panel.remove();
+            navigateToStage(next.mode, next.exercise);
+        });
+    }
+
+    panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 // === WORKSHOP PHASE & PROGRESS ===

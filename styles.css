@@ -1410,7 +1410,7 @@ body.in-session .header-nav { display: none; }
 
 /* STATS */
 .lp-stats {
-    padding: 4rem 0;
+    padding: 3rem 0;
     background: var(--bg-light);
     border-top: 1px solid rgba(255,255,255,0.06);
     border-bottom: 1px solid rgba(255,255,255,0.06);
@@ -1421,7 +1421,7 @@ body.in-session .header-nav { display: none; }
 .lp-stat-label { font-size: 0.8rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.08em; display: block; margin-top: 0.25rem; }
 
 /* FEATURES — 6-item grid */
-.lp-features { padding: 3.5rem 0; }
+.lp-features { padding: 2.5rem 0; }
 .lp-features-lead { font-size: 0.95rem; color: var(--text-dim); line-height: 1.7; margin-bottom: 2rem; max-width: 600px; }
 .lp-features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
 .lp-feature-card {
@@ -1536,6 +1536,10 @@ body.in-session .header-nav { display: none; }
 .lp-footer-links a { font-size: 0.8rem; color: var(--text-dim); text-decoration: none; transition: color 0.2s; }
 .lp-footer-links a:hover { color: var(--text); }
 .lp-footer-copy { font-size: 0.75rem; color: var(--text-muted); }
+
+/* Scroll-triggered fade-in */
+.lp-fade-in { opacity: 0; transform: translateY(20px); transition: opacity 0.5s ease, transform 0.5s ease; }
+.lp-fade-in.lp-visible { opacity: 1; transform: translateY(0); }
 
 /* Landing page responsive */
 @media (max-width: 1024px) {
@@ -3506,9 +3510,82 @@ html[data-theme="light"] .chat-action-btn:hover {
 }
 
 .next-exercise-btn:hover                   { border-color: rgba(255,255,255,0.35); color: var(--text); }
-.next-exercise-btn-ideate:hover            { border-color: rgba(236,54,147,0.5); color: var(--pink); }
-.next-exercise-btn-debate:hover            { border-color: rgba(38,189,190,0.5);  color: var(--teal); }
-.next-exercise-btn-framework:hover         { border-color: rgba(228,229,23,0.5);  color: var(--yellow); }
+.next-exercise-btn-spark:hover             { border-color: rgba(241,90,34,0.5); color: var(--orange); }
+.next-exercise-btn-test:hover              { border-color: rgba(237,54,148,0.5); color: var(--pink); }
+.next-exercise-btn-build:hover             { border-color: rgba(228,229,23,0.5); color: var(--yellow); }
+
+/* Post-download engagement panel */
+.post-download-panel {
+    max-width: 800px;
+    margin: 1.5rem auto 0;
+    padding: 1.5rem;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    background: rgba(255,255,255,0.02);
+    animation: fadeIn 0.4s ease;
+}
+.post-download-thanks {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 1.25rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.post-download-section { margin-bottom: 1.25rem; }
+.post-download-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+}
+.post-download-next { margin-bottom: 0.75rem; }
+.post-download-stage {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-right: 0.5rem;
+}
+.post-download-stage.mode-untangle { color: var(--teal); }
+.post-download-stage.mode-spark { color: var(--orange); }
+.post-download-stage.mode-test { color: var(--pink); }
+.post-download-stage.mode-build { color: var(--yellow); }
+.post-download-tool { font-weight: 600; color: var(--text); margin-right: 0.5rem; }
+.post-download-desc { font-size: 0.875rem; color: var(--text-muted); display: block; margin-top: 0.25rem; }
+.post-download-btn {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 8px;
+    padding: 0.5rem 1.2rem;
+    font-family: var(--font);
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.post-download-btn:hover { border-color: rgba(255,255,255,0.35); color: var(--text); }
+.post-download-btn-spark:hover { border-color: rgba(241,90,34,0.5); color: var(--orange); }
+.post-download-btn-test:hover { border-color: rgba(237,54,148,0.5); color: var(--pink); }
+.post-download-btn-build:hover { border-color: rgba(228,229,23,0.5); color: var(--yellow); }
+.post-download-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255,255,255,0.06);
+}
+.post-download-link {
+    color: var(--orange);
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+.post-download-link:hover { color: #fff; }
 
 /* === THEME TOGGLE === */
 .theme-toggle {
