@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="750" viewBox="0 0 800 750">
+  <defs>
+    <style>
+      text { font-family: Arial, sans-serif; }
+    </style>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="750" fill="#1B2A4A" rx="8"/>
+
+  <!-- Title bar -->
+  <rect x="0" y="0" width="800" height="56" fill="#1F2E4D" rx="8"/>
+  <rect x="0" y="48" width="800" height="8" fill="#1F2E4D"/>
+  <rect x="0" y="0" width="3" height="56" fill="#F15A22"/>
+  <text x="24" y="36" fill="#F15A22" font-size="13" font-weight="bold" letter-spacing="2">THE SPARK</text>
+  <text x="140" y="36" fill="#FFFFFF" font-size="18" font-weight="bold">SCAMPER</text>
+
+  <!-- S — Substitute -->
+  <rect x="24" y="76" width="752" height="84" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
+  <text x="44" y="112" fill="#F15A22" font-size="24" font-weight="bold">S</text>
+  <text x="72" y="100" fill="#FFFFFF" font-size="14" font-weight="bold">Substitute</text>
+  <text x="72" y="118" fill="#7A7F8E" font-size="12">What components, materials, or people could you swap out?</text>
+  <text x="72" y="144" fill="#B8BCC8" font-size="13">Replace in-person workshops with async video modules</text>
+
+  <!-- C — Combine -->
+  <rect x="24" y="170" width="752" height="84" fill="#253658" rx="8" stroke="#2A3656" stroke-width="1"/>
+  <text x="44" y="206" fill="#F15A22" font-size="24" font-weight="bold">C</text>
+  <text x="72" y="194" fill="#FFFFFF" font-size="14" font-weight="bold">Combine</text>
+  <text x="72" y="212" fill="#7A7F8E" font-size="12">What ideas, functions, or products could you merge?</text>
+  <text x="72" y="238" fill="#B8BCC8" font-size="13">Merge onboarding with first customer success call</text>
+
+  <!-- A — Adapt -->
+  <rect x="24" y="264" width="752" height="84" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
+  <text x="44" y="300" fill="#F15A22" font-size="24" font-weight="bold">A</text>
+  <text x="72" y="288" fill="#FFFFFF" font-size="14" font-weight="bold">Adapt</text>
+  <text x="72" y="306" fill="#7A7F8E" font-size="12">What else is like this? What could you copy or borrow from another industry?</text>
+  <text x="72" y="332" fill="#B8BCC8" font-size="13">Adapt Duolingo's streak system for daily product engagement</text>
+
+  <!-- M — Modify / Magnify -->
+  <rect x="24" y="358" width="752" height="84" fill="#253658" rx="8" stroke="#2A3656" stroke-width="1"/>
+  <text x="44" y="394" fill="#F15A22" font-size="24" font-weight="bold">M</text>
+  <text x="72" y="382" fill="#FFFFFF" font-size="14" font-weight="bold">Modify / Magnify</text>
+  <text x="72" y="400" fill="#7A7F8E" font-size="12">What could you enlarge, exaggerate, or make more prominent?</text>
+  <text x="72" y="426" fill="#B8BCC8" font-size="13">Amplify social proof by showing real-time user activity feed</text>
+
+  <!-- P — Put to other uses -->
+  <rect x="24" y="452" width="752" height="84" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
+  <text x="44" y="488" fill="#F15A22" font-size="24" font-weight="bold">P</text>
+  <text x="72" y="476" fill="#FFFFFF" font-size="14" font-weight="bold">Put to other uses</text>
+  <text x="72" y="494" fill="#7A7F8E" font-size="12">Could this product serve a different market or solve a different problem?</text>
+  <text x="72" y="520" fill="#B8BCC8" font-size="13">Repurpose the analytics dashboard as a standalone benchmarking tool</text>
+
+  <!-- E — Eliminate -->
+  <rect x="24" y="546" width="752" height="84" fill="#253658" rx="8" stroke="#2A3656" stroke-width="1"/>
+  <text x="44" y="582" fill="#F15A22" font-size="24" font-weight="bold">E</text>
+  <text x="72" y="570" fill="#FFFFFF" font-size="14" font-weight="bold">Eliminate</text>
+  <text x="72" y="588" fill="#7A7F8E" font-size="12">What could you remove, simplify, or reduce to its essence?</text>
+  <text x="72" y="614" fill="#B8BCC8" font-size="13">Remove the pricing page entirely and start with a free trial by default</text>
+
+  <!-- R — Reverse / Rearrange -->
+  <rect x="24" y="640" width="752" height="84" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
+  <text x="44" y="676" fill="#F15A22" font-size="24" font-weight="bold">R</text>
+  <text x="72" y="664" fill="#FFFFFF" font-size="14" font-weight="bold">Reverse / Rearrange</text>
+  <text x="72" y="682" fill="#7A7F8E" font-size="12">What if you reversed the process or rearranged the order?</text>
+  <text x="72" y="708" fill="#B8BCC8" font-size="13">Let users see results first, then work backward to set up inputs</text>
+</svg>

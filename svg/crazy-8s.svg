@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500" viewBox="0 0 800 500">
+  <defs>
+    <style>
+      text { font-family: Arial, sans-serif; }
+    </style>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="500" fill="#1B2A4A" rx="8"/>
+
+  <!-- Title bar -->
+  <rect x="0" y="0" width="800" height="56" fill="#1F2E4D" rx="8"/>
+  <rect x="0" y="48" width="800" height="8" fill="#1F2E4D"/>
+  <rect x="0" y="0" width="3" height="56" fill="#F15A22"/>
+  <text x="24" y="36" fill="#F15A22" font-size="13" font-weight="bold" letter-spacing="2">THE SPARK</text>
+  <text x="140" y="36" fill="#FFFFFF" font-size="18" font-weight="bold">CRAZY 8s</text>
+
+  <!-- Grid: 4 columns x 2 rows -->
+  <!-- Row 1 -->
+  <!-- Cell 1 -->
+  <rect x="24" y="76" width="178" height="190" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
+  <text x="36" y="96" fill="#F15A22" font-size="14" font-weight="bold">1</text>
+  <text x="36" y="120" fill="#FFFFFF" font-size="12" font-weight="bold">Video onboarding</text>
+  <rect x="36" y="132" width="154" height="100" fill="#253658" rx="4"/>
+  <text x="113" y="186" fill="#7A7F8E" font-size="11" text-anchor="middle">sketch area</text>
+
+  <!-- Cell 2 -->
+  <rect x="214" y="76" width="178" height="190" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
+  <text x="226" y="96" fill="#F15A22" font-size="14" font-weight="bold">2</text>
+  <text x="226" y="120" fill="#FFFFFF" font-size="12" font-weight="bold">AI-guided setup</text>
+  <rect x="226" y="132" width="154" height="100" fill="#253658" rx="4"/>
+  <text x="303" y="186" fill="#7A7F8E" font-size="11" text-anchor="middle">sketch area</text>
+
+  <!-- Cell 3 -->
+  <rect x="404" y="76" width="178" height="190" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
+  <text x="416" y="96" fill="#F15A22" font-size="14" font-weight="bold">3</text>
+  <text x="416" y="120" fill="#FFFFFF" font-size="12" font-weight="bold">Peer mentoring</text>
+  <rect x="416" y="132" width="154" height="100" fill="#253658" rx="4"/>
+  <text x="493" y="186" fill="#7A7F8E" font-size="11" text-anchor="middle">sketch area</text>
+
+  <!-- Cell 4 -->
+  <rect x="594" y="76" width="182" height="190" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
+  <text x="606" y="96" fill="#F15A22" font-size="14" font-weight="bold">4</text>
+  <text x="606" y="120" fill="#FFFFFF" font-size="12" font-weight="bold">Gamified checklist</text>
+  <rect x="606" y="132" width="158" height="100" fill="#253658" rx="4"/>
+  <text x="685" y="186" fill="#7A7F8E" font-size="11" text-anchor="middle">sketch area</text>
+
+  <!-- Row 2 -->
+  <!-- Cell 5 -->
+  <rect x="24" y="282" width="178" height="190" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
+  <text x="36" y="302" fill="#F15A22" font-size="14" font-weight="bold">5</text>
+  <text x="36" y="326" fill="#FFFFFF" font-size="12" font-weight="bold">Template library</text>
+  <rect x="36" y="338" width="154" height="100" fill="#253658" rx="4"/>
+  <text x="113" y="392" fill="#7A7F8E" font-size="11" text-anchor="middle">sketch area</text>
+
+  <!-- Cell 6 — SELECTED -->
+  <rect x="214" y="282" width="178" height="190" fill="#1F2E4D" rx="8" stroke="#F15A22" stroke-width="2.5"/>
+  <text x="226" y="302" fill="#F15A22" font-size="14" font-weight="bold">6</text>
+  <!-- Star icon -->
+  <polygon points="370,292 374,300 383,301 376,308 378,317 370,312 362,317 364,308 357,301 366,300" fill="#F15A22"/>
+  <text x="226" y="326" fill="#FFFFFF" font-size="12" font-weight="bold">Community cohorts</text>
+  <rect x="226" y="338" width="154" height="100" fill="#253658" rx="4"/>
+  <text x="303" y="386" fill="#F15A22" font-size="10" font-weight="bold" text-anchor="middle">SELECTED</text>
+
+  <!-- Cell 7 -->
+  <rect x="404" y="282" width="178" height="190" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
+  <text x="416" y="302" fill="#F15A22" font-size="14" font-weight="bold">7</text>
+  <text x="416" y="326" fill="#FFFFFF" font-size="12" font-weight="bold">SMS micro-lessons</text>
+  <rect x="416" y="338" width="154" height="100" fill="#253658" rx="4"/>
+  <text x="493" y="392" fill="#7A7F8E" font-size="11" text-anchor="middle">sketch area</text>
+
+  <!-- Cell 8 -->
+  <rect x="594" y="282" width="182" height="190" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
+  <text x="606" y="302" fill="#F15A22" font-size="14" font-weight="bold">8</text>
+  <text x="606" y="326" fill="#FFFFFF" font-size="12" font-weight="bold">1-click demo env</text>
+  <rect x="606" y="338" width="158" height="100" fill="#253658" rx="4"/>
+  <text x="685" y="392" fill="#7A7F8E" font-size="11" text-anchor="middle">sketch area</text>
+</svg>

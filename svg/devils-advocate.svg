@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="750" viewBox="0 0 800 750">
+  <defs>
+    <style>
+      text { font-family: Arial, sans-serif; }
+    </style>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="750" fill="#1B2A4A" rx="8"/>
+
+  <!-- Title bar -->
+  <rect x="0" y="0" width="800" height="56" fill="#1F2E4D" rx="8"/>
+  <rect x="0" y="48" width="800" height="8" fill="#1F2E4D"/>
+  <rect x="0" y="0" width="3" height="56" fill="#ED3694"/>
+  <text x="24" y="36" fill="#ED3694" font-size="13" font-weight="bold" letter-spacing="2">THE TEST</text>
+  <text x="120" y="36" fill="#FFFFFF" font-size="18" font-weight="bold">DEVIL'S ADVOCATE</text>
+
+  <!-- The Idea box -->
+  <rect x="24" y="76" width="752" height="64" fill="#1F2E4D" rx="8" stroke="#ED3694" stroke-width="1.5"/>
+  <text x="44" y="100" fill="#ED3694" font-size="11" font-weight="bold" letter-spacing="1">THE IDEA</text>
+  <text x="44" y="124" fill="#FFFFFF" font-size="14">Launch a freemium tier to drive adoption, converting 5% of free users to paid within 6 months.</text>
+
+  <!-- Objection 1 -->
+  <rect x="24" y="160" width="752" height="100" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
+  <text x="44" y="184" fill="#ED3694" font-size="12" font-weight="bold">OBJECTION #1</text>
+  <text x="44" y="206" fill="#B8BCC8" font-size="13">Free users will consume server resources without converting, increasing burn rate significantly.</text>
+  <!-- Strength: 3 dots (strong) -->
+  <text x="620" y="184" fill="#7A7F8E" font-size="10">STRENGTH</text>
+  <circle cx="688" cy="180" r="5" fill="#ED3694"/>
+  <circle cx="704" cy="180" r="5" fill="#ED3694"/>
+  <circle cx="720" cy="180" r="5" fill="#ED3694"/>
+  <text x="44" y="228" fill="#7A7F8E" font-size="10" letter-spacing="1">REBUTTAL</text>
+  <text x="44" y="246" fill="#B8BCC8" font-size="12">Cap free tier to 100 records. Infrastructure cost per free user stays under $0.50/mo.</text>
+
+  <!-- Objection 2 -->
+  <rect x="24" y="274" width="752" height="100" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
+  <text x="44" y="298" fill="#ED3694" font-size="12" font-weight="bold">OBJECTION #2</text>
+  <text x="44" y="320" fill="#B8BCC8" font-size="13">Existing paying customers may downgrade when they see how much is available for free.</text>
+  <!-- Strength: 2 dots (medium) -->
+  <text x="620" y="298" fill="#7A7F8E" font-size="10">STRENGTH</text>
+  <circle cx="688" cy="294" r="5" fill="#ED3694"/>
+  <circle cx="704" cy="294" r="5" fill="#ED3694"/>
+  <circle cx="720" cy="294" r="5" fill="none" stroke="#ED3694" stroke-width="1.5"/>
+  <text x="44" y="342" fill="#7A7F8E" font-size="10" letter-spacing="1">REBUTTAL</text>
+  <text x="44" y="360" fill="#B8BCC8" font-size="12">Paid tier includes team features and integrations free users can't access. Clear value gap.</text>
+
+  <!-- Objection 3 -->
+  <rect x="24" y="388" width="752" height="100" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
+  <text x="44" y="412" fill="#ED3694" font-size="12" font-weight="bold">OBJECTION #3</text>
+  <text x="44" y="434" fill="#B8BCC8" font-size="13">5% conversion rate is optimistic for B2B SaaS freemium — industry average is closer to 2-3%.</text>
+  <!-- Strength: 3 dots (strong) -->
+  <text x="620" y="412" fill="#7A7F8E" font-size="10">STRENGTH</text>
+  <circle cx="688" cy="408" r="5" fill="#ED3694"/>
+  <circle cx="704" cy="408" r="5" fill="#ED3694"/>
+  <circle cx="720" cy="408" r="5" fill="#ED3694"/>
+  <text x="44" y="456" fill="#7A7F8E" font-size="10" letter-spacing="1">REBUTTAL</text>
+  <text x="44" y="474" fill="#B8BCC8" font-size="12">Model break-even at 2% conversion. 5% is stretch target, not the viability threshold.</text>
+
+  <!-- Objection 4 -->
+  <rect x="24" y="502" width="752" height="100" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
+  <text x="44" y="526" fill="#ED3694" font-size="12" font-weight="bold">OBJECTION #4</text>
+  <text x="44" y="548" fill="#B8BCC8" font-size="13">Support burden from free users will overwhelm the small CS team and degrade paid experience.</text>
+  <!-- Strength: 1 dot (weak) -->
+  <text x="620" y="526" fill="#7A7F8E" font-size="10">STRENGTH</text>
+  <circle cx="688" cy="522" r="5" fill="#ED3694"/>
+  <circle cx="704" cy="522" r="5" fill="none" stroke="#ED3694" stroke-width="1.5"/>
+  <circle cx="720" cy="522" r="5" fill="none" stroke="#ED3694" stroke-width="1.5"/>
+  <text x="44" y="570" fill="#7A7F8E" font-size="10" letter-spacing="1">REBUTTAL</text>
+  <text x="44" y="588" fill="#B8BCC8" font-size="12">Free tier is self-serve only with community forum. No human support included.</text>
+
+  <!-- Verdict -->
+  <rect x="24" y="626" width="752" height="100" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
+  <rect x="24" y="626" width="752" height="3" fill="#ED3694"/>
+  <text x="44" y="654" fill="#ED3694" font-size="12" font-weight="bold" letter-spacing="1">VERDICT</text>
+  <text x="140" y="654" fill="#27BDBE" font-size="13" font-weight="bold">SURVIVES WITH CONDITIONS</text>
+  <text x="44" y="678" fill="#B8BCC8" font-size="13">The freemium model is viable if: (1) break-even is modelled at 2% not 5%, (2) free tier has hard</text>
+  <text x="44" y="698" fill="#B8BCC8" font-size="13">resource caps, and (3) conversion triggers are built into the product experience from day one.</text>
+</svg>
