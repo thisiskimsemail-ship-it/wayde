@@ -1843,7 +1843,13 @@ async function streamResponse() {
             // Show wrap-up card if facilitator signalled the exercise is complete
             if (wrapSignaled && !state.reportGenerated) {
                 state.wrapped = true;
-                // Keep input bar open — user can still ask Pete questions
+                // Auto-consolidate board before showing it (removes duplicates)
+                if (state.board.cards.length >= 3) {
+                    const consolidateBtn = document.getElementById('boardConsolidate');
+                    if (consolidateBtn && !consolidateBtn.disabled) {
+                        consolidateBtn.click(); // triggers existing consolidate logic
+                    }
+                }
                 // Auto-open the Workshop Board for review
                 if (!state.board.visible && state.board.cards.length > 0) {
                     toggleBoard();
@@ -2549,7 +2555,18 @@ function updateProgressIndicator() {
     const expected = EXERCISE_EXCHANGES[state.exercise] || 8;
     const current = state.exchangeCount;
     const pct = Math.min(100, Math.round((current / expected) * 100));
-    el.innerHTML = `<span class="progress-count">${current} of ~${expected}</span><div class="progress-bar-track"><div class="progress-bar-fill" style="width:${pct}%"></div></div>`;
+    // When past the estimate, switch to qualitative labels instead of "18 of ~12"
+    let label;
+    if (current > expected) {
+        label = 'Wrapping up';
+    } else if (pct >= 80) {
+        label = 'Nearly there';
+    } else if (pct >= 50) {
+        label = 'Narrowing down';
+    } else {
+        label = `${current} of ~${expected}`;
+    }
+    el.innerHTML = `<span class="progress-count">${label}</span><div class="progress-bar-track"><div class="progress-bar-fill" style="width:${pct}%"></div></div>`;
     el.classList.remove('hidden');
 }
 
@@ -2690,12 +2707,13 @@ function addBoardCard(text, zone, stage, source) {
         if (existNorm === newNorm) return true;
         // One contains the other (catches "LinkedIn outbound" vs "LinkedIn outbound campaign")
         if (existNorm.includes(newNorm) || newNorm.includes(existNorm)) return true;
-        // Word overlap similarity — 60% threshold catches most near-duplicates
+        // Word overlap — tighter threshold for same-zone (40%) vs cross-zone (60%)
         const existWords = new Set(c.text.toLowerCase().split(/\s+/).filter(w => w.length > 2));
         if (newWords.size === 0 || existWords.size === 0) return false;
         const overlap = [...newWords].filter(w => existWords.has(w)).length;
         const similarity = overlap / Math.min(newWords.size, existWords.size);
-        return similarity >= 0.6;
+        const threshold = (c.zone === zone) ? 0.4 : 0.6; // Much stricter within same zone
+        return similarity >= threshold;
     });
     if (isDupe) return null;
 
@@ -2852,6 +2870,10 @@ function updateBoardCounts() {
         total += count;
         const countEl = document.querySelector(`.zone-count[data-zone="${zone}"]`);
         if (countEl) countEl.textContent = count;
+        // Hide "No insights yet" placeholder when zone has cards
+        const zoneDiv = countEl?.closest('.board-zone');
+        const emptyEl = zoneDiv?.querySelector('.zone-empty');
+        if (emptyEl) emptyEl.style.display = count > 0 ? 'none' : '';
     });
     const boardCountEl = document.getElementById('boardCount');
     if (boardCountEl) {
