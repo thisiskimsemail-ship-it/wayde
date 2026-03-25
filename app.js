@@ -1349,14 +1349,14 @@ function appendMessage(role, content) {
 }
 
 function scrollToBottom() {
-    // Use rAF to ensure DOM has rendered before scrolling
+    // Double-rAF ensures DOM has fully rendered before scrolling
     requestAnimationFrame(() => {
-        // When board is open, the chat-pane is the scrollable container
-        const chatPane = document.getElementById('chatPane');
-        if (chatPane && state.board.visible) {
-            chatPane.scrollTop = chatPane.scrollHeight;
-        }
-        chatArea.scrollTop = chatArea.scrollHeight;
+        requestAnimationFrame(() => {
+            const chatPane = document.getElementById('chatPane');
+            // Always scroll both containers — one of them is the active scroller
+            if (chatPane) chatPane.scrollTop = chatPane.scrollHeight;
+            if (chatArea) chatArea.scrollTop = chatArea.scrollHeight;
+        });
     });
 }
 
