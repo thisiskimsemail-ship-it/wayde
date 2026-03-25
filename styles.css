@@ -1456,7 +1456,7 @@ body.in-session .header-nav { display: none; }
     padding: 0.75rem 1rem;
     border-bottom: 1px solid rgba(255,255,255,0.06);
 }
-.lp-board-mock-title { font-weight: 700; color: var(--teal); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; }
+.lp-board-mock-title { font-weight: 700; color: #3B82F6; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; }
 .lp-board-mock-actions { font-size: 0.75rem; color: var(--text-muted); }
 .lp-board-mock-zones { padding: 1rem; display: flex; flex-direction: column; gap: 1rem; }
 .lp-board-mock-zones.lp-board-mock-canvas { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; }
@@ -1464,7 +1464,7 @@ body.in-session .header-nav { display: none; }
 .lp-board-mock-zone-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; display: block; margin-bottom: 0.5rem; }
 .lp-board-mock-card {
     background: rgba(255,255,255,0.04);
-    border-left: 3px solid var(--teal);
+    border-left: 3px solid #3B82F6;
     border-radius: 6px;
     padding: 0.5rem 0.75rem;
     font-size: 0.8rem;
