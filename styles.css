@@ -1957,8 +1957,8 @@ body.keyboard-open .help-challenge-row { display: none; }
     line-height: 1.45;
     resize: none;
     outline: none;
-    min-height: 6rem;
-    max-height: 200px;
+    min-height: 7rem;
+    max-height: 220px;
     transition: border-color 0.2s, box-shadow 0.2s;
 }
 @media (max-width: 640px) {

@@ -20,62 +20,35 @@
         .toolbox-title { font-size: 2.5rem; font-weight: 700; color: var(--text); margin-bottom: 0.5rem; }
         .toolbox-sub { font-size: 1.05rem; color: var(--text-dim); line-height: 1.6; max-width: 580px; margin-bottom: 2.5rem; }
 
-        /* 2×2 grid — force 2 columns */
-        .toolbox-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 4rem; }
+        /* Tool sections */
+        .tb-section { margin-bottom: 3rem; }
+        .tb-section-header { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 1px solid rgba(255,255,255,0.06); }
+        .tb-section-icon { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; border: 1.5px solid currentColor; }
+        .tb-section-label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; }
+        .tb-section-hint { font-size: 0.85rem; color: var(--text-muted); margin-left: auto; }
 
-        /* Category cards */
-        .tb-card {
-            background: var(--bg-light);
-            border-radius: 12px;
-            padding: 2rem;
-            border-top: 3px solid;
-            transition: transform 0.25s ease, box-shadow 0.25s ease;
-            display: flex;
-            flex-direction: column;
-        }
-        .tb-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
-        .tb-card-untangle { border-top-color: var(--teal); }
-        .tb-card-spark { border-top-color: var(--orange); }
-        .tb-card-test { border-top-color: var(--pink); }
-        .tb-card-build { border-top-color: var(--yellow); }
-
-        .tb-cat-icon {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 52px;
-            height: 52px;
-            border-radius: 50%;
-            border: 1.5px solid currentColor;
-            margin-bottom: 0.75rem;
-        }
-        .tb-badge { font-size: 1.1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 0.75rem; }
-        .tb-tagline { font-size: 1.2rem; font-style: italic; color: var(--text); line-height: 1.35; margin-bottom: 0.75rem; font-weight: 400; }
-        .tb-desc { font-size: 0.9rem; color: var(--text-dim); line-height: 1.6; margin-bottom: 1.25rem; flex-grow: 1; }
-
-        .tb-tools { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem; }
+        /* Tool cards — 3-column grid */
+        .tb-tool-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
         .tb-tool-card {
             display: flex;
-            align-items: flex-start;
-            gap: 0.75rem;
-            padding: 0.75rem 1rem;
-            background: rgba(255,255,255,0.03);
-            border-left: 3px solid;
-            border-radius: 6px;
+            flex-direction: column;
+            padding: 1.25rem;
+            background: var(--bg-light);
+            border-top: 3px solid;
+            border-radius: 10px;
             text-decoration: none;
-            transition: background 0.2s, transform 0.2s;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
         }
-        .tb-tool-card:hover { background: rgba(255,255,255,0.07); transform: translateX(2px); }
-        .tb-card-untangle .tb-tool-card { border-left-color: var(--teal); }
-        .tb-card-spark .tb-tool-card { border-left-color: var(--orange); }
-        .tb-card-test .tb-tool-card { border-left-color: var(--pink); }
-        .tb-card-build .tb-tool-card { border-left-color: var(--yellow); }
-        .tb-tool-info { flex: 1; }
-        .tb-tool-name { font-size: 0.95rem; font-weight: 600; color: var(--text); margin-bottom: 0.15rem; }
-        .tb-tool-desc { font-size: 0.8rem; color: var(--text-dim); line-height: 1.4; }
-        .tb-tool-time { font-size: 0.7rem; color: var(--text-muted); white-space: nowrap; margin-top: 0.2rem; }
-
-        /* Start here CTAs removed — tools link directly to detail pages */
+        .tb-tool-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
+        .tb-tool-untangle { border-top-color: var(--teal); }
+        .tb-tool-spark { border-top-color: var(--orange); }
+        .tb-tool-test { border-top-color: var(--pink); }
+        .tb-tool-build { border-top-color: var(--yellow); }
+        .tb-tool-name { font-size: 1.1rem; font-weight: 700; color: var(--text); margin-bottom: 0.5rem; }
+        .tb-tool-desc { font-size: 0.85rem; color: var(--text-dim); line-height: 1.55; flex-grow: 1; margin-bottom: 0.75rem; }
+        .tb-tool-meta { display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+        .tb-tool-time { font-size: 0.75rem; font-weight: 600; color: var(--text-muted); white-space: nowrap; }
+        .tb-tool-output { font-size: 0.7rem; color: var(--text-muted); font-style: italic; }
 
         /* How it works strip */
         .tb-how { padding: 3rem 0; border-top: 1px solid rgba(255,255,255,0.06); margin-bottom: 2rem; }
@@ -109,17 +82,20 @@
         .tb-footer-copy { font-size: 0.75rem; color: var(--text-muted); }
 
         /* Light theme */
-        html[data-theme="light"] .tb-card { background: #fff; }
-        html[data-theme="light"] .tb-card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
-        html[data-theme="light"] .tb-tool-card { background: rgba(30,25,79,0.02); }
-        html[data-theme="light"] .tb-tool-card:hover { background: rgba(30,25,79,0.06); }
-        html[data-theme="light"] .tb-card-build .tb-tool-card { border-left-color: #1E194F; }
+        html[data-theme="light"] .tb-tool-card { background: #fff; }
+        html[data-theme="light"] .tb-tool-card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
+        html[data-theme="light"] .tb-tool-build { border-top-color: #1E194F; }
+        html[data-theme="light"] .tb-section-header { border-bottom-color: rgba(30,25,79,0.06); }
         html[data-theme="light"] .tb-how { border-top-color: rgba(30,25,79,0.06); }
 
         /* Responsive */
+        @media (max-width: 1024px) {
+            .tb-tool-grid { grid-template-columns: repeat(2, 1fr); }
+        }
         @media (max-width: 768px) {
-            .toolbox-grid { grid-template-columns: 1fr; }
+            .tb-tool-grid { grid-template-columns: 1fr; }
             .toolbox-title { font-size: 2rem; }
+            .tb-section-hint { display: none; }
             .tb-how-grid { grid-template-columns: 1fr; gap: 1.5rem; }
             .tb-footer-inner { flex-direction: column; text-align: center; }
             .tb-footer-links { flex-direction: column; gap: 0.5rem; }
@@ -171,100 +147,111 @@
 
     <main class="toolbox">
         <a class="toolbox-back" href="index.html">&larr; The Studio</a>
-        <h1 class="toolbox-title">The Toolbox</h1>
-        <p class="toolbox-sub">Let's figure this out, together. Pick the one that fits. Pete will walk you through it.</p>
+        <h1 class="toolbox-title">12 tools. Pick one</h1>
+        <p class="toolbox-sub">Each tool is a structured exercise that Pete walks you through. They take 15–30 minutes and produce a real output you can use. Click any tool to learn more, or jump straight in.</p>
 
-        <!-- 2×2 Category Grid -->
-        <div class="toolbox-grid">
-
-            <!-- THE UNTANGLE — top-left (problem-led, fuzzy) -->
-            <div class="tb-card tb-card-untangle">
-                <span class="tb-cat-icon" style="color:var(--teal)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
-                <span class="tb-badge" style="color:var(--teal)">THE UNTANGLE</span>
-                <h2 class="tb-tagline">I need to understand the real problem before I move forward</h2>
-                <p class="tb-desc">Whether you're starting out or hitting a wall, these tools help you dig into what's really going on.</p>
-                <div class="tb-tools">
-                    <a class="tb-tool-card" href="tool-detail-five-whys.html">
-                        <div class="tb-tool-info"><div class="tb-tool-name">Five Whys</div><div class="tb-tool-desc">Uncover the root cause behind a problem</div></div>
-                        <span class="tb-tool-time">~15 min</span>
-                    </a>
-                    <a class="tb-tool-card" href="tool-detail-empathy-map.html">
-                        <div class="tb-tool-info"><div class="tb-tool-name">Empathy Map</div><div class="tb-tool-desc">Step into your user's world to reveal hidden insights</div></div>
-                        <span class="tb-tool-time">~20 min</span>
-                    </a>
-                    <a class="tb-tool-card" href="tool-detail-jobs-to-be-done.html">
-                        <div class="tb-tool-info"><div class="tb-tool-name">Jobs to Be Done</div><div class="tb-tool-desc">Understand what your customer is really trying to achieve</div></div>
-                        <span class="tb-tool-time">~20 min</span>
-                    </a>
-                </div>
+        <!-- THE UNTANGLE -->
+        <div class="tb-section">
+            <div class="tb-section-header">
+                <span class="tb-section-icon" style="color:var(--teal)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+                <span class="tb-section-label" style="color:var(--teal)">THE UNTANGLE</span>
+                <span class="tb-section-hint">Understand the real problem</span>
             </div>
-
-            <!-- THE SPARK — top-right (idea-led, fuzzy) -->
-            <div class="tb-card tb-card-spark">
-                <span class="tb-cat-icon" style="color:var(--orange)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>
-                <span class="tb-badge" style="color:var(--orange)">THE SPARK</span>
-                <h2 class="tb-tagline">I have the beginning of an idea — help me explore it</h2>
-                <p class="tb-desc">You've got a seed of something. Pete will help you brainstorm possibilities and find unexpected angles.</p>
-                <div class="tb-tools">
-                    <a class="tb-tool-card" href="tool-detail-crazy-8s.html">
-                        <div class="tb-tool-info"><div class="tb-tool-name">Crazy 8s</div><div class="tb-tool-desc">Rapidly sketch eight ideas in eight minutes</div></div>
-                        <span class="tb-tool-time">~15 min</span>
-                    </a>
-                    <a class="tb-tool-card" href="tool-detail-how-might-we.html">
-                        <div class="tb-tool-info"><div class="tb-tool-name">How Might We</div><div class="tb-tool-desc">Turn problems into opportunity-framing questions</div></div>
-                        <span class="tb-tool-time">~20 min</span>
-                    </a>
-                    <a class="tb-tool-card" href="tool-detail-scamper.html">
-                        <div class="tb-tool-info"><div class="tb-tool-name">SCAMPER</div><div class="tb-tool-desc">Stretch an idea by substituting, combining, adapting and more</div></div>
-                        <span class="tb-tool-time">~20 min</span>
-                    </a>
-                </div>
+            <div class="tb-tool-grid">
+                <a class="tb-tool-card tb-tool-untangle" href="tool-detail-five-whys.html">
+                    <div class="tb-tool-name">Five Whys</div>
+                    <div class="tb-tool-desc">Ask "why?" five times to peel back symptoms and find the root cause. Based on Toyota's production system — now used at Amazon, GE, and Harvard Business School.</div>
+                    <div class="tb-tool-meta"><span class="tb-tool-time">~15 min</span><span class="tb-tool-output">Output: Root cause statement + systemic change</span></div>
+                </a>
+                <a class="tb-tool-card tb-tool-untangle" href="tool-detail-empathy-map.html">
+                    <div class="tb-tool-name">Empathy Map</div>
+                    <div class="tb-tool-desc">Map what your user says, thinks, does, and feels. The power is in the gaps — where what someone says contradicts what they do. That's where the real insight lives.</div>
+                    <div class="tb-tool-meta"><span class="tb-tool-time">~20 min</span><span class="tb-tool-output">Output: User profile + key insight</span></div>
+                </a>
+                <a class="tb-tool-card tb-tool-untangle" href="tool-detail-jobs-to-be-done.html">
+                    <div class="tb-tool-name">Jobs to Be Done</div>
+                    <div class="tb-tool-desc">People don't buy products — they hire them to make progress. Uncover the functional, emotional, and social job your customer is really trying to get done.</div>
+                    <div class="tb-tool-meta"><span class="tb-tool-time">~20 min</span><span class="tb-tool-output">Output: Job statement + competitive landscape</span></div>
+                </a>
             </div>
+        </div>
 
-            <!-- THE TEST — bottom-left (problem-led, clear) -->
-            <div class="tb-card tb-card-test">
-                <span class="tb-cat-icon" style="color:var(--pink)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg></span>
-                <span class="tb-badge" style="color:var(--pink)">THE TEST</span>
-                <h2 class="tb-tagline">I have a proposal — help me break it before I build it</h2>
-                <p class="tb-desc">Pete will stress-test it, argue against it, and find proven patterns from other fields.</p>
-                <div class="tb-tools">
-                    <a class="tb-tool-card" href="tool-detail-pre-mortem.html">
-                        <div class="tb-tool-info"><div class="tb-tool-name">Pre-Mortem</div><div class="tb-tool-desc">Imagine the project failed — what went wrong?</div></div>
-                        <span class="tb-tool-time">~20 min</span>
-                    </a>
-                    <a class="tb-tool-card" href="tool-detail-devils-advocate.html">
-                        <div class="tb-tool-info"><div class="tb-tool-name">Devil's Advocate</div><div class="tb-tool-desc">Challenge your assumptions to strengthen your thinking</div></div>
-                        <span class="tb-tool-time">~25 min</span>
-                    </a>
-                    <a class="tb-tool-card" href="tool-detail-analogical-thinking.html">
-                        <div class="tb-tool-info"><div class="tb-tool-name">Analogical Thinking</div><div class="tb-tool-desc">Borrow solutions from unexpected places</div></div>
-                        <span class="tb-tool-time">~20 min</span>
-                    </a>
-                </div>
+        <!-- THE SPARK -->
+        <div class="tb-section">
+            <div class="tb-section-header">
+                <span class="tb-section-icon" style="color:var(--orange)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>
+                <span class="tb-section-label" style="color:var(--orange)">THE SPARK</span>
+                <span class="tb-section-hint">Explore and generate ideas</span>
             </div>
-
-            <!-- THE BUILD — bottom-right (idea-led, clear) -->
-            <div class="tb-card tb-card-build">
-                <span class="tb-cat-icon" style="color:var(--yellow)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg></span>
-                <span class="tb-badge" style="color:var(--yellow)">THE BUILD</span>
-                <h2 class="tb-tagline">I have a solution — help me turn it into a plan</h2>
-                <p class="tb-desc">Pete will help you map out the model, start with what you have, and design a test for your riskiest assumption.</p>
-                <div class="tb-tools">
-                    <a class="tb-tool-card" href="tool-detail-lean-canvas.html">
-                        <div class="tb-tool-info"><div class="tb-tool-name">Lean Canvas</div><div class="tb-tool-desc">Outline your venture model on a single page</div></div>
-                        <span class="tb-tool-time">~30 min</span>
-                    </a>
-                    <a class="tb-tool-card" href="tool-detail-effectuation.html">
-                        <div class="tb-tool-info"><div class="tb-tool-name">Effectuation</div><div class="tb-tool-desc">Build using the resources and relationships you already have</div></div>
-                        <span class="tb-tool-time">~20 min</span>
-                    </a>
-                    <a class="tb-tool-card" href="tool-detail-rapid-experiment.html">
-                        <div class="tb-tool-info"><div class="tb-tool-name">Rapid Experiment</div><div class="tb-tool-desc">Design a quick test to learn before you build</div></div>
-                        <span class="tb-tool-time">~20 min</span>
-                    </a>
-                </div>
+            <div class="tb-tool-grid">
+                <a class="tb-tool-card tb-tool-spark" href="tool-detail-crazy-8s.html">
+                    <div class="tb-tool-name">Crazy 8s</div>
+                    <div class="tb-tool-desc">Eight ideas in eight minutes. Time pressure breaks perfectionism and pushes you past the safe, obvious answers. From Google Ventures' Design Sprint.</div>
+                    <div class="tb-tool-meta"><span class="tb-tool-time">~15 min</span><span class="tb-tool-output">Output: 8 ideas + top pick</span></div>
+                </a>
+                <a class="tb-tool-card tb-tool-spark" href="tool-detail-how-might-we.html">
+                    <div class="tb-tool-name">How Might We</div>
+                    <div class="tb-tool-desc">Convert problems into open-ended design questions. "How" implies solvable, "might" means possibility, "we" signals collaboration. Each question opens a different direction.</div>
+                    <div class="tb-tool-meta"><span class="tb-tool-time">~20 min</span><span class="tb-tool-output">Output: 5–8 reframed questions</span></div>
+                </a>
+                <a class="tb-tool-card tb-tool-spark" href="tool-detail-scamper.html">
+                    <div class="tb-tool-name">SCAMPER</div>
+                    <div class="tb-tool-desc">Seven creative lenses: Substitute, Combine, Adapt, Modify, Put to other uses, Eliminate, Reverse. Each one forces your brain out of its default groove.</div>
+                    <div class="tb-tool-meta"><span class="tb-tool-time">~20 min</span><span class="tb-tool-output">Output: Ideas from 7 angles</span></div>
+                </a>
             </div>
+        </div>
 
+        <!-- THE TEST -->
+        <div class="tb-section">
+            <div class="tb-section-header">
+                <span class="tb-section-icon" style="color:var(--pink)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg></span>
+                <span class="tb-section-label" style="color:var(--pink)">THE TEST</span>
+                <span class="tb-section-hint">Stress-test before you commit</span>
+            </div>
+            <div class="tb-tool-grid">
+                <a class="tb-tool-card tb-tool-test" href="tool-detail-pre-mortem.html">
+                    <div class="tb-tool-name">Pre-Mortem</div>
+                    <div class="tb-tool-desc">Imagine the project has already failed. Work backwards to identify why. Prospective hindsight bypasses optimism bias and surfaces risks nobody would say out loud.</div>
+                    <div class="tb-tool-meta"><span class="tb-tool-time">~20 min</span><span class="tb-tool-output">Output: Risk register + mitigations</span></div>
+                </a>
+                <a class="tb-tool-card tb-tool-test" href="tool-detail-devils-advocate.html">
+                    <div class="tb-tool-name">Devil's Advocate</div>
+                    <div class="tb-tool-desc">Pete argues the strongest possible case against your idea. Not to kill it — to force it to become better. If it survives Pete, it'll survive the market.</div>
+                    <div class="tb-tool-meta"><span class="tb-tool-time">~25 min</span><span class="tb-tool-output">Output: Objections + verdict</span></div>
+                </a>
+                <a class="tb-tool-card tb-tool-test" href="tool-detail-analogical-thinking.html">
+                    <div class="tb-tool-name">Analogical Thinking</div>
+                    <div class="tb-tool-desc">Borrow solutions from unexpected places. The Shinkansen nose came from a kingfisher's beak. Velcro from burs. Most problems have been solved somewhere else.</div>
+                    <div class="tb-tool-meta"><span class="tb-tool-time">~20 min</span><span class="tb-tool-output">Output: 3 analogies + application</span></div>
+                </a>
+            </div>
+        </div>
+
+        <!-- THE BUILD -->
+        <div class="tb-section">
+            <div class="tb-section-header">
+                <span class="tb-section-icon" style="color:var(--yellow)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg></span>
+                <span class="tb-section-label" style="color:var(--yellow)">THE BUILD</span>
+                <span class="tb-section-hint">Turn ideas into plans</span>
+            </div>
+            <div class="tb-tool-grid">
+                <a class="tb-tool-card tb-tool-build" href="tool-detail-lean-canvas.html">
+                    <div class="tb-tool-name">Lean Canvas</div>
+                    <div class="tb-tool-desc">Nine blocks on one page: Problem, Customer, Value Prop, Solution, Channels, Revenue, Costs, Metrics, Unfair Advantage. Start with the problem, not the solution.</div>
+                    <div class="tb-tool-meta"><span class="tb-tool-time">~30 min</span><span class="tb-tool-output">Output: One-page business model</span></div>
+                </a>
+                <a class="tb-tool-card tb-tool-build" href="tool-detail-effectuation.html">
+                    <div class="tb-tool-name">Effectuation</div>
+                    <div class="tb-tool-desc">Start with who you are, what you know, and who you know — then figure out what you can build from that. How expert entrepreneurs actually think, based on research by Saras Sarasvathy.</div>
+                    <div class="tb-tool-meta"><span class="tb-tool-time">~20 min</span><span class="tb-tool-output">Output: Means inventory + first move</span></div>
+                </a>
+                <a class="tb-tool-card tb-tool-build" href="tool-detail-rapid-experiment.html">
+                    <div class="tb-tool-name">Rapid Experiment</div>
+                    <div class="tb-tool-desc">Design the cheapest, fastest test that could disprove your riskiest assumption. From the Lean Startup's Build-Measure-Learn loop. Goal: a decision, not proof.</div>
+                    <div class="tb-tool-meta"><span class="tb-tool-time">~20 min</span><span class="tb-tool-output">Output: Experiment design + pass/fail criteria</span></div>
+                </a>
+            </div>
         </div>
 
         <!-- How it works -->
