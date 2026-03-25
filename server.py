@@ -590,10 +590,10 @@ SESSION MEMORY
 When a returning user starts a session, you may receive a FOUNDER_PROFILE block. Open with a reference to where they left off — not a recap, a forward-looking question. Never "Welcome back!" — just pick up the thread. During conversation, reference past sessions when relevant to spot patterns across sessions. Track accountability: "Last session you committed to calling five customers. Did you do it?"
 
 NAMING — CRITICAL
-You are Pete. The workshop space is called Wade Studio. Always refer to yourself as Pete — never "the facilitator" or "Wade Studio" when talking about yourself. Wade Studio is the space; Pete is you.
+You are Pete. The workshop space is called The Studio. Always refer to yourself as Pete — never "the facilitator" or "The Studio" when talking about yourself. The Studio is the space; Pete is you.
 NEVER write "WadeStudio", "wade studio", "Studio" alone, "WADE STUDIO", or any other variation when referring to yourself.
-When introducing yourself: say "Welcome to Wade Studio" — never "I'm Wade Studio".
-When the user's report or summary mentions the tool: write "Wade Studio".
+When introducing yourself: say "Welcome to The Studio" — never "I'm The Studio".
+When the user's report or summary mentions the tool: write "The Studio".
 Say "Wade Institute of Entrepreneurship" on first reference, "Wade Institute" after that. Never "The Wade Institute", "The Wade" or "Wade" alone.
 
 COMMUNITY LANGUAGE
@@ -603,7 +603,7 @@ ENTREPRENEURSHIP FRAMING
 Never frame innovation as startup creation only. Preferred: building capability, shaping change, testing ideas, leading innovation, deploying capital, creating opportunity. Serve founders, investors, educators, corporate leaders and students equally.
 
 COMMUNITY VALUES
-The Wade community is built on seven values: curiosity, respect, inclusion, integrity, courage, collaboration and growth. Every Wade Studio session should reflect them.
+The Wade community is built on seven values: curiosity, respect, inclusion, integrity, courage, collaboration and growth. Every The Studio session should reflect them.
 
 Curiosity — approach every problem with genuine openness. Question assumptions before reaching conclusions.
 Respect — treat every person, idea and context with care. All industries, roles and backgrounds bring legitimate perspectives.
@@ -652,7 +652,7 @@ ONE QUESTION AT A TIME — CRITICAL
 Never ask more than one question in a single response. If you need multiple pieces of information, pick the most important question and ask only that. Wait for the answer before asking anything else. Never combine two questions into one message, even if they seem related. [OPTIONS] chips must match the single question asked — never offer options that conflate two separate questions.
 
 CONTINUATIONS — CRITICAL
-If there are existing messages in the conversation history when you begin a new exercise, the user has switched from a previous exercise. Do NOT reintroduce yourself. Do NOT say "Welcome to Wade Studio" or repeat your purpose. Acknowledge their previous work briefly in one sentence, then move directly into the new exercise. Treat it as a continuation, not a fresh start."""
+If there are existing messages in the conversation history when you begin a new exercise, the user has switched from a previous exercise. Do NOT reintroduce yourself. Do NOT say "Welcome to The Studio" or repeat your purpose. Acknowledge their previous work briefly in one sentence, then move directly into the new exercise. Treat it as a continuation, not a fresh start."""
 
 # Facilitator overlay appended to every exercise prompt
 FACILITATOR_OVERLAY = """
@@ -681,6 +681,8 @@ WORKSHOP BOARD CARDS: As the session progresses, capture the most significant ou
 - When a promising idea or solution emerges, emit [IDEA: one-sentence description] on its own line.
 - When a concrete next step or action item is agreed, emit [ACTION: one-sentence description] on its own line.
 These tags create visual cards on the user's board. Aim for 3-6 cards per exercise — enough to capture the thinking, not so many it becomes noise. Do not announce the tags in your visible text — they are silently parsed by the frontend.
+
+BOARD AS CONVERSATIONAL PARTNER: After 3-4 cards have accumulated, reference the board in your conversation. Point out patterns: "I want to flag something — three of your insights circle around the same theme: [theme]. Does that resonate?" or "Looking at what's building on your board, there's a tension between [X] and [Y] — that tension is worth sitting with." This turns the board from a silent recorder into a mirror. Do this once per session, at most twice — not every exchange.
 
 TIME AWARENESS: Occasionally reference the passage of time to create workshop energy: "We're about halfway through this exercise — let's pick up the pace" or "One more round on this, then we'll pull it together." This creates the feeling of a structured, time-boxed session.
 
@@ -2910,7 +2912,7 @@ Generated by The Studio · Wade Institute of Entrepreneurship · wadeinstitute.o
 
 {WADE_PROGRAMS_PLACEHOLDER}"""
 
-REPORT_PROMPT = """You are producing a workshop output for a session at Wade Studio, Wade Institute of Entrepreneurship.
+REPORT_PROMPT = """You are producing a workshop output for a session at The Studio, Wade Institute of Entrepreneurship.
 
 VOICE & TONE
 Write like a sharp peer reviewer, not a life coach. Second person ("you") but direct and analytical. The Wade brand voice is: bold, curious, ambitious, action-oriented.
@@ -3045,7 +3047,7 @@ Pete's brief assessment: which components are sharp and specific, and which migh
 Weave in a single Wade reference as evidence, not a pitch: "A pitch like this got pressure-tested in [Program Name] by [Wader from WADE_KNOWLEDGE_BLOCK] — they refined it across [number] iterations with [peer description that matches user's cluster]." Only include if a strong Wader match exists; otherwise omit the line entirely.
 
 ### Recommended Next Step
-"Ready to pressure-test the assumptions behind this pitch? Try the **Lean Canvas** in Wade Studio — it maps the full business model and carries your pitch components forward."
+"Ready to pressure-test the assumptions behind this pitch? Try the **Lean Canvas** in The Studio — it maps the full business model and carries your pitch components forward."
 
 Keep it short. This is a 5-minute tool — the report should match that energy.
 
@@ -3974,7 +3976,7 @@ def generate_linkedin():
         f"→ [action 3]\n"
         f"Pull these from the Recommended Actions section. Keep them concrete and specific.\n\n"
         f"Final line — exactly this: "
-        f"'Explored this in Wade Studio — Wade Institute's virtual workshop space. Try it at wadeinstitute.org.au/studio'\n\n"
+        f"'Explored this in The Studio — Wade Institute's virtual workshop space. Try it at wadeinstitute.org.au/studio'\n\n"
         f"No hashtags. No intro or outro. Output ONLY the post text. Warm and personal, not corporate.\n\n"
         f"Session report:\n{report_text[:3000]}"
     )
@@ -4014,7 +4016,7 @@ CANVAS_HTML_TEMPLATE = """<!DOCTYPE html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lean Canvas — Wade Studio</title>
+<title>Lean Canvas — The Studio</title>
 <style>
 @page { size: landscape; margin: 0.5cm; }
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -4253,18 +4255,18 @@ def save_session():
     try:
         resend_key = os.environ.get('RESEND_API_KEY')
         if resend_key:
-            from_email = os.environ.get('WADE_FROM_EMAIL', 'Wade Studio <enquiries@wadeinstitute.org.au>')
+            from_email = os.environ.get('WADE_FROM_EMAIL', 'The Studio <enquiries@wadeinstitute.org.au>')
             html_body = f"""
             <div style="font-family: -apple-system, sans-serif; max-width: 560px; margin: 0 auto; padding: 2rem;">
                 <h2 style="color: #1E194F; margin-bottom: 0.5rem;">Your session is saved</h2>
-                <p style="color: #555; line-height: 1.6;">You were working through a <strong>{exercise_name}</strong> session in Wade Studio. Pick up exactly where you left off:</p>
+                <p style="color: #555; line-height: 1.6;">You were working through a <strong>{exercise_name}</strong> session in The Studio. Pick up exactly where you left off:</p>
                 <a href="{resume_url}" style="display: inline-block; background: #F15A22; color: #fff; padding: 12px 28px; border-radius: 6px; text-decoration: none; font-weight: 600; margin: 1.5rem 0;">Continue your session &rarr;</a>
                 <p style="color: #999; font-size: 0.85rem;">This link expires in 30 days.</p>
                 <hr style="border: none; border-top: 1px solid #eee; margin: 1.5rem 0;">
                 <p style="color: #999; font-size: 0.8rem;">Wade Institute of Entrepreneurship &middot; The Studio</p>
             </div>
             """
-            _resend_send_email(resend_key, from_email, email, f"Your Wade Studio session — {exercise_name}", html_body)
+            _resend_send_email(resend_key, from_email, email, f"Your The Studio session — {exercise_name}", html_body)
     except Exception as e:
         print(f"Session email failed: {e}")
 
@@ -4367,7 +4369,7 @@ a{{color:#F15A22}}
   <div class="meta">{entry['exercise']} · {entry['mode']} · {date_str}</div>
 </div>
 <div id="rc"></div>
-<div class="ft">Generated by Wade Studio · Wade Institute of Entrepreneurship · <a href="https://wadeinstitute.org.au">wadeinstitute.org.au</a></div>
+<div class="ft">Generated by The Studio · Wade Institute of Entrepreneurship · <a href="https://wadeinstitute.org.au">wadeinstitute.org.au</a></div>
 <script>document.getElementById('rc').innerHTML = marked.parse({report_json});</script>
 </body>
 </html>"""
@@ -4489,7 +4491,7 @@ def _tags_html(tags):
 def _notify_wade(lead):
     """Email Wade and send user a copy of their report via Resend. Silent no-op if not configured."""
     resend_key  = os.environ.get('RESEND_API_KEY')
-    from_email  = os.environ.get('WADE_FROM_EMAIL', 'Wade Studio <enquiries@wadeinstitute.org.au>')
+    from_email  = os.environ.get('WADE_FROM_EMAIL', 'The Studio <enquiries@wadeinstitute.org.au>')
     wade_email  = os.environ.get('WADE_NOTIFY_EMAIL', 'enquiries@wadeinstitute.org.au')
 
     if not resend_key:
@@ -4502,7 +4504,7 @@ def _notify_wade(lead):
     wade_html = f"""<!DOCTYPE html><html><head><meta charset="UTF-8"></head>
 <body style="font-family:Arial,sans-serif;max-width:680px;margin:0 auto;padding:20px;color:#1a1a2e;">
   <div style="background:#F15A22;padding:18px 24px;border-radius:6px 6px 0 0;">
-    <h2 style="margin:0;color:#fff;font-size:17px;">New Wade Studio Session</h2>
+    <h2 style="margin:0;color:#fff;font-size:17px;">New The Studio Session</h2>
     <p style="margin:3px 0 0;color:rgba(255,255,255,0.85);font-size:12px;">Wade Institute of Entrepreneurship</p>
   </div>
   <div style="border:1px solid #e0e0e0;border-top:none;border-radius:0 0 6px 6px;padding:22px;">
@@ -4518,13 +4520,13 @@ def _notify_wade(lead):
     {_tags_html(lead.get('tags', {}))}
     <div style="font-family:Georgia,serif;font-size:13.5px;line-height:1.7;color:#222;">{report_html}</div>
   </div>
-  <p style="text-align:center;font-size:11px;color:#aaa;margin-top:14px;">Wade Studio &middot; <a href="https://wadeinstitute.org.au" style="color:#F15A22;">wadeinstitute.org.au</a></p>
+  <p style="text-align:center;font-size:11px;color:#aaa;margin-top:14px;">The Studio &middot; <a href="https://wadeinstitute.org.au" style="color:#F15A22;">wadeinstitute.org.au</a></p>
 </body></html>"""
 
     try:
         _resend_send_email(
             resend_key, from_email, wade_email,
-            f"New Wade Studio Session: {lead['name']} — {lead['exercise']} ({lead['mode']})",
+            f"New The Studio Session: {lead['name']} — {lead['exercise']} ({lead['mode']})",
             wade_html
         )
     except Exception:
@@ -4538,7 +4540,7 @@ def _notify_wade(lead):
     <p style="margin:3px 0 0;color:rgba(255,255,255,0.85);font-size:12px;">{lead['mode']} &middot; {lead['exercise']}</p>
   </div>
   <div style="border:1px solid #e0e0e0;border-top:none;border-radius:0 0 6px 6px;padding:22px;">
-    <p style="font-size:14px;color:#444;margin:0 0 18px;">Hi {lead['name'].split()[0]}, here's a copy of your Wade Studio workshop session report to refer back to.</p>
+    <p style="font-size:14px;color:#444;margin:0 0 18px;">Hi {lead['name'].split()[0]}, here's a copy of your The Studio workshop session report to refer back to.</p>
     <div style="font-family:Georgia,serif;font-size:13.5px;line-height:1.7;color:#222;">{report_html}</div>
     <div style="margin-top:28px;padding:16px 18px;border:1.5px solid #F15A22;border-radius:5px;background:#fdf9f7;">
       <p style="font-size:8.5px;font-weight:bold;letter-spacing:0.12em;text-transform:uppercase;color:#F15A22;margin:0 0 6px;">Ready to go deeper?</p>
@@ -4548,13 +4550,13 @@ def _notify_wade(lead):
       <a href="https://wadeinstitute.org.au/programs/" style="font-size:12px;font-weight:bold;color:#F15A22;text-decoration:none;">Explore Wade Programs &rarr;</a>
     </div>
   </div>
-  <p style="text-align:center;font-size:11px;color:#aaa;margin-top:14px;">Generated by Wade Studio &middot; Wade Institute of Entrepreneurship &middot; <a href="https://wadeinstitute.org.au" style="color:#F15A22;">wadeinstitute.org.au</a></p>
+  <p style="text-align:center;font-size:11px;color:#aaa;margin-top:14px;">Generated by The Studio &middot; Wade Institute of Entrepreneurship &middot; <a href="https://wadeinstitute.org.au" style="color:#F15A22;">wadeinstitute.org.au</a></p>
 </body></html>"""
 
     try:
         _resend_send_email(
             resend_key, from_email, lead['email'],
-            f"Your Wade Studio workshop session report — {lead['exercise']}",
+            f"Your The Studio workshop session report — {lead['exercise']}",
             user_html
         )
     except Exception:
@@ -4567,7 +4569,7 @@ def _tag_session(report, messages, exercise, mode):
         for m in messages[-20:]  # last 20 messages is plenty
         if isinstance(m.get('content'), str)
     )
-    prompt = f"""Analyse this Wade Studio workshop session and return a JSON object with exactly these fields:
+    prompt = f"""Analyse this The Studio workshop session and return a JSON object with exactly these fields:
 
 {{
   "challenge_category": one of: "Product/Service Design" | "Business Model" | "Customer Understanding" | "Team & Culture" | "Strategy & Direction" | "Process & Operations" | "Market Entry" | "Funding & Resources" | "Other",
@@ -5071,7 +5073,7 @@ def feedback_summary():
             feedback_text += f"   Comment: {f['text']}\n"
         feedback_text += f"   Time: {f.get('timestamp', 'n/a')}\n\n"
 
-    summary_prompt = f"""Analyse the following user feedback from Wade Studio (a virtual innovation workshop tool).
+    summary_prompt = f"""Analyse the following user feedback from The Studio (a virtual innovation workshop tool).
 
 Group feedback by theme. For each theme:
 1. Name the theme (2-4 words)

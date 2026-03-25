@@ -470,7 +470,7 @@ function renderSessionActions() {
     helpBtn.textContent = 'Help me';
     helpBtn.addEventListener('click', () => {
         if (state.streaming) return;
-        const helpMsg = "I'm feeling a bit stuck. Can you give me a nudge — maybe a tip, a prompt, or an example to help me move forward?";
+        const helpMsg = "[MODE: Help] I could use some encouragement here. Help me see what I'm doing right, give me a concrete example to build on, and gently guide me to the next step. Be warm and supportive — I need a boost, not a push.";
         actionsDiv.remove();
         appendMessage('user', helpMsg);
         state.messages.push({ role: 'user', content: helpMsg });
@@ -1978,6 +1978,14 @@ function autoSaveSessionSummary() {
       .then(data => {
           if (data.session_id) _currentSessionDbId = data.session_id;
           if (data.summary) console.log('[Memory] Session saved:', data.summary.topic);
+          // Flash "Saved" indicator on the save button
+          const saveBtn = document.getElementById('saveSessionBtn');
+          if (saveBtn) {
+              saveBtn.title = 'Saved just now';
+              saveBtn.style.borderColor = '#22C55E';
+              saveBtn.style.color = '#22C55E';
+              setTimeout(() => { saveBtn.style.borderColor = ''; saveBtn.style.color = ''; saveBtn.title = 'Save session'; }, 2000);
+          }
       })
       .catch(err => console.warn('[Memory] Auto-save failed:', err));
 }
@@ -3707,9 +3715,9 @@ function showFeatureHint(targetSelector, text, hintKey) {
 
 // Register hints for features as they appear
 const featureHints = {
-    board: { selector: '#boardToggle', text: 'Your workshop board — ideas and insights build here as you work.', key: 'board' },
-    save: { selector: '#saveSessionBtn', text: 'Save your session and come back later via a magic link.', key: 'save' },
-    pitchPreview: { selector: '#pitchPreview', text: 'Your pitch builds here as you define each component.', key: 'pitch' },
+    board: { selector: '#boardToggle', text: 'Your workshop board — insights, ideas, and actions build here as you work.', key: 'board' },
+    save: { selector: '#saveSessionBtn', text: 'Your session saves automatically. Use this to email yourself a link.', key: 'save' },
+    helpChallenge: { selector: '.help-btn', text: '"Help me" for encouragement. "Challenge me" for tough love. Use either any time.', key: 'helpchallenge' },
     feedback: { selector: '#feedbackTab', text: 'We\'re in beta — your feedback shapes what we build next.', key: 'feedback' },
     toolMenu: { selector: '#toolDropdownToggle', text: 'Switch tools anytime from this menu.', key: 'toolmenu' }
 };
