@@ -882,6 +882,9 @@ body.in-session .site-footer,
 body[data-mode] #wadeCta,
 body.in-session #wadeCta { display: none !important; }
 
+/* Hide input bar on welcome page — only show during sessions */
+body:not(.in-session) .input-area { display: none !important; }
+
 /* No background images on session page — clean dark navy */
 
 /* Ensure chat content sits above the background */
@@ -1456,6 +1459,8 @@ body.in-session .header-nav { display: none; }
 .lp-board-mock-title { font-weight: 700; color: var(--orange); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; }
 .lp-board-mock-actions { font-size: 0.75rem; color: var(--text-muted); }
 .lp-board-mock-zones { padding: 1rem; display: flex; flex-direction: column; gap: 1rem; }
+.lp-board-mock-canvas { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; }
+@media (max-width: 640px) { .lp-board-mock-canvas { grid-template-columns: repeat(2, 1fr); } }
 .lp-board-mock-zone-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; display: block; margin-bottom: 0.5rem; }
 .lp-board-mock-card {
     background: rgba(255,255,255,0.04);
@@ -2540,9 +2545,19 @@ html[data-theme="light"] .mic-btn:hover { border-color: rgba(30,25,79,0.3); colo
     letter-spacing: 0.02em;
 }
 
+.report-progress-time { font-size: 0.7rem; color: var(--text-muted); margin-top: 0.5rem; }
+.report-wait-cta { margin-top: 2rem; padding: 1.5rem; background: var(--bg-light); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; text-align: center; }
+.report-wait-heading { font-size: 1rem; font-weight: 600; color: var(--text); margin-bottom: 0.5rem; }
+.report-wait-desc { font-size: 0.85rem; color: var(--text-dim); line-height: 1.6; margin-bottom: 1rem; }
+.report-wait-btn { display: inline-block; background: var(--orange); color: #fff; font-family: var(--font); font-size: 0.9rem; font-weight: 600; padding: 0.6rem 1.5rem; border-radius: 999px; text-decoration: none; transition: all 0.2s; }
+.report-wait-btn:hover { background: #d14e1b; transform: translateY(-1px); }
+.report-wait-link { display: block; margin-top: 0.75rem; font-size: 0.8rem; color: var(--orange); text-decoration: none; }
+.report-wait-link:hover { text-decoration: underline; }
+
 html[data-theme="light"] .report-progress-bar-track {
     background: rgba(30,25,79,0.06);
 }
+html[data-theme="light"] .report-wait-cta { background: #fff; border-color: rgba(30,25,79,0.08); }
 
 /* Quick-reply option chips */
 .option-chips {
