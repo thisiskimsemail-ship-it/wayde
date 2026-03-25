@@ -8,7 +8,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from datetime import datetime, timezone, timedelta
 from html.parser import HTMLParser
-from flask import Flask, request, Response, send_from_directory, jsonify
+from flask import Flask, request, Response, send_from_directory, jsonify, make_response
 from dotenv import load_dotenv
 import anthropic
 
@@ -3438,6 +3438,176 @@ Return EXACTLY this JSON format (no markdown, no code blocks):
     except Exception as e:
         print(f"[REPORT] ERROR: {str(e)}")
         return jsonify({'error': str(e)}), 500
+
+
+# === PDF REPORT GENERATION ===
+
+@app.route('/api/report/pdf', methods=['POST'])
+def generate_report_pdf():
+    """Generate a professionally styled PDF from the report markdown."""
+    data = request.json or {}
+    report_text = data.get('report', '')
+    synopsis = data.get('synopsis', {})
+    exercise = data.get('exercise', '')
+    mode = data.get('mode', '')
+
+    if not report_text:
+        return jsonify({'error': 'No report text provided'}), 400
+
+    exercise_name = EXERCISE_NAMES.get(exercise, exercise or 'Coaching Session')
+    mode_name = MODE_NAMES.get(mode, mode or 'The Studio')
+
+    # Convert markdown to HTML
+    report_html = _markdown_to_html(report_text)
+
+    # Build the full PDF HTML document
+    title = synopsis.get('title', f'{exercise_name} Report')
+    hook = synopsis.get('hook', '')
+    bullets = synopsis.get('bullets', [])
+    date_str = __import__('datetime').datetime.now().strftime('%d %B %Y')
+
+    bullets_html = ''.join(f'<li>{b}</li>' for b in bullets) if bullets else ''
+
+    pdf_html = f"""<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+@page {{
+    size: A4;
+    margin: 2.5cm 2cm 2cm 2cm;
+    @bottom-center {{
+        content: counter(page);
+        font-family: Arial, sans-serif;
+        font-size: 9px;
+        color: #999;
+    }}
+    @bottom-right {{
+        content: "The Studio — Wade Institute";
+        font-family: Arial, sans-serif;
+        font-size: 8px;
+        color: #999;
+    }}
+}}
+body {{
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 11pt;
+    line-height: 1.6;
+    color: #333;
+    max-width: 100%;
+}}
+/* Cover section */
+.cover {{
+    page-break-after: always;
+    padding-top: 4cm;
+}}
+.cover-bar {{
+    width: 60px;
+    height: 4px;
+    background: #F15A22;
+    margin-bottom: 1.5cm;
+}}
+.cover-meta {{
+    font-size: 10pt;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.5cm;
+}}
+.cover-title {{
+    font-size: 28pt;
+    font-weight: 700;
+    color: #1E194F;
+    line-height: 1.15;
+    margin-bottom: 0.8cm;
+}}
+.cover-hook {{
+    font-size: 13pt;
+    color: #555;
+    font-style: italic;
+    line-height: 1.5;
+    margin-bottom: 1cm;
+    max-width: 85%;
+}}
+.cover-bullets {{
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}}
+.cover-bullets li {{
+    padding: 0.4cm 0;
+    padding-left: 1.2cm;
+    position: relative;
+    font-size: 11pt;
+    color: #444;
+    border-bottom: 1px solid #eee;
+}}
+.cover-bullets li::before {{
+    content: "\\2192";
+    position: absolute;
+    left: 0;
+    color: #F15A22;
+    font-weight: bold;
+}}
+.cover-footer {{
+    position: absolute;
+    bottom: 2cm;
+    font-size: 9pt;
+    color: #999;
+}}
+/* Report body */
+h1 {{ font-size: 20pt; color: #1E194F; margin-top: 1.5cm; margin-bottom: 0.3cm; border-bottom: 2px solid #F15A22; padding-bottom: 0.2cm; }}
+h2 {{ font-size: 16pt; color: #1E194F; margin-top: 1cm; margin-bottom: 0.3cm; }}
+h3 {{ font-size: 13pt; color: #1E194F; margin-top: 0.8cm; margin-bottom: 0.2cm; }}
+p {{ margin: 0.3cm 0; }}
+ul, ol {{ margin: 0.3cm 0; padding-left: 1.2cm; }}
+li {{ margin-bottom: 0.15cm; }}
+strong {{ color: #1E194F; }}
+em {{ color: #555; }}
+blockquote {{
+    border-left: 3px solid #F15A22;
+    margin: 0.5cm 0;
+    padding: 0.3cm 0.8cm;
+    color: #555;
+    font-style: italic;
+    background: #fafafa;
+}}
+a {{ color: #F15A22; text-decoration: none; }}
+hr {{ border: none; border-top: 1px solid #ddd; margin: 0.8cm 0; }}
+code {{ background: #f4f4f4; padding: 2px 6px; border-radius: 3px; font-size: 10pt; }}
+/* Tables */
+table {{ border-collapse: collapse; width: 100%; margin: 0.5cm 0; }}
+th, td {{ border: 1px solid #ddd; padding: 0.3cm 0.5cm; text-align: left; font-size: 10pt; }}
+th {{ background: #1E194F; color: white; }}
+</style>
+</head>
+<body>
+    <div class="cover">
+        <div class="cover-bar"></div>
+        <div class="cover-meta">{mode_name} &middot; {exercise_name} &middot; {date_str}</div>
+        <h1 class="cover-title">{title}</h1>
+        {'<p class="cover-hook">' + hook + '</p>' if hook else ''}
+        {'<ul class="cover-bullets">' + bullets_html + '</ul>' if bullets_html else ''}
+        <div class="cover-footer">Wade Institute of Entrepreneurship &middot; wadeinstitute.org.au</div>
+    </div>
+    <div class="report-body">
+        {report_html}
+    </div>
+</body>
+</html>"""
+
+    try:
+        from weasyprint import HTML
+        pdf_bytes = HTML(string=pdf_html).write_pdf()
+        response = make_response(pdf_bytes)
+        response.headers['Content-Type'] = 'application/pdf'
+        safe_title = ''.join(c for c in title if c.isalnum() or c in ' -_').strip()[:60]
+        response.headers['Content-Disposition'] = f'attachment; filename="{safe_title} - The Studio.pdf"'
+        print(f"[PDF] Generated {len(pdf_bytes)} bytes for {exercise_name}")
+        return response
+    except Exception as e:
+        print(f"[PDF] ERROR: {str(e)}")
+        return jsonify({'error': f'PDF generation failed: {str(e)}'}), 500
 
 
 # === LINKEDIN POST GENERATOR ===
