@@ -3192,6 +3192,9 @@ html[data-theme="light"] .report-synopsis {
     .input-btns { flex-direction: row; gap: 0.3rem; }
     .input-hint-copy { display: none; }
     .input-disclaimer { font-size: 0.55rem; }
+    .input-hint { font-size: 0.65rem; flex-wrap: nowrap; gap: 0.25rem; white-space: nowrap; overflow: hidden; }
+    .input-hint span { overflow: hidden; text-overflow: ellipsis; }
+    .tool-learn-link { display: none; } /* Hide "Learn more" on mobile — save space */
 
     /* Welcome screen */
     .welcome { padding: 0 0.75rem 1.5rem; min-height: auto; }
@@ -4257,6 +4260,8 @@ body.board-maximised > .input-area {
     line-height: 1;
 }
 .board-count.hidden { display: none; }
+.board-count.pulse { animation: badgePulse 0.4s ease; }
+@keyframes badgePulse { 0% { transform: scale(1); } 50% { transform: scale(1.4); } 100% { transform: scale(1); } }
 
 /* Board Zones */
 .board-zones {

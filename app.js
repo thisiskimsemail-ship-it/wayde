@@ -2847,8 +2847,15 @@ function updateBoardCounts() {
     });
     const boardCountEl = document.getElementById('boardCount');
     if (boardCountEl) {
+        const prev = parseInt(boardCountEl.textContent) || 0;
         boardCountEl.textContent = total;
         boardCountEl.classList.toggle('hidden', total === 0);
+        // Pulse animation when count increases (draws attention on narrow viewports)
+        if (total > prev && total > 0) {
+            boardCountEl.classList.remove('pulse');
+            void boardCountEl.offsetWidth; // force reflow
+            boardCountEl.classList.add('pulse');
+        }
     }
 }
 
