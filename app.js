@@ -285,8 +285,8 @@ const EXERCISE_HINTS = {
     'rapid-experiment': 'e.g. "I think our clients would value a monthly insight briefing — but I\'m not sure"',
     'lean-canvas':      'e.g. "I\'m developing a new service offering within our division"',
     'effectuation':     'e.g. "I have deep expertise in policy and a strong network in government — where do I start?"',
-    'analogical':       'e.g. "How might we reduce handoff delays between teams the way Formula 1 does pit stops?"'
-    'flywheel':       'e.g. "Our users love the product but growth has stalled — what's the engine underneath?"',
+    'analogical':       'e.g. "How might we reduce handoff delays between teams the way Formula 1 does pit stops?"',
+    'flywheel':         'e.g. "Our users love the product but growth has stalled — what\'s the engine underneath?"'
 };
 
 // Exercise arc descriptions for activity brief cards
@@ -302,8 +302,8 @@ const EXERCISE_ARCS = {
     'rapid-experiment': 'We\'ll design a quick, cheap test to validate your riskiest assumption before you build.',
     'lean-canvas':      'We\'ll map your venture model on one page, then pressure-test the weakest blocks.',
     'effectuation':     'We\'ll start with what you have — skills, network, resources — then find where they point.',
-    'analogical':       'We'll borrow solutions from unexpected places and adapt them to your challenge.',
-    'flywheel':         'We'll map the 3-5 things that reinforce each other in your business, test each connection, and find the bottleneck holding you back.'
+    'analogical':       'We\'ll borrow solutions from unexpected places and adapt them to your challenge.',
+    'flywheel':         'We\'ll map the 3-5 things that reinforce each other in your business, test each connection, and find the bottleneck holding you back.'
 };
 
 // Expected exchange counts per exercise (for progress indicator)
