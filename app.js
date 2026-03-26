@@ -141,7 +141,7 @@ const STAGE_TOOLS = {
     untangle: ['five-whys', 'empathy-map', 'jtbd'],
     spark: ['crazy-8s', 'hmw', 'scamper'],
     test: ['pre-mortem', 'devils-advocate', 'analogical'],
-    build: ['lean-canvas', 'effectuation', 'rapid-experiment']
+    build: ['lean-canvas', 'effectuation', 'rapid-experiment', 'flywheel']
 };
 
 function updateBreadcrumbDropdown(currentMode, currentExercise) {
@@ -227,7 +227,8 @@ const EXERCISE_LABELS = {
     'rapid-experiment': 'Rapid Experiment',
     'empathy-map': 'Empathy Map',
     'lean-canvas': 'Lean Canvas',
-    'effectuation': 'Effectuation'
+    'effectuation': 'Effectuation',
+    'flywheel': 'Flywheel'
 };
 
 const MODE_LABELS = {
@@ -250,7 +251,8 @@ const EXERCISE_MODE = {
     'analogical':       'test',
     'lean-canvas':      'build',
     'effectuation':     'build',
-    'rapid-experiment': 'build'
+    'rapid-experiment': 'build',
+    'flywheel': 'build'
 };
 
 // Exercise descriptions (mirror of HTML card text)
@@ -266,7 +268,8 @@ const EXERCISE_DESCS = {
     'rapid-experiment': 'Design a quick test to learn before you build.',
     'lean-canvas':      'Outline your venture model on a single page.',
     'effectuation':     'Build using the resources and relationships you already have.',
-    'analogical':       'Borrow solutions from unexpected places.'
+    'analogical':       'Borrow solutions from unexpected places.',
+    'flywheel':         'Map the reinforcing loop that drives your growth and find the bottleneck.'
 };
 
 // Suggested prompt framings shown as input placeholder
@@ -283,6 +286,7 @@ const EXERCISE_HINTS = {
     'lean-canvas':      'e.g. "I\'m developing a new service offering within our division"',
     'effectuation':     'e.g. "I have deep expertise in policy and a strong network in government — where do I start?"',
     'analogical':       'e.g. "How might we reduce handoff delays between teams the way Formula 1 does pit stops?"'
+    'flywheel':       'e.g. "Our users love the product but growth has stalled — what's the engine underneath?"',
 };
 
 // Exercise arc descriptions for activity brief cards
@@ -298,7 +302,8 @@ const EXERCISE_ARCS = {
     'rapid-experiment': 'We\'ll design a quick, cheap test to validate your riskiest assumption before you build.',
     'lean-canvas':      'We\'ll map your venture model on one page, then pressure-test the weakest blocks.',
     'effectuation':     'We\'ll start with what you have — skills, network, resources — then find where they point.',
-    'analogical':       'We\'ll borrow solutions from unexpected places and adapt them to your challenge.'
+    'analogical':       'We'll borrow solutions from unexpected places and adapt them to your challenge.',
+    'flywheel':         'We'll map the 3-5 things that reinforce each other in your business, test each connection, and find the bottleneck holding you back.'
 };
 
 // Expected exchange counts per exercise (for progress indicator)
@@ -306,7 +311,7 @@ const EXERCISE_EXCHANGES = {
     'five-whys': 7, 'jtbd': 10, 'empathy-map': 10,
     'hmw': 8, 'scamper': 10, 'crazy-8s': 8,
     'pre-mortem': 10, 'devils-advocate': 10, 'rapid-experiment': 8,
-    'lean-canvas': 12, 'effectuation': 8, 'analogical': 8
+    'lean-canvas': 12, 'effectuation': 8, 'analogical': 8, 'flywheel': 10
 };
 
 // Human-readable time estimates per exercise
@@ -322,7 +327,8 @@ const EXERCISE_TIMES = {
     'rapid-experiment':'15 min',
     'lean-canvas':    '20 min',
     'effectuation':   '20 min',
-    'analogical':     '15 min'
+    'analogical':     '15 min',
+    'flywheel':       '25 min'
 };
 
 // Stage order for progress strip
@@ -349,7 +355,7 @@ const TOOLS_BY_MODE = {
     untangle: ['five-whys', 'empathy-map', 'jtbd'],
     spark:    ['crazy-8s', 'hmw', 'scamper'],
     test:     ['pre-mortem', 'devils-advocate', 'analogical'],
-    build:    ['lean-canvas', 'effectuation', 'rapid-experiment']
+    build:    ['lean-canvas', 'effectuation', 'rapid-experiment', 'flywheel']
 };
 
 // Category prompts — used by homepage cards and ?category= URL param
@@ -735,7 +741,7 @@ function startExercise(mode, exercise, startMsg = null) {
     routingBack.classList.add('hidden');
 
     // Switch board layout based on exercise — custom boards for structured tools
-    const customLayouts = ['lean-canvas', 'elevator-pitch', 'pre-mortem', 'effectuation'];
+    const customLayouts = ['lean-canvas', 'elevator-pitch', 'pre-mortem', 'effectuation', 'flywheel'];
     if (customLayouts.includes(exercise)) {
         switchBoardLayout(exercise);
     } else {
@@ -1692,6 +1698,27 @@ async function streamResponse() {
             }
         }
         fullText = fullText.replace(/\n?\[CANVAS:[a-z_-]+:\s*[^\]]+\]/g, '').trim();
+
+        // Parse [FLYWHEEL:component-N: text] and [FLYWHEEL:bottleneck: text] tags
+        const fwRegex = /\[FLYWHEEL:([a-z0-9_-]+):\s*([^\]]+)\]/g;
+        const fwMatches = fullText.matchAll(fwRegex);
+        for (const fm of fwMatches) {
+            const fwKey = fm[1].trim().toLowerCase();
+            const fwText = fm[2].trim();
+            // Connection tags (A -> B | strength | mechanism) go to insights
+            if (fwKey === 'connection') {
+                addBoardCard(fwText, 'insights', state.mode, 'Flywheel');
+            } else {
+                const zone = FLYWHEEL_TAG_MAP[fwKey];
+                if (zone) {
+                    // Replace existing card in this zone (flywheel components update, not stack)
+                    const existing = state.board.cards.find(c => c.zone === zone);
+                    if (existing) removeBoardCard(existing.id);
+                    addBoardCard(fwText, zone, state.mode, 'Flywheel');
+                }
+            }
+        }
+        fullText = fullText.replace(/\n?\[FLYWHEEL:[a-z0-9_-]+:\s*[^\]]+\]/g, '').trim();
 
         // Parse [PITCH:component: text] tags — Elevator Pitch components
         const pitchRegex = /\[PITCH:([a-z_-]+):\s*([^\]]+)\]/g;
@@ -2659,6 +2686,18 @@ const BOARD_LAYOUTS = {
             { id: 'pitch-differentiator', name: 'Differentiator', empty: 'Why you, not them?', hint: 'What makes you different from alternatives', colour: 'yellow' }
         ],
         gridClass: 'board-grid-pitch'
+    },
+    'flywheel': {
+        zones: [
+            { id: 'fw-component-1', name: 'Component 1', empty: 'The engine — what makes everything easier?', hint: 'The core activity', colour: 'yellow' },
+            { id: 'fw-component-2', name: 'Component 2', empty: 'What does Component 1 lead to?', hint: 'The next link in the chain', colour: 'yellow' },
+            { id: 'fw-component-3', name: 'Component 3', empty: 'What does Component 2 lead to?', hint: 'The next link', colour: 'yellow' },
+            { id: 'fw-component-4', name: 'Component 4', empty: 'What completes the loop?', hint: 'How it feeds back to the start', colour: 'yellow' },
+            { id: 'fw-bottleneck', name: 'Bottleneck', empty: 'The weakest link', hint: 'Which connection loses the most energy?', colour: 'orange' },
+            { id: 'insights', name: 'Key Insights', empty: 'What emerged', hint: 'Patterns and observations', colour: 'teal' },
+            { id: 'actions', name: 'Actions', empty: 'Next steps', hint: '90-day plan + 48-hour first step', colour: 'orange' }
+        ],
+        gridClass: 'board-grid-flywheel'
     }
 };
 
@@ -2694,6 +2733,13 @@ const EFF_TAG_MAP = {
     'lemonade': 'eff-lemonade',
     'pilot': 'eff-pilot', 'pilot-in-the-plane': 'eff-pilot',
     'action': 'eff-action', 'first-move': 'eff-action'
+};
+
+// Flywheel component tag mapping
+const FLYWHEEL_TAG_MAP = {
+    'component-1': 'fw-component-1', 'component-2': 'fw-component-2',
+    'component-3': 'fw-component-3', 'component-4': 'fw-component-4',
+    'bottleneck': 'fw-bottleneck'
 };
 
 function switchBoardLayout(mode) {
