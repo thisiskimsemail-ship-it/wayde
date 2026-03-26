@@ -138,7 +138,7 @@ function updateStageLogo(mode) {
 
 // === BREADCRUMB DROPDOWN ===
 const STAGE_TOOLS = {
-    untangle: ['five-whys', 'empathy-map', 'jtbd'],
+    untangle: ['five-whys', 'empathy-map', 'jtbd', 'socratic'],
     spark: ['crazy-8s', 'hmw', 'scamper'],
     test: ['pre-mortem', 'devils-advocate', 'analogical'],
     build: ['lean-canvas', 'effectuation', 'rapid-experiment', 'flywheel']
@@ -228,7 +228,8 @@ const EXERCISE_LABELS = {
     'empathy-map': 'Empathy Map',
     'lean-canvas': 'Lean Canvas',
     'effectuation': 'Effectuation',
-    'flywheel': 'Flywheel'
+    'flywheel': 'Flywheel',
+    'socratic': 'Socratic Questioning'
 };
 
 const MODE_LABELS = {
@@ -252,7 +253,8 @@ const EXERCISE_MODE = {
     'lean-canvas':      'build',
     'effectuation':     'build',
     'rapid-experiment': 'build',
-    'flywheel': 'build'
+    'flywheel': 'build',
+    'socratic': 'untangle'
 };
 
 // Exercise descriptions (mirror of HTML card text)
@@ -269,7 +271,8 @@ const EXERCISE_DESCS = {
     'lean-canvas':      'Outline your venture model on a single page.',
     'effectuation':     'Build using the resources and relationships you already have.',
     'analogical':       'Borrow solutions from unexpected places.',
-    'flywheel':         'Map the reinforcing loop that drives your growth and find the bottleneck.'
+    'flywheel':         'Map the reinforcing loop that drives your growth and find the bottleneck.',
+    'socratic':         'Test whether your problem is built on facts or assumptions.'
 };
 
 // Suggested prompt framings shown as input placeholder
@@ -286,6 +289,7 @@ const EXERCISE_HINTS = {
     'lean-canvas':      'e.g. "I\'m developing a new service offering within our division"',
     'effectuation':     'e.g. "I have deep expertise in policy and a strong network in government — where do I start?"',
     'analogical':       'e.g. "How might we reduce handoff delays between teams the way Formula 1 does pit stops?"',
+    'socratic':         'e.g. "Everyone says the board will never approve this — but has anyone actually asked them?"',
     'flywheel':         'e.g. "Our users love the product but growth has stalled — what\'s the engine underneath?"'
 };
 
@@ -303,6 +307,7 @@ const EXERCISE_ARCS = {
     'lean-canvas':      'We\'ll map your venture model on one page, then pressure-test the weakest blocks.',
     'effectuation':     'We\'ll start with what you have — skills, network, resources — then find where they point.',
     'analogical':       'We\'ll borrow solutions from unexpected places and adapt them to your challenge.',
+    'socratic':         'We\'ll examine every belief behind your problem — separating facts from assumptions — and find the one thing to test first.',
     'flywheel':         'We\'ll map the 3-5 things that reinforce each other in your business, test each connection, and find the bottleneck holding you back.'
 };
 
@@ -311,7 +316,7 @@ const EXERCISE_EXCHANGES = {
     'five-whys': 7, 'jtbd': 10, 'empathy-map': 10,
     'hmw': 8, 'scamper': 10, 'crazy-8s': 8,
     'pre-mortem': 10, 'devils-advocate': 10, 'rapid-experiment': 8,
-    'lean-canvas': 12, 'effectuation': 8, 'analogical': 8, 'flywheel': 10
+    'lean-canvas': 12, 'effectuation': 8, 'analogical': 8, 'flywheel': 10, 'socratic': 8
 };
 
 // Human-readable time estimates per exercise
@@ -328,7 +333,8 @@ const EXERCISE_TIMES = {
     'lean-canvas':    '20 min',
     'effectuation':   '20 min',
     'analogical':     '15 min',
-    'flywheel':       '25 min'
+    'flywheel':       '25 min',
+    'socratic':       '20 min'
 };
 
 // Stage order for progress strip
@@ -352,7 +358,7 @@ const STAGE_DEFAULT = {
 
 // All exercises grouped by category
 const TOOLS_BY_MODE = {
-    untangle: ['five-whys', 'empathy-map', 'jtbd'],
+    untangle: ['five-whys', 'empathy-map', 'jtbd', 'socratic'],
     spark:    ['crazy-8s', 'hmw', 'scamper'],
     test:     ['pre-mortem', 'devils-advocate', 'analogical'],
     build:    ['lean-canvas', 'effectuation', 'rapid-experiment', 'flywheel']
@@ -416,7 +422,8 @@ const toolLearnLink = $('#toolLearnLink');
 const TOOL_DETAIL_SLUG = {
     'jtbd': 'jobs-to-be-done',
     'hmw': 'how-might-we',
-    'analogical': 'analogical-thinking'
+    'analogical': 'analogical-thinking',
+    'socratic': 'socratic-questioning'
 };
 function toolDetailUrl(exercise) {
     const slug = TOOL_DETAIL_SLUG[exercise] || exercise;
