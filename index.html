@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link rel="preload" href="fonts/GT-Walsheim-Regular.woff" as="font" type="font/woff" crossorigin>
     <link rel="preload" href="banner.webp" as="image" type="image/webp">
-    <link rel="stylesheet" href="styles.css?v=200">
+    <link rel="stylesheet" href="styles.css?v=201">
 </head>
 <body>
 
@@ -405,18 +405,18 @@
             <div class="synopsis-cta">
                 <button class="synopsis-download-btn" id="synopsisDownloadBtn">Download my report</button>
             </div>
-            <p class="synopsis-privacy">We'll also email you a copy. Wade Institute will use your details to send your report and share relevant programs. No spam, no third parties.</p>
+            <p class="synopsis-privacy"></p>
         </div>
 
         <!-- Lead capture form (appears when download clicked) -->
         <div class="report-unlock hidden" id="reportUnlock">
-            <h3 class="report-unlock-heading">Almost there — tell us where to send your report</h3>
+            <h3 class="report-unlock-heading">Where should we send your report?</h3>
             <form class="lead-form" id="unlockForm">
                 <input type="text" class="lead-input" id="unlockName" placeholder="Name" required>
                 <input type="email" class="lead-input" id="unlockEmail" placeholder="Email" required>
-                <input type="text" class="lead-input" id="unlockCompany" placeholder="Company / Organisation">
-                <input type="text" class="lead-input" id="unlockRole" placeholder="Role">
-                <button type="submit" class="lead-submit" id="unlockSubmit">Build my report →</button>
+                <input type="text" class="lead-input" id="unlockCompany" placeholder="Company / Organisation (helps us personalise your experience)">
+                <input type="text" class="lead-input" id="unlockRole" placeholder="Role (optional)">
+                <button type="submit" class="lead-submit" id="unlockSubmit">Get My Report</button>
             </form>
         </div>
 
@@ -628,6 +628,6 @@
         <button class="feedback-submit" id="feedbackSubmit">Send feedback</button>
     </div>
 
-    <script src="app.js?v=200"></script>
+    <script src="app.js?v=201"></script>
 </body>
 </html>

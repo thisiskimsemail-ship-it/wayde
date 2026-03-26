@@ -2373,22 +2373,80 @@ document.getElementById('unlockForm')?.addEventListener('submit', async (e) => {
         console.error('[Lead] Failed to send:', err);
     }
 
-    // Hide form + synopsis, show format choice
+    // Hide form, keep synopsis visible, show progress bar
     reportUnlock.classList.add('hidden');
-    document.getElementById('reportSynopsis')?.classList.add('hidden');
     reportCta.classList.add('hidden');
-    const formatChoice = document.getElementById('reportFormatChoice');
-    if (formatChoice) {
-        formatChoice.classList.remove('hidden');
-        formatChoice.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
 
-    // Show next exercise suggestion
-    renderNextExercisePanel();
+    // Show staged progress bar (Steps 7-8 from wrap sequence)
+    const downloadProgress = document.createElement('div');
+    downloadProgress.className = 'download-progress';
+    downloadProgress.innerHTML = `
+        <div class="download-progress-stages">
+            <div class="download-stage active" id="dlStage1">
+                <span class="download-stage-check">⟳</span>
+                <span>Analysing your session...</span>
+            </div>
+            <div class="download-stage" id="dlStage2">
+                <span class="download-stage-check"></span>
+                <span>Building your report...</span>
+            </div>
+            <div class="download-stage" id="dlStage3">
+                <span class="download-stage-check"></span>
+                <span>Formatting for download...</span>
+            </div>
+        </div>
+        <div class="download-recommendations hidden" id="dlRecommendations">
+            <p class="download-reco-label">While your report is being prepared...</p>
+            <a class="download-reco-card" href="https://wadeinstitute.org.au/programs/" target="_blank" rel="noopener">
+                <strong>Explore Wade Programs</strong>
+                <span>Intensive programs for founders, innovators, and intrapreneurs at every stage.</span>
+            </a>
+            <a class="download-reco-card" href="mailto:enquiries@wadeinstitute.org.au">
+                <strong>Talk to the Wade team</strong>
+                <span>Want to go deeper on what you uncovered today?</span>
+            </a>
+        </div>
+        <div class="download-ready hidden" id="dlReady">
+            <p class="download-ready-text">Your report is ready</p>
+            <button class="download-ready-btn" id="dlDownloadBtn">Download Report (.docx)</button>
+            <p class="download-ready-note">It was good thinking with you today.</p>
+        </div>
+    `;
+    const synopsisCard = document.getElementById('reportSynopsis');
+    if (synopsisCard) synopsisCard.after(downloadProgress);
+    downloadProgress.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+    // Animate stages sequentially
+    setTimeout(() => {
+        document.getElementById('dlStage1').querySelector('.download-stage-check').textContent = '✓';
+        document.getElementById('dlStage1').classList.add('done');
+        document.getElementById('dlStage2').classList.add('active');
+        document.getElementById('dlRecommendations').classList.remove('hidden');
+    }, 2000);
+
+    setTimeout(() => {
+        document.getElementById('dlStage2').querySelector('.download-stage-check').textContent = '✓';
+        document.getElementById('dlStage2').classList.add('done');
+        document.getElementById('dlStage3').classList.add('active');
+    }, 4000);
+
+    setTimeout(() => {
+        document.getElementById('dlStage3').querySelector('.download-stage-check').textContent = '✓';
+        document.getElementById('dlStage3').classList.add('done');
+        document.getElementById('dlReady').classList.remove('hidden');
+        document.getElementById('dlReady').scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+        // Wire download button
+        document.getElementById('dlDownloadBtn')?.addEventListener('click', () => {
+            downloadReportWord();
+            renderNextExercisePanel();
+        });
+    }, 6000);
+
     saveSession();
 
     submitBtn.disabled = false;
-    submitBtn.textContent = 'Send me my report →';
+    submitBtn.textContent = 'Get My Report';
 });
 
 // Format choice buttons → trigger download, then show next exercise

@@ -4810,3 +4810,25 @@ body.light .feedback-input, html[data-theme="light"] .feedback-input { backgroun
     align-self: flex-end;
 }
 .feature-hint-dismiss:hover { background: rgba(255,255,255,0.3); }
+
+/* Download progress stages (wrap sequence steps 7-9) */
+.download-progress { max-width: 700px; margin: 1.5rem auto 0; padding: 1.5rem; }
+.download-progress-stages { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem; }
+.download-stage { display: flex; align-items: center; gap: 0.75rem; font-size: 0.9rem; color: var(--text-muted); transition: color 0.3s; }
+.download-stage.active { color: var(--text-dim); }
+.download-stage.done { color: var(--teal); }
+.download-stage-check { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; border: 1.5px solid var(--text-muted); border-radius: 50%; transition: all 0.3s; }
+.download-stage.active .download-stage-check { border-color: var(--text-dim); animation: spin 1s linear infinite; }
+.download-stage.done .download-stage-check { border-color: var(--teal); color: var(--teal); animation: none; }
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+.download-recommendations { padding: 1rem 0; border-top: 1px solid rgba(255,255,255,0.06); }
+.download-reco-label { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.75rem; }
+.download-reco-card { display: block; padding: 0.75rem 1rem; border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; margin-bottom: 0.5rem; text-decoration: none; color: inherit; transition: border-color 0.2s; }
+.download-reco-card:hover { border-color: rgba(255,255,255,0.2); }
+.download-reco-card strong { color: var(--text); display: block; margin-bottom: 0.2rem; font-size: 0.9rem; }
+.download-reco-card span { color: var(--text-muted); font-size: 0.8rem; }
+.download-ready { text-align: center; padding: 1.5rem 0; border-top: 1px solid rgba(255,255,255,0.06); }
+.download-ready-text { font-size: 1.1rem; font-weight: 600; color: var(--text); margin-bottom: 1rem; }
+.download-ready-btn { background: var(--orange); color: #fff; border: none; padding: 0.75rem 2rem; border-radius: 999px; font-family: var(--font); font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+.download-ready-btn:hover { background: #d14e1b; transform: translateY(-1px); }
+.download-ready-note { font-size: 0.85rem; color: var(--text-muted); margin-top: 0.75rem; font-style: italic; }
