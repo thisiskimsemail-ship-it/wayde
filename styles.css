@@ -1572,6 +1572,90 @@ body.in-session .header-nav { display: none; }
     .lp-footer-links { flex-direction: column; gap: 0.5rem; }
 }
 
+/* === TOOL CONFIRMATION CARD === */
+.tool-confirm-card {
+    max-width: 500px;
+    margin: 1rem 0;
+    padding: 1.25rem 1.5rem;
+    border-radius: 12px;
+    background: var(--bg-light);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-left: 4px solid var(--stage-color, var(--orange));
+    animation: fadeIn 0.3s ease;
+}
+.tool-confirm-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+.tool-confirm-category {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+.tool-confirm-card.mode-untangle .tool-confirm-category { color: var(--teal); }
+.tool-confirm-card.mode-spark .tool-confirm-category { color: var(--orange); }
+.tool-confirm-card.mode-test .tool-confirm-category { color: var(--pink); }
+.tool-confirm-card.mode-build .tool-confirm-category { color: var(--yellow); }
+
+.tool-confirm-card.mode-untangle { border-left-color: var(--teal); }
+.tool-confirm-card.mode-spark { border-left-color: var(--orange); }
+.tool-confirm-card.mode-test { border-left-color: var(--pink); }
+.tool-confirm-card.mode-build { border-left-color: var(--yellow); }
+
+.tool-confirm-time {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+.tool-confirm-name {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 0.4rem;
+}
+.tool-confirm-desc {
+    font-size: 0.9rem;
+    color: var(--text-dim);
+    line-height: 1.5;
+    margin-bottom: 0.25rem;
+}
+.tool-confirm-arc {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-style: italic;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+}
+.tool-confirm-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+.tool-confirm-start {
+    background: var(--orange);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 0.5rem 1.25rem;
+    font-family: var(--font);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.tool-confirm-start:hover { background: #d14e1b; transform: translateY(-1px); }
+.tool-confirm-learn {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+.tool-confirm-learn:hover { color: var(--text); }
+
+html[data-theme="light"] .tool-confirm-card { background: #fff; border-color: rgba(30,25,79,0.08); }
+
 /* === EXERCISE INTRO CARD === */
 .msg-intro {
     align-self: stretch;
