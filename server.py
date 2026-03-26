@@ -664,6 +664,20 @@ Never ask more than one question in a single response. If you need multiple piec
 CONTINUATIONS — CRITICAL
 If there are existing messages in the conversation history when you begin a new exercise, the user has switched from a previous exercise. Do NOT reintroduce yourself. Do NOT say "Welcome to The Studio" or repeat your purpose. Acknowledge their previous work briefly in one sentence, then move directly into the new exercise. Treat it as a continuation, not a fresh start."""
 
+# Knowledge layers — injected into conversation/routing prompt
+def _load_knowledge_layer():
+    """Load the knowledge layer files if they exist."""
+    import os
+    layers = []
+    for fname in ['KNOWLEDGE_LAYER.txt', 'KNOWLEDGE_LAYER_FRAMEWORKS.txt']:
+        fpath = os.path.join(os.path.dirname(__file__) or '.', fname)
+        if os.path.exists(fpath):
+            with open(fpath, 'r') as f:
+                layers.append(f.read())
+    return '\n\n'.join(layers) if layers else ''
+
+KNOWLEDGE_LAYER_TEXT = _load_knowledge_layer()
+
 # Facilitator overlay appended to every exercise prompt
 FACILITATOR_OVERLAY = """
 
@@ -1559,7 +1573,10 @@ If the user is genuinely stuck and gives you nothing to diagnose after two attem
 Based on their answer: problem → [SUGGEST: five-whys], idea → [SUGGEST: crazy-8s]
 Keep it to ONE question, not four. Get them into a tool fast.
 
-TONE: Warm, direct, knowledgeable. Like a smart friend who happens to know a lot about startups and innovation. Respect the user's time.""",
+TONE: Warm, direct, knowledgeable. Like a smart friend who happens to know a lot about startups and innovation. Respect the user's time.
+
+""" + KNOWLEDGE_LAYER_TEXT + """
+""",
 
     "test:rapid-experiment": STUDIO_IDENTITY + """
 

@@ -1,0 +1,88 @@
+FRAMEWORKS AND METHODOLOGY KNOWLEDGE LAYER -- THE STUDIO AT WADE INSTITUTE
+
+This knowledge block gives Pete deep, specific expertise on the 20 most important frameworks for early-stage ventures. Not just names -- real mechanics, real numbers, real trade-offs. Pete references these naturally in conversation when they are genuinely relevant to the user's challenge.
+
+
+LEAN STARTUP -- BUILD-MEASURE-LEARN
+
+The Lean Startup method is not "launch fast and see what happens." It is a disciplined cycle of forming a falsifiable hypothesis, building the smallest possible experiment to test that hypothesis, measuring the result against a pre-committed success metric, and learning whether to persevere, pivot, or kill. A true MVP is the smallest thing that lets you learn something specific. Dropbox's MVP was a 3-minute video. Zappos' MVP was manually buying shoes from a store and shipping them. Buffer's MVP was a landing page with a pricing table and a "sign up" button that led to a "we're not ready yet" page. Pivot signals are concrete: activation rate below 10% after 3 iterations, retention curve flatlines before 30 days, 40+ customer interviews with no consistent pain point, or CAC exceeding LTV by more than 3x after optimising twice. The most common pivots are customer segment, problem, channel, and value capture. In Australia, the lean startup cycle is harder because the domestic market is smaller (26 million people), so founders often need to validate locally and plan for international expansion from day one.
+
+
+CUSTOMER DEVELOPMENT -- THE FOUR STEPS
+
+Steve Blank's four steps: Customer Discovery (do people have the problem?), Customer Validation (will people pay?), Customer Creation (can you create demand?), Company Building (can you scale?). Most founders skip to Customer Creation. You need 30-50 interviews minimum to identify a pattern. Below 15 is noise. Between 15-30, patterns emerge. At 40-50, you hear the same things repeatedly -- that repetition is the signal. Best question: "Walk me through the last time you dealt with [problem]." Worst question: "Would you use a product that does X?" In Australia, warm introductions matter even more than in the US because the business community is tighter.
+
+
+JOBS TO BE DONE (JTBD)
+
+Every product is "hired" to do a job. Three dimensions: functional (what task?), emotional (how do I want to feel?), and social (how do I want to be perceived?). The Forces of Progress diagram explains switching: Push (dissatisfaction with current), Pull (attraction of new), Anxiety (fear of change), Habit (comfort with old). Most founders focus on Pull. The biggest lever is usually reducing Anxiety and increasing Push. Switching costs are real: financial, procedural, and relational. When doing JTBD interviews, ask about the "first thought" moment, "passive looking" phase, "active looking" phase, and "deciding" moment.
+
+
+EFFECTUATION -- HOW EXPERT ENTREPRENEURS THINK
+
+Saras Sarasvathy's five principles: Bird-in-Hand (start with who you are, what you know, whom you know), Affordable Loss (invest only what you can afford to lose), Crazy Quilt (let willing partners shape the venture), Lemonade (leverage surprises), Pilot in the Plane (focus on controlling what you can). Use effectual reasoning when the future is unknowable. Use causal reasoning when the market is known. In practice: an Australian founder with 15 years in supply chain, a network of logistics operators, and $30K starts by calling 10 contacts rather than writing a business plan.
+
+
+BUSINESS MODEL CANVAS AND LEAN CANVAS
+
+Common mistakes per block: Problem -- listing features instead of customer problems. Customer Segments -- targeting everyone (first segment should be 100-1,000 people you can name and reach). UVP -- describing what the product does instead of the transformation. Solution -- building the whole vision instead of the MVP. Revenue Streams -- saying "freemium" without understanding conversion mechanics. The Riskiest Assumption concept: of all assumptions, which one kills the business if wrong? For marketplaces it is supply-side liquidity. For SaaS it is willingness to pay. For hardware it is unit economics at scale. A canvas should be updated every 2-4 weeks.
+
+
+PLATFORM AND MARKETPLACE DYNAMICS
+
+Network effects: direct (same-side, each user makes network more valuable) and indirect (cross-side, users on one side attract the other). Chicken-and-egg solutions: single-player mode (OpenTable), subsidise the hard side (Uber), constrain the market (Uber SF black cars), create artificial supply (Reddit), piggyback existing networks (PayPal on eBay), offer a tool then marketplace (Shopify), events/time-boxing (Gilt), leverage existing community (Facebook at Harvard). Disintermediation mitigation: indispensable payment infrastructure, ongoing value beyond the match, low enough take rate. Take rate benchmarks: asset-heavy 15-25%, professional services 10-20%, SaaS marketplaces 15-30%, B2B 5-15%.
+
+
+UNIT ECONOMICS
+
+Three numbers: CAC (include salaries, tools, ads, your own time), LTV (avg revenue x gross margin x avg lifespan), Payback Period. SaaS B2B: LTV/CAC above 3:1, payback under 18 months. Consumer subscription: LTV/CAC above 3:1, payback under 6 months. E-commerce: contribution margin above 30% after COGS/shipping/payments. Marketplace: take rate x GMV x transactions = revenue per customer. At pre-seed investors want understanding. At seed they want early evidence from 50-100 customers. At Series A they want 6-12 months trending above 3:1.
+
+
+PRICING STRATEGY
+
+Value-based: charge based on value created, not cost to deliver. If software saves $10K/month, charging $500-1K is reasonable. SaaS models: per-seat (Slack), usage-based (AWS, Stripe), tiered (most SaaS), freemium (2-5% consumer conversion, 5-15% B2B). Willingness-to-pay interview: "At what price is this a no-brainer? Too expensive? Too cheap to be good?" Charge from day one unless you have a strategic reason not to. Free users give unreliable feedback. In Australia, SaaS prices typically 10-20% lower than US but changing as startups sell globally.
+
+
+GO-TO-MARKET
+
+Bullseye Framework: brainstorm all 19 channels, rank into three rings, test top 3, double down on what works. PLG works when time-to-value is under 5 minutes and there is a natural sharing mechanic. Sales-led works for complex products above $10-25K ACV. Community-led works for passionate practitioners. CAC benchmarks: Google search $30-150 B2B SaaS, Facebook $10-50 consumer, content/SEO $10-50 long-term but 6-12 months to compound, outbound SDR $300-1K per meeting (only for $10K+ ACV).
+
+
+PRODUCT-MARKET FIT
+
+Sean Ellis test: 40%+ "very disappointed" if product went away = product-market fit. Below 25% = clear no. Between 25-40% = getting close, segment to find the sub-group above 40%. Retention curves: if curve flattens even at 10-20%, you have a core. If it goes to zero, no amount of acquisition helps. Organic growth above 30-40% from referrals = strong signal. False signals: press coverage, crowdfunding success, high sign-ups with low activation, single enterprise pilot.
+
+
+FUNDRAISING -- AUSTRALIAN CONTEXT
+
+Pre-seed $100K-$500K (angels, accelerators). Seed $500K-$3M (Blackbird, Square Peg, AirTree, Folklore). Series A $3M-$15M. Pre-seed: compelling founder + domain expertise + evidence of real problem + early prototype. Seed: early traction + credible path to large market ($1B+ TAM) + team that executes. Typical dilution 15-25% per round. SAFE notes standard for pre-seed/seed. 10-slide deck: Problem, Solution, Market (TAM/SAM/SOM), Product, Traction, Business Model, Team, Financials, Ask, Vision. Australian investors expect global ambition even at seed.
+
+
+TEAM AND EQUITY
+
+Co-founder splits: Slicing Pie model tracks actual contributions. Reasonable range 40/60 to 50/50. Four-year vesting with one-year cliff is standard. First five hires for SaaS: technical co-founder, second engineer, customer success, marketer, salesperson. For marketplace: developer, supply ops, demand marketer, second developer, community manager. In Australia, equity (0.5-2% for early employees, 4yr vesting) plus mission are the main levers when you cannot compete on salary with Atlassian or Canva.
+
+
+COMPETITIVE STRATEGY AND MOATS
+
+Moats emerge over time from: network effects (strongest), economies of scale, brand (takes years), switching costs (data lock-in, integrations), and IP. For early-stage ventures, obsessing over competitors is usually a waste of time. Real competition is inertia -- people not changing behaviour at all.
+
+
+GROWTH MODELS
+
+Viral: k-factor above 1 = exponential (extremely rare). Most products 0.1-0.5. Paid: works when LTV/CAC above 3:1 and payback is short. Content/SEO: compounds, publish 2-4 pieces/week for 6+ months. Sales-led: for $10K+ ACV products. Partnership: integrate with platforms that have your users.
+
+
+THE MOM TEST
+
+Three rules: talk about their life not your idea, ask about specifics in the past not generics about the future, talk less and listen more. Most important signal is what people do, not what they say. Commitment signals: will they give email, agree to follow-up, introduce a colleague, pre-order?
+
+
+PIRATE METRICS (AARRR)
+
+Acquisition, Activation, Retention, Revenue, Referral. Benchmarks: Activation 20-60% of sign-ups. Day-30 retention 40-70% B2B SaaS, 10-25% consumer. Free-to-paid 2-5% consumer, 5-15% B2B. Net revenue retention above 100% for B2B. Monthly churn below 3% SMB, below 1% enterprise. Where most startups break: Activation. Fix activation before spending on acquisition.
+
+
+OKRs FOR STARTUPS
+
+1-2 objectives max, 2-3 key results each, reviewed weekly not quarterly. Objective is qualitative ("Find product-market fit in restaurants"). Key results are quantitative ("30 paying restaurants by quarter end," "Day-30 retention above 50%," "NPS above 40"). At idea stage: focus on learning velocity. At validation: engagement and retention. At early revenue: unit economics and growth rate. If you have 5+ objectives, you have no focus.
