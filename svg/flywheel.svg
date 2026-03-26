@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 700" width="800" height="700">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto" markerUnits="strokeWidth">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#E4E517"/>
+    </marker>
+    <marker id="arrow-red" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto" markerUnits="strokeWidth">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#ED3694"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="700" rx="8" fill="#1B2A4A"/>
+
+  <!-- Title -->
+  <text x="400" y="42" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#E4E517" letter-spacing="1.5">FLYWHEEL</text>
+  <text x="400" y="64" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#8892A8">Media Company Growth Loop</text>
+
+  <!-- Center of flywheel -->
+  <!-- cx=400, cy=270, radius=155 for node placement -->
+
+  <!-- Component 1: Great Content (top) -->
+  <rect x="310" y="90" width="180" height="56" rx="8" fill="#1F2E4D" stroke="#2A3656" stroke-width="1.5"/>
+  <text x="400" y="114" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF">Great Content</text>
+  <text x="400" y="132" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#8892A8">Quality drives discovery</text>
+
+  <!-- Component 2: Audience Growth (right) -->
+  <rect x="555" y="242" width="180" height="56" rx="8" fill="#1F2E4D" stroke="#2A3656" stroke-width="1.5"/>
+  <text x="645" y="266" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF">Audience Growth</text>
+  <text x="645" y="284" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#8892A8">Organic reach expands</text>
+
+  <!-- Component 3: Advertiser Demand (bottom) -->
+  <rect x="310" y="394" width="180" height="56" rx="8" fill="#1F2E4D" stroke="#2A3656" stroke-width="1.5"/>
+  <text x="400" y="418" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF">Advertiser Demand</text>
+  <text x="400" y="436" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#8892A8">Brands want access</text>
+
+  <!-- Component 4: Revenue for Reinvestment (left) -->
+  <rect x="65" y="242" width="180" height="56" rx="8" fill="#1F2E4D" stroke="#2A3656" stroke-width="1.5"/>
+  <text x="155" y="266" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF">Revenue</text>
+  <text x="155" y="284" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#8892A8">Funds content investment</text>
+
+  <!-- Arrow 1: Great Content -> Audience Growth (top-right arc) -->
+  <path d="M 490 130 Q 560 150 570 242" fill="none" stroke="#E4E517" stroke-width="2" marker-end="url(#arrow)"/>
+  <!-- Strength label -->
+  <rect x="510" y="164" width="68" height="20" rx="10" fill="rgba(39,189,190,0.15)"/>
+  <text x="544" y="178" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" font-weight="bold" fill="#27BDBE">STRONG</text>
+
+  <!-- Arrow 2: Audience Growth -> Advertiser Demand (right-bottom arc) — BOTTLENECK -->
+  <path d="M 620 298 Q 580 360 490 410" fill="none" stroke="#ED3694" stroke-width="3.5" marker-end="url(#arrow-red)" stroke-dasharray="8,4"/>
+  <!-- Strength label -->
+  <rect x="540" y="344" width="82" height="20" rx="10" fill="rgba(237,54,148,0.15)"/>
+  <text x="581" y="358" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" font-weight="bold" fill="#ED3694">UNPROVEN</text>
+
+  <!-- Arrow 3: Advertiser Demand -> Revenue (bottom-left arc) -->
+  <path d="M 310 435 Q 240 450 230 298" fill="none" stroke="#E4E517" stroke-width="2" marker-end="url(#arrow)"/>
+  <!-- Strength label -->
+  <rect x="232" y="374" width="96" height="20" rx="10" fill="rgba(241,90,34,0.15)"/>
+  <text x="280" y="388" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" font-weight="bold" fill="#F15A22">DEVELOPING</text>
+
+  <!-- Arrow 4: Revenue -> Great Content (left-top arc) -->
+  <path d="M 180 242 Q 210 170 310 135" fill="none" stroke="#E4E517" stroke-width="2" marker-end="url(#arrow)"/>
+  <!-- Strength label -->
+  <rect x="198" y="168" width="68" height="20" rx="10" fill="rgba(39,189,190,0.15)"/>
+  <text x="232" y="182" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" font-weight="bold" fill="#27BDBE">STRONG</text>
+
+  <!-- Center flywheel icon -->
+  <circle cx="400" cy="270" r="28" fill="none" stroke="#E4E517" stroke-width="1.5" opacity="0.3"/>
+  <path d="M 392 258 L 408 270 L 392 282 Z" fill="#E4E517" opacity="0.4"/>
+
+  <!-- Bottleneck callout box -->
+  <rect x="80" y="510" width="300" height="80" rx="8" fill="#1F2E4D" stroke="#ED3694" stroke-width="2"/>
+  <text x="100" y="534" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#ED3694" letter-spacing="1">BOTTLENECK</text>
+  <text x="100" y="554" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#FFFFFF">Audience Growth → Advertiser Demand</text>
+  <text x="100" y="574" font-family="Arial, sans-serif" font-size="11" fill="#8892A8">No evidence audience size drives ad spend</text>
+
+  <!-- Acceleration action box -->
+  <rect x="420" y="510" width="300" height="80" rx="8" fill="#1F2E4D" stroke="#E4E517" stroke-width="2"/>
+  <text x="440" y="534" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#E4E517" letter-spacing="1">ACCELERATION ACTION</text>
+  <text x="440" y="554" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#FFFFFF">Run 3 sponsored content tests</text>
+  <text x="440" y="574" font-family="Arial, sans-serif" font-size="11" fill="#8892A8">Prove advertiser demand correlates with reach</text>
+
+  <!-- Legend -->
+  <rect x="220" y="630" width="360" height="44" rx="8" fill="#1F2E4D" stroke="#2A3656" stroke-width="1"/>
+  <circle cx="252" cy="652" r="5" fill="#27BDBE"/>
+  <text x="264" y="656" font-family="Arial, sans-serif" font-size="10" fill="#8892A8">Strong</text>
+  <circle cx="330" cy="652" r="5" fill="#F15A22"/>
+  <text x="342" y="656" font-family="Arial, sans-serif" font-size="10" fill="#8892A8">Developing</text>
+  <circle cx="428" cy="652" r="5" fill="#ED3694"/>
+  <text x="440" y="656" font-family="Arial, sans-serif" font-size="10" fill="#8892A8">Unproven</text>
+  <line x1="500" y1="652" x2="520" y2="652" stroke="#ED3694" stroke-width="3" stroke-dasharray="6,3"/>
+  <text x="528" y="656" font-family="Arial, sans-serif" font-size="10" fill="#8892A8">Bottleneck</text>
+</svg>
