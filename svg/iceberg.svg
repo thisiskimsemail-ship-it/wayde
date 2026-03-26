@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 700" width="800" height="700">
+  <defs>
+    <linearGradient id="waterGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1B2A4A" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#0D1A2F" stop-opacity="0.6"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="700" rx="0" fill="#1B2A4A"/>
+
+  <!-- Title -->
+  <text x="400" y="36" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="700" fill="#27BDBE" letter-spacing="2">THE ICEBERG</text>
+  <text x="400" y="56" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#6B7D99">Engineer Retention Example</text>
+
+  <!-- Waterline -->
+  <line x1="60" y1="170" x2="740" y2="170" stroke="#27BDBE" stroke-width="1.5" stroke-dasharray="8,4" opacity="0.6"/>
+  <text x="745" y="167" font-family="Arial, sans-serif" font-size="10" fill="#27BDBE" opacity="0.7" text-anchor="end">WATERLINE</text>
+
+  <!-- Water gradient below waterline -->
+  <rect x="0" y="170" width="800" height="530" fill="url(#waterGrad)"/>
+
+  <!-- LAYER 1: EVENT (above water) -->
+  <rect x="260" y="80" width="280" height="72" rx="8" fill="#1F2E4D" stroke="#2A3656" stroke-width="1.5"/>
+  <text x="400" y="100" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#27BDBE" letter-spacing="1">EVENT</text>
+  <text x="400" y="118" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#FFFFFF">"What happened?"</text>
+  <text x="400" y="138" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#8899B0">3rd senior engineer left in 2 years</text>
+
+  <!-- Arrow 1→2 -->
+  <line x1="400" y1="152" x2="400" y2="196" stroke="#27BDBE" stroke-width="1.5" opacity="0.5"/>
+  <polygon points="394,192 400,202 406,192" fill="#27BDBE" opacity="0.5"/>
+
+  <!-- LAYER 2: PATTERNS -->
+  <rect x="210" y="206" width="380" height="88" rx="8" fill="#1F2E4D" stroke="#2A3656" stroke-width="1.5"/>
+  <text x="400" y="228" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#27BDBE" letter-spacing="1">PATTERNS</text>
+  <text x="400" y="248" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#FFFFFF">"What keeps happening?"</text>
+  <text x="400" y="268" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#8899B0">Each left within 6 months — same arc:</text>
+  <text x="400" y="282" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#8899B0">energy → frustration → resignation</text>
+
+  <!-- Arrow 2→3 -->
+  <line x1="400" y1="294" x2="400" y2="338" stroke="#27BDBE" stroke-width="1.5" opacity="0.5"/>
+  <polygon points="394,334 400,344 406,334" fill="#27BDBE" opacity="0.5"/>
+
+  <!-- LAYER 3: STRUCTURES -->
+  <rect x="160" y="348" width="480" height="88" rx="8" fill="#1F2E4D" stroke="#2A3656" stroke-width="1.5"/>
+  <text x="400" y="370" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#27BDBE" letter-spacing="1">STRUCTURES</text>
+  <text x="400" y="390" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#FFFFFF">"What in the system causes this?"</text>
+  <text x="400" y="410" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#8899B0">No onboarding, no career ladder,</text>
+  <text x="400" y="424" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#8899B0">all decisions flow through founder</text>
+
+  <!-- Arrow 3→4 -->
+  <line x1="400" y1="436" x2="400" y2="480" stroke="#27BDBE" stroke-width="1.5" opacity="0.5"/>
+  <polygon points="394,476 400,486 406,476" fill="#27BDBE" opacity="0.5"/>
+
+  <!-- LAYER 4: MENTAL MODELS -->
+  <rect x="110" y="490" width="580" height="88" rx="8" fill="#1F2E4D" stroke="#2A3656" stroke-width="1.5"/>
+  <text x="400" y="512" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#27BDBE" letter-spacing="1">MENTAL MODELS</text>
+  <text x="400" y="532" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#FFFFFF">"What belief holds this in place?"</text>
+  <text x="400" y="552" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#8899B0">"Great engineers don't need structure —</text>
+  <text x="400" y="566" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#8899B0">if they're good enough, they'll thrive."</text>
+
+  <!-- Arrow 4→Leverage -->
+  <line x1="400" y1="578" x2="400" y2="618" stroke="#27BDBE" stroke-width="1.5" opacity="0.5"/>
+  <polygon points="394,614 400,624 406,614" fill="#27BDBE" opacity="0.5"/>
+
+  <!-- LEVERAGE POINT callout -->
+  <rect x="160" y="628" width="480" height="52" rx="8" fill="rgba(39,189,190,0.12)" stroke="#27BDBE" stroke-width="2"/>
+  <text x="400" y="650" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#27BDBE" letter-spacing="1">LEVERAGE POINT</text>
+  <text x="400" y="668" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#FFFFFF">Change the mental model. Structure lets talent do their best work.</text>
+
+  <!-- Depth labels on left -->
+  <text x="50" y="120" font-family="Arial, sans-serif" font-size="10" fill="#4A5D78" text-anchor="middle">VISIBLE</text>
+  <text x="50" y="370" font-family="Arial, sans-serif" font-size="10" fill="#4A5D78" text-anchor="middle">HIDDEN</text>
+  <text x="50" y="540" font-family="Arial, sans-serif" font-size="10" fill="#4A5D78" text-anchor="middle">DEEPEST</text>
+
+  <!-- Depth arrow on left side -->
+  <line x1="50" y1="135" x2="50" y2="555" stroke="#4A5D78" stroke-width="1" opacity="0.4"/>
+  <polygon points="44,550 50,562 56,550" fill="#4A5D78" opacity="0.4"/>
+</svg>
