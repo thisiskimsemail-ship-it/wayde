@@ -866,7 +866,7 @@ function startExercise(mode, exercise, startMsg = null) {
     if (!startMsg) renderStarterPrompts(exercise);
 
     // Switch board layout based on exercise — custom boards for structured tools
-    const customLayouts = ['lean-canvas', 'elevator-pitch', 'pre-mortem', 'effectuation', 'flywheel', 'cold-open', 'iceberg', 'constraint-flip', 'socratic', 'reality-check', 'theory-of-change', 'trade-off'];
+    const customLayouts = ['lean-canvas', 'elevator-pitch', 'pre-mortem', 'effectuation', 'flywheel', 'cold-open', 'iceberg', 'constraint-flip', 'socratic', 'reality-check', 'theory-of-change', 'trade-off', 'five-whys', 'empathy-map', 'jtbd', 'crazy-8s', 'hmw', 'scamper', 'devils-advocate', 'rapid-experiment'];
     if (customLayouts.includes(exercise)) {
         switchBoardLayout(exercise);
     } else {
@@ -2826,6 +2826,106 @@ function updateProgressIndicator() {
 // === WORKSHOP BOARD ===
 
 const BOARD_LAYOUTS = {
+    'five-whys': {
+        zones: [
+            { id: 'fw-problem', name: 'Presenting Problem', empty: 'The surface problem', hint: 'What happened?', colour: 'teal' },
+            { id: 'fw-why1', name: 'Why #1', empty: 'First answer', hint: 'Why is that a problem?', colour: 'teal' },
+            { id: 'fw-why2', name: 'Why #2', empty: 'Deeper', hint: 'Why does that happen?', colour: 'teal' },
+            { id: 'fw-why3', name: 'Why #3', empty: 'Deeper still', hint: 'Why?', colour: 'teal' },
+            { id: 'fw-why4', name: 'Why #4', empty: 'Approaching root', hint: 'Why?', colour: 'teal' },
+            { id: 'fw-why5', name: 'Root Cause', empty: 'The real insight', hint: 'The deepest why', colour: 'orange' },
+            { id: 'actions', name: 'Actions', empty: 'What to do about it', hint: 'Next steps', colour: 'orange' }
+        ],
+        gridClass: 'board-grid-five-whys'
+    },
+    'empathy-map': {
+        zones: [
+            { id: 'em-user', name: 'User', empty: 'Who are we mapping?', hint: 'Specific person or persona', colour: 'teal' },
+            { id: 'em-says', name: 'Says', empty: 'What they say out loud', hint: 'Direct quotes, public statements', colour: 'teal' },
+            { id: 'em-thinks', name: 'Thinks', empty: 'What they think privately', hint: 'Inner thoughts, worries, hopes', colour: 'teal' },
+            { id: 'em-does', name: 'Does', empty: 'Observable behaviour', hint: 'Actions, habits, routines', colour: 'teal' },
+            { id: 'em-feels', name: 'Feels', empty: 'Emotions', hint: 'Anxious, excited, frustrated, hopeful', colour: 'teal' },
+            { id: 'em-contradictions', name: 'Contradictions', empty: 'Where says and does don\'t match', hint: 'The gaps are the insights', colour: 'orange' },
+            { id: 'insights', name: 'Key Insight', empty: 'The most important discovery', hint: 'What changes because of this?', colour: 'orange' }
+        ],
+        gridClass: 'board-grid-empathy-map'
+    },
+    'jtbd': {
+        zones: [
+            { id: 'jtbd-situation', name: 'Situation', empty: 'When I\'m...', hint: 'The context that triggers the need', colour: 'teal' },
+            { id: 'jtbd-functional', name: 'Functional Job', empty: 'What task am I trying to accomplish?', hint: 'The practical thing they need done', colour: 'teal' },
+            { id: 'jtbd-emotional', name: 'Emotional Job', empty: 'How do I want to feel?', hint: 'Confidence, relief, excitement', colour: 'pink' },
+            { id: 'jtbd-social', name: 'Social Job', empty: 'How do I want to be perceived?', hint: 'Competent, innovative, caring', colour: 'pink' },
+            { id: 'jtbd-hiring', name: 'Hiring Criteria', empty: 'What makes them choose?', hint: 'Speed, cost, trust, outcome', colour: 'orange' },
+            { id: 'insights', name: 'Underserved Job', empty: 'The job no one does well', hint: 'This is the opportunity', colour: 'orange' }
+        ],
+        gridClass: 'board-grid-jtbd'
+    },
+    'crazy-8s': {
+        zones: [
+            { id: 'c8-1', name: 'Idea 1', empty: 'First idea', hint: '~1 minute', colour: 'orange' },
+            { id: 'c8-2', name: 'Idea 2', empty: 'Second idea', hint: '~1 minute', colour: 'orange' },
+            { id: 'c8-3', name: 'Idea 3', empty: 'Third idea', hint: '~1 minute', colour: 'orange' },
+            { id: 'c8-4', name: 'Idea 4', empty: 'Fourth idea', hint: '~1 minute', colour: 'orange' },
+            { id: 'c8-5', name: 'Idea 5', empty: 'Fifth idea', hint: '~1 minute', colour: 'orange' },
+            { id: 'c8-6', name: 'Idea 6', empty: 'Sixth idea', hint: '~1 minute', colour: 'orange' },
+            { id: 'c8-7', name: 'Idea 7', empty: 'Seventh idea', hint: '~1 minute', colour: 'orange' },
+            { id: 'c8-8', name: 'Idea 8', empty: 'Eighth idea', hint: '~1 minute', colour: 'orange' },
+            { id: 'c8-shortlist', name: 'Shortlist', empty: 'Best ideas selected', hint: 'Star your favourites', colour: 'teal' }
+        ],
+        gridClass: 'board-grid-crazy8s'
+    },
+    'hmw': {
+        zones: [
+            { id: 'hmw-problem', name: 'Problem Statement', empty: 'The challenge to reframe', hint: 'What\'s the problem?', colour: 'orange' },
+            { id: 'hmw-q1', name: 'HMW #1', empty: 'First reframe', hint: 'How might we...?', colour: 'orange' },
+            { id: 'hmw-q2', name: 'HMW #2', empty: 'Second reframe', hint: 'How might we...?', colour: 'orange' },
+            { id: 'hmw-q3', name: 'HMW #3', empty: 'Third reframe', hint: 'How might we...?', colour: 'orange' },
+            { id: 'hmw-q4', name: 'HMW #4', empty: 'Fourth reframe', hint: 'How might we...?', colour: 'orange' },
+            { id: 'hmw-q5', name: 'HMW #5', empty: 'Fifth reframe', hint: 'How might we...?', colour: 'orange' },
+            { id: 'hmw-best', name: 'Most Promising', empty: 'The reframe with the most potential', hint: 'Which one opens the most interesting direction?', colour: 'teal' },
+            { id: 'actions', name: 'Actions', empty: 'Next steps', hint: 'What to explore from here', colour: 'teal' }
+        ],
+        gridClass: 'board-grid-hmw'
+    },
+    'scamper': {
+        zones: [
+            { id: 'sc-s', name: 'S — Substitute', empty: 'What could you replace?', hint: 'Materials, people, processes', colour: 'orange' },
+            { id: 'sc-c', name: 'C — Combine', empty: 'What could you merge?', hint: 'Features, ideas, audiences', colour: 'orange' },
+            { id: 'sc-a', name: 'A — Adapt', empty: 'What could you borrow?', hint: 'From other industries, contexts', colour: 'orange' },
+            { id: 'sc-m', name: 'M — Modify', empty: 'What could you change?', hint: 'Size, shape, timing, frequency', colour: 'orange' },
+            { id: 'sc-p', name: 'P — Put to Other Uses', empty: 'What else could this do?', hint: 'New markets, new contexts', colour: 'orange' },
+            { id: 'sc-e', name: 'E — Eliminate', empty: 'What could you remove?', hint: 'The hardest question', colour: 'orange' },
+            { id: 'sc-r', name: 'R — Reverse', empty: 'What if you did the opposite?', hint: 'Flip the assumption', colour: 'orange' },
+            { id: 'sc-shortlist', name: 'Shortlist', empty: 'Best ideas across all lenses', hint: 'Star your favourites', colour: 'teal' }
+        ],
+        gridClass: 'board-grid-scamper'
+    },
+    'devils-advocate': {
+        zones: [
+            { id: 'da-idea', name: 'The Idea', empty: 'What are you defending?', hint: 'State your case', colour: 'pink' },
+            { id: 'da-for', name: 'Case For', empty: 'Your strongest arguments', hint: 'Why this should work', colour: 'teal' },
+            { id: 'da-against', name: 'Case Against', empty: 'Pete\'s challenges', hint: 'Why this might not work', colour: 'pink' },
+            { id: 'da-rebuttals', name: 'Rebuttals', empty: 'Your responses', hint: 'How you address each challenge', colour: 'orange' },
+            { id: 'da-verdict', name: 'Verdict', empty: 'What survived and what didn\'t', hint: 'The honest assessment', colour: 'teal' },
+            { id: 'actions', name: 'Actions', empty: 'Weaknesses to address', hint: 'What to fix before committing', colour: 'orange' }
+        ],
+        gridClass: 'board-grid-devils-advocate'
+    },
+    'rapid-experiment': {
+        zones: [
+            { id: 're-hypothesis', name: 'Hypothesis', empty: 'What do you believe?', hint: 'If we [do X], then [Y] will happen', colour: 'yellow' },
+            { id: 're-assumption', name: 'Riskiest Assumption', empty: 'What must be true?', hint: 'The one that kills the idea if wrong', colour: 'orange' },
+            { id: 're-method', name: 'Test Method', empty: 'How you\'ll test it', hint: 'Concierge, landing page, pre-sell...', colour: 'yellow' },
+            { id: 're-metric', name: 'Success Metric', empty: 'The number you\'ll measure', hint: 'Specific, measurable', colour: 'yellow' },
+            { id: 're-pass', name: 'Pass Criteria', empty: 'What counts as success?', hint: 'The threshold', colour: 'teal' },
+            { id: 're-fail', name: 'Fail Criteria', empty: 'What counts as failure?', hint: 'Be honest before you see the data', colour: 'pink' },
+            { id: 're-predicted', name: 'Predicted Outcome', empty: 'What you expect', hint: 'Write this before running', colour: 'yellow' },
+            { id: 're-actual', name: 'Actual Outcome', empty: '(Fill in after running)', hint: 'What actually happened', colour: 'teal' },
+            { id: 'actions', name: 'Next Step', empty: '48-hour action', hint: 'Build it, run it, ship it', colour: 'orange' }
+        ],
+        gridClass: 'board-grid-rapid-experiment'
+    },
     'default': {
         zones: [
             { id: 'insights', name: 'Key Insights', empty: 'No insights yet — keep digging' },

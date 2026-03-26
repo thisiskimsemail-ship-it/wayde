@@ -5124,3 +5124,79 @@ html[data-theme="light"] .starter-prompt-pill:hover {
 .lp-quotes-grid .lp-blockquote { max-width: none; }
 @media (max-width: 1024px) { .lp-quotes-grid { grid-template-columns: 1fr; gap: 1.5rem; } }
 @media (max-width: 430px) { .lp-quotes-grid { gap: 1rem; } }
+
+/* Five Whys — Drill-down staircase */
+.board-grid-five-whys { display: grid; grid-template-columns: 1fr; gap: 0; overflow-y: auto; flex: 1; }
+.board-grid-five-whys .board-zone { min-height: 70px; border-radius: 0; border-bottom: 1px solid rgba(255,255,255,0.06); border-left: 3px solid var(--teal); }
+.board-grid-five-whys .board-zone[data-zone="fw-problem"] { background: rgba(39,189,190,0.08); }
+.board-grid-five-whys .board-zone[data-zone="fw-why1"] { background: rgba(39,189,190,0.06); padding-left: 1.5rem; }
+.board-grid-five-whys .board-zone[data-zone="fw-why2"] { background: rgba(39,189,190,0.05); padding-left: 2rem; }
+.board-grid-five-whys .board-zone[data-zone="fw-why3"] { background: rgba(39,189,190,0.04); padding-left: 2.5rem; }
+.board-grid-five-whys .board-zone[data-zone="fw-why4"] { background: rgba(39,189,190,0.03); padding-left: 3rem; }
+.board-grid-five-whys .board-zone[data-zone="fw-why5"] { background: rgba(241,90,34,0.06); border-left-color: var(--orange); border-top: 2px solid var(--orange); padding-left: 3.5rem; }
+.board-grid-five-whys .board-zone[data-zone="actions"] { border-left-color: var(--orange); }
+
+/* Empathy Map — Four-quadrant canvas */
+.board-grid-empathy-map { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: auto auto auto auto; gap: 1px; overflow-y: auto; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; flex: 1; }
+.board-grid-empathy-map .board-zone { min-height: 80px; border-radius: 0; background: var(--bg); }
+.board-grid-empathy-map .board-zone[data-zone="em-user"] { grid-column: 1 / -1; text-align: center; background: rgba(39,189,190,0.06); border-bottom: 2px solid var(--teal); }
+.board-grid-empathy-map .board-zone[data-zone="em-says"] { border-right: 1px solid rgba(255,255,255,0.06); }
+.board-grid-empathy-map .board-zone[data-zone="em-does"] { border-right: 1px solid rgba(255,255,255,0.06); border-top: 1px solid rgba(255,255,255,0.06); }
+.board-grid-empathy-map .board-zone[data-zone="em-feels"] { border-top: 1px solid rgba(255,255,255,0.06); }
+.board-grid-empathy-map .board-zone[data-zone="em-contradictions"] { grid-column: 1 / -1; border-top: 2px solid var(--orange); background: rgba(241,90,34,0.04); }
+.board-grid-empathy-map .board-zone[data-zone="insights"] { grid-column: 1 / -1; border-top: 2px solid var(--orange); }
+@media (max-width: 430px) { .board-grid-empathy-map { grid-template-columns: 1fr; } .board-grid-empathy-map .board-zone { grid-column: 1 !important; } }
+
+/* JTBD — Three-column job map */
+.board-grid-jtbd { display: grid; grid-template-columns: 1fr 1fr 1fr; grid-template-rows: auto auto auto; gap: 1px; overflow-y: auto; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; flex: 1; }
+.board-grid-jtbd .board-zone { min-height: 80px; border-radius: 0; background: var(--bg); }
+.board-grid-jtbd .board-zone[data-zone="jtbd-situation"] { grid-column: 1 / -1; border-bottom: 2px solid var(--teal); background: rgba(39,189,190,0.04); }
+.board-grid-jtbd .board-zone[data-zone="jtbd-hiring"] { grid-column: 1 / -1; border-top: 2px solid var(--orange); }
+.board-grid-jtbd .board-zone[data-zone="insights"] { grid-column: 1 / -1; border-top: 2px solid var(--orange); background: rgba(241,90,34,0.04); }
+@media (max-width: 640px) { .board-grid-jtbd { grid-template-columns: 1fr; } .board-grid-jtbd .board-zone { grid-column: 1 !important; } }
+
+/* Crazy 8s — Eight-cell grid */
+.board-grid-crazy8s { display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: auto auto auto; gap: 1px; overflow-y: auto; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; flex: 1; }
+.board-grid-crazy8s .board-zone { min-height: 80px; border-radius: 0; background: var(--bg); }
+.board-grid-crazy8s .board-zone[data-zone="c8-shortlist"] { grid-column: 1 / -1; border-top: 2px solid var(--teal); background: rgba(39,189,190,0.04); }
+@media (max-width: 640px) { .board-grid-crazy8s { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 430px) { .board-grid-crazy8s { grid-template-columns: 1fr; } .board-grid-crazy8s .board-zone { grid-column: 1 !important; } }
+
+/* HMW — Divergence list (Phase 1) */
+.board-grid-hmw { display: grid; grid-template-columns: 1fr; gap: 0; overflow-y: auto; flex: 1; }
+.board-grid-hmw .board-zone { min-height: 60px; border-radius: 0; border-bottom: 1px solid rgba(255,255,255,0.06); border-left: 3px solid var(--orange); }
+.board-grid-hmw .board-zone[data-zone="hmw-problem"] { background: rgba(241,90,34,0.06); border-left-width: 4px; }
+.board-grid-hmw .board-zone[data-zone="hmw-best"] { border-left-color: var(--teal); border-top: 2px solid var(--teal); background: rgba(39,189,190,0.04); }
+.board-grid-hmw .board-zone[data-zone="actions"] { border-left-color: var(--teal); }
+
+/* SCAMPER — Seven lanes */
+.board-grid-scamper { display: grid; grid-template-columns: repeat(7, 1fr); grid-template-rows: auto auto; gap: 1px; overflow-y: auto; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; flex: 1; }
+.board-grid-scamper .board-zone { min-height: 100px; border-radius: 0; background: var(--bg); }
+.board-grid-scamper .board-zone[data-zone="sc-shortlist"] { grid-column: 1 / -1; border-top: 2px solid var(--teal); background: rgba(39,189,190,0.04); }
+.board-grid-scamper .zone-name { font-size: 0.65rem; }
+@media (max-width: 1024px) { .board-grid-scamper { grid-template-columns: repeat(4, 1fr); } }
+@media (max-width: 640px) { .board-grid-scamper { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 430px) { .board-grid-scamper { grid-template-columns: 1fr; } .board-grid-scamper .board-zone { grid-column: 1 !important; } }
+
+/* Devil's Advocate — Debate layout */
+.board-grid-devils-advocate { display: grid; grid-template-columns: 1fr auto 1fr; grid-template-rows: auto auto auto; gap: 1px; overflow-y: auto; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; flex: 1; }
+.board-grid-devils-advocate .board-zone { min-height: 80px; border-radius: 0; background: var(--bg); }
+.board-grid-devils-advocate .board-zone[data-zone="da-idea"] { grid-column: 1 / -1; border-bottom: 2px solid var(--pink); background: rgba(237,54,148,0.04); }
+.board-grid-devils-advocate .board-zone[data-zone="da-for"] { border-right: 1px solid rgba(255,255,255,0.06); border-top: 3px solid #22C55E; }
+.board-grid-devils-advocate .board-zone[data-zone="da-rebuttals"] { border-right: 1px solid rgba(255,255,255,0.06); min-width: 120px; }
+.board-grid-devils-advocate .board-zone[data-zone="da-against"] { border-top: 3px solid #EF4444; }
+.board-grid-devils-advocate .board-zone[data-zone="da-verdict"] { grid-column: 1 / -1; border-top: 2px solid var(--teal); }
+.board-grid-devils-advocate .board-zone[data-zone="actions"] { grid-column: 1 / -1; }
+@media (max-width: 640px) { .board-grid-devils-advocate { grid-template-columns: 1fr; } .board-grid-devils-advocate .board-zone { grid-column: 1 !important; } }
+
+/* Rapid Experiment — Lab notebook */
+.board-grid-rapid-experiment { display: grid; grid-template-columns: 1fr 1fr 1fr; grid-template-rows: auto auto auto auto auto; gap: 1px; overflow-y: auto; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; flex: 1; }
+.board-grid-rapid-experiment .board-zone { min-height: 60px; border-radius: 0; background: var(--bg); }
+.board-grid-rapid-experiment .board-zone[data-zone="re-hypothesis"] { grid-column: 1 / -1; border-bottom: 2px solid var(--yellow); background: rgba(228,229,23,0.04); }
+.board-grid-rapid-experiment .board-zone[data-zone="re-assumption"] { grid-column: 1 / -1; border-bottom: 2px solid var(--orange); background: rgba(241,90,34,0.04); }
+.board-grid-rapid-experiment .board-zone[data-zone="re-pass"] { border-top: 3px solid #22C55E; }
+.board-grid-rapid-experiment .board-zone[data-zone="re-fail"] { border-top: 3px solid #EF4444; }
+.board-grid-rapid-experiment .board-zone[data-zone="re-predicted"] { border-top: 1px solid rgba(255,255,255,0.06); }
+.board-grid-rapid-experiment .board-zone[data-zone="re-actual"] { border-top: 1px solid rgba(255,255,255,0.06); grid-column: 2 / -1; background: rgba(39,189,190,0.03); }
+.board-grid-rapid-experiment .board-zone[data-zone="actions"] { grid-column: 1 / -1; border-top: 2px solid var(--orange); }
+@media (max-width: 640px) { .board-grid-rapid-experiment { grid-template-columns: 1fr; } .board-grid-rapid-experiment .board-zone { grid-column: 1 !important; } }
