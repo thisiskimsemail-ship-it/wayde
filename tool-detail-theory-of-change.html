@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preload" href="fonts/GT-Walsheim-Regular.woff" as="font" type="font/woff" crossorigin>
+<title>Theory of Change — Wade Innovation Toolbox</title>
+<style>
+  @font-face { font-family: "GT Walsheim"; src: url("fonts/GT-Walsheim-Regular.woff") format("woff"), url("fonts/GT-Walsheim-Regular.ttf") format("truetype"); font-weight: 400; font-style: normal; font-display: swap; }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --navy: #1E194F;
+    --navy-deep: #12103a;
+    --orange: #F15A22;
+    --orange-hover: #d14e1b;
+    --white: #FFFFFF;
+    --text-body: #b8b5d0;
+    --text-light: #6e6a8a;
+    --border: rgba(255,255,255,0.08);
+    --border-light: rgba(255,255,255,0.15);
+    --card-bg: #1a1750;
+    --card-hover: #221d5a;
+    --cat-color: #E4E517;
+    --untangle: #27BDBE;
+    --spark: #F15A22;
+    --test: #ED3694;
+    --build: #E4E517;
+  }
+
+  body {
+    font-family: 'GT Walsheim', 'Space Grotesk', sans-serif;
+    color: var(--text-body);
+    background: var(--navy-deep);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── HEADER ── */
+  header {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: var(--navy-deep);
+    border-bottom: 2px solid var(--orange);
+    padding: 0 60px; height: 72px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .logo { font-weight: 700; font-size: 15px; line-height: 1.15; color: var(--orange); letter-spacing: 0.4px; text-transform: uppercase; }
+  .header-nav { display: flex; gap: 12px; align-items: center; }
+  .nav-pill { font-size: 14px; font-weight: 500; padding: 8px 20px; border-radius: 100px; border: 1.5px solid rgba(255,255,255,0.25); background: transparent; color: var(--white); cursor: pointer; text-decoration: none; transition: all 0.2s; font-family: 'GT Walsheim', 'Space Grotesk', sans-serif; }
+  .nav-pill:hover { background: rgba(255,255,255,0.1); }
+  .nav-pill.active { background: var(--white); color: var(--navy); border-color: var(--white); }
+  .nav-icon { width: 36px; height: 36px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,0.25); display: flex; align-items: center; justify-content: center; color: var(--white); font-size: 14px; text-decoration: none; }
+
+  /* ── TOOL HERO ── */
+  .tool-hero {
+    padding: 140px 60px 60px;
+    max-width: 1300px;
+    margin: 0 auto;
+  }
+
+  .breadcrumb {
+    font-size: 14px; color: var(--text-light); margin-bottom: 28px;
+  }
+  .breadcrumb a { color: var(--cat-color); text-decoration: none; }
+  .breadcrumb a:hover { text-decoration: underline; }
+  .breadcrumb span { margin: 0 8px; color: var(--border-light); }
+
+  .tool-hero-grid {
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: 60px;
+    align-items: start;
+  }
+
+  .tool-hero-left .stage-badge {
+    display: inline-block;
+    font-size: 11px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase;
+    padding: 5px 14px; border-radius: 100px;
+    background: var(--cat-color); color: var(--navy);
+    margin-bottom: 16px;
+  }
+
+  .tool-hero-left h1 {
+    font-family: 'GT Walsheim', 'Space Grotesk', sans-serif;
+    font-size: 56px; font-weight: 400; color: var(--white);
+    line-height: 1.1; margin-bottom: 12px;
+  }
+
+  .tool-headline {
+    font-family: 'GT Walsheim', 'Space Grotesk', sans-serif;
+    font-size: 24px; font-weight: 400; color: var(--cat-color);
+    font-style: italic; margin-bottom: 24px;
+  }
+
+  .tool-intro {
+    font-size: 18px; line-height: 1.7; color: var(--text-body);
+    max-width: 600px;
+  }
+
+  /* Right sidebar — quick facts card */
+  .quick-facts {
+    background: var(--card-bg);
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    padding: 32px;
+  }
+
+  .qf-title {
+    font-size: 13px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+    color: var(--text-light); margin-bottom: 20px;
+  }
+
+  .qf-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .qf-row:last-of-type { border-bottom: none; }
+
+  .qf-label { font-size: 14px; color: var(--text-light); }
+  .qf-value { font-size: 14px; font-weight: 600; color: var(--white); }
+
+  .qf-pathways {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+
+  .qf-pathways-label {
+    font-size: 13px; color: var(--text-light); margin-bottom: 10px;
+  }
+
+  .pathway-tags {
+    display: flex; flex-wrap: wrap; gap: 6px;
+  }
+
+  .pathway-tag {
+    font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 100px; border: 1px solid;
+  }
+  .pathway-tag.untangle { border-color: rgba(39,189,190,0.4); color: var(--untangle); }
+  .pathway-tag.spark { border-color: rgba(241,90,34,0.4); color: var(--spark); }
+  .pathway-tag.test { border-color: rgba(237,54,148,0.4); color: var(--test); }
+  .pathway-tag.build { border-color: rgba(228,229,23,0.4); color: var(--build); }
+
+  .qf-cta {
+    display: block; width: 100%; text-align: center;
+    margin-top: 24px; padding: 14px 24px;
+    background: var(--cat-color); color: var(--navy);
+    border-radius: 100px; border: none;
+    font-size: 16px; font-weight: 600; font-family: 'GT Walsheim', 'Space Grotesk', sans-serif;
+    cursor: pointer; text-decoration: none; transition: all 0.2s;
+  }
+  .qf-cta:hover { filter: brightness(0.9); }
+
+  /* ── CONTENT SECTIONS ── */
+  .content-area {
+    padding: 0 60px 80px;
+    max-width: 1300px;
+    margin: 0 auto;
+  }
+
+  .content-grid {
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: 60px;
+  }
+
+  .content-main { max-width: 100%; }
+
+  .section-block {
+    margin-bottom: 56px;
+  }
+
+  .section-block h2 {
+    font-family: 'GT Walsheim', 'Space Grotesk', sans-serif;
+    font-size: 32px; font-weight: 400; color: var(--white);
+    margin-bottom: 20px;
+  }
+
+  .section-block p {
+    font-size: 17px; line-height: 1.75; color: var(--text-body);
+    margin-bottom: 16px;
+  }
+
+  .section-block p strong { color: var(--white); }
+
+  /* How it works — step timeline */
+  .steps-timeline {
+    position: relative;
+    padding-left: 40px;
+  }
+
+  .steps-timeline::before {
+    content: '';
+    position: absolute;
+    left: 14px; top: 8px; bottom: 8px;
+    width: 2px;
+    background: var(--border);
+  }
+
+  .step-item {
+    position: relative;
+    padding-bottom: 32px;
+  }
+  .step-item:last-child { padding-bottom: 0; }
+
+  .step-number {
+    position: absolute;
+    left: -40px; top: 0;
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background: var(--card-bg);
+    border: 2px solid var(--cat-color);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; color: var(--cat-color);
+  }
+
+  .step-title {
+    font-size: 17px; font-weight: 600; color: var(--white);
+    margin-bottom: 6px;
+  }
+
+  .step-desc {
+    font-size: 15px; color: var(--text-body); line-height: 1.6;
+  }
+
+  /* Sample output card */
+  .sample-output {
+    background: var(--card-bg);
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    padding: 32px;
+    margin-top: 8px;
+  }
+
+  .sample-label {
+    font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+    color: var(--cat-color); margin-bottom: 20px;
+  }
+
+  .sample-chain {
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .sample-chain:last-of-type { border-bottom: none; }
+
+  .sample-chain-label {
+    font-size: 12px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.8px; margin-bottom: 4px;
+  }
+  .sample-chain-label.outcome { color: var(--cat-color); }
+  .sample-chain-label.control { color: #22C55E; }
+  .sample-chain-label.influence { color: #F59E0B; }
+  .sample-chain-label.outside { color: #EF4444; }
+  .sample-chain-label.activity { color: var(--text-light); }
+
+  .sample-chain-text {
+    font-size: 14px; color: var(--white); line-height: 1.5;
+  }
+
+  .sample-chain-sub {
+    font-size: 13px; color: var(--text-body); line-height: 1.4; margin-top: 2px;
+  }
+
+  .sample-root {
+    margin-top: 20px; padding-top: 20px;
+    border-top: 2px solid var(--cat-color);
+  }
+
+  .sample-root-label {
+    font-size: 12px; font-weight: 700; color: var(--cat-color); text-transform: uppercase;
+    letter-spacing: 0.8px; margin-bottom: 6px;
+  }
+
+  .sample-root-text {
+    font-family: 'GT Walsheim', 'Space Grotesk', sans-serif;
+    font-size: 20px; color: var(--white); line-height: 1.4;
+  }
+
+  /* Foundation / credibility section */
+  .foundation-logos {
+    display: flex; flex-wrap: wrap; gap: 16px;
+    margin-top: 16px;
+  }
+
+  .org-badge {
+    font-size: 12px; font-weight: 600; padding: 8px 16px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+    color: var(--text-light);
+  }
+
+  /* Sidebar — related tools */
+  .sidebar {
+    display: flex; flex-direction: column; gap: 24px;
+  }
+
+  .sidebar-card {
+    background: var(--card-bg);
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    padding: 24px;
+    transition: all 0.2s;
+  }
+  .sidebar-card:hover { border-color: var(--border-light); background: var(--card-hover); }
+
+  .sidebar-card-label {
+    font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+    color: var(--text-light); margin-bottom: 16px;
+  }
+
+  .related-tool {
+    display: flex; gap: 14px; align-items: flex-start;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+    text-decoration: none;
+  }
+  .related-tool:last-child { border-bottom: none; }
+
+  .related-tool-icon {
+    width: 36px; height: 36px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 700; flex-shrink: 0;
+  }
+  .related-tool-icon.untangle { background: rgba(39,189,190,0.15); color: #27BDBE; }
+  .related-tool-icon.spark { background: rgba(241,90,34,0.15); color: #F15A22; }
+  .related-tool-icon.test { background: rgba(237,54,148,0.15); color: #ED3694; }
+  .related-tool-icon.build { background: rgba(228,229,23,0.15); color: #E4E517; }
+
+  .related-tool-text h4 {
+    font-size: 14px; font-weight: 600; color: var(--white); margin-bottom: 2px;
+  }
+  .related-tool-text p {
+    font-size: 13px; color: var(--text-light); line-height: 1.4;
+  }
+
+  /* Pete's coaching note */
+  .pete-note {
+    background: linear-gradient(135deg, rgba(228,229,23,0.08), rgba(228,229,23,0.04));
+    border: 1px solid rgba(228,229,23,0.25);
+    border-radius: 14px;
+    padding: 24px;
+  }
+
+  .pete-avatar-row {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .pete-avatar {
+    width: 32px; height: 32px; border-radius: 8px;
+    background: var(--navy); display: flex; align-items: center; justify-content: center;
+    color: var(--white); font-weight: 700; font-size: 13px;
+  }
+
+  .pete-label { font-size: 13px; font-weight: 600; color: var(--white); }
+
+  .pete-text {
+    font-size: 14px; color: var(--text-body); line-height: 1.6; font-style: italic;
+  }
+
+  /* ── BOTTOM CTA BAR ── */
+  .tool-bottom-cta {
+    padding: 60px;
+    max-width: 1300px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid var(--border);
+  }
+
+  .tool-bottom-left h3 {
+    font-family: 'GT Walsheim', 'Space Grotesk', sans-serif;
+    font-size: 28px; font-weight: 400; color: var(--white);
+    margin-bottom: 6px;
+  }
+  .tool-bottom-left p { font-size: 15px; color: var(--text-light); }
+
+  .tool-bottom-right { display: flex; gap: 16px; align-items: center; }
+
+  .back-link {
+    font-size: 15px; color: var(--text-light); text-decoration: none;
+    transition: color 0.2s;
+  }
+  .back-link:hover { color: var(--white); }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 40px 60px; border-top: 2px solid var(--orange);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .footer-left { display: flex; align-items: center; gap: 32px; }
+  .footer-logo { font-weight: 700; font-size: 13px; line-height: 1.15; color: var(--orange); letter-spacing: 0.4px; text-transform: uppercase; }
+  .footer-links { display: flex; gap: 24px; }
+  .footer-links a { font-size: 14px; color: var(--text-light); text-decoration: none; }
+  .footer-links a:hover { color: var(--white); }
+  .footer-right { font-size: 13px; color: var(--text-light); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 1000px) {
+    .tool-hero-grid, .content-grid { grid-template-columns: 1fr; gap: 32px; }
+    header { padding: 0 32px; }
+    .tool-hero, .content-area, .tool-bottom-cta { padding-left: 32px; padding-right: 32px; }
+  }
+  @media (max-width: 600px) {
+    .tool-hero-left h1 { font-size: 40px; }
+    .section-block h2 { font-size: 28px; }
+    footer { flex-direction: column; gap: 16px; text-align: center; }
+    .tool-bottom-cta { flex-direction: column; gap: 24px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <a href="index.html"><img class="logo" src="logo.png" alt="Wade Institute" style="height:50px;width:auto;"></a>
+  <nav class="header-nav">
+    <a href="index.html" class="nav-pill">The Studio</a>
+    <a href="toolbox.html" class="nav-pill active">Toolbox</a>
+    <a href="#" class="nav-icon">Aa</a>
+    <a href="#" class="nav-icon">&#x2731;</a>
+    <a href="#" class="nav-icon">?</a>
+  </nav>
+</header>
+
+<!-- TOOL HERO -->
+<section class="tool-hero">
+  <div class="breadcrumb">
+    <a href="index.html">The Studio</a>
+    <span>/</span>
+    <a href="toolbox.html">Toolbox</a>
+    <span>/</span>
+    <a href="toolbox.html#build">The Build</a>
+    <span>/</span>
+    Theory of Change
+  </div>
+
+  <div class="tool-hero-grid">
+    <div class="tool-hero-left">
+      <div class="stage-badge">THE BUILD</div>
+      <h1>Theory of Change</h1>
+      <p class="tool-headline">Map the causal chain from what you do to the change you create.</p>
+      <p class="tool-intro">Works backward from the long-term change you want to create, mapping every condition that has to be true for it to happen. Exposes the "missing middle" between activities and outcomes. Makes implicit causal logic explicit.</p>
+    </div>
+
+    <div class="quick-facts">
+      <div class="qf-title">Quick Facts</div>
+      <div class="qf-row">
+        <span class="qf-label">Duration</span>
+        <span class="qf-value">~25 minutes</span>
+      </div>
+      <div class="qf-row">
+        <span class="qf-label">Category</span>
+        <span class="qf-value">The Build</span>
+      </div>
+      <div class="qf-row">
+        <span class="qf-label">Origin</span>
+        <span class="qf-value">Carol Weiss, Harvard (1995)</span>
+      </div>
+      <div class="qf-row">
+        <span class="qf-label">Created by</span>
+        <span class="qf-value">Carol Weiss / Aspen Institute</span>
+      </div>
+      <div class="qf-pathways">
+        <div class="qf-pathways-label">Used in pathways</div>
+        <div class="pathway-tags">
+          <span class="pathway-tag build">The Build</span>
+        </div>
+      </div>
+      <a href="index.html?tool=theory-of-change" class="qf-cta">Try Theory of Change &rarr;</a>
+    </div>
+  </div>
+</section>
+
+<!-- CONTENT -->
+<section class="content-area">
+  <div class="content-grid">
+    <div class="content-main">
+
+      <!-- WHEN TO USE -->
+      <div class="section-block">
+        <h2>When to use it</h2>
+        <p>Use Theory of Change when your success depends on things beyond your direct control — behaviour change, ecosystem development, systemic shifts, or multi-stakeholder adoption.</p>
+        <p><strong>Social entrepreneurs</strong> articulating impact for funders. <strong>Innovation leads</strong> whose success depends on systemic change. <strong>Founders</strong> whose business model assumes behaviour change or ecosystem development. <strong>Grant applicants</strong> needing a logic model. Anyone with a "missing middle" between what they do and what they hope happens.</p>
+      </div>
+
+      <!-- HOW IT WORKS IN THE STUDIO -->
+      <div class="section-block">
+        <h2>How it works in The Studio</h2>
+        <p>Here's how a session works with Pete:</p>
+
+        <div class="steps-timeline">
+          <div class="step-item">
+            <div class="step-number">1</div>
+            <div class="step-title">Define the Outcome</div>
+            <div class="step-desc">"If everything works perfectly over 5 years, what has changed? For whom?" Pete pushes past product descriptions to observable impact.</div>
+          </div>
+          <div class="step-item">
+            <div class="step-number">2</div>
+            <div class="step-title">Map the Preconditions</div>
+            <div class="step-desc">Work backwards: "For that to happen, what has to be true?" Build a chain of conditions from present to outcome.</div>
+          </div>
+          <div class="step-item">
+            <div class="step-number">3</div>
+            <div class="step-title">Sort by Sphere of Influence</div>
+            <div class="step-desc">Classify every precondition: Within Control (green), Within Influence (amber), or Outside Control (red).</div>
+          </div>
+          <div class="step-item">
+            <div class="step-number">4</div>
+            <div class="step-title">Design the Activities</div>
+            <div class="step-desc">For controllable preconditions, design specific activities. Test the connection between what you do and what it creates.</div>
+          </div>
+          <div class="step-item">
+            <div class="step-number">5</div>
+            <div class="step-title">Test the Logic</div>
+            <div class="step-desc">Read the full chain back. Identify the weakest link. Name critical assumptions. "What's the simplest test for the weakest link?"</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SAMPLE OUTPUT -->
+      <div class="section-block">
+        <h2>Sample output</h2>
+        <p>Here's what a Theory of Change pathway looks like in practice:</p>
+
+        <div class="sample-output">
+          <div class="sample-label">Example: Education Platform Impact</div>
+
+          <div class="sample-chain">
+            <div class="sample-chain-label outcome">OUTCOME</div>
+            <div class="sample-chain-text">Teachers in under-resourced schools spend 30% less time on admin, 30% more on instruction</div>
+          </div>
+
+          <div class="sample-chain">
+            <div class="sample-chain-label outside">PRECONDITION &mdash; OUTSIDE CONTROL</div>
+            <div class="sample-chain-text">Regulatory body updates accreditation requirements</div>
+          </div>
+
+          <div class="sample-chain">
+            <div class="sample-chain-label outside">PRECONDITION &mdash; OUTSIDE CONTROL</div>
+            <div class="sample-chain-text">School administrators grant time for professional development</div>
+          </div>
+
+          <div class="sample-chain">
+            <div class="sample-chain-label control">PRECONDITION &mdash; WITHIN CONTROL</div>
+            <div class="sample-chain-text">Teachers are trained and confident using the platform</div>
+          </div>
+
+          <div class="sample-chain">
+            <div class="sample-chain-label control">PRECONDITION &mdash; WITHIN CONTROL</div>
+            <div class="sample-chain-text">Platform adopted by pilot schools</div>
+          </div>
+
+          <div class="sample-chain">
+            <div class="sample-chain-label activity">ACTIVITIES</div>
+            <div class="sample-chain-text">Build platform, create training programme, recruit pilot schools, run workshops</div>
+          </div>
+
+          <div class="sample-root">
+            <div class="sample-root-label">Weakest Link</div>
+            <div class="sample-root-text">"Admin grants time for professional development" &mdash; outside your control, blocks the entire chain.</div>
+          </div>
+
+          <div style="margin-top: 16px;">
+            <div class="sample-chain-label" style="color: var(--cat-color);">TEST</div>
+            <div class="sample-chain-text">Interview 5 school administrators this month to validate willingness.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- WHAT YOU GET -->
+      <div class="section-block">
+        <h2>What you get</h2>
+        <p>A complete causal pathway from activities to impact, every precondition rated by controllability, critical external assumptions identified, the weakest link highlighted, and a concrete test to validate it.</p>
+        <p>Your downloadable report includes the full pathway map, Pete's coaching observations, sphere-of-influence ratings, and a recommended first step.</p>
+      </div>
+
+      <!-- FOUNDATION -->
+      <div class="section-block">
+        <h2>Foundation</h2>
+        <p>Originated with <strong>Carol Weiss</strong> at Harvard ("Nothing as Practical as Good Theory," 1995). Developed through the <strong>Aspen Institute</strong> Roundtable on Community Change. Widely adopted by the Gates Foundation, DFID, USAID, and ActKnowledge. Used across philanthropy, international development, social enterprise, and increasingly in corporate innovation.</p>
+        <div class="foundation-logos">
+          <span class="org-badge">Harvard</span>
+          <span class="org-badge">Aspen Institute</span>
+          <span class="org-badge">Gates Foundation</span>
+          <span class="org-badge">DFID</span>
+          <span class="org-badge">USAID</span>
+          <span class="org-badge">ActKnowledge</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+
+      <!-- Pete's coaching note -->
+      <div class="pete-note">
+        <div class="pete-avatar-row">
+          <div class="pete-avatar">P</div>
+          <div class="pete-label">Pete's note</div>
+        </div>
+        <p class="pete-text">"Most plans have a missing middle — you can describe what you do and what you hope happens, but not the steps in between. My job is to fill in every link and find the ones that depend on things you can't control."</p>
+      </div>
+
+      <!-- Often paired with -->
+      <div class="sidebar-card">
+        <div class="sidebar-card-label">Often paired with</div>
+
+        <a href="tool-detail-lean-canvas.html" class="related-tool">
+          <div class="related-tool-icon build">L</div>
+          <div class="related-tool-text">
+            <h4>Lean Canvas</h4>
+            <p>Map business model alongside your impact pathway</p>
+          </div>
+        </a>
+
+        <a href="tool-detail-pre-mortem.html" class="related-tool">
+          <div class="related-tool-icon test">P</div>
+          <div class="related-tool-text">
+            <h4>Pre-Mortem</h4>
+            <p>Stress-test the assumptions in your causal chain</p>
+          </div>
+        </a>
+      </div>
+
+      <!-- Also in this category -->
+      <div class="sidebar-card">
+        <div class="sidebar-card-label">Also in The Build</div>
+
+        <a href="tool-detail-lean-canvas.html" class="related-tool">
+          <div class="related-tool-icon build">L</div>
+          <div class="related-tool-text">
+            <h4>Lean Canvas</h4>
+            <p>Map the key elements of your initiative on one page</p>
+          </div>
+        </a>
+
+        <a href="tool-detail-effectuation.html" class="related-tool">
+          <div class="related-tool-icon build">E</div>
+          <div class="related-tool-text">
+            <h4>Effectuation</h4>
+            <p>Start with what you have, not a goal</p>
+          </div>
+        </a>
+
+        <a href="tool-detail-rapid-experiment.html" class="related-tool">
+          <div class="related-tool-icon build">R</div>
+          <div class="related-tool-text">
+            <h4>Rapid Experiment</h4>
+            <p>Design the cheapest, fastest test for your riskiest assumption</p>
+          </div>
+        </a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- BOTTOM CTA -->
+<div class="tool-bottom-cta">
+  <div class="tool-bottom-left">
+    <h3>Try Theory of Change?</h3>
+    <p>Pete will guide you. About 25 minutes, always free.</p>
+  </div>
+  <div class="tool-bottom-right">
+    <a href="toolbox.html" class="back-link">&larr; Back to toolbox</a>
+    <a href="index.html?tool=theory-of-change" class="qf-cta" style="display:inline-block; width:auto;">Start Theory of Change &rarr;</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-left">
+    <a href="index.html"><img src="wade-icon.png" alt="Wade Institute" style="height:28px;width:auto;"></a>
+    <div class="footer-links">
+      <a href="https://wadeinstitute.org.au">wadeinstitute.org.au</a>
+      <a href="mailto:enquiries@wadeinstitute.org.au">Contact</a>
+      <a href="privacy.html">Privacy</a>
+    </div>
+  </div>
+  <div class="footer-right">&copy; 2026 Wade Institute of Entrepreneurship</div>
+</footer>
+
+</body>
+</html>

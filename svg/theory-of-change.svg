@@ -1,0 +1,125 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 700" width="800" height="700">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#6B7280"/>
+    </marker>
+    <marker id="arrow-yellow" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#E4E517"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="700" fill="#1B2A4A" rx="0"/>
+
+  <!-- Title -->
+  <text x="400" y="36" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#E4E517" letter-spacing="2">THEORY OF CHANGE</text>
+  <text x="400" y="56" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#8B95A5">Education Platform Impact Chain</text>
+
+  <!-- ═══ OUTCOME (right side, largest card) ═══ -->
+  <rect x="590" y="180" width="190" height="120" rx="8" fill="#1F2E4D" stroke="#E4E517" stroke-width="2"/>
+  <text x="685" y="204" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#E4E517" letter-spacing="1.5">OUTCOME</text>
+  <text x="685" y="224" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#FFFFFF">Teachers spend 30% less</text>
+  <text x="685" y="240" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#FFFFFF">time on admin, 30% more</text>
+  <text x="685" y="256" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#FFFFFF">on instruction</text>
+  <text x="685" y="284" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#8B95A5">5-year target</text>
+
+  <!-- ═══ PRECONDITIONS (chain going left) ═══ -->
+
+  <!-- Precondition 4: Regulatory body (OUTSIDE CONTROL - red) -->
+  <rect x="410" y="120" width="155" height="80" rx="8" fill="#1F2E4D" stroke="#EF4444" stroke-width="1.5"/>
+  <text x="487" y="142" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" font-weight="bold" fill="#EF4444" letter-spacing="1">OUTSIDE CONTROL</text>
+  <text x="487" y="160" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#FFFFFF">Regulatory body updates</text>
+  <text x="487" y="174" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#FFFFFF">accreditation requirements</text>
+  <circle cx="420" cy="125" r="4" fill="#EF4444" opacity="0.6"/>
+
+  <!-- Precondition 3: Admin grants time (OUTSIDE CONTROL - red) -->
+  <rect x="410" y="280" width="155" height="80" rx="8" fill="#1F2E4D" stroke="#EF4444" stroke-width="1.5"/>
+  <text x="487" y="302" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" font-weight="bold" fill="#EF4444" letter-spacing="1">OUTSIDE CONTROL</text>
+  <text x="487" y="320" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#FFFFFF">Admin grants time for</text>
+  <text x="487" y="334" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#FFFFFF">professional development</text>
+  <circle cx="420" cy="285" r="4" fill="#EF4444" opacity="0.6"/>
+
+  <!-- Precondition 2: Teachers trained (WITHIN CONTROL - green) -->
+  <rect x="220" y="200" width="155" height="80" rx="8" fill="#1F2E4D" stroke="#22C55E" stroke-width="1.5"/>
+  <text x="297" y="222" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" font-weight="bold" fill="#22C55E" letter-spacing="1">WITHIN CONTROL</text>
+  <text x="297" y="240" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#FFFFFF">Teachers trained and</text>
+  <text x="297" y="254" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#FFFFFF">confident using platform</text>
+  <circle cx="230" cy="205" r="4" fill="#22C55E" opacity="0.6"/>
+
+  <!-- Precondition 1: Platform adopted (WITHIN CONTROL - green) -->
+  <rect x="220" y="320" width="155" height="80" rx="8" fill="#1F2E4D" stroke="#22C55E" stroke-width="1.5"/>
+  <text x="297" y="342" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" font-weight="bold" fill="#22C55E" letter-spacing="1">WITHIN CONTROL</text>
+  <text x="297" y="360" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#FFFFFF">Platform adopted by</text>
+  <text x="297" y="374" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#FFFFFF">pilot schools</text>
+  <circle cx="230" cy="325" r="4" fill="#22C55E" opacity="0.6"/>
+
+  <!-- ═══ ACTIVITIES (far left) ═══ -->
+  <rect x="20" y="150" width="165" height="55" rx="8" fill="#1F2E4D" stroke="#2A3656" stroke-width="1"/>
+  <text x="102" y="170" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" font-weight="bold" fill="#8B95A5" letter-spacing="1">ACTIVITY</text>
+  <text x="102" y="188" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#FFFFFF">Create training programme</text>
+
+  <rect x="20" y="225" width="165" height="55" rx="8" fill="#1F2E4D" stroke="#2A3656" stroke-width="1"/>
+  <text x="102" y="245" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" font-weight="bold" fill="#8B95A5" letter-spacing="1">ACTIVITY</text>
+  <text x="102" y="263" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#FFFFFF">Run teacher workshops</text>
+
+  <rect x="20" y="310" width="165" height="55" rx="8" fill="#1F2E4D" stroke="#2A3656" stroke-width="1"/>
+  <text x="102" y="330" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" font-weight="bold" fill="#8B95A5" letter-spacing="1">ACTIVITY</text>
+  <text x="102" y="348" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#FFFFFF">Build platform</text>
+
+  <rect x="20" y="385" width="165" height="55" rx="8" fill="#1F2E4D" stroke="#2A3656" stroke-width="1"/>
+  <text x="102" y="405" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" font-weight="bold" fill="#8B95A5" letter-spacing="1">ACTIVITY</text>
+  <text x="102" y="423" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#FFFFFF">Recruit pilot schools</text>
+
+  <!-- ═══ ARROWS: Activities → Preconditions ═══ -->
+  <!-- Training programme → Teachers trained -->
+  <line x1="185" y1="177" x2="218" y2="225" stroke="#6B7280" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <!-- Run workshops → Teachers trained -->
+  <line x1="185" y1="252" x2="218" y2="240" stroke="#6B7280" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <!-- Build platform → Platform adopted -->
+  <line x1="185" y1="340" x2="218" y2="350" stroke="#6B7280" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <!-- Recruit pilot schools → Platform adopted -->
+  <line x1="185" y1="412" x2="218" y2="375" stroke="#6B7280" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- ═══ ARROWS: Preconditions → downstream ═══ -->
+  <!-- Teachers trained → Regulatory body -->
+  <line x1="375" y1="230" x2="408" y2="175" stroke="#6B7280" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <!-- Platform adopted → Admin grants time -->
+  <line x1="375" y1="360" x2="408" y2="320" stroke="#6B7280" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <!-- Teachers trained → Admin grants time -->
+  <line x1="375" y1="250" x2="408" y2="300" stroke="#6B7280" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- ═══ ARROWS: Preconditions → Outcome ═══ -->
+  <line x1="565" y1="160" x2="588" y2="210" stroke="#6B7280" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="565" y1="320" x2="588" y2="270" stroke="#6B7280" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- ═══ DIRECTION LABEL ═══ -->
+  <text x="400" y="88" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#6B7280">ACTIVITIES</text>
+  <text x="200" y="88" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#6B7280">&larr;</text>
+  <text x="600" y="88" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#6B7280">&rarr;</text>
+  <text x="690" y="88" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#6B7280">OUTCOME</text>
+  <text x="110" y="88" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#6B7280">PRECONDITIONS</text>
+  <line x1="170" y1="84" x2="630" y2="84" stroke="#2A3656" stroke-width="1" stroke-dasharray="4,4"/>
+
+  <!-- ═══ SPHERE LEGEND ═══ -->
+  <rect x="20" y="470" width="760" height="40" rx="8" fill="#1F2E4D" stroke="#2A3656" stroke-width="1"/>
+  <circle cx="60" cy="490" r="6" fill="#22C55E"/>
+  <text x="74" y="494" font-family="Arial, sans-serif" font-size="10" fill="#FFFFFF">Within Control</text>
+  <circle cx="210" cy="490" r="6" fill="#F59E0B"/>
+  <text x="224" y="494" font-family="Arial, sans-serif" font-size="10" fill="#FFFFFF">Within Influence</text>
+  <circle cx="370" cy="490" r="6" fill="#EF4444"/>
+  <text x="384" y="494" font-family="Arial, sans-serif" font-size="10" fill="#FFFFFF">Outside Control</text>
+  <rect x="520" y="482" width="16" height="16" rx="3" fill="none" stroke="#E4E517" stroke-width="1.5"/>
+  <text x="544" y="494" font-family="Arial, sans-serif" font-size="10" fill="#FFFFFF">Outcome</text>
+  <rect x="620" y="482" width="16" height="16" rx="3" fill="none" stroke="#2A3656" stroke-width="1.5"/>
+  <text x="644" y="494" font-family="Arial, sans-serif" font-size="10" fill="#FFFFFF">Activity</text>
+
+  <!-- ═══ WEAKEST LINK CALLOUT ═══ -->
+  <rect x="20" y="540" width="760" height="65" rx="8" fill="#1F2E4D" stroke="#EF4444" stroke-width="1.5" stroke-dasharray="6,3"/>
+  <text x="40" y="562" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#EF4444" letter-spacing="1.5">WEAKEST LINK</text>
+  <text x="40" y="582" font-family="Arial, sans-serif" font-size="12" fill="#FFFFFF">"Admin grants time for professional development" — outside your control, blocks the entire chain</text>
+
+  <!-- ═══ TEST ACTION BOX ═══ -->
+  <rect x="20" y="625" width="760" height="55" rx="8" fill="#1F2E4D" stroke="#E4E517" stroke-width="1.5"/>
+  <text x="40" y="648" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#E4E517" letter-spacing="1.5">TEST</text>
+  <text x="40" y="666" font-family="Arial, sans-serif" font-size="12" fill="#FFFFFF">Interview 5 school administrators this month to validate willingness to allocate PD time</text>
+</svg>
