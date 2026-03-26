@@ -429,7 +429,11 @@
         <!-- Format choice (appears after lead form submit) -->
         <div class="report-format-choice hidden" id="reportFormatChoice">
             <h3 class="report-format-heading">Your report is on its way ✓</h3>
-            <p class="report-format-subtext">We've emailed you a copy. Your download will start automatically.</p>
+            <p class="report-format-subtext">We've emailed you a copy. Choose a format to download now:</p>
+            <div class="report-format-buttons">
+                <button class="report-format-btn" id="formatWordBtn">Word (.doc)</button>
+                <button class="report-format-btn" id="formatPdfBtn">PDF</button>
+            </div>
         </div>
 
         <!-- Full report card (hidden until after lead capture) -->
@@ -444,6 +448,7 @@
                     <button class="report-action-btn report-action-primary" data-action="download-toggle">↓ Download ▾</button>
                     <div class="report-dropdown-menu hidden">
                         <button class="report-dropdown-option" data-action="download-word">Word (.doc)</button>
+                        <button class="report-dropdown-option" data-action="download-pdf">PDF</button>
                     </div>
                 </div>
             </div>
@@ -453,6 +458,7 @@
                     <button class="report-action-btn report-action-primary" data-action="download-toggle">↓ Download ▾</button>
                     <div class="report-dropdown-menu hidden">
                         <button class="report-dropdown-option" data-action="download-word">Word (.doc)</button>
+                        <button class="report-dropdown-option" data-action="download-pdf">PDF</button>
                     </div>
                 </div>
             </div>
