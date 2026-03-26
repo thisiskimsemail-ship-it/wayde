@@ -4832,3 +4832,29 @@ body.light .feedback-input, html[data-theme="light"] .feedback-input { backgroun
 .download-ready-btn { background: var(--orange); color: #fff; border: none; padding: 0.75rem 2rem; border-radius: 999px; font-family: var(--font); font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
 .download-ready-btn:hover { background: #d14e1b; transform: translateY(-1px); }
 .download-ready-note { font-size: 0.85rem; color: var(--text-muted); margin-top: 0.75rem; font-style: italic; }
+
+/* Cold Open board — version tracker (left) + message hierarchy (right) */
+.board-grid-cold-open {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto auto auto;
+    gap: 1px;
+    overflow-y: auto;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 8px;
+    flex: 1;
+}
+.board-grid-cold-open .board-zone { min-height: 100px; border-radius: 0; background: var(--bg); }
+.board-grid-cold-open .board-zone[data-zone="co-v1"] { grid-column: 1; grid-row: 1; }
+.board-grid-cold-open .board-zone[data-zone="co-v2"] { grid-column: 1; grid-row: 2; }
+.board-grid-cold-open .board-zone[data-zone="co-v3"] { grid-column: 1; grid-row: 3; }
+.board-grid-cold-open .board-zone[data-zone="co-hook"] { grid-column: 2; grid-row: 1; border-left: 2px solid var(--pink); }
+.board-grid-cold-open .board-zone[data-zone="co-followup"] { grid-column: 2; grid-row: 2; border-left: 2px solid var(--pink); }
+.board-grid-cold-open .board-zone[data-zone="co-detail"] { grid-column: 2; grid-row: 3; border-left: 2px solid var(--pink); }
+.board-grid-cold-open .board-zone[data-zone="insights"] { grid-column: 1 / -1; grid-row: 4; }
+.board-grid-cold-open .zone-name { font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
+@media (max-width: 640px) {
+    .board-grid-cold-open { grid-template-columns: 1fr; }
+    .board-grid-cold-open .board-zone { grid-column: 1 !important; grid-row: auto !important; }
+}

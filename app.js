@@ -140,7 +140,7 @@ function updateStageLogo(mode) {
 const STAGE_TOOLS = {
     untangle: ['five-whys', 'empathy-map', 'jtbd', 'socratic'],
     spark: ['crazy-8s', 'hmw', 'scamper'],
-    test: ['pre-mortem', 'devils-advocate', 'analogical'],
+    test: ['pre-mortem', 'devils-advocate', 'analogical', 'cold-open'],
     build: ['lean-canvas', 'effectuation', 'rapid-experiment', 'flywheel']
 };
 
@@ -229,7 +229,8 @@ const EXERCISE_LABELS = {
     'lean-canvas': 'Lean Canvas',
     'effectuation': 'Effectuation',
     'flywheel': 'Flywheel',
-    'socratic': 'Socratic Questioning'
+    'socratic': 'Socratic Questioning',
+    'cold-open': 'Cold Open'
 };
 
 const MODE_LABELS = {
@@ -254,7 +255,8 @@ const EXERCISE_MODE = {
     'effectuation':     'build',
     'rapid-experiment': 'build',
     'flywheel': 'build',
-    'socratic': 'untangle'
+    'socratic': 'untangle',
+    'cold-open': 'test'
 };
 
 // Exercise descriptions (mirror of HTML card text)
@@ -272,7 +274,8 @@ const EXERCISE_DESCS = {
     'effectuation':     'Build using the resources and relationships you already have.',
     'analogical':       'Borrow solutions from unexpected places.',
     'flywheel':         'Map the reinforcing loop that drives your growth and find the bottleneck.',
-    'socratic':         'Test whether your problem is built on facts or assumptions.'
+    'socratic':         'Test whether your problem is built on facts or assumptions.',
+    'cold-open':         'Can your message survive first contact with a stranger?'
 };
 
 // Suggested prompt framings shown as input placeholder
@@ -289,6 +292,7 @@ const EXERCISE_HINTS = {
     'lean-canvas':      'e.g. "I\'m developing a new service offering within our division"',
     'effectuation':     'e.g. "I have deep expertise in policy and a strong network in government — where do I start?"',
     'analogical':       'e.g. "How might we reduce handoff delays between teams the way Formula 1 does pit stops?"',
+    'cold-open':        'e.g. "I need to explain what we do to investors who have never heard of us"',
     'socratic':         'e.g. "Everyone says the board will never approve this — but has anyone actually asked them?"',
     'flywheel':         'e.g. "Our users love the product but growth has stalled — what\'s the engine underneath?"'
 };
@@ -307,6 +311,7 @@ const EXERCISE_ARCS = {
     'lean-canvas':      'We\'ll map your venture model on one page, then pressure-test the weakest blocks.',
     'effectuation':     'We\'ll start with what you have — skills, network, resources — then find where they point.',
     'analogical':       'We\'ll borrow solutions from unexpected places and adapt them to your challenge.',
+    'cold-open':        'Pete will play a stranger who has no context. You\'ll pitch, get honest feedback, iterate, and build a message hierarchy that survives first contact.',
     'socratic':         'We\'ll examine every belief behind your problem — separating facts from assumptions — and find the one thing to test first.',
     'flywheel':         'We\'ll map the 3-5 things that reinforce each other in your business, test each connection, and find the bottleneck holding you back.'
 };
@@ -316,7 +321,7 @@ const EXERCISE_EXCHANGES = {
     'five-whys': 7, 'jtbd': 10, 'empathy-map': 10,
     'hmw': 8, 'scamper': 10, 'crazy-8s': 8,
     'pre-mortem': 10, 'devils-advocate': 10, 'rapid-experiment': 8,
-    'lean-canvas': 12, 'effectuation': 8, 'analogical': 8, 'flywheel': 10, 'socratic': 8
+    'lean-canvas': 12, 'effectuation': 8, 'analogical': 8, 'flywheel': 10, 'socratic': 8, 'cold-open': 8
 };
 
 // Human-readable time estimates per exercise
@@ -334,7 +339,8 @@ const EXERCISE_TIMES = {
     'effectuation':   '20 min',
     'analogical':     '15 min',
     'flywheel':       '25 min',
-    'socratic':       '20 min'
+    'socratic':       '20 min',
+    'cold-open':      '20 min'
 };
 
 // Stage order for progress strip
@@ -360,7 +366,7 @@ const STAGE_DEFAULT = {
 const TOOLS_BY_MODE = {
     untangle: ['five-whys', 'empathy-map', 'jtbd', 'socratic'],
     spark:    ['crazy-8s', 'hmw', 'scamper'],
-    test:     ['pre-mortem', 'devils-advocate', 'analogical'],
+    test:     ['pre-mortem', 'devils-advocate', 'analogical', 'cold-open'],
     build:    ['lean-canvas', 'effectuation', 'rapid-experiment', 'flywheel']
 };
 
@@ -423,7 +429,8 @@ const TOOL_DETAIL_SLUG = {
     'jtbd': 'jobs-to-be-done',
     'hmw': 'how-might-we',
     'analogical': 'analogical-thinking',
-    'socratic': 'socratic-questioning'
+    'socratic': 'socratic-questioning',
+    'cold-open': 'cold-open'
 };
 function toolDetailUrl(exercise) {
     const slug = TOOL_DETAIL_SLUG[exercise] || exercise;
@@ -748,7 +755,7 @@ function startExercise(mode, exercise, startMsg = null) {
     routingBack.classList.add('hidden');
 
     // Switch board layout based on exercise — custom boards for structured tools
-    const customLayouts = ['lean-canvas', 'elevator-pitch', 'pre-mortem', 'effectuation', 'flywheel'];
+    const customLayouts = ['lean-canvas', 'elevator-pitch', 'pre-mortem', 'effectuation', 'flywheel', 'cold-open'];
     if (customLayouts.includes(exercise)) {
         switchBoardLayout(exercise);
     } else {
@@ -2751,6 +2758,18 @@ const BOARD_LAYOUTS = {
             { id: 'pitch-differentiator', name: 'Differentiator', empty: 'Why you, not them?', hint: 'What makes you different from alternatives', colour: 'yellow' }
         ],
         gridClass: 'board-grid-pitch'
+    },
+    'cold-open': {
+        zones: [
+            { id: 'co-v1', name: 'Version 1', empty: 'First attempt', hint: '30 seconds, no context', colour: 'pink' },
+            { id: 'co-v2', name: 'Version 2', empty: 'Second attempt', hint: 'After feedback', colour: 'pink' },
+            { id: 'co-v3', name: 'Version 3', empty: 'Third attempt', hint: 'Final iteration', colour: 'pink' },
+            { id: 'co-hook', name: 'The Hook', empty: 'One sentence that earns "tell me more"', hint: 'The dinner party sentence', colour: 'orange' },
+            { id: 'co-followup', name: 'The Follow-up', empty: 'Problem + insight + why it matters', hint: 'Once they\'re listening', colour: 'orange' },
+            { id: 'co-detail', name: 'The Detail', empty: 'Features + evidence + proof', hint: 'Save for the real conversation', colour: 'teal' },
+            { id: 'insights', name: 'Key Insights', empty: 'What Pete noticed', hint: 'Patterns and observations', colour: 'teal' }
+        ],
+        gridClass: 'board-grid-cold-open'
     },
     'flywheel': {
         zones: [
