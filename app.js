@@ -2333,16 +2333,26 @@ document.getElementById('unlockForm')?.addEventListener('submit', async (e) => {
 });
 
 // Format choice buttons → trigger download, then show next exercise
+// Auto-download Word when format choice appears (PDF removed)
 document.getElementById('formatWordBtn')?.addEventListener('click', () => {
     downloadReportWord();
     document.getElementById('reportFormatChoice')?.classList.add('hidden');
     renderNextExercisePanel();
 });
-document.getElementById('formatPdfBtn')?.addEventListener('click', () => {
-    downloadReport();
-    document.getElementById('reportFormatChoice')?.classList.add('hidden');
-    renderNextExercisePanel();
+
+// Auto-trigger Word download when format choice is shown
+const _formatObserver = new MutationObserver(() => {
+    const formatChoice = document.getElementById('reportFormatChoice');
+    if (formatChoice && !formatChoice.classList.contains('hidden')) {
+        setTimeout(() => {
+            downloadReportWord();
+            formatChoice.classList.add('hidden');
+            renderNextExercisePanel();
+        }, 1500); // Brief delay so user sees "Your report is on its way"
+        _formatObserver.disconnect();
+    }
 });
+_formatObserver.observe(document.body, { attributes: true, subtree: true, attributeFilter: ['class'] });
 
 function handleReportAction(btn, action) {
     switch (action) {
