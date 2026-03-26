@@ -138,8 +138,8 @@ function updateStageLogo(mode) {
 
 // === BREADCRUMB DROPDOWN ===
 const STAGE_TOOLS = {
-    untangle: ['five-whys', 'empathy-map', 'jtbd', 'socratic'],
-    spark: ['crazy-8s', 'hmw', 'scamper', 'analogical'],
+    untangle: ['five-whys', 'empathy-map', 'jtbd', 'socratic', 'iceberg'],
+    spark: ['crazy-8s', 'hmw', 'scamper', 'analogical', 'constraint-flip'],
     test: ['pre-mortem', 'devils-advocate', 'cold-open', 'reality-check', 'trade-off'],
     build: ['lean-canvas', 'effectuation', 'rapid-experiment', 'flywheel', 'theory-of-change']
 };
@@ -233,7 +233,9 @@ const EXERCISE_LABELS = {
     'cold-open': 'Cold Open',
     'reality-check': 'Reality Check',
     'theory-of-change': 'Theory of Change',
-    'trade-off': 'The Trade-Off'
+    'trade-off': 'The Trade-Off',
+    'iceberg': 'The Iceberg',
+    'constraint-flip': 'Constraint Flip'
 };
 
 const MODE_LABELS = {
@@ -262,7 +264,9 @@ const EXERCISE_MODE = {
     'cold-open': 'test',
     'reality-check': 'test',
     'theory-of-change': 'build',
-    'trade-off': 'test'
+    'trade-off': 'test',
+    'iceberg': 'untangle',
+    'constraint-flip': 'spark'
 };
 
 // Exercise descriptions (mirror of HTML card text)
@@ -284,7 +288,9 @@ const EXERCISE_DESCS = {
     'cold-open':         'Can your message survive first contact with a stranger?',
     'reality-check':     'Confront the gap between your story and your data.',
     'theory-of-change':  'Map the causal chain from what you do to the change you create.',
-    'trade-off':         'Force trade-offs to reveal what customers actually value.'
+    'trade-off':         'Force trade-offs to reveal what customers actually value.',
+    'iceberg':           'See the system beneath the surface problem.',
+    'constraint-flip':   'Turn your biggest limitation into your deepest advantage.'
 };
 
 // Suggested prompt framings shown as input placeholder
@@ -302,6 +308,8 @@ const EXERCISE_HINTS = {
     'effectuation':     'e.g. "I have deep expertise in policy and a strong network in government — where do I start?"',
     'analogical':       'e.g. "How might we reduce handoff delays between teams the way Formula 1 does pit stops?"',
     'cold-open':        'e.g. "I need to explain what we do to investors who have never heard of us"',
+    'iceberg':          'e.g. "We keep losing our best people and nothing we try seems to fix it"',
+    'constraint-flip':  'e.g. "We have no marketing budget and our competitors are spending millions"',
     'trade-off':        'e.g. "We have seven features and every stakeholder says theirs is essential"',
     'theory-of-change': 'e.g. "We built the platform but I can\'t explain how it actually leads to the impact we promise"',
     'reality-check':    'e.g. "I keep telling investors we have product-market fit but I\'m not sure the numbers back it up"',
@@ -323,6 +331,8 @@ const EXERCISE_ARCS = {
     'lean-canvas':      'We\'ll map your venture model on one page, then pressure-test the weakest blocks.',
     'effectuation':     'We\'ll start with what you have — skills, network, resources — then find where they point.',
     'analogical':       'We\'ll borrow solutions from unexpected places and adapt them to your challenge.',
+    'iceberg':          'We\'ll go four levels deep — from what happened, to the pattern, to the structure, to the belief holding it all in place.',
+    'constraint-flip':  'Pete will help you see your biggest constraint as your deepest competitive advantage. Ideas that only work because of the limitation.',
     'trade-off':        'Pete will force you to choose between your own features. The ones that survive every round are your core value.',
     'theory-of-change': 'We\'ll work backwards from the change you want to create, mapping every condition that has to be true, and find where the chain depends on things you can\'t control.',
     'reality-check':    'Pete will ask for the evidence behind every claim you make about your business — and show you where the story and the data diverge.',
@@ -336,7 +346,7 @@ const EXERCISE_EXCHANGES = {
     'five-whys': 7, 'jtbd': 10, 'empathy-map': 10,
     'hmw': 8, 'scamper': 10, 'crazy-8s': 8,
     'pre-mortem': 10, 'devils-advocate': 10, 'rapid-experiment': 8,
-    'lean-canvas': 12, 'effectuation': 8, 'analogical': 8, 'flywheel': 10, 'socratic': 8, 'cold-open': 8, 'reality-check': 8, 'theory-of-change': 10, 'trade-off': 10
+    'lean-canvas': 12, 'effectuation': 8, 'analogical': 8, 'flywheel': 10, 'socratic': 8, 'cold-open': 8, 'reality-check': 8, 'theory-of-change': 10, 'trade-off': 10, 'iceberg': 8, 'constraint-flip': 8
 };
 
 // Human-readable time estimates per exercise
@@ -358,7 +368,9 @@ const EXERCISE_TIMES = {
     'cold-open':      '20 min',
     'reality-check':  '20 min',
     'theory-of-change':'25 min',
-    'trade-off':      '25 min'
+    'trade-off':      '25 min',
+    'iceberg':        '20 min',
+    'constraint-flip':'20 min'
 };
 
 // Stage order for progress strip
@@ -382,7 +394,7 @@ const STAGE_DEFAULT = {
 
 // All exercises grouped by category
 const TOOLS_BY_MODE = {
-    untangle: ['five-whys', 'empathy-map', 'jtbd', 'socratic'],
+    untangle: ['five-whys', 'empathy-map', 'jtbd', 'socratic', 'iceberg'],
     spark:    ['crazy-8s', 'hmw', 'scamper', 'analogical'],
     test:     ['pre-mortem', 'devils-advocate', 'cold-open'],
     build:    ['lean-canvas', 'effectuation', 'rapid-experiment', 'flywheel']
@@ -451,7 +463,9 @@ const TOOL_DETAIL_SLUG = {
     'cold-open': 'cold-open',
     'reality-check': 'reality-check',
     'theory-of-change': 'theory-of-change',
-    'trade-off': 'trade-off'
+    'trade-off': 'trade-off',
+    'iceberg': 'iceberg',
+    'constraint-flip': 'constraint-flip'
 };
 function toolDetailUrl(exercise) {
     const slug = TOOL_DETAIL_SLUG[exercise] || exercise;
@@ -776,7 +790,7 @@ function startExercise(mode, exercise, startMsg = null) {
     routingBack.classList.add('hidden');
 
     // Switch board layout based on exercise — custom boards for structured tools
-    const customLayouts = ['lean-canvas', 'elevator-pitch', 'pre-mortem', 'effectuation', 'flywheel', 'cold-open'];
+    const customLayouts = ['lean-canvas', 'elevator-pitch', 'pre-mortem', 'effectuation', 'flywheel', 'cold-open', 'iceberg', 'constraint-flip'];
     if (customLayouts.includes(exercise)) {
         switchBoardLayout(exercise);
     } else {
@@ -2779,6 +2793,27 @@ const BOARD_LAYOUTS = {
             { id: 'pitch-differentiator', name: 'Differentiator', empty: 'Why you, not them?', hint: 'What makes you different from alternatives', colour: 'yellow' }
         ],
         gridClass: 'board-grid-pitch'
+    },
+    'iceberg': {
+        zones: [
+            { id: 'ice-event', name: 'The Event', empty: 'What happened?', hint: 'The visible surface problem', colour: 'teal' },
+            { id: 'ice-patterns', name: 'Patterns', empty: 'What keeps happening?', hint: 'Recurring themes beneath the event', colour: 'teal' },
+            { id: 'ice-structures', name: 'Structures', empty: 'What causes the pattern?', hint: 'Incentives, processes, power dynamics', colour: 'teal' },
+            { id: 'ice-mental', name: 'Mental Models', empty: 'What belief holds this in place?', hint: 'The deepest assumption', colour: 'teal' },
+            { id: 'ice-leverage', name: 'Leverage Point', empty: 'Where to intervene', hint: 'The change with the greatest impact', colour: 'orange' },
+            { id: 'actions', name: 'Actions', empty: 'Next steps', hint: 'Test or shift the mental model', colour: 'orange' }
+        ],
+        gridClass: 'board-grid-iceberg'
+    },
+    'constraint-flip': {
+        zones: [
+            { id: 'cf-constraint', name: 'The Constraint', empty: 'Your biggest limitation', hint: 'Be specific — not just "no money"', colour: 'orange' },
+            { id: 'cf-flip', name: 'The Flip', empty: 'The same fact, seen as an advantage', hint: 'What can you do because of this?', colour: 'orange' },
+            { id: 'cf-ideas', name: 'Constraint-Driven Ideas', empty: 'Ideas that depend on the constraint', hint: 'If the constraint disappeared, would the idea still work?', colour: 'pink' },
+            { id: 'cf-moat', name: 'The Moat Idea', empty: 'The idea competitors can\'t copy', hint: 'Only works because of your specific limitation', colour: 'orange' },
+            { id: 'actions', name: 'Actions', empty: 'First test', hint: 'How to validate the moat idea', colour: 'teal' }
+        ],
+        gridClass: 'board-grid-constraint-flip'
     },
     'cold-open': {
         zones: [
