@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 650" width="800" height="650">
+  <defs>
+    <style>
+      .card-text { font-family: Arial, sans-serif; font-size: 12px; fill: #CBD5E1; }
+      .card-title { font-family: Arial, sans-serif; font-size: 11px; font-weight: bold; letter-spacing: 0.8px; }
+      .label-text { font-family: Arial, sans-serif; font-size: 13px; font-weight: bold; fill: #FFFFFF; }
+      .callout-text { font-family: Arial, sans-serif; font-size: 14px; fill: #FFFFFF; }
+      .test-text { font-family: Arial, sans-serif; font-size: 12px; fill: #CBD5E1; }
+      .heading { font-family: Arial, sans-serif; font-size: 16px; font-weight: bold; fill: #27BDBE; letter-spacing: 1px; }
+    </style>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="650" rx="12" fill="#1B2A4A"/>
+
+  <!-- Title -->
+  <text x="40" y="40" class="heading">ASSUMPTION MAP</text>
+  <text x="40" y="58" font-family="Arial, sans-serif" font-size="11" fill="#64748B">8 claims &middot; 3 Verified &middot; 3 Assumed &middot; 2 Inherited</text>
+
+  <!-- Row 1 -->
+  <!-- Card 1: Verified -->
+  <rect x="40" y="78" width="345" height="72" rx="8" fill="#1F2E4D" stroke="#22C55E" stroke-width="2"/>
+  <text x="56" y="98" class="card-title" fill="#22C55E">VERIFIED</text>
+  <text x="56" y="116" class="card-text">US regulatory environment is</text>
+  <text x="56" y="132" class="card-text">favourable</text>
+
+  <!-- Card 2: Verified -->
+  <rect x="415" y="78" width="345" height="72" rx="8" fill="#1F2E4D" stroke="#22C55E" stroke-width="2"/>
+  <text x="431" y="98" class="card-title" fill="#22C55E">VERIFIED</text>
+  <text x="431" y="116" class="card-text">Australian team can manage</text>
+  <text x="431" y="132" class="card-text">US operations</text>
+
+  <!-- Row 2 -->
+  <!-- Card 3: Verified -->
+  <rect x="40" y="164" width="345" height="72" rx="8" fill="#1F2E4D" stroke="#22C55E" stroke-width="2"/>
+  <text x="56" y="184" class="card-title" fill="#22C55E">VERIFIED</text>
+  <text x="56" y="202" class="card-text">Brand recognition transfers</text>
+  <text x="56" y="218" class="card-text">internationally</text>
+
+  <!-- Card 4: Assumed -->
+  <rect x="415" y="164" width="345" height="72" rx="8" fill="#1F2E4D" stroke="#F59E0B" stroke-width="2"/>
+  <text x="431" y="184" class="card-title" fill="#F59E0B">ASSUMED</text>
+  <text x="431" y="202" class="card-text">Product works without modification</text>
+  <text x="431" y="218" class="card-text">in US</text>
+
+  <!-- Row 3 -->
+  <!-- Card 5: Assumed — CRITICAL -->
+  <rect x="40" y="250" width="345" height="72" rx="8" fill="#2A2A1F" stroke="#F59E0B" stroke-width="4"/>
+  <text x="56" y="270" class="card-title" fill="#F59E0B">ASSUMED — CRITICAL</text>
+  <text x="56" y="288" class="card-text" style="fill:#FFFFFF; font-weight:bold;">Partnership model scales to</text>
+  <text x="56" y="304" class="card-text" style="fill:#FFFFFF; font-weight:bold;">larger market</text>
+
+  <!-- Card 6: Assumed -->
+  <rect x="415" y="250" width="345" height="72" rx="8" fill="#1F2E4D" stroke="#F59E0B" stroke-width="2"/>
+  <text x="431" y="270" class="card-title" fill="#F59E0B">ASSUMED</text>
+  <text x="431" y="288" class="card-text">US pricing matches Australian</text>
+  <text x="431" y="304" class="card-text">margins</text>
+
+  <!-- Row 4 -->
+  <!-- Card 7: Inherited -->
+  <rect x="40" y="336" width="345" height="72" rx="8" fill="#1F2E4D" stroke="#EF4444" stroke-width="2"/>
+  <text x="56" y="356" class="card-title" fill="#EF4444">INHERITED</text>
+  <text x="56" y="374" class="card-text">Board will approve the</text>
+  <text x="56" y="390" class="card-text">investment</text>
+
+  <!-- Card 8: Inherited -->
+  <rect x="415" y="336" width="345" height="72" rx="8" fill="#1F2E4D" stroke="#EF4444" stroke-width="2"/>
+  <text x="431" y="356" class="card-title" fill="#EF4444">INHERITED</text>
+  <text x="431" y="374" class="card-text">Competitors won't respond for</text>
+  <text x="431" y="390" class="card-text">12 months</text>
+
+  <!-- Divider -->
+  <line x1="40" y1="432" x2="760" y2="432" stroke="#2A3656" stroke-width="1"/>
+
+  <!-- Critical Assumption callout -->
+  <rect x="40" y="450" width="720" height="72" rx="8" fill="#1F2E4D" stroke="#27BDBE" stroke-width="2"/>
+  <rect x="40" y="450" width="6" height="72" rx="3" fill="#27BDBE"/>
+  <text x="66" y="472" class="card-title" fill="#27BDBE">CRITICAL ASSUMPTION</text>
+  <text x="66" y="492" class="callout-text">Partnership model scales to US market</text>
+  <text x="66" y="508" font-family="Arial, sans-serif" font-size="11" fill="#64748B">Believed by the whole team. Never tested with a single US partner.</text>
+
+  <!-- Test action box -->
+  <rect x="40" y="540" width="720" height="80" rx="8" fill="#1B3A3A" stroke="#27BDBE" stroke-width="1.5"/>
+  <text x="66" y="564" class="card-title" fill="#27BDBE">TEST</text>
+  <text x="66" y="584" class="test-text" style="fill:#FFFFFF;">Run 3 partnership conversations with US distributors this month.</text>
+  <text x="66" y="602" class="test-text">If none show interest in the current model, rethink before committing budget.</text>
+</svg>
