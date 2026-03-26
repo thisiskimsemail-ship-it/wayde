@@ -352,6 +352,14 @@ const TOOLS_BY_MODE = {
     build:    ['lean-canvas', 'effectuation', 'rapid-experiment']
 };
 
+// Category prompts — used by homepage cards and ?category= URL param
+const CATEGORY_PROMPTS = {
+    untangle: "I have a problem I need to get to the bottom of. I'm not sure what's really going on — help me untangle it.",
+    spark: "I have the beginning of an idea and I want to explore it. Help me push it in directions I haven't tried.",
+    test: "I have a proposal I think is ready — but I want to stress-test it before I commit.",
+    build: "I know what I want to create. Help me turn it into a concrete plan I can act on."
+};
+
 // === STATE ===
 const state = {
     mode: null,
@@ -1037,6 +1045,19 @@ document.addEventListener('DOMContentLoaded', () => {
     // Bind all secondary CTA buttons (e.g. bottom CTA on landing page)
     document.querySelectorAll('.enter-studio-trigger').forEach(btn => {
         if (btn !== enterBtn) btn.addEventListener('click', enterStudio);
+    });
+
+    // Clickable category cards on homepage — start session with category context
+    document.querySelectorAll('.lp-process-card[data-category]').forEach(card => {
+        card.addEventListener('click', (e) => {
+            // Don't intercept clicks on tool pill links
+            if (e.target.closest('.lp-tool-pill')) return;
+            const cat = card.dataset.category;
+            if (cat && CATEGORY_PROMPTS[cat]) {
+                enterStudio();
+                setTimeout(() => sendMessage(CATEGORY_PROMPTS[cat]), 3000);
+            }
+        });
     });
 });
 
@@ -3627,12 +3648,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Category launch from toolbox/homepage (?category=untangle)
     const categoryParam = params.get('category');
-    const CATEGORY_PROMPTS = {
-        untangle: "I have a problem I need to get to the bottom of. I'm not sure what's really going on — help me untangle it.",
-        spark: "I have the beginning of an idea and I want to explore it. Help me push it in directions I haven't tried.",
-        test: "I have a proposal I think is ready — but I want to stress-test it before I commit.",
-        build: "I know what I want to create. Help me turn it into a concrete plan I can act on."
-    };
     if (categoryParam && CATEGORY_PROMPTS[categoryParam]) {
         history.replaceState({}, '', '/');
         enterStudio();
