@@ -342,6 +342,27 @@ const EXERCISE_ARCS = {
 };
 
 
+
+// Contextual program + article recommendations by pathway
+const SESSION_RECOMMENDATIONS = {
+    untangle: {
+        program: { name: 'Think Like an Entrepreneur', url: 'https://wadeinstitute.org.au/programs/entrepreneurs/think-like-an-entrepreneur/', desc: 'Build the mindset to lead change inside organisations.' },
+        article: { name: 'Start with a problem you really want to solve', url: 'https://wadeinstitute.org.au/entrepreneurship-starts-with-a-problem-you-really-want-to-solve/', desc: 'Why problem definition is the first entrepreneurial skill.' }
+    },
+    spark: {
+        program: { name: 'Growth Engine', url: 'https://wadeinstitute.org.au/programs/entrepreneurs/growth-engine/', desc: 'A three-day intensive for founders scaling from 30 to 100+ people.' },
+        article: { name: 'Thrill of a big idea', url: 'https://wadeinstitute.org.au/thrill-of-a-big-idea/', desc: 'What happens when ideation meets execution.' }
+    },
+    test: {
+        program: { name: 'VC Catalyst', url: 'https://wadeinstitute.org.au/programs/investors/vc-catalyst/', desc: 'Build the skills and judgement to invest in early-stage ventures.' },
+        article: { name: 'Making mistakes and staying humble', url: 'https://wadeinstitute.org.au/making-mistakes-and-staying-humble-lessons-from-leigh-jasper/', desc: 'Lessons from the co-founder of Aconex on resilience and humility.' }
+    },
+    build: {
+        program: { name: 'Growth Engine', url: 'https://wadeinstitute.org.au/programs/entrepreneurs/growth-engine/', desc: 'Stress-test your growth model with peers facing similar challenges.' },
+        article: { name: '5 steps to turn your idea into a business', url: 'https://wadeinstitute.org.au/5-steps-to-turn-your-idea-into-a-business/', desc: 'From idea to business model — the practical path.' }
+    }
+};
+
 // Tool-specific starter prompts (shown below input at session start)
 const STARTER_PROMPTS = {
     'five-whys': ['Tell me about a problem that keeps coming back', 'Something in my team isn\'t working and I can\'t figure out why'],
@@ -2500,15 +2521,8 @@ document.getElementById('unlockForm')?.addEventListener('submit', async (e) => {
             </div>
         </div>
         <div class="download-recommendations hidden" id="dlRecommendations">
-            <p class="download-reco-label">While your report is being prepared...</p>
-            <a class="download-reco-card" href="https://wadeinstitute.org.au/programs/" target="_blank" rel="noopener">
-                <strong>Explore Wade Programs</strong>
-                <span>Intensive programs for founders, innovators, and intrapreneurs at every stage.</span>
-            </a>
-            <a class="download-reco-card" href="mailto:enquiries@wadeinstitute.org.au">
-                <strong>Talk to the Wade team</strong>
-                <span>Want to go deeper on what you uncovered today?</span>
-            </a>
+            <p class="download-reco-label">Based on your session...</p>
+            <div id="dlRecoContent"></div>
         </div>
         <div class="download-ready hidden" id="dlReady">
             <p class="download-ready-text">Your report is ready</p>
@@ -2526,6 +2540,25 @@ document.getElementById('unlockForm')?.addEventListener('submit', async (e) => {
         document.getElementById('dlStage1').classList.add('done');
         document.getElementById('dlStage2').classList.add('active');
         document.getElementById('dlRecommendations').classList.remove('hidden');
+        // Populate contextual recommendations
+        const reco = SESSION_RECOMMENDATIONS[state.mode] || SESSION_RECOMMENDATIONS['untangle'];
+        const recoEl = document.getElementById('dlRecoContent');
+        if (recoEl && reco) {
+            recoEl.innerHTML = `
+                <a class="download-reco-card" href="${reco.program.url}" target="_blank" rel="noopener">
+                    <strong>${reco.program.name}</strong>
+                    <span>${reco.program.desc}</span>
+                </a>
+                <a class="download-reco-card" href="${reco.article.url}" target="_blank" rel="noopener">
+                    <strong>${reco.article.name}</strong>
+                    <span>${reco.article.desc}</span>
+                </a>
+                <a class="download-reco-card" href="mailto:enquiries@wadeinstitute.org.au">
+                    <strong>Talk to the Wade team</strong>
+                    <span>Want to go deeper on what you uncovered today?</span>
+                </a>
+            `;
+        }
     }, 2000);
 
     setTimeout(() => {
