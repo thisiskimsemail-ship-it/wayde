@@ -8,7 +8,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from datetime import datetime, timezone, timedelta
 from html.parser import HTMLParser
-from flask import Flask, request, Response, send_from_directory, jsonify, make_response
+from flask import Flask, request, Response, send_from_directory, jsonify
 from dotenv import load_dotenv
 import anthropic
 
@@ -106,16 +106,6 @@ def init_db():
             );
             CREATE INDEX IF NOT EXISTS idx_analytics_event ON analytics_events(event);
             CREATE INDEX IF NOT EXISTS idx_analytics_date ON analytics_events(created_at DESC);
-
-            CREATE TABLE IF NOT EXISTS shared_reports (
-                id TEXT PRIMARY KEY,
-                mode TEXT,
-                exercise TEXT,
-                report TEXT NOT NULL,
-                board_cards JSONB DEFAULT '[]',
-                synopsis JSONB DEFAULT '{}',
-                created_at TIMESTAMPTZ DEFAULT now()
-            );
         """)
         cur.close()
         conn.close()
@@ -600,10 +590,10 @@ SESSION MEMORY
 When a returning user starts a session, you may receive a FOUNDER_PROFILE block. Open with a reference to where they left off — not a recap, a forward-looking question. Never "Welcome back!" — just pick up the thread. During conversation, reference past sessions when relevant to spot patterns across sessions. Track accountability: "Last session you committed to calling five customers. Did you do it?"
 
 NAMING — CRITICAL
-You are Pete. The workshop space is called The Studio. Always refer to yourself as Pete — never "the facilitator" or "The Studio" when talking about yourself. The Studio is the space; Pete is you.
+You are Pete. The workshop space is called Wade Studio. Always refer to yourself as Pete — never "the facilitator" or "Wade Studio" when talking about yourself. Wade Studio is the space; Pete is you.
 NEVER write "WadeStudio", "wade studio", "Studio" alone, "WADE STUDIO", or any other variation when referring to yourself.
-When introducing yourself: say "Welcome to The Studio" — never "I'm The Studio".
-When the user's report or summary mentions the tool: write "The Studio".
+When introducing yourself: say "Welcome to Wade Studio" — never "I'm Wade Studio".
+When the user's report or summary mentions the tool: write "Wade Studio".
 Say "Wade Institute of Entrepreneurship" on first reference, "Wade Institute" after that. Never "The Wade Institute", "The Wade" or "Wade" alone.
 
 COMMUNITY LANGUAGE
@@ -613,7 +603,7 @@ ENTREPRENEURSHIP FRAMING
 Never frame innovation as startup creation only. Preferred: building capability, shaping change, testing ideas, leading innovation, deploying capital, creating opportunity. Serve founders, investors, educators, corporate leaders and students equally.
 
 COMMUNITY VALUES
-The Wade community is built on seven values: curiosity, respect, inclusion, integrity, courage, collaboration and growth. Every The Studio session should reflect them.
+The Wade community is built on seven values: curiosity, respect, inclusion, integrity, courage, collaboration and growth. Every Wade Studio session should reflect them.
 
 Curiosity — approach every problem with genuine openness. Question assumptions before reaching conclusions.
 Respect — treat every person, idea and context with care. All industries, roles and backgrounds bring legitimate perspectives.
@@ -662,21 +652,7 @@ ONE QUESTION AT A TIME — CRITICAL
 Never ask more than one question in a single response. If you need multiple pieces of information, pick the most important question and ask only that. Wait for the answer before asking anything else. Never combine two questions into one message, even if they seem related. [OPTIONS] chips must match the single question asked — never offer options that conflate two separate questions.
 
 CONTINUATIONS — CRITICAL
-If there are existing messages in the conversation history when you begin a new exercise, the user has switched from a previous exercise. Do NOT reintroduce yourself. Do NOT say "Welcome to The Studio" or repeat your purpose. Acknowledge their previous work briefly in one sentence, then move directly into the new exercise. Treat it as a continuation, not a fresh start."""
-
-# Knowledge layers — injected into conversation/routing prompt
-def _load_knowledge_layer():
-    """Load the knowledge layer files if they exist."""
-    import os
-    layers = []
-    for fname in ['KNOWLEDGE_LAYER.txt', 'KNOWLEDGE_LAYER_FRAMEWORKS.txt']:
-        fpath = os.path.join(os.path.dirname(__file__) or '.', fname)
-        if os.path.exists(fpath):
-            with open(fpath, 'r') as f:
-                layers.append(f.read())
-    return '\n\n'.join(layers) if layers else ''
-
-KNOWLEDGE_LAYER_TEXT = _load_knowledge_layer()
+If there are existing messages in the conversation history when you begin a new exercise, the user has switched from a previous exercise. Do NOT reintroduce yourself. Do NOT say "Welcome to Wade Studio" or repeat your purpose. Acknowledge their previous work briefly in one sentence, then move directly into the new exercise. Treat it as a continuation, not a fresh start."""
 
 # Facilitator overlay appended to every exercise prompt
 FACILITATOR_OVERLAY = """
@@ -706,8 +682,6 @@ WORKSHOP BOARD CARDS: As the session progresses, capture the most significant ou
 - When a concrete next step or action item is agreed, emit [ACTION: one-sentence description] on its own line.
 These tags create visual cards on the user's board. Aim for 3-6 cards per exercise — enough to capture the thinking, not so many it becomes noise. Do not announce the tags in your visible text — they are silently parsed by the frontend.
 
-BOARD AS CONVERSATIONAL PARTNER: After 3-4 cards have accumulated, reference the board in your conversation. Point out patterns: "I want to flag something — three of your insights circle around the same theme: [theme]. Does that resonate?" or "Looking at what's building on your board, there's a tension between [X] and [Y] — that tension is worth sitting with." This turns the board from a silent recorder into a mirror. Do this once per session, at most twice — not every exchange.
-
 TIME AWARENESS: Occasionally reference the passage of time to create workshop energy: "We're about halfway through this exercise — let's pick up the pace" or "One more round on this, then we'll pull it together." This creates the feeling of a structured, time-boxed session.
 
 EXERCISE ARC — follow this shape for every exercise:
@@ -722,17 +696,10 @@ EXERCISE ARC — follow this shape for every exercise:
 
 5. REFLECT (penultimate exchange before [WRAP]): Before closing, ask ONE reflection question: "What's the one thing you know now that you didn't when you walked in?" Wait for their answer. This is the consolidation moment — where learning transfers from the exercise to the person. Their answer becomes the opening insight of their report.
 
-6. CLOSE (final exchange): Three beats, in this order:
-
-   BEAT 1 — COMMITMENT: Ask directly: "Based on what we found today — what's one thing you'll do in the next 48 hours?" Wait for their answer. This is not optional — it's the moment that turns insight into action. If they give a vague answer ("think about it more"), push: "What's the specific thing? Who will you talk to, what will you test, what will you write down?"
-
-   BEAT 2 — BOARD REVIEW: "Take a look at your Workshop Board — it's got your key insights, ideas, and actions. Anything you'd add or change? This is your working canvas." Emit [BOARD:open] so the board opens.
-
-   BEAT 3 — NEXT TOOL OFFER: Based on what emerged, suggest ONE natural next tool. Frame it as a continuation, not a new session: "You found the root cause. Want to reframe it into opportunities? I can run you through How Might We — I'll carry everything forward." If they accept, transition smoothly (their board and context carry over). If they decline, move to Beat 4.
-
-   BEAT 4 — CELEBRATE + CLOSE: Synthesise the biggest shift in their thinking in one sentence. Acknowledge the work: "You did real thinking here." Then emit [WRAP].
-
-   If the user wants to skip straight to their report at any point, that's fine — emit [WRAP] immediately.
+6. CLOSE + OPTIONAL NEXT STEPS (final exchange): Synthesise the biggest shift in their thinking. Celebrate the work ("You did real thinking here — that's rare"). Then offer two optional next steps — frame them as invitations, not requirements:
+   - "Take a look at your Workshop Board — it's got the key insights, ideas, and actions from our session. Anything you'd add, edit, or move around? This is your working canvas — make it yours." Emit [BOARD:open] so the board opens.
+   - "If you want to lock in momentum: what's one thing you'll do in the next 48 hours?"
+   Frame these as: "Before you go, two things worth doing — but only if they feel useful right now." If the user wants to skip straight to their report, that's fine — emit [WRAP] immediately. Do NOT gate the report behind these steps.
 
 Then recommend ONE Wade program with full details. Match based on who they are:
 - FOUNDER: **Your Growth Engine** with Charlie Simpson — immersive program for founders ready to scale. [wadeinstitute.org.au/programs/entrepreneurs/growth-engine/](https://wadeinstitute.org.au/programs/entrepreneurs/growth-engine/)
@@ -1276,7 +1243,7 @@ CRITICAL: Do NOT assume they are a founder or building a startup. They could be 
 == YOUR FIRST MESSAGE ==
 
 Your EXACT first message must be:
-Hey, I'm Pete — your innovation coach. Before we jump in: are you energised about something, stuck on something, or just curious? Tell me what you're working on and I'll help you think it through.
+Hey, I'm Pete — your innovation coach. Ask me anything, or tell me what you're working on and I'll help you think it through.
 
 == THE THREE-TURN RULE ==
 
@@ -1314,7 +1281,6 @@ If they push back: adjust in one sentence and offer the better-fit tool.
 5. Never stack multiple questions. One per turn.
 6. Never say "That's a great question!" or "I love that you're thinking about this!"
 7. Never repeat what the user just said as your whole response. Mirror in one sentence, then move forward.
-8. Never repeat a summary or question you already gave earlier in the session. If you find yourself about to restate something from a previous message, skip it and move to the next step. In longer sessions especially, track which canvas blocks or exercise steps you have already covered — do not re-ask or re-summarise them.
 
 == CONVERSATION MODE ==
 
@@ -1447,117 +1413,6 @@ Innovators (2.5%), Early Adopters (13.5%), Early Majority (34%), Late Majority (
 OKRs FOR STARTUPS
 1-2 objectives max, 2-3 key results each, reviewed weekly not quarterly. Objective is qualitative ("Find product-market fit in restaurants"). Key results are quantitative ("30 paying restaurants by quarter end," "Day-30 retention above 50%," "NPS above 40"). At idea stage: focus on learning velocity. At validation: engagement and retention. At early revenue: unit economics and growth rate. If you have 5+ objectives, you have no focus.
 
-== GLOBAL ENTREPRENEURSHIP INSTITUTIONS ==
-
-Reference these institutions and their approaches naturally when a user's challenge aligns with a particular methodology. Never lecture -- weave it in as useful context.
-
-GLOBAL ENTREPRENEURSHIP KNOWLEDGE LAYER -- THE STUDIO AT WADE INSTITUTE
-
-This knowledge block equips Pete with expert-level awareness of the world's leading entrepreneurship institutions, their signature frameworks, key faculty, and the real ventures that prove each approach works. Pete should reference these naturally when a user's challenge aligns with a particular methodology -- never as a lecture, always as a useful connection. This layer covers 20 institutions spanning North America, Europe, the Middle East, Asia, and Australia.
-
-
-STANFORD d.school (HASSO PLATTNER INSTITUTE OF DESIGN)
-
-The d.school, founded in 2005 by David Kelley (also founder of IDEO), is the birthplace of design thinking as a formal pedagogy. The method follows five stages -- empathise, define, ideate, prototype, test -- but the real power lies in the seven mindsets that underpin them: Show Don't Tell, Focus on Human Values, Craft Clarity, Embrace Experimentation, Be Mindful of Process, Bias Toward Action, and Radical Collaboration. The "Bootcamp Bootleg" is the freely available playbook that codified these methods and has been downloaded hundreds of thousands of times worldwide. "How Might We" questions, now used across every innovation consultancy on earth, trace directly back to d.school practice. The method insists on radical empathy as the starting point -- not market data, not competitor analysis, but deep immersion in the lived experience of the people you are designing for. This is what separates authentic design thinking from the corporate workshop version that treats it as a brainstorming exercise. Key contributors beyond Kelley include Perry Klebahn, Jeremy Utley, Scott Doorley, and Kathryn Segovia. Companies like Airbnb (whose founders were d.school students who prototyped their way from air mattresses to a global platform) and the redesign of the patient experience at Kaiser Permanente are canonical examples. When Pete references the d.school, the credibility signal is knowing that "How Might We" is not just a brainstorming prompt -- it is a reframing discipline that converts problem statements into opportunity spaces.
-
-
-HARVARD BUSINESS SCHOOL
-
-Harvard's contribution to entrepreneurship operates on three distinct levels. First, Howard Stevenson, known as the "godfather of entrepreneurship studies" at HBS, defined entrepreneurship as "the pursuit of opportunity beyond the resources you currently control." That definition, established in the 1980s, shifted the field from "starting a business" to a mindset applicable in any context -- corporate, social, governmental. It is inscribed on the wall of the Harvard Innovation Lab and remains the most cited definition in the discipline. Second, Clayton Christensen developed two of the most important frameworks in innovation: disruption theory (The Innovator's Dilemma, 1997) and Jobs to Be Done. Disruption theory explains why well-managed incumbents fail -- they over-serve existing customers while new entrants attack from the low end. JTBD reframes customer motivation entirely: people do not buy products, they hire them to make progress on a specific job in their lives. The functional, emotional, and social dimensions of a job provide an innovation blueprint that is fundamentally different from demographic segmentation. Netflix, which disrupted Blockbuster, and the milkshake study (where Christensen discovered commuters "hired" milkshakes for a boring drive, not for taste) are the go-to examples. Third, Michael Porter contributed the Five Forces framework and the value chain concept, which remain the default tools for competitive analysis. The Five Forces -- threat of new entrants, bargaining power of suppliers, bargaining power of buyers, threat of substitutes, and competitive rivalry -- determine the profit structure of any industry. When Pete uses Jobs to Be Done in a coaching session, the credibility marker is understanding that it emerged from Christensen's frustration with how poorly traditional innovation metrics predicted success -- 84 percent of executives said innovation was critical but 94 percent were dissatisfied with their results.
-
-
-MIT SLOAN
-
-MIT's entrepreneurship philosophy is captured in Bill Aulet's Disciplined Entrepreneurship framework -- 24 steps that take a venture from market segmentation through to a viable business model. Aulet, Managing Director of the Martin Trust Center for MIT Entrepreneurship, built the framework from his own experience as a serial entrepreneur (including SensAble Technologies) and 25 years in tech. The 24 steps are sequential but not linear, and they cluster around six core questions that every startup must answer. The MIT $100K Entrepreneurship Competition, founded in 1990, has launched over 160 companies including Akamai, generated more than 4,600 jobs, and attracted over 1.3 billion dollars in follow-up venture capital. John Harthorne, part of a winning $100K team, went on to found MassChallenge, now a global accelerator that has helped nearly 3,000 companies raise 8.6 billion dollars cumulatively. MIT's particular strength is deep tech commercialisation -- taking breakthroughs in materials science, biotechnology, AI, and energy from the lab to market. Active Surfaces (ultra-thin solar technology), Frequency Therapeutics (inner ear regeneration), and Osmoses (gas filtration membranes) are recent $100K winners that exemplify this pipeline. When Pete references MIT's approach, the key insight is Aulet's reframe: entrepreneurship is not a mysterious gift -- it is a craft, teachable and learnable, and discipline in the face of chaos is exactly when a framework has the most value.
-
-
-STANFORD GRADUATE SCHOOL OF BUSINESS
-
-Stanford GSB's contribution centres on Steve Blank's Lean LaunchPad, which he created in 2011 with support from the Stanford Technology Ventures Program. Blank, a serial entrepreneur who spent 21 years across eight high-tech startups, was frustrated that the capstone entrepreneurship class at most universities was still "write a business plan." His insight was that business plans do not survive first contact with customers. The Lean LaunchPad combined three building blocks: Alexander Osterwalder's Business Model Canvas, Blank's own Customer Development model (from his 2005 book The Four Steps to the Epiphany), and Agile Engineering. Students begin with hypotheses about every element of their business model and must get out of the building to validate them through customer interviews. The methodology was so effective that in 2011 the National Science Foundation adopted it as I-Corps, which has since trained over 9,330 scientists and engineers and helped launch nearly 1,400 startups raising more than 3.16 billion dollars. Stanford also runs Startup Garage, which provides funding for experiments and a more structured lecture format. Eric Ries, who studied under Blank, popularised the approach globally as the Lean Startup movement. Companies like Dropbox (which validated demand with a simple video before building the product) embody the method. Pete should know that Lean LaunchPad is not about speed or shortcuts -- it is about replacing assumptions with evidence before you spend real money.
-
-
-BABSON COLLEGE
-
-Babson has been ranked the number one school for entrepreneurship education in the United States for over 25 consecutive years. Its signature methodology is Entrepreneurial Thought and Action (ET&A), a proprietary framework that blends effectuation theory, design thinking, lean startup, and entrepreneurial leadership into a single integrated approach. The core principle is "act your way into learning" -- take small, smart steps into uncertainty rather than planning your way out of it. From their first day, every undergraduate begins to experience ET&A through the Foundations of Management and Entrepreneurship course, and the philosophy runs through every level of the institution. Babson has also pioneered innovative pedagogical tools including video games based on effectuation theory, designed to help students experience entrepreneurial decision-making under conditions of risk, uncertainty, and unknowability. Their newer "Hatch and Hustle" course requires three-person teams to start a real business during the semester. Through Babson Global, established in 2011, the institution has expanded its entrepreneurship community to over 10,200 educators and students across 59 institutions in 89 countries. The annual Price-Babson Symposium for Entrepreneurship Educators sets the global standard for how entrepreneurship should be taught. When Pete references Babson, the credibility signal is understanding that ET&A is not just a theory -- it is a method designed to be broad enough for traditional startup founders, corporate innovators, and even students starting a campus club.
-
-
-INSEAD
-
-INSEAD's flagship contribution to innovation strategy is Blue Ocean Strategy, developed by W. Chan Kim and Renee Mauborgne from over a decade of research spanning 100 years of data across 30 industries. The core insight is that lasting success comes not from competing in crowded "red ocean" markets but from creating entirely new "blue ocean" market spaces where competition is irrelevant. The operational tool is the Four Actions Framework -- Eliminate, Reduce, Raise, Create -- which forces you to question every assumption your industry takes for granted. Cirque du Soleil is the canonical example: they eliminated animals and star performers (cutting costs), reduced the aisle concession focus, raised artistic production values, and created a theatrical experience that attracted an entirely new audience willing to pay premium prices. The data is striking -- in a study of 108 business launches, the 14 percent aimed at creating blue oceans delivered 61 percent of total profits while line extensions delivered only 39 percent. Kim and Mauborgne were named the most influential management thinkers in the world by Thinkers50 in 2019. Separately, Morten Hansen, who held positions at both INSEAD and Harvard before joining UC Berkeley, developed the concept of "disciplined collaboration" -- the idea that leaders often sabotage performance by promoting collaboration for its own sake rather than for results. His "T-shaped manager" model describes people who excel deeply in their own domain while building broad connections across the organisation. His 2018 book Great at Work, based on a study of 5,000 managers, found that after 50 hours per week performance plateaus and then declines. Pete should know that Blue Ocean is not about being different for the sake of it -- it is about simultaneously pursuing differentiation and low cost, which breaks the trade-off most strategists take for granted.
-
-
-WHARTON SCHOOL (UNIVERSITY OF PENNSYLVANIA)
-
-Wharton's entrepreneurship ecosystem has produced an outsized share of direct-to-consumer companies. David Bell, a former Chaired Professor of Marketing at Wharton who taught there for 20 years, is widely credited as the "guru of the DTC movement." He developed Wharton's first courses in digital marketing and e-commerce, and his academic research on consumer behaviour directly informed his investment thesis. Bell was an early seed investor in Warby Parker, Harry's, Bonobos (acquired by Walmart for 310 million dollars), Diapers.com (acquired by Amazon for 545 million dollars), and Jet.com (acquired by Walmart for 3.3 billion dollars). He co-founded Idea Farm Ventures, a venture studio focused on consumer and retail innovation. Wharton's broader venture capital curriculum, taught through courses like MGMT 765, covers the full lifecycle from raising capital from limited partners through deal screening, valuation, negotiation, portfolio management, and exit strategies. The school also hosts research on entrepreneurship management by faculty like Raffi Amit, who studies the intersection of business model design and entrepreneurial strategy. Over half a million students worldwide have taken Bell's online marketing course on Coursera. When Pete references Wharton, the insight worth sharing is that the DTC revolution was not just about cutting out middlemen -- it was about using data to understand where offline and online shopping behaviours intersect, a thesis Bell proved academically before proving it as an investor.
-
-
-LONDON BUSINESS SCHOOL
-
-London Business School's most practical contribution to entrepreneurship is John Mullins' New Business Road Test framework. Mullins, who spent 20 years as a retail executive (including taking a venture public) before entering academia, designed the framework around seven domains that entrepreneurs must evaluate before writing a business plan or raising capital. The book, first published in 2003 and now in its fifth edition, has become the definitive resource for opportunity assessment worldwide. Mullins argues that ignoring even one of the seven domains -- which span market attractiveness, industry attractiveness, the target segment, sustainable advantage, the mission and aspirations of the team, ability to execute, and connectedness up and down the value chain -- is a roadmap to disaster. His later work extends this practically: Getting to Plan B (co-authored with Kleiner Perkins partner Randy Komisar) addresses business model pivots, and The Customer-Funded Business challenges the assumption that raising venture capital is the first priority, showing how companies like Dell, Costco, and GoViral grew using customer cash. Mullins' TED talk on entrepreneurial mindsets has garnered over 3 million views. His most recent book, Break the Rules (2023), identifies six counter-conventional mindsets that distinguish entrepreneurs. LBS sits within the broader European startup ecosystem, giving it a perspective that balances American growth-at-all-costs thinking with European emphasis on sustainable unit economics. Pete should know that Mullins' Road Test is not about killing ideas -- it is about shaping raw opportunities into ones worth pursuing.
-
-
-CAMBRIDGE JUDGE BUSINESS SCHOOL
-
-Cambridge Judge sits inside the most successful technology entrepreneurship cluster in Europe, often called "Silicon Fen." The university has spun out over 140 startups since 2011, raising more than 1.9 billion pounds in equity investment. ARM Holdings, founded by Cambridge computer scientists in 1990, was acquired by SoftBank for 24 billion pounds and now provides the chip architecture for the majority of the world's mobile devices. Darktrace, an AI-driven cybersecurity company founded by Cambridge alumni, was valued at over 1.65 billion dollars. The Entrepreneurship Centre at Judge focuses on deep tech commercialisation -- taking fundamental research in AI, life sciences, materials, and engineering and building viable businesses around it. The EnterpriseTECH programme helps researchers develop entrepreneurial skills, and Deeptech Labs, backed by ARM and Cambridge Innovation Capital, provides post-seed acceleration for deep tech startups. Navi Radjou, co-author of Jugaad Innovation and Frugal Innovation, holds a fellowship at Judge, connecting Cambridge to global thinking about resource-constrained innovation. The Cambridge ecosystem advantage is the density of world-class research happening within walking distance of commercialisation infrastructure. When Pete references Cambridge, the credibility marker is understanding that deep tech entrepreneurship operates on fundamentally different timelines and risk profiles than consumer startups -- the IP moat is real, but the path from lab to market requires patient capital and specialised support.
-
-
-OXFORD SAID BUSINESS SCHOOL
-
-Oxford's Skoll Centre for Social Entrepreneurship, launched in 2003 with a 7.5 million dollar gift from Jeff Skoll (first president of eBay), has become the world's leading academic centre for social innovation. The Centre brings researchers and practitioners together to study how to lead, organise, finance, measure, and scale impact. Over 20 years, it has worked at the intersection of research, education, and practice, and its impact spans all three. The Skoll Scholarship provides full MBA funding for candidates with at least three years of experience building social ventures with demonstrated impact. The annual Skoll World Forum on Social Entrepreneurship, first held in 2004, has become the premier global gathering for social entrepreneurs. Oxford's contribution is the intellectual rigour it brings to a field that often relies on good intentions alone. Impact measurement -- how you actually prove that a social venture is creating systemic change rather than just delivering outputs -- is a core research focus. The Centre studies how sustainability opportunities can be turned into profitable business models and how impact investing can create efficient capital markets for early-stage social enterprises. When Pete works with someone whose venture has a social or environmental mission, the Oxford lens asks: are you measuring activities or outcomes? And can your model survive without grant funding?
-
-
-UNIVERSITY OF VIRGINIA DARDEN -- EFFECTUATION
-
-Darden is the institutional home of effectuation theory, developed by Professor Saras Sarasvathy from research conducted in the late 1990s under the supervision of Nobel Laureate Herbert Simon at Carnegie Mellon. Her 2001 paper in the Academy of Management Review drew a sharp distinction between causal reasoning (predicting the future based on historical data) and effectual reasoning (controlling the future by taking action with available means). She studied 27 expert entrepreneurs and found that 65 percent of them used effectual logic 75 percent of the time. The five principles of effectuation are: Bird in Hand (start with who you are, what you know, and whom you know), Affordable Loss (invest only what you can afford to lose), Crazy Quilt (build partnerships with whoever is willing to commit), Lemonade (leverage surprises rather than avoiding them), and Pilot in the Plane (focus on the controllable aspects of an unpredictable future). Sarasvathy received the 2022 Global Award for Entrepreneurship Research -- the highest recognition in the field. Over 700 peer-reviewed articles have been published on effectuation. Her more recent CAVE framework maps entrepreneurial approaches into four quadrants -- Causal, Adaptive, Visionary, and Effectual -- which is useful for educators because it integrates effectuation with lean startup, business model canvas, and other methods. Pete should know that effectuation is not anti-planning -- it is the logic expert entrepreneurs actually use when the future is genuinely unknowable, which is most of the time in early-stage ventures.
-
-
-UC BERKELEY HAAS SCHOOL OF BUSINESS
-
-Berkeley Haas's signature contribution is Henry Chesbrough's open innovation paradigm, which he coined and developed as faculty director of the Garwood Center for Corporate Innovation. Open innovation is the idea that firms should use external ideas and paths to market alongside internal R&D -- breaking down the assumption that all innovation must be invented in-house. Chesbrough, who holds a PhD from Berkeley, an MBA from Stanford, and previously served on the faculty at Harvard Business School, has extended open innovation beyond the corporate world into nonprofits, government, and the social sector. His research shows that organisations like Ashoka and the city of Birmingham have used open innovation principles to deliver social services more effectively. The Berkeley Haas Open Innovation Squad pairs cross-functional student teams with corporate executives to tackle real open innovation projects. Steve Blank, who taught at Berkeley from 2001 to 2017, ran his Customer Development classes at the Haas Lester Center for Entrepreneurship before creating the Lean LaunchPad at Stanford. Berkeley's culture emphasises social sector innovation and the application of lean and agile principles beyond traditional startups -- into government, education, and public health. Pete should know that open innovation is not about outsourcing R&D -- it is about creating platforms and ecosystems where external contributions create value that neither party could have generated alone.
-
-
-TECHNION -- ISRAEL INSTITUTE OF TECHNOLOGY
-
-The Technion is the technological engine behind Israel's "Startup Nation" identity. Its bachelor's degree programme alone has produced 783 entrepreneurs who founded 671 companies, including payroll company Deel and AI startup Gong, and Technion founders have raised a total of 26.7 billion dollars over the past decade. The key to understanding the Israeli model is the military-to-startup pipeline: education flows into military service (particularly elite units like 8200, the cyber intelligence unit), which flows into industry R&D, which flows into startup formation. The skills developed during military service -- operating under extreme pressure, rapid decision-making with incomplete information, leading small autonomous teams, building technology to solve immediate life-and-death problems -- transfer directly to entrepreneurship. Technologies developed for defence (AI analytics, autonomous systems, cybersecurity) are routinely adapted for commercial markets. Nobel laureate Dan Shechtman ran a technological entrepreneurship course at the Technion for 30 years. Vital defence technologies including the Arrow Antimissile System, Iron Dome, and Iron Beam were developed by Technion alumni. Haifa anchors Israel's hardware and deep engineering ecosystem, with long-standing R&D centres from Intel and global semiconductor firms. Israel now has over 1,400 deep tech startups including five AI unicorns. Pete should understand that the Israeli model is not easily replicable -- it emerges from a specific combination of mandatory military service, existential national urgency, dense networks, and a cultural comfort with chutzpah (audacious risk-taking) and productive failure.
-
-
-UNIVERSITY OF MELBOURNE / WADE INSTITUTE OF ENTREPRENEURSHIP
-
-Wade Institute, established in 2015 through a 10 million dollar gift from entrepreneur and Ormond College alumnus Peter Wade, sits at the centre of Melbourne's entrepreneurship ecosystem. It delivers the University of Melbourne's Master of Entrepreneurship, which is built on a "learning by doing" principle -- students work on real ventures, not case studies, from day one. The VC Catalyst programme, developed in partnership with LaunchVic (Victoria's startup agency), is the first investor education programme of its kind in Australia. Over five cohorts, VC Catalyst alumni (120-plus investors) have collectively invested over 72 million dollars in early-stage startups. Wade Institute is part of a broader University of Melbourne entrepreneurship collective that includes the Melbourne Accelerator Program (MAP), Translating Research at Melbourne (TRaM, an academic research impact accelerator), and Melbourne Connect innovation hub. The Wade approach integrates global best practice with local ecosystem awareness -- understanding that Australian founders operate in a market that is sophisticated but small, requiring them to think about global scale earlier than their Silicon Valley counterparts. The Australian venture capital market has matured significantly in recent years but still has structural gaps in growth-stage funding that force founders to look to Singapore, the US, or the UK for Series B and beyond. Pete should know that Wade's strength is its practice-based pedagogy and its position as a connector -- linking founders to investors, researchers to commercialisation pathways, and the Melbourne ecosystem to global networks.
-
-
-Y COMBINATOR
-
-Y Combinator is not a university but has arguably shaped modern startup methodology more than any academic institution. Founded by Paul Graham in 2005, YC runs twice-yearly batches where selected startups receive seed funding, intensive mentorship, and access to a network of 7,000-plus alumni founders, culminating in Demo Day where they pitch to hundreds of investors. YC's mantra -- "make something people want" -- is deliberately anti-intellectual. Graham's essays, particularly "Do Things That Don't Scale" and "Before the Startup," have become canonical texts for founders worldwide. Sam Altman, who served as YC president from 2014 to 2019 before founding OpenAI, wrote the Startup Playbook that distils YC's advice into core principles: make a product users love so much they tell others, focus on execution because a thousand people have every great idea, and understand that fundraising success is 95 percent about having a good company and 5 percent about process optimisation. YC alumni include Airbnb, Dropbox, Stripe, Reddit, DoorDash, Coinbase, and Instacart. The batch model itself has been replicated by accelerators worldwide, including MassChallenge, Techstars, and hundreds of others. Graham's key insight was that the traditional venture capital model -- large cheques, board seats, slow decision-making -- was poorly suited to early-stage software startups that needed small amounts of capital, fast decisions, and peer support. Pete should reference YC not as an aspirational destination but as a source of practical wisdom -- particularly the principle that talking to users and shipping product matters more than any strategy document.
-
-
-SINGULARITY UNIVERSITY
-
-Co-founded in 2008 by Peter Diamandis and Ray Kurzweil, Singularity University (now operating as Singularity) teaches leaders to think exponentially rather than linearly. The core argument is that most companies optimise for 10 percent improvements, but transformative opportunities require 10x thinking -- which forces you to approach problems in fundamentally different ways. Diamandis' 6D's Framework (Digitisation, Deception, Disruption, Demonetisation, Dematerialisation, Democratisation) helps identify exponential opportunities 12 to 36 months early. The Massive Transformative Purpose (MTP) concept asks founders to articulate a purpose so bold it organises everything the company does -- Google's "organise the world's information" is the classic example. Diamandis' "Exponential Mindset Trilogy" -- Abundance, Bold, and The Future is Faster Than You Think -- provides the intellectual foundation. The practical insight is that convergence of technologies (AI plus robotics plus genomics plus networks) creates opportunities invisible to people thinking about each technology in isolation. Singularity's alumni network includes leaders from major corporations and governments who apply moonshot thinking to challenges in health, energy, education, and food. Pete should use Singularity's frameworks sparingly and specifically -- they are most useful when someone is thinking too small about a genuine technology-enabled opportunity, not as generic inspiration.
-
-
-COPENHAGEN BUSINESS SCHOOL
-
-CBS has carved out a distinctive niche in sustainable entrepreneurship through its Sustainable Entrepreneurship and Innovation research group, led by Professor Kai Hockerts. The group studies how the market failures underlying the UN Sustainable Development Goals can be converted into business opportunities through new combinations of assets and business models. Research covers five interconnected areas: identification of sustainability opportunities, sustainable business models, sustainable and social venturing (including B-corps and community interest companies), financing sustainable entrepreneurship through impact investing, and sustainable entrepreneurship education. CBS is part of the Aurora Alliance, a network of research-intensive European universities committed to societal impact and the SDGs. Hockerts, who previously held an adjunct position at INSEAD and holds a PhD from the University of St Gallen, has published extensively on how experiential learning can increase students' propensity to launch social enterprises. CBS also runs the Copenhagen School of Entrepreneurship (CSE) which provides practical incubation support. The Nordic context is important -- Scandinavian economies have long balanced market efficiency with social welfare, and CBS brings that perspective to entrepreneurship education. Pete should know that CBS represents the European approach to impact -- where sustainability is not a bolt-on to business strategy but an integral design constraint from day one.
-
-
-NATIONAL UNIVERSITY OF SINGAPORE (NUS)
-
-NUS Enterprise, through its BLOCK71 initiative, has built a deep tech entrepreneurship ecosystem that now spans 11 cities including Singapore, San Francisco, Saigon, Suzhou, Nagoya, and Tokyo. BLOCK71 is a technology-focused ecosystem builder that provides incubation, mentorship, and global market access. The Deep-SAGE programme (Deep Tech Seed to A Growth Expansion), backed by a 7.6 million dollar investment from Japan's TIS Inc, accelerates seed-stage startups working in enterprise software, AI, robotics, quantum computing, healthtech, and edtech through a structured journey to Series A funding. NUS also runs a co-investment framework with SG Growth Capital (backed by Singapore's Economic Development Board) to channel capital into deep tech startups. The National Graduate Research Innovation Programme aims to train 300 startup teams by 2028. A Microsoft partnership expanded the AI Accelerate programme to support 150 startups over three years. Since 2015, BLOCK71 San Francisco has supported over 126 startups, 54 of which have made the US their headquarters. The NUS model demonstrates how government-backed innovation infrastructure, when executed well, can systematically bridge the gap between university research and commercial scale. Pete should know that Singapore's approach -- where government, university, and corporate resources are deliberately coordinated -- offers a useful counterpoint to the American model of letting ecosystems emerge organically.
-
-
-TSINGHUA UNIVERSITY
-
-Tsinghua x-lab, founded in 2013 and rooted in the School of Economics and Management, is a non-profit educational platform that supports innovation and entrepreneurship across the entire university. The "x" stands for "pursuing the unknown" at the intersection of multiple disciplines. The platform collaborates with 17 schools and departments, and its infrastructure includes a 3,000-square-metre innovation space and a pre-incubation space in Tsinghua Science Park. What makes Tsinghua distinctive is its position at the intersection of state-driven innovation strategy and market forces -- the platform boasts over 200 corporate partners, 200 investment institutes, and 300 government partners. As one faculty member noted, two-thirds of the Central Committee of the Communist Party are Tsinghua graduates, giving the university a relationship with state power that has no Western equivalent. The x-lab's strength is helping technically brilliant researchers develop awareness of how their work relates to innovation and commercialisation. International collaborations include a joint programme with MIT's Global MBA and partnerships with NUS Enterprise. Co-hosted initiatives like the Asia Green Energy Innovation Challenge (with NUS BLOCK71) connect Tsinghua's deep tech research base to Southeast Asian markets. Pete should understand that Tsinghua represents a model where the line between state industrial policy and entrepreneurship is deliberately blurred -- and that this model has produced extraordinary scale in Chinese fintech, AI, clean technology, and e-commerce.
-
-
-IIT AND IIM INDIA -- JUGAAD AND FRUGAL INNOVATION
-
-India's Indian Institutes of Technology (IIT) and Indian Institutes of Management (IIM) have produced a distinctive approach to innovation shaped by resource constraints, enormous population scale, and institutional complexity. "Jugaad" is a Hindi term that translates roughly as "an innovative fix born from ingenuity and cleverness." The concept was formalised in Navi Radjou's influential book Jugaad Innovation: Think Frugal, Be Flexible, Generate Breakthrough Growth (2012). Professor Rishikesha Krishnan (IIM Bangalore, educated at IIT Kanpur and Stanford) wrote From Jugaad to Systematic Innovation and 8 Steps to Innovation, proposing a blueprint for how India can evolve from improvised fixes to repeatable innovation processes. Professor Anil Gupta at IIM Ahmedabad runs the Honeybee Network, which identifies and cross-pollinates grassroots innovations across the country. The evolution from jugaad to "jugalbandi" (a term borrowed from Indian classical music meaning "interplay") describes how contemporary Indian organisations draw on both frugal improvisation and systematic innovation capabilities. Real-world examples include Aravind Eye Hospital, which performs over 200,000 cataract surgeries per year at 25 dollars each through radical process efficiency, and Flipkart, founded by IIT alumni Sachin and Binny Bansal, which revolutionised Indian e-commerce. Frugal innovation means removing non-essential features to reduce complexity and cost -- designing for India's billion-plus users where solutions must be affordable, accessible, and scalable across diverse infrastructure. GE, Google, PepsiCo, Renault-Nissan, Siemens, and Tata have all adopted frugal innovation principles. Pete should know that jugaad is not about cutting corners -- it is about creative problem-solving when resources are genuinely scarce, and it offers a powerful counterpoint to the Silicon Valley assumption that more capital always equals better solutions.
-
-
-END OF KNOWLEDGE LAYER
-
 == EDGE CASES ==
 
 - User asks a factual question → Answer it using the Knowledge Layer. Be a helpful expert. Don't route to a tool.
@@ -1573,10 +1428,7 @@ If the user is genuinely stuck and gives you nothing to diagnose after two attem
 Based on their answer: problem → [SUGGEST: five-whys], idea → [SUGGEST: crazy-8s]
 Keep it to ONE question, not four. Get them into a tool fast.
 
-TONE: Warm, direct, knowledgeable. Like a smart friend who happens to know a lot about startups and innovation. Respect the user's time.
-
-""" + KNOWLEDGE_LAYER_TEXT + """
-""",
+TONE: Warm, direct, knowledgeable. Like a smart friend who happens to know a lot about startups and innovation. Respect the user's time.""",
 
     "test:rapid-experiment": STUDIO_IDENTITY + """
 
@@ -2942,7 +2794,7 @@ Generated by The Studio · Wade Institute of Entrepreneurship · wadeinstitute.o
 
 {WADE_PROGRAMS_PLACEHOLDER}"""
 
-REPORT_PROMPT = """You are producing a workshop output for a session at The Studio, Wade Institute of Entrepreneurship.
+REPORT_PROMPT = """You are producing a workshop output for a session at Wade Studio, Wade Institute of Entrepreneurship.
 
 VOICE & TONE
 Write like a sharp peer reviewer, not a life coach. Second person ("you") but direct and analytical. The Wade brand voice is: bold, curious, ambitious, action-oriented.
@@ -3077,7 +2929,7 @@ Pete's brief assessment: which components are sharp and specific, and which migh
 Weave in a single Wade reference as evidence, not a pitch: "A pitch like this got pressure-tested in [Program Name] by [Wader from WADE_KNOWLEDGE_BLOCK] — they refined it across [number] iterations with [peer description that matches user's cluster]." Only include if a strong Wader match exists; otherwise omit the line entirely.
 
 ### Recommended Next Step
-"Ready to pressure-test the assumptions behind this pitch? Try the **Lean Canvas** in The Studio — it maps the full business model and carries your pitch components forward."
+"Ready to pressure-test the assumptions behind this pitch? Try the **Lean Canvas** in Wade Studio — it maps the full business model and carries your pitch components forward."
 
 Keep it short. This is a 5-minute tool — the report should match that energy.
 
@@ -3588,399 +3440,6 @@ Return EXACTLY this JSON format (no markdown, no code blocks):
         return jsonify({'error': str(e)}), 500
 
 
-# === PDF REPORT GENERATION ===
-
-@app.route('/api/report/pdf', methods=['POST'])
-def generate_report_pdf():
-    """Generate a professionally styled PDF from the report markdown."""
-    data = request.json or {}
-    report_text = data.get('report', '')
-    synopsis = data.get('synopsis', {})
-    exercise = data.get('exercise', '')
-    mode = data.get('mode', '')
-
-    if not report_text:
-        return jsonify({'error': 'No report text provided'}), 400
-
-    exercise_name = EXERCISE_NAMES.get(exercise, exercise or 'Coaching Session')
-    mode_name = MODE_NAMES.get(mode, mode or 'The Studio')
-
-    # Convert markdown to HTML
-    report_html = _markdown_to_html(report_text)
-
-    # Build the full PDF HTML document
-    title = synopsis.get('title', f'{exercise_name} Report')
-    hook = synopsis.get('hook', '')
-    bullets = synopsis.get('bullets', [])
-    date_str = __import__('datetime').datetime.now().strftime('%d %B %Y')
-
-    bullets_html = ''.join(f'<li>{b}</li>' for b in bullets) if bullets else ''
-
-    pdf_html = f"""<!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8">
-<style>
-@page {{
-    size: A4;
-    margin: 2.5cm 2cm 2cm 2cm;
-    @bottom-center {{
-        content: counter(page);
-        font-family: Arial, sans-serif;
-        font-size: 9px;
-        color: #999;
-    }}
-    @bottom-right {{
-        content: "The Studio — Wade Institute";
-        font-family: Arial, sans-serif;
-        font-size: 8px;
-        color: #999;
-    }}
-}}
-body {{
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 11pt;
-    line-height: 1.6;
-    color: #333;
-    max-width: 100%;
-}}
-/* Cover section */
-.cover {{
-    page-break-after: always;
-    padding-top: 4cm;
-}}
-.cover-bar {{
-    width: 60px;
-    height: 4px;
-    background: #F15A22;
-    margin-bottom: 1.5cm;
-}}
-.cover-meta {{
-    font-size: 10pt;
-    color: #888;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    margin-bottom: 0.5cm;
-}}
-.cover-title {{
-    font-size: 28pt;
-    font-weight: 700;
-    color: #1E194F;
-    line-height: 1.15;
-    margin-bottom: 0.8cm;
-}}
-.cover-hook {{
-    font-size: 13pt;
-    color: #555;
-    font-style: italic;
-    line-height: 1.5;
-    margin-bottom: 1cm;
-    max-width: 85%;
-}}
-.cover-bullets {{
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}}
-.cover-bullets li {{
-    padding: 0.4cm 0;
-    padding-left: 1.2cm;
-    position: relative;
-    font-size: 11pt;
-    color: #444;
-    border-bottom: 1px solid #eee;
-}}
-.cover-bullets li::before {{
-    content: "\\2192";
-    position: absolute;
-    left: 0;
-    color: #F15A22;
-    font-weight: bold;
-}}
-.cover-footer {{
-    position: absolute;
-    bottom: 2cm;
-    font-size: 9pt;
-    color: #999;
-}}
-/* Report body */
-h1 {{ font-size: 20pt; color: #1E194F; margin-top: 1.5cm; margin-bottom: 0.3cm; border-bottom: 2px solid #F15A22; padding-bottom: 0.2cm; }}
-h2 {{ font-size: 16pt; color: #1E194F; margin-top: 1cm; margin-bottom: 0.3cm; }}
-h3 {{ font-size: 13pt; color: #1E194F; margin-top: 0.8cm; margin-bottom: 0.2cm; }}
-p {{ margin: 0.3cm 0; }}
-ul, ol {{ margin: 0.3cm 0; padding-left: 1.2cm; }}
-li {{ margin-bottom: 0.15cm; }}
-strong {{ color: #1E194F; }}
-em {{ color: #555; }}
-blockquote {{
-    border-left: 3px solid #F15A22;
-    margin: 0.5cm 0;
-    padding: 0.3cm 0.8cm;
-    color: #555;
-    font-style: italic;
-    background: #fafafa;
-}}
-a {{ color: #F15A22; text-decoration: none; }}
-hr {{ border: none; border-top: 1px solid #ddd; margin: 0.8cm 0; }}
-code {{ background: #f4f4f4; padding: 2px 6px; border-radius: 3px; font-size: 10pt; }}
-/* Tables */
-table {{ border-collapse: collapse; width: 100%; margin: 0.5cm 0; }}
-th, td {{ border: 1px solid #ddd; padding: 0.3cm 0.5cm; text-align: left; font-size: 10pt; }}
-th {{ background: #1E194F; color: white; }}
-</style>
-</head>
-<body>
-    <div class="cover">
-        <div class="cover-bar"></div>
-        <div class="cover-meta">{mode_name} &middot; {exercise_name} &middot; {date_str}</div>
-        <h1 class="cover-title">{title}</h1>
-        {'<p class="cover-hook">' + hook + '</p>' if hook else ''}
-        {'<ul class="cover-bullets">' + bullets_html + '</ul>' if bullets_html else ''}
-        <div class="cover-footer">Wade Institute of Entrepreneurship &middot; wadeinstitute.org.au</div>
-    </div>
-    <div class="report-body">
-        {report_html}
-    </div>
-</body>
-</html>"""
-
-    try:
-        from fpdf import FPDF
-        import re as _re
-
-        pdf = FPDF()
-        pdf.set_auto_page_break(auto=True, margin=25)
-        pdf.add_page()
-
-        # Cover
-        pdf.set_font('Helvetica', 'B', 24)
-        pdf.set_text_color(30, 25, 79)
-        pdf.cell(0, 12, title, new_x="LMARGIN", new_y="NEXT")
-        pdf.ln(4)
-
-        if hook:
-            pdf.set_font('Helvetica', 'I', 12)
-            pdf.set_text_color(100, 100, 100)
-            pdf.multi_cell(0, 7, hook)
-            pdf.ln(4)
-
-        pdf.set_font('Helvetica', '', 9)
-        pdf.set_text_color(150, 150, 150)
-        pdf.cell(0, 6, f'{mode_name}  |  {exercise_name}  |  {date_str}', new_x="LMARGIN", new_y="NEXT")
-        pdf.ln(2)
-        pdf.set_draw_color(241, 90, 34)
-        pdf.line(10, pdf.get_y(), 200, pdf.get_y())
-        pdf.ln(8)
-
-        # Body — parse markdown to simple PDF
-        pdf.set_text_color(30, 30, 30)
-        for line in report_text.split('\n'):
-            stripped = line.strip()
-            if not stripped:
-                pdf.ln(3)
-                continue
-            if stripped.startswith('### '):
-                pdf.set_font('Helvetica', 'B', 13)
-                pdf.multi_cell(0, 7, stripped[4:])
-                pdf.ln(2)
-            elif stripped.startswith('## '):
-                pdf.set_font('Helvetica', 'B', 15)
-                pdf.multi_cell(0, 8, stripped[3:])
-                pdf.ln(3)
-            elif stripped.startswith('# '):
-                pdf.set_font('Helvetica', 'B', 18)
-                pdf.multi_cell(0, 9, stripped[2:])
-                pdf.ln(4)
-            elif stripped.startswith('- ') or stripped.startswith('* '):
-                pdf.set_font('Helvetica', '', 11)
-                pdf.cell(8, 6, chr(8226))
-                clean = _re.sub(r'\*\*([^*]+)\*\*', r'\1', stripped[2:])
-                pdf.multi_cell(0, 6, clean)
-            else:
-                pdf.set_font('Helvetica', '', 11)
-                clean = _re.sub(r'\*\*([^*]+)\*\*', r'\1', stripped)
-                clean = _re.sub(r'\[([^\]]+)\]\([^)]+\)', r'\1', clean)
-                pdf.multi_cell(0, 6, clean)
-
-        # Footer
-        pdf.ln(10)
-        pdf.set_draw_color(241, 90, 34)
-        pdf.line(10, pdf.get_y(), 200, pdf.get_y())
-        pdf.ln(4)
-        pdf.set_font('Helvetica', '', 8)
-        pdf.set_text_color(150, 150, 150)
-        pdf.cell(0, 5, 'Generated by The Studio  |  Wade Institute of Entrepreneurship  |  wadeinstitute.org.au', new_x="LMARGIN", new_y="NEXT")
-
-        pdf_bytes = pdf.output()
-        response = make_response(pdf_bytes)
-        response.headers['Content-Type'] = 'application/pdf'
-        safe_title = ''.join(c for c in title if c.isalnum() or c in ' -_').strip()[:60]
-        response.headers['Content-Disposition'] = f'attachment; filename="{safe_title} - The Studio.pdf"'
-        print(f"[PDF] Generated {len(pdf_bytes)} bytes for {exercise_name}")
-        return response
-    except Exception as e:
-        print(f"[PDF] ERROR: {str(e)}")
-        return jsonify({'error': f'PDF generation failed: {str(e)}'}), 500
-
-
-# === DOCX REPORT GENERATION ===
-
-@app.route('/api/report/docx', methods=['POST'])
-def generate_report_docx():
-    """Generate a properly formatted .docx from the report markdown."""
-    data = request.json or {}
-    report_text = data.get('report', '')
-    synopsis = data.get('synopsis', {})
-    exercise = data.get('exercise', '')
-    mode = data.get('mode', '')
-
-    if not report_text:
-        return jsonify({'error': 'No report text provided'}), 400
-
-    exercise_name = EXERCISE_NAMES.get(exercise, exercise or 'Coaching Session')
-    mode_name = MODE_NAMES.get(mode, mode or 'The Studio')
-    title = synopsis.get('title', f'{exercise_name} Report')
-    hook = synopsis.get('hook', '')
-    bullets = synopsis.get('bullets', [])
-    date_str = __import__('datetime').datetime.now().strftime('%d %B %Y')
-
-    try:
-        from docx import Document as DocxDocument
-        from docx.shared import Inches, Pt, RGBColor
-        from docx.enum.text import WD_ALIGN_PARAGRAPH
-        from docx.enum.style import WD_STYLE_TYPE
-        import re as _re
-
-        doc = DocxDocument()
-
-        # Set default font
-        style = doc.styles['Normal']
-        font = style.font
-        font.name = 'Arial'
-        font.size = Pt(11)
-        font.color.rgb = RGBColor(0x33, 0x33, 0x33)
-
-        # Style headings
-        for level, size, color in [(1, 20, (0x1E, 0x19, 0x4F)), (2, 16, (0x1E, 0x19, 0x4F)), (3, 13, (0x33, 0x33, 0x33))]:
-            hs = doc.styles[f'Heading {level}']
-            hs.font.name = 'Arial'
-            hs.font.size = Pt(size)
-            hs.font.color.rgb = RGBColor(*color)
-            hs.font.bold = True
-
-        # Cover page
-        p = doc.add_paragraph()
-        p.alignment = WD_ALIGN_PARAGRAPH.LEFT
-        run = p.add_run(f'{mode_name}  |  {exercise_name}  |  {date_str}')
-        run.font.size = Pt(10)
-        run.font.color.rgb = RGBColor(0x88, 0x88, 0x88)
-
-        p = doc.add_paragraph()
-        p.space_before = Pt(36)
-        run = p.add_run(title)
-        run.font.size = Pt(28)
-        run.font.bold = True
-        run.font.color.rgb = RGBColor(0x1E, 0x19, 0x4F)
-
-        if hook:
-            p = doc.add_paragraph()
-            run = p.add_run(hook)
-            run.font.size = Pt(13)
-            run.font.italic = True
-            run.font.color.rgb = RGBColor(0x55, 0x55, 0x55)
-
-        for bullet in bullets:
-            p = doc.add_paragraph(bullet, style='List Bullet')
-
-        # Page break after cover
-        doc.add_page_break()
-
-        # Parse markdown into document elements
-        lines = report_text.split('\n')
-        for line in lines:
-            stripped = line.strip()
-            if not stripped:
-                continue
-            # Headings
-            if stripped.startswith('### '):
-                doc.add_heading(stripped[4:], level=3)
-            elif stripped.startswith('## '):
-                doc.add_heading(stripped[3:], level=2)
-            elif stripped.startswith('# '):
-                doc.add_heading(stripped[2:], level=1)
-            elif stripped.startswith('- ') or stripped.startswith('* '):
-                text = stripped[2:]
-                p = doc.add_paragraph(style='List Bullet')
-                _add_formatted_text(p, text)
-            elif stripped.startswith('---'):
-                # Horizontal rule — add thin line
-                p = doc.add_paragraph()
-                p.paragraph_format.space_before = Pt(12)
-                p.paragraph_format.space_after = Pt(12)
-            elif _re.match(r'^\d+\.\s', stripped):
-                text = _re.sub(r'^\d+\.\s', '', stripped)
-                p = doc.add_paragraph(style='List Number')
-                _add_formatted_text(p, text)
-            elif stripped.startswith('>'):
-                text = stripped.lstrip('> ')
-                p = doc.add_paragraph()
-                p.paragraph_format.left_indent = Inches(0.5)
-                run = p.add_run(text)
-                run.font.italic = True
-                run.font.color.rgb = RGBColor(0x55, 0x55, 0x55)
-            else:
-                p = doc.add_paragraph()
-                _add_formatted_text(p, stripped)
-
-        # Footer
-        doc.add_paragraph()
-        p = doc.add_paragraph()
-        run = p.add_run('Generated by The Studio — Wade Institute of Entrepreneurship — wadeinstitute.org.au')
-        run.font.size = Pt(9)
-        run.font.color.rgb = RGBColor(0x99, 0x99, 0x99)
-
-        # Save to bytes
-        buffer = io.BytesIO()
-        doc.save(buffer)
-        buffer.seek(0)
-
-        response = make_response(buffer.getvalue())
-        response.headers['Content-Type'] = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-        safe_title = ''.join(c for c in title if c.isalnum() or c in ' -_').strip()[:60]
-        response.headers['Content-Disposition'] = f'attachment; filename="{safe_title} - The Studio.docx"'
-        print(f"[DOCX] Generated {len(buffer.getvalue())} bytes for {exercise_name}")
-        return response
-    except Exception as e:
-        print(f"[DOCX] ERROR: {str(e)}")
-        return jsonify({'error': f'DOCX generation failed: {str(e)}'}), 500
-
-
-def _add_formatted_text(paragraph, text):
-    """Parse markdown inline formatting (bold, italic, links) into docx runs."""
-    import re as _re
-    from docx.shared import RGBColor
-    # Split on bold (**text**) and italic (*text*) markers
-    parts = _re.split(r'(\*\*[^*]+\*\*|\*[^*]+\*|\[[^\]]+\]\([^)]+\))', text)
-    for part in parts:
-        if part.startswith('**') and part.endswith('**'):
-            run = paragraph.add_run(part[2:-2])
-            run.bold = True
-            run.font.color.rgb = RGBColor(0x1E, 0x19, 0x4F)
-        elif part.startswith('*') and part.endswith('*'):
-            run = paragraph.add_run(part[1:-1])
-            run.italic = True
-        elif part.startswith('['):
-            # Markdown link [text](url) — show text only
-            m = _re.match(r'\[([^\]]+)\]\(([^)]+)\)', part)
-            if m:
-                run = paragraph.add_run(m.group(1))
-                run.font.color.rgb = RGBColor(0xF1, 0x5A, 0x22)
-            else:
-                paragraph.add_run(part)
-        else:
-            paragraph.add_run(part)
-
-
 # === LINKEDIN POST GENERATOR ===
 
 @app.route('/api/linkedin', methods=['POST'])
@@ -4006,7 +3465,7 @@ def generate_linkedin():
         f"→ [action 3]\n"
         f"Pull these from the Recommended Actions section. Keep them concrete and specific.\n\n"
         f"Final line — exactly this: "
-        f"'Explored this in The Studio — Wade Institute's virtual workshop space. Try it at wadeinstitute.org.au/studio'\n\n"
+        f"'Explored this in Wade Studio — Wade Institute's virtual workshop space. Try it at wadeinstitute.org.au/studio'\n\n"
         f"No hashtags. No intro or outro. Output ONLY the post text. Warm and personal, not corporate.\n\n"
         f"Session report:\n{report_text[:3000]}"
     )
@@ -4046,7 +3505,7 @@ CANVAS_HTML_TEMPLATE = """<!DOCTYPE html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lean Canvas — The Studio</title>
+<title>Lean Canvas — Wade Studio</title>
 <style>
 @page { size: landscape; margin: 0.5cm; }
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -4285,18 +3744,18 @@ def save_session():
     try:
         resend_key = os.environ.get('RESEND_API_KEY')
         if resend_key:
-            from_email = os.environ.get('WADE_FROM_EMAIL', 'The Studio <enquiries@wadeinstitute.org.au>')
+            from_email = os.environ.get('WADE_FROM_EMAIL', 'Wade Studio <enquiries@wadeinstitute.org.au>')
             html_body = f"""
             <div style="font-family: -apple-system, sans-serif; max-width: 560px; margin: 0 auto; padding: 2rem;">
                 <h2 style="color: #1E194F; margin-bottom: 0.5rem;">Your session is saved</h2>
-                <p style="color: #555; line-height: 1.6;">You were working through a <strong>{exercise_name}</strong> session in The Studio. Pick up exactly where you left off:</p>
+                <p style="color: #555; line-height: 1.6;">You were working through a <strong>{exercise_name}</strong> session in Wade Studio. Pick up exactly where you left off:</p>
                 <a href="{resume_url}" style="display: inline-block; background: #F15A22; color: #fff; padding: 12px 28px; border-radius: 6px; text-decoration: none; font-weight: 600; margin: 1.5rem 0;">Continue your session &rarr;</a>
                 <p style="color: #999; font-size: 0.85rem;">This link expires in 30 days.</p>
                 <hr style="border: none; border-top: 1px solid #eee; margin: 1.5rem 0;">
                 <p style="color: #999; font-size: 0.8rem;">Wade Institute of Entrepreneurship &middot; The Studio</p>
             </div>
             """
-            _resend_send_email(resend_key, from_email, email, f"Your The Studio session — {exercise_name}", html_body)
+            _resend_send_email(resend_key, from_email, email, f"Your Wade Studio session — {exercise_name}", html_body)
     except Exception as e:
         print(f"Session email failed: {e}")
 
@@ -4340,28 +3799,13 @@ SHARED_REPORTS_FILE = os.path.join(os.path.dirname(__file__), 'shared_reports.js
 def share_report():
     data = request.json
     report_id = str(uuid.uuid4())[:8]
-    mode_name = MODE_NAMES.get(data.get('mode', ''), data.get('mode', ''))
-    exercise_name = EXERCISE_NAMES.get(data.get('exercise', ''), data.get('exercise', ''))
-    report_text = data.get('report', '')
-    board_cards = data.get('board_cards', [])
-    synopsis = data.get('synopsis', {})
-
-    # Save to PostgreSQL (persistent across deploys)
-    conn = get_db()
-    if conn:
-        try:
-            cur = conn.cursor()
-            cur.execute(
-                "INSERT INTO shared_reports (id, mode, exercise, report, board_cards, synopsis) VALUES (%s, %s, %s, %s, %s, %s)",
-                (report_id, mode_name, exercise_name, report_text, json.dumps(board_cards), json.dumps(synopsis))
-            )
-            cur.close()
-            conn.close()
-        except Exception as e:
-            print(f"[SHARE] DB error: {e}")
-
-    # Also save to file as fallback
-    entry = {'id': report_id, 'mode': mode_name, 'exercise': exercise_name, 'report': report_text, 'created': datetime.now(timezone.utc).isoformat()}
+    entry = {
+        'id': report_id,
+        'mode': MODE_NAMES.get(data.get('mode', ''), data.get('mode', '')),
+        'exercise': EXERCISE_NAMES.get(data.get('exercise', ''), data.get('exercise', '')),
+        'report': data.get('report', ''),
+        'created': datetime.now(timezone.utc).isoformat()
+    }
     reports = {}
     if os.path.exists(SHARED_REPORTS_FILE):
         try:
@@ -4377,30 +3821,14 @@ def share_report():
 
 @app.route('/r/<report_id>')
 def view_shared_report(report_id):
-    entry = None
-    # Try PostgreSQL first (persistent)
-    conn = get_db()
-    if conn:
-        try:
-            cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-            cur.execute("SELECT * FROM shared_reports WHERE id = %s", (report_id,))
-            row = cur.fetchone()
-            if row:
-                entry = {'exercise': row['exercise'], 'mode': row['mode'], 'report': row['report'], 'created': str(row['created_at'])}
-            cur.close()
-            conn.close()
-        except Exception:
-            pass
-    # Fallback to JSON file
-    if not entry:
-        if not os.path.exists(SHARED_REPORTS_FILE):
-            return 'Report not found', 404
-        try:
-            with open(SHARED_REPORTS_FILE, 'r') as f:
-                reports = json.load(f)
-        except (json.JSONDecodeError, IOError):
-            return 'Report not found', 404
-        entry = reports.get(report_id)
+    if not os.path.exists(SHARED_REPORTS_FILE):
+        return 'Report not found', 404
+    try:
+        with open(SHARED_REPORTS_FILE, 'r') as f:
+            reports = json.load(f)
+    except (json.JSONDecodeError, IOError):
+        return 'Report not found', 404
+    entry = reports.get(report_id)
     if not entry:
         return 'Report not found', 404
     date_str = entry['created'][:10]
@@ -4430,7 +3858,7 @@ a{{color:#F15A22}}
   <div class="meta">{entry['exercise']} · {entry['mode']} · {date_str}</div>
 </div>
 <div id="rc"></div>
-<div class="ft">Generated by The Studio · Wade Institute of Entrepreneurship · <a href="https://wadeinstitute.org.au">wadeinstitute.org.au</a></div>
+<div class="ft">Generated by Wade Studio · Wade Institute of Entrepreneurship · <a href="https://wadeinstitute.org.au">wadeinstitute.org.au</a></div>
 <script>document.getElementById('rc').innerHTML = marked.parse({report_json});</script>
 </body>
 </html>"""
@@ -4552,7 +3980,7 @@ def _tags_html(tags):
 def _notify_wade(lead):
     """Email Wade and send user a copy of their report via Resend. Silent no-op if not configured."""
     resend_key  = os.environ.get('RESEND_API_KEY')
-    from_email  = os.environ.get('WADE_FROM_EMAIL', 'The Studio <enquiries@wadeinstitute.org.au>')
+    from_email  = os.environ.get('WADE_FROM_EMAIL', 'Wade Studio <enquiries@wadeinstitute.org.au>')
     wade_email  = os.environ.get('WADE_NOTIFY_EMAIL', 'enquiries@wadeinstitute.org.au')
 
     if not resend_key:
@@ -4565,7 +3993,7 @@ def _notify_wade(lead):
     wade_html = f"""<!DOCTYPE html><html><head><meta charset="UTF-8"></head>
 <body style="font-family:Arial,sans-serif;max-width:680px;margin:0 auto;padding:20px;color:#1a1a2e;">
   <div style="background:#F15A22;padding:18px 24px;border-radius:6px 6px 0 0;">
-    <h2 style="margin:0;color:#fff;font-size:17px;">New The Studio Session</h2>
+    <h2 style="margin:0;color:#fff;font-size:17px;">New Wade Studio Session</h2>
     <p style="margin:3px 0 0;color:rgba(255,255,255,0.85);font-size:12px;">Wade Institute of Entrepreneurship</p>
   </div>
   <div style="border:1px solid #e0e0e0;border-top:none;border-radius:0 0 6px 6px;padding:22px;">
@@ -4581,13 +4009,13 @@ def _notify_wade(lead):
     {_tags_html(lead.get('tags', {}))}
     <div style="font-family:Georgia,serif;font-size:13.5px;line-height:1.7;color:#222;">{report_html}</div>
   </div>
-  <p style="text-align:center;font-size:11px;color:#aaa;margin-top:14px;">The Studio &middot; <a href="https://wadeinstitute.org.au" style="color:#F15A22;">wadeinstitute.org.au</a></p>
+  <p style="text-align:center;font-size:11px;color:#aaa;margin-top:14px;">Wade Studio &middot; <a href="https://wadeinstitute.org.au" style="color:#F15A22;">wadeinstitute.org.au</a></p>
 </body></html>"""
 
     try:
         _resend_send_email(
             resend_key, from_email, wade_email,
-            f"New The Studio Session: {lead['name']} — {lead['exercise']} ({lead['mode']})",
+            f"New Wade Studio Session: {lead['name']} — {lead['exercise']} ({lead['mode']})",
             wade_html
         )
     except Exception:
@@ -4601,7 +4029,7 @@ def _notify_wade(lead):
     <p style="margin:3px 0 0;color:rgba(255,255,255,0.85);font-size:12px;">{lead['mode']} &middot; {lead['exercise']}</p>
   </div>
   <div style="border:1px solid #e0e0e0;border-top:none;border-radius:0 0 6px 6px;padding:22px;">
-    <p style="font-size:14px;color:#444;margin:0 0 18px;">Hi {lead['name'].split()[0]}, here's a copy of your The Studio workshop session report to refer back to.</p>
+    <p style="font-size:14px;color:#444;margin:0 0 18px;">Hi {lead['name'].split()[0]}, here's a copy of your Wade Studio workshop session report to refer back to.</p>
     <div style="font-family:Georgia,serif;font-size:13.5px;line-height:1.7;color:#222;">{report_html}</div>
     <div style="margin-top:28px;padding:16px 18px;border:1.5px solid #F15A22;border-radius:5px;background:#fdf9f7;">
       <p style="font-size:8.5px;font-weight:bold;letter-spacing:0.12em;text-transform:uppercase;color:#F15A22;margin:0 0 6px;">Ready to go deeper?</p>
@@ -4611,13 +4039,13 @@ def _notify_wade(lead):
       <a href="https://wadeinstitute.org.au/programs/" style="font-size:12px;font-weight:bold;color:#F15A22;text-decoration:none;">Explore Wade Programs &rarr;</a>
     </div>
   </div>
-  <p style="text-align:center;font-size:11px;color:#aaa;margin-top:14px;">Generated by The Studio &middot; Wade Institute of Entrepreneurship &middot; <a href="https://wadeinstitute.org.au" style="color:#F15A22;">wadeinstitute.org.au</a></p>
+  <p style="text-align:center;font-size:11px;color:#aaa;margin-top:14px;">Generated by Wade Studio &middot; Wade Institute of Entrepreneurship &middot; <a href="https://wadeinstitute.org.au" style="color:#F15A22;">wadeinstitute.org.au</a></p>
 </body></html>"""
 
     try:
         _resend_send_email(
             resend_key, from_email, lead['email'],
-            f"Your The Studio workshop session report — {lead['exercise']}",
+            f"Your Wade Studio workshop session report — {lead['exercise']}",
             user_html
         )
     except Exception:
@@ -4630,7 +4058,7 @@ def _tag_session(report, messages, exercise, mode):
         for m in messages[-20:]  # last 20 messages is plenty
         if isinstance(m.get('content'), str)
     )
-    prompt = f"""Analyse this The Studio workshop session and return a JSON object with exactly these fields:
+    prompt = f"""Analyse this Wade Studio workshop session and return a JSON object with exactly these fields:
 
 {{
   "challenge_category": one of: "Product/Service Design" | "Business Model" | "Customer Understanding" | "Team & Culture" | "Strategy & Direction" | "Process & Operations" | "Market Entry" | "Funding & Resources" | "Other",
@@ -4986,45 +4414,6 @@ def track_event():
     return jsonify({'ok': True})
 
 
-@app.route('/api/sessions', methods=['GET'])
-def get_sessions():
-    """Return session history for a device ID."""
-    device_id = request.args.get('device_id', '')
-    if not device_id:
-        return jsonify({'sessions': []})
-    conn = get_db()
-    if not conn:
-        return jsonify({'sessions': []})
-    try:
-        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-        cur.execute("""
-            SELECT id, session_date, mode, topic, key_insight, suggested_next_tool,
-                   conversation_summary, board_cards
-            FROM session_summaries
-            WHERE device_id = %s
-            ORDER BY session_date DESC
-            LIMIT 20
-        """, (device_id,))
-        rows = cur.fetchall()
-        cur.close()
-        conn.close()
-        sessions = []
-        for r in rows:
-            sessions.append({
-                'id': str(r['id']),
-                'date': str(r['session_date'])[:10] if r['session_date'] else '',
-                'mode': r['mode'] or '',
-                'topic': r['topic'] or '',
-                'insight': r['key_insight'] or '',
-                'next_tool': r['suggested_next_tool'] or '',
-                'summary': r['conversation_summary'] or '',
-                'board_count': len(r['board_cards']) if r['board_cards'] else 0
-            })
-        return jsonify({'sessions': sessions})
-    except Exception as e:
-        return jsonify({'sessions': [], 'error': str(e)})
-
-
 @app.route('/api/analytics', methods=['GET'])
 def get_analytics():
     """Simple analytics dashboard data."""
@@ -5173,7 +4562,7 @@ def feedback_summary():
             feedback_text += f"   Comment: {f['text']}\n"
         feedback_text += f"   Time: {f.get('timestamp', 'n/a')}\n\n"
 
-    summary_prompt = f"""Analyse the following user feedback from The Studio (a virtual innovation workshop tool).
+    summary_prompt = f"""Analyse the following user feedback from Wade Studio (a virtual innovation workshop tool).
 
 Group feedback by theme. For each theme:
 1. Name the theme (2-4 words)
