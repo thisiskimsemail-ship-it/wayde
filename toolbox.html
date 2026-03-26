@@ -23,6 +23,10 @@
         /* Tool sections */
         .tb-section { margin-bottom: 3rem; }
         .tb-section-header { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 1px solid rgba(255,255,255,0.06); }
+        a.tb-section-link { text-decoration: none; cursor: pointer; border-radius: 8px; padding: 0.5rem 0.75rem; margin: -0.5rem -0.75rem; margin-bottom: 0.5rem; transition: background 0.2s; }
+        a.tb-section-link:hover { background: rgba(255,255,255,0.04); }
+        a.tb-section-link .tb-section-hint::after { content: ' →'; opacity: 0; transition: opacity 0.2s; }
+        a.tb-section-link:hover .tb-section-hint::after { opacity: 1; }
         .tb-section-icon { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; border: 1.5px solid currentColor; }
         .tb-section-label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; }
         .tb-section-hint { font-size: 0.85rem; color: var(--text-muted); margin-left: auto; }
@@ -152,11 +156,11 @@
 
         <!-- THE UNTANGLE -->
         <div class="tb-section">
-            <div class="tb-section-header">
+            <a class="tb-section-header tb-section-link" href="index.html?category=untangle" title="Start an Untangle session with Pete">
                 <span class="tb-section-icon" style="color:var(--teal)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
                 <span class="tb-section-label" style="color:var(--teal)">THE UNTANGLE</span>
                 <span class="tb-section-hint">Understand the real problem</span>
-            </div>
+            </a>
             <div class="tb-tool-grid">
                 <a class="tb-tool-card tb-tool-untangle" href="tool-detail-five-whys.html">
                     <div class="tb-tool-name">Five Whys</div>
@@ -178,11 +182,11 @@
 
         <!-- THE SPARK -->
         <div class="tb-section">
-            <div class="tb-section-header">
+            <a class="tb-section-header tb-section-link" href="index.html?category=spark" title="Start a Spark session with Pete">
                 <span class="tb-section-icon" style="color:var(--orange)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>
                 <span class="tb-section-label" style="color:var(--orange)">THE SPARK</span>
                 <span class="tb-section-hint">Explore and generate ideas</span>
-            </div>
+            </a>
             <div class="tb-tool-grid">
                 <a class="tb-tool-card tb-tool-spark" href="tool-detail-crazy-8s.html">
                     <div class="tb-tool-name">Crazy 8s</div>
@@ -204,11 +208,11 @@
 
         <!-- THE TEST -->
         <div class="tb-section">
-            <div class="tb-section-header">
+            <a class="tb-section-header tb-section-link" href="index.html?category=test" title="Start a Test session with Pete">
                 <span class="tb-section-icon" style="color:var(--pink)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg></span>
                 <span class="tb-section-label" style="color:var(--pink)">THE TEST</span>
                 <span class="tb-section-hint">Stress-test before you commit</span>
-            </div>
+            </a>
             <div class="tb-tool-grid">
                 <a class="tb-tool-card tb-tool-test" href="tool-detail-pre-mortem.html">
                     <div class="tb-tool-name">Pre-Mortem</div>
@@ -230,11 +234,11 @@
 
         <!-- THE BUILD -->
         <div class="tb-section">
-            <div class="tb-section-header">
+            <a class="tb-section-header tb-section-link" href="index.html?category=build" title="Start a Build session with Pete">
                 <span class="tb-section-icon" style="color:var(--yellow)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg></span>
                 <span class="tb-section-label" style="color:var(--yellow)">THE BUILD</span>
                 <span class="tb-section-hint">Turn ideas into plans</span>
-            </div>
+            </a>
             <div class="tb-tool-grid">
                 <a class="tb-tool-card tb-tool-build" href="tool-detail-lean-canvas.html">
                     <div class="tb-tool-name">Lean Canvas</div>

@@ -3621,10 +3621,25 @@ document.addEventListener('DOMContentLoaded', () => {
         const mode = EXERCISE_MODE[toolParam];
         history.replaceState({}, '', '/');
         startExercise(mode, toolParam);
-        // Belt-and-suspenders: ensure input bar is visible after direct tool launch
         if (inputArea) inputArea.style.display = '';
-        // Double-ensure after any async reflows
         setTimeout(() => { if (inputArea) inputArea.style.display = ''; }, 500);
+    }
+
+    // Category launch from toolbox/homepage (?category=untangle)
+    const categoryParam = params.get('category');
+    const CATEGORY_PROMPTS = {
+        untangle: "I have a problem I need to get to the bottom of. I'm not sure what's really going on — help me untangle it.",
+        spark: "I have the beginning of an idea and I want to explore it. Help me push it in directions I haven't tried.",
+        test: "I have a proposal I think is ready — but I want to stress-test it before I commit.",
+        build: "I know what I want to create. Help me turn it into a concrete plan I can act on."
+    };
+    if (categoryParam && CATEGORY_PROMPTS[categoryParam]) {
+        history.replaceState({}, '', '/');
+        enterStudio();
+        // After Pete's opening message, inject the category context
+        setTimeout(() => {
+            sendMessage(CATEGORY_PROMPTS[categoryParam]);
+        }, 3000);
     }
 });
 
