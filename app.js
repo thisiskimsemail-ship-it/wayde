@@ -271,18 +271,18 @@ const EXERCISE_DESCS = {
 
 // Suggested prompt framings shown as input placeholder
 const EXERCISE_HINTS = {
-    'five-whys':        'e.g. "We keep losing our best people and nobody can explain why"',
-    'jtbd':             'e.g. "I want to understand what our customers are really trying to achieve"',
-    'empathy-map':      'e.g. "The people I\'m building for keep saying one thing and doing another"',
-    'hmw':              'e.g. "We know the problem but can\'t find the right angle to solve it"',
-    'scamper':          'e.g. "I want to take something that works and push it in a new direction"',
-    'crazy-8s':         'e.g. "I need fresh ideas — I keep coming back to the same ones"',
-    'pre-mortem':       'e.g. "We\'re about to commit serious time and resources to this — what could go wrong?"',
-    'devils-advocate':  'e.g. "Everyone agrees this is a good idea — that makes me nervous"',
-    'rapid-experiment': 'e.g. "I think people would pay for this but I haven\'t tested it yet"',
-    'lean-canvas':      'e.g. "I have an idea for a product but I haven\'t mapped out the business model"',
-    'effectuation':     'e.g. "I have skills and connections but no clear plan — where do I start?"',
-    'analogical':       'e.g. "Has anyone in a completely different field solved a problem like mine?"'
+    'five-whys':        'e.g. "Our team keeps missing deadlines and no one really knows why"',
+    'jtbd':             'e.g. "I\'m redesigning our internal onboarding process for new staff"',
+    'empathy-map':      'e.g. "My stakeholder is a department head who keeps resisting the change we\'re proposing"',
+    'hmw':              'e.g. "People in our organisation aren\'t adopting the new process we rolled out"',
+    'scamper':          'e.g. "I want to reinvent how we run our quarterly planning meetings"',
+    'crazy-8s':         'e.g. "I need fresh ideas for improving collaboration between two teams that don\'t talk"',
+    'pre-mortem':       'e.g. "We\'re about to roll out a new programme across the whole organisation"',
+    'devils-advocate':  'e.g. "We\'re proposing a major shift in how we deliver services to clients"',
+    'rapid-experiment': 'e.g. "I think our clients would value a monthly insight briefing — but I\'m not sure"',
+    'lean-canvas':      'e.g. "I\'m developing a new service offering within our division"',
+    'effectuation':     'e.g. "I have deep expertise in policy and a strong network in government — where do I start?"',
+    'analogical':       'e.g. "How might we reduce handoff delays between teams the way Formula 1 does pit stops?"'
 };
 
 // Exercise arc descriptions for activity brief cards
@@ -397,17 +397,6 @@ const uploadBtn = $('#uploadBtn');
 const fileInput = $('#fileInput');
 const modeLabel = $('#modeLabel');
 const toolLearnLink = $('#toolLearnLink');
-
-// Map exercise keys to tool detail page filenames (handles mismatches)
-const TOOL_DETAIL_SLUG = {
-    'analogical': 'analogical-thinking',
-    'hmw': 'how-might-we',
-    'jtbd': 'jobs-to-be-done'
-};
-function toolDetailUrl(exercise) {
-    const slug = TOOL_DETAIL_SLUG[exercise] || exercise;
-    return `tool-detail-${slug}.html`;
-}
 const sessionBar = $('#sessionBar');
 const sessionMode = $('#sessionMode');
 const sessionExercise = $('#sessionExercise');
@@ -470,7 +459,7 @@ function renderSessionActions() {
     helpBtn.textContent = 'Help me';
     helpBtn.addEventListener('click', () => {
         if (state.streaming) return;
-        const helpMsg = "[MODE: Help] I could use some encouragement here. Help me see what I'm doing right, give me a concrete example to build on, and gently guide me to the next step. Be warm and supportive — I need a boost, not a push.";
+        const helpMsg = "I'm feeling a bit stuck. Can you give me a nudge — maybe a tip, a prompt, or an example to help me move forward?";
         actionsDiv.remove();
         appendMessage('user', helpMsg);
         state.messages.push({ role: 'user', content: helpMsg });
@@ -618,42 +607,6 @@ document.addEventListener('click', () => {
     toolPickerMenu.classList.add('hidden');
 });
 
-// === TOOL CONFIRMATION CARD ===
-function showToolConfirmation(mode, exercise) {
-    // Remove any existing confirmation card
-    document.querySelector('.tool-confirm-card')?.remove();
-
-    const name = EXERCISE_LABELS[exercise] || exercise;
-    const desc = EXERCISE_DESCS[exercise] || '';
-    const time = EXERCISE_TIMES[exercise] || '15 min';
-    const arc = EXERCISE_ARCS[exercise] || '';
-    const category = MODE_LABELS[mode] || mode;
-
-    const card = document.createElement('div');
-    card.className = `tool-confirm-card mode-${mode}`;
-    card.innerHTML = `
-        <div class="tool-confirm-header">
-            <span class="tool-confirm-category">${category}</span>
-            <span class="tool-confirm-time">${time}</span>
-        </div>
-        <h3 class="tool-confirm-name">${name}</h3>
-        <p class="tool-confirm-desc">${desc}</p>
-        <p class="tool-confirm-arc">${arc}</p>
-        <div class="tool-confirm-actions">
-            <button class="tool-confirm-start">Start ${name} →</button>
-            <a class="tool-confirm-learn" href="${toolDetailUrl(exercise)}" target="_blank" rel="noopener">Learn more about this tool</a>
-        </div>
-    `;
-
-    messagesEl.appendChild(card);
-    scrollToBottom();
-
-    card.querySelector('.tool-confirm-start').addEventListener('click', () => {
-        card.remove();
-        startExercise(mode, exercise);
-    });
-}
-
 // === CARD NAVIGATION ===
 
 $$('.card-exercise-btn').forEach(btn => {
@@ -741,7 +694,7 @@ function startExercise(mode, exercise, startMsg = null) {
 
     // Update footer label + learn more link
     modeLabel.innerHTML = `${EXERCISE_LABELS[exercise] || exercise} ·`;
-    if (toolLearnLink) { toolLearnLink.href = toolDetailUrl(exercise); toolLearnLink.classList.remove('hidden'); }
+    if (toolLearnLink) { toolLearnLink.href = `tool-detail-${exercise}.html`; toolLearnLink.classList.remove('hidden'); }
 
     // Update stage progress strip
     updateStageProgress(mode);
@@ -797,7 +750,7 @@ function startExercise(mode, exercise, startMsg = null) {
         introDiv.className = 'activity-brief';
         introDiv.dataset.mode = mode;
         const briefTime = EXERCISE_TIMES[exercise] || `~${Math.round(expectedExchanges * 2)} min`;
-        introDiv.innerHTML = `<div class="activity-brief-header"><span class="activity-brief-stage">${MODE_LABELS[mode] || mode}</span><span class="activity-brief-time">${briefTime}</span></div><h3 class="activity-brief-name"><a class="intro-label-link" href="${toolDetailUrl(exercise)}" target="_blank" rel="noopener">${EXERCISE_LABELS[exercise] || exercise}</a></h3><p class="activity-brief-desc">${desc}</p>${arc ? `<p class="activity-brief-arc">${arc}</p>` : ''}<a class="activity-brief-learn" href="tool-detail-${exercise}.html" target="_blank" rel="noopener">Learn more about this tool →</a>`;
+        introDiv.innerHTML = `<div class="activity-brief-header"><span class="activity-brief-stage">${MODE_LABELS[mode] || mode}</span><span class="activity-brief-time">${briefTime}</span></div><h3 class="activity-brief-name"><a class="intro-label-link" href="toolbox.html#${exercise}" target="_blank" rel="noopener">${EXERCISE_LABELS[exercise] || exercise}</a></h3><p class="activity-brief-desc">${desc}</p>${arc ? `<p class="activity-brief-arc">${arc}</p>` : ''}<a class="activity-brief-learn" href="tool-detail-${exercise}.html" target="_blank" rel="noopener">Learn more about this tool →</a>`;
         messagesEl.appendChild(introDiv);
     }
     inputField.placeholder = EXERCISE_HINTS[exercise] || 'Describe your challenge or idea...';
@@ -968,8 +921,8 @@ function swapToTool(mode, exercise, swapEl) {
     sessionBar.dataset.mode = mode;
     sessionMode.textContent = MODE_LABELS[mode] || mode;
     sessionExercise.textContent = EXERCISE_LABELS[exercise] || exercise;
-    modeLabel.innerHTML = `<a class="mode-label-link" href="${toolDetailUrl(exercise)}" target="_blank" rel="noopener">${EXERCISE_LABELS[exercise] || exercise}</a> ·`;
-    if (toolLearnLink) { toolLearnLink.href = toolDetailUrl(exercise); toolLearnLink.classList.remove('hidden'); }
+    modeLabel.innerHTML = `<a class="mode-label-link" href="toolbox.html#${exercise}" target="_blank" rel="noopener">${EXERCISE_LABELS[exercise] || exercise}</a> ·`;
+    if (toolLearnLink) { toolLearnLink.href = `tool-detail-${exercise}.html`; toolLearnLink.classList.remove('hidden'); }
     updateStageProgress(mode);
 
     // Reset tool picker
@@ -992,7 +945,7 @@ function swapToTool(mode, exercise, swapEl) {
 
     // Update the sticky exercise intro card at the top
     const exerciseDesc = EXERCISE_DESCS[exercise] || '';
-    const introHTML = `<div class="msg-intro-label"><a class="intro-label-link" href="${toolDetailUrl(exercise)}" target="_blank" rel="noopener">${exerciseName}</a></div>${exerciseDesc}`;
+    const introHTML = `<div class="msg-intro-label"><a class="intro-label-link" href="toolbox.html#${exercise}" target="_blank" rel="noopener">${exerciseName}</a></div>${exerciseDesc}`;
     const stickyIntro = messagesEl.querySelector('.msg-intro');
     if (stickyIntro) {
         stickyIntro.dataset.mode = mode;
@@ -1042,12 +995,6 @@ function enterStudio() {
     if (toolLearnLink) toolLearnLink.classList.add('hidden');
     inputField.placeholder = 'Type your response...';
 
-    // Privacy trust message — shown before Pete speaks
-    const trustMsg = document.createElement('div');
-    trustMsg.className = 'trust-message';
-    trustMsg.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Your session is private. Nothing you share here is stored beyond this session unless you choose to save it. <a href="/privacy.html" target="_blank" rel="noopener">Privacy policy</a>';
-    messagesEl.appendChild(trustMsg);
-
     // Send a silent kickoff — never shown to user
     state.messages.push({ role: 'user', content: '[SYSTEM] User has just entered The Studio. Welcome them as Pete and run an icebreaker. Do not reference this message.' });
 
@@ -1079,34 +1026,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Bind all secondary CTA buttons (e.g. bottom CTA on landing page)
     document.querySelectorAll('.enter-studio-trigger').forEach(btn => {
         if (btn !== enterBtn) btn.addEventListener('click', enterStudio);
-    });
-
-    // Category card clicks — enter routing with context
-    document.querySelectorAll('.lp-process-card[data-category]').forEach(card => {
-        card.addEventListener('click', (e) => {
-            // Don't intercept clicks on tool pill links
-            if (e.target.closest('.lp-tool-pill')) return;
-            const context = card.dataset.context;
-            enterStudio();
-            // After Pete's welcome, inject the user's category context as their first message
-            if (context) {
-                setTimeout(() => sendMessage(context), 2000);
-            }
-        });
-    });
-
-    // Scroll-triggered fade-in animations for landing page sections
-    const fadeObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('lp-visible');
-                fadeObserver.unobserve(entry.target);
-            }
-        });
-    }, { threshold: 0.1 });
-    document.querySelectorAll('.lp-process, .lp-stats, .lp-features, .lp-board-section, .lp-report-section, .lp-personas, .lp-quote, .lp-bottom-cta').forEach(el => {
-        el.classList.add('lp-fade-in');
-        fadeObserver.observe(el);
     });
 });
 
@@ -1355,28 +1274,26 @@ function appendMessage(role, content) {
 }
 
 function scrollToBottom() {
-    // Double-rAF ensures DOM has fully rendered before scrolling
+    // Use rAF to ensure DOM has rendered before scrolling
     requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-            const chatPane = document.getElementById('chatPane');
-            // Always scroll both containers — one of them is the active scroller
-            if (chatPane) chatPane.scrollTop = chatPane.scrollHeight;
-            if (chatArea) chatArea.scrollTop = chatArea.scrollHeight;
-        });
+        // When board is open, the chat-pane is the scrollable container
+        const chatPane = document.getElementById('chatPane');
+        if (chatPane && state.board.visible) {
+            chatPane.scrollTop = chatPane.scrollHeight;
+        }
+        chatArea.scrollTop = chatArea.scrollHeight;
     });
 }
 
 // === SHOW REPORT CTA ===
 
 function maybeShowReportCta() {
-    // Only show report CTA after Pete's wrap-up (state.wrapped) or during conversation mode (4+ exchanges)
-    if (state.wrapped && !state.reportGenerated) {
-        reportCta.classList.remove('hidden');
+    if (state.exchangeCount >= 3 && !state.reportGenerated) {
         reportCtaBtn.disabled = false;
-        reportCtaBtn.textContent = 'Generate my report →';
+        reportCtaBtn.textContent = 'Access your Studio Session report →';
+        // Enable within-stage tool picker after first real exchange
+        setPickerEnabled(true);
     }
-    // Enable within-stage tool picker after first real exchange
-    if (state.exchangeCount >= 1) setPickerEnabled(true);
     // Refresh stage bar so tool label reflects current exercise
     updateStageProgress(state.mode);
 }
@@ -1439,8 +1356,8 @@ function restoreSession(session) {
     sessionBar.dataset.mode = state.mode;
     sessionMode.textContent = MODE_LABELS[state.mode] || state.mode;
     sessionExercise.textContent = EXERCISE_LABELS[state.exercise] || state.exercise;
-    modeLabel.innerHTML = `<a class="mode-label-link" href="${toolDetailUrl(state.exercise)}" target="_blank" rel="noopener">${EXERCISE_LABELS[state.exercise] || state.exercise}</a> ·`;
-    if (toolLearnLink) { toolLearnLink.href = toolDetailUrl(state.exercise); toolLearnLink.classList.remove('hidden'); }
+    modeLabel.innerHTML = `<a class="mode-label-link" href="toolbox.html#${state.exercise}" target="_blank" rel="noopener">${EXERCISE_LABELS[state.exercise] || state.exercise}</a> ·`;
+    if (toolLearnLink) { toolLearnLink.href = `tool-detail-${state.exercise}.html`; toolLearnLink.classList.remove('hidden'); }
     reportCta.classList.remove('hidden');
     updateStageProgress(state.mode);
     // Restore tool picker state
@@ -1453,7 +1370,7 @@ function restoreSession(session) {
     const restoreIntro = document.createElement('div');
     restoreIntro.className = 'msg-intro';
     restoreIntro.dataset.mode = state.mode;
-    restoreIntro.innerHTML = `<div class="msg-intro-label"><a class="intro-label-link" href="${toolDetailUrl(state.exercise)}" target="_blank" rel="noopener">${EXERCISE_LABELS[state.exercise] || state.exercise}</a></div>${restoreDesc}`;
+    restoreIntro.innerHTML = `<div class="msg-intro-label"><a class="intro-label-link" href="toolbox.html#${state.exercise}" target="_blank" rel="noopener">${EXERCISE_LABELS[state.exercise] || state.exercise}</a></div>${restoreDesc}`;
     messagesEl.appendChild(restoreIntro);
 
     const SWAP_PREFIX = "Let's switch to ";
@@ -1467,7 +1384,7 @@ function restoreSession(session) {
             const breakEl = document.createElement('div');
             breakEl.className = 'msg-intro-break';
             if (swapMode) breakEl.dataset.mode = swapMode;
-            breakEl.innerHTML = `<div class="msg-intro-label"><a class="intro-label-link" href="${toolDetailUrl(exerciseKey)}" target="_blank" rel="noopener">${swappedName}</a></div>${desc}`;
+            breakEl.innerHTML = `<div class="msg-intro-label"><a class="intro-label-link" href="toolbox.html#${exerciseKey}" target="_blank" rel="noopener">${swappedName}</a></div>${desc}`;
             messagesEl.appendChild(breakEl);
         } else if (m.role === 'user' && (m.content === 'Please start the session.' || m.content.startsWith('[SYSTEM]'))) {
             // Skip synthetic kickoff — facilitator's opening response is enough
@@ -1500,7 +1417,7 @@ function renderWrapPrompt() {
         const nextExName = EXERCISE_LABELS[next.exercise] || next.exercise;
         actionsHtml += `<button class="wrap-btn wrap-btn-continue">Continue to ${nextModeName} — ${nextExName} →</button>`;
     }
-    actionsHtml += '<button class="wrap-btn wrap-btn-report">Generate my report →</button>';
+    actionsHtml += '<button class="wrap-btn wrap-btn-report">Access your Studio Session report →</button>';
 
     wrapDiv.innerHTML = `
         <p class="wrap-prompt-text">Nice work. Your report is being generated now.</p>
@@ -1798,7 +1715,11 @@ async function streamResponse() {
             fullText = fullText.replace(/\n?\[PHASE:\s*(?:diverge|converge)\]/g, '').trim();
             if (agentDiv) agentDiv.innerHTML = renderMarkdown(fullText);
             updatePhaseIndicator(state.currentPhase);
-            // Phase transition is internal — not shown to users
+            // Insert phase transition divider in chat
+            const transDiv = document.createElement('div');
+            transDiv.className = `phase-transition phase-${state.currentPhase}`;
+            transDiv.innerHTML = `<span class="phase-transition-text">— ${state.currentPhase === 'diverge' ? 'Opening up' : 'Time to narrow down'} —</span>`;
+            messagesEl.appendChild(transDiv);
         }
 
         // Parse [CELEBRATE] tag — breakthrough moment effect
@@ -1824,7 +1745,7 @@ async function streamResponse() {
                     const btn = document.createElement('button');
                     btn.className = `routing-suggest-btn mode-${mode}`;
                     btn.textContent = EXERCISE_LABELS[key] || key;
-                    btn.addEventListener('click', () => showToolConfirmation(mode, key));
+                    btn.addEventListener('click', () => startExercise(mode, key));
                     suggestDiv.appendChild(btn);
                 });
                 messagesEl.appendChild(suggestDiv);
@@ -1833,7 +1754,7 @@ async function streamResponse() {
             if (state.exchangeCount >= 4 && !state.reportGenerated) {
                 reportCta.classList.remove('hidden');
                 reportCtaBtn.disabled = false;
-                reportCtaBtn.textContent = 'Generate my report →';
+                reportCtaBtn.textContent = 'Get your session summary →';
             }
             scrollToBottom();
         } else {
@@ -1843,24 +1764,12 @@ async function streamResponse() {
             // Show wrap-up card if facilitator signalled the exercise is complete
             if (wrapSignaled && !state.reportGenerated) {
                 state.wrapped = true;
-                // Auto-consolidate board before showing it (removes duplicates)
-                if (state.board.cards.length >= 3) {
-                    const consolidateBtn = document.getElementById('boardConsolidate');
-                    if (consolidateBtn && !consolidateBtn.disabled) {
-                        consolidateBtn.click(); // triggers existing consolidate logic
-                    }
-                }
-                // Auto-open the Workshop Board for review
-                if (!state.board.visible && state.board.cards.length > 0) {
-                    toggleBoard();
-                }
-                // Show the wrap prompt with report CTA
+                // Hide input bar — session is over
+                if (inputArea) inputArea.style.display = 'none';
                 renderWrapPrompt();
-                // Show report CTA prominently
-                reportCta.classList.remove('hidden');
-                reportCtaBtn.disabled = false;
-                reportCtaBtn.textContent = 'Generate my report →';
-                // Auto-save session summary to memory
+                // Auto-generate report in the background while user reads Pete's closing message
+                generateReport();
+                // Auto-save session summary to memory (no email needed)
                 autoSaveSessionSummary();
             }
         }
@@ -1894,13 +1803,6 @@ function showReportProgress() {
                 <div class="report-progress-bar-fill" id="reportProgressFill"></div>
             </div>
             <div class="report-progress-status" id="reportProgressStatus">Analysing your session...</div>
-            <div class="report-progress-time">This usually takes about 2 minutes</div>
-            <div class="report-wait-cta">
-                <p class="report-wait-heading">While you wait — explore Wade programs</p>
-                <p class="report-wait-desc">Wade Institute runs intensive programs for founders, innovators, and intrapreneurs. See which one fits your stage.</p>
-                <a class="report-wait-btn" href="https://wadeinstitute.org.au/programs/" target="_blank" rel="noopener">Explore programs →</a>
-                <a class="report-wait-link" href="mailto:enquiries@wadeinstitute.org.au">Want to go deeper? Talk to the Wade team →</a>
-            </div>
         `;
         if (wrapPrompt) {
             // Insert after the wrap-prompt-text
@@ -1984,21 +1886,13 @@ function autoSaveSessionSummary() {
       .then(data => {
           if (data.session_id) _currentSessionDbId = data.session_id;
           if (data.summary) console.log('[Memory] Session saved:', data.summary.topic);
-          // Flash "Saved" indicator on the save button
-          const saveBtn = document.getElementById('saveSessionBtn');
-          if (saveBtn) {
-              saveBtn.title = 'Saved just now';
-              saveBtn.style.borderColor = '#22C55E';
-              saveBtn.style.color = '#22C55E';
-              setTimeout(() => { saveBtn.style.borderColor = ''; saveBtn.style.color = ''; saveBtn.title = 'Save session'; }, 2000);
-          }
       })
       .catch(err => console.warn('[Memory] Auto-save failed:', err));
 }
 
 let reportGenerating = false;
 async function generateReport() {
-    if (reportGenerating || state.reportGenerated) return;
+    if (reportGenerating || state.reportGenerated) return; // prevent double-generation
     trackEvent('report_generate', { exchanges: state.exchangeCount });
     reportGenerating = true;
     reportCtaBtn.disabled = true;
@@ -2006,137 +1900,192 @@ async function generateReport() {
 
     const progress = showReportProgress();
 
-    // Build message payload once
-    let reportMessages = [...state.messages];
-    const switchIdx = reportMessages.findLastIndex(m => m._switchPoint);
-    if (switchIdx > 0) {
-        const preSummary = reportMessages.slice(0, switchIdx)
-            .filter(m => m.role === 'user' && !m.content.startsWith('[SYSTEM]'))
-            .map(m => m.content).join(' | ');
-        reportMessages = [
-            { role: 'user', content: `[Context from previous exercise]: ${preSummary}` },
-            { role: 'assistant', content: 'Understood — I have the context from your previous exercise. Let me focus on this one.' },
-            ...reportMessages.slice(switchIdx).map(m => ({ role: m.role, content: m.content }))
-        ];
-    }
-
-    const retryMessages = ['Generating report...', 'Still working on your report...', 'Almost there, one more try...'];
-    const retryDelays = [0, 2000, 4000];
-    let data = null;
-
-    for (let attempt = 0; attempt < 3; attempt++) {
-        if (attempt > 0) {
-            reportCtaBtn.textContent = retryMessages[attempt];
-            await new Promise(r => setTimeout(r, retryDelays[attempt]));
+    try {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 90000); // 90s timeout
+        // If user switched tools mid-session, send only current-tool messages + context summary
+        let reportMessages = [...state.messages];
+        const switchIdx = reportMessages.findLastIndex(m => m._switchPoint);
+        if (switchIdx > 0) {
+            const preSummary = reportMessages.slice(0, switchIdx)
+                .filter(m => m.role === 'user' && !m.content.startsWith('[SYSTEM]'))
+                .map(m => m.content).join(' | ');
+            reportMessages = [
+                { role: 'user', content: `[Context from previous exercise]: ${preSummary}` },
+                { role: 'assistant', content: 'Understood — I have the context from your previous exercise. Let me focus on this one.' },
+                ...reportMessages.slice(switchIdx).map(m => ({ role: m.role, content: m.content }))
+            ];
         }
 
-        try {
-            const controller = new AbortController();
-            const timeout = setTimeout(() => controller.abort(), 90000);
+        const res = await fetch('/api/report', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            signal: controller.signal,
+            body: JSON.stringify({
+                mode: state.mode,
+                exercise: state.exercise,
+                messages: reportMessages,
+                parking_lot: state.parkingLot,
+                board_cards: state.board.cards
+            })
+        });
+        clearTimeout(timeout);
 
-            const res = await fetch('/api/report', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                signal: controller.signal,
-                body: JSON.stringify({
-                    mode: state.mode,
-                    exercise: state.exercise,
-                    messages: reportMessages,
-                    parking_lot: state.parkingLot,
-                    board_cards: state.board.cards
-                })
-            });
-            clearTimeout(timeout);
-
-            if (!res.ok) {
-                console.error(`[Report] Attempt ${attempt + 1} server error:`, res.status);
-                continue; // retry
-            }
-
-            data = await res.json();
-            if (data.error || !data.report) {
-                console.error(`[Report] Attempt ${attempt + 1} empty/error:`, data.error);
-                data = null;
-                continue; // retry
-            }
-
-            break; // success
-        } catch (err) {
-            console.error(`[Report] Attempt ${attempt + 1} failed:`, err.message);
-            continue; // retry
+        if (!res.ok) {
+            const errText = await res.text().catch(() => 'Unknown error');
+            console.error('[Report] Server error:', res.status, errText.slice(0, 200));
+            progress.error();
+            reportGenerating = false;
+            reportCtaBtn.textContent = 'Something went wrong — try again';
+            reportCtaBtn.disabled = false;
+            return;
         }
-    }
 
-    if (!data || !data.report) {
+        const data = await res.json();
+
+        if (data.error || !data.report) {
+            console.error('[Report] Error or empty:', data.error || 'empty report');
+            progress.error();
+            reportGenerating = false;
+            reportCtaBtn.textContent = 'Something went wrong — try again';
+            reportCtaBtn.disabled = false;
+            return;
+        }
+
+        progress.complete();
+        state.reportText = data.report;
+        state.reportSynopsis = data.synopsis || {};
+        state.reportGenerated = true;
+        console.log('[Report] Got report text, length:', data.report.length);
+
+        // Close board so report has full width
+        if (state.board.visible) {
+            toggleBoard();
+        }
+
+        // Clean up end-of-session clutter
+        document.querySelector('.chat-action-btns')?.remove();
+        document.querySelector('.option-chips')?.remove();
+        document.querySelector('.wrap-btn-report')?.remove();
+
+        // Populate synopsis card
+        const synopsisCard = document.getElementById('reportSynopsis');
+        const synopsisTitle = document.getElementById('synopsisTitle');
+        const synopsisHook = document.getElementById('synopsisHook');
+        const synopsisBullets = document.getElementById('synopsisBullets');
+        const synopsisMeta = document.getElementById('synopsisMeta');
+
+        const mName = MODE_LABELS[state.mode] || state.mode;
+        const exName = EXERCISE_LABELS[state.exercise] || state.exercise;
+        const date = new Date().toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' }).toUpperCase();
+        if (synopsisMeta) synopsisMeta.textContent = `${mName} · ${exName} · ${date}`;
+
+        if (state.reportSynopsis.title) synopsisTitle.textContent = state.reportSynopsis.title;
+        if (state.reportSynopsis.hook) synopsisHook.textContent = state.reportSynopsis.hook;
+        if (state.reportSynopsis.bullets && synopsisBullets) {
+            synopsisBullets.innerHTML = state.reportSynopsis.bullets
+                .map(b => `<li>${b}</li>`).join('');
+        }
+
+        // Show synopsis card (not the full report)
+        synopsisCard.classList.remove('hidden');
+        reportCta.classList.add('hidden');
+
+        // Prepare full report in background (hidden)
+        reportContent.innerHTML = renderMarkdown(state.reportText);
+        populateReportMeta();
+
+        // Scroll synopsis into view
+        setTimeout(() => {
+            synopsisCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 200);
+
+    } catch (err) {
         progress.error();
         reportGenerating = false;
-        reportCtaBtn.textContent = 'Taking longer than expected — try again';
+        reportCtaBtn.textContent = 'Connection error — try again';
         reportCtaBtn.disabled = false;
-        return;
     }
-
-    progress.complete();
-    state.reportText = data.report;
-    state.reportSynopsis = data.synopsis || {};
-    state.reportGenerated = true;
-    console.log('[Report] Got report text, length:', data.report.length);
-
-    // Close board so report has full width
-    if (state.board.visible) {
-        toggleBoard();
-    }
-
-    // Clean up end-of-session clutter
-    document.querySelector('.chat-action-btns')?.remove();
-    document.querySelector('.option-chips')?.remove();
-    document.querySelector('.wrap-btn-report')?.remove();
-
-    // Populate synopsis card
-    const synopsisCard = document.getElementById('reportSynopsis');
-    const synopsisTitle = document.getElementById('synopsisTitle');
-    const synopsisHook = document.getElementById('synopsisHook');
-    const synopsisBullets = document.getElementById('synopsisBullets');
-    const synopsisMeta = document.getElementById('synopsisMeta');
-
-    const mName = MODE_LABELS[state.mode] || state.mode;
-    const exName = EXERCISE_LABELS[state.exercise] || state.exercise;
-    const date = new Date().toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' }).toUpperCase();
-    if (synopsisMeta) synopsisMeta.textContent = `${mName} · ${exName} · ${date}`;
-
-    if (state.reportSynopsis.title) synopsisTitle.textContent = state.reportSynopsis.title;
-    if (state.reportSynopsis.hook) synopsisHook.textContent = state.reportSynopsis.hook;
-    if (state.reportSynopsis.bullets && synopsisBullets) {
-        synopsisBullets.innerHTML = state.reportSynopsis.bullets
-            .map(b => `<li>${b}</li>`).join('');
-    }
-
-    // Show synopsis card (not the full report)
-    synopsisCard.classList.remove('hidden');
-    reportCta.classList.add('hidden');
-
-    // Prepare full report in background (hidden)
-    reportContent.innerHTML = renderMarkdown(state.reportText);
-    populateReportMeta();
-
-    // Auto-scroll synopsis into view
-    setTimeout(() => {
-        synopsisCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 200);
 }
 
 reportCtaBtn.addEventListener('click', async () => {
-    // Show lead capture form first, then generate report on submit
-    const unlockEl = document.getElementById('reportUnlock');
-    if (unlockEl && !state.leadCaptured) {
-        reportCta.classList.add('hidden');
-        unlockEl.classList.remove('hidden');
-        unlockEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    // Skip pre-report handoff — go straight to report generation
+    // Course recommendation is already in the report itself
+    if (false && !state.preReportAsked && state.exchangeCount >= 3) {
+        state.preReportAsked = true;
+        reportCtaBtn.disabled = true;
+        reportCtaBtn.textContent = 'One moment...';
+
+        let fullText = '';
+        let agentDiv = null;
+
+        // Show typing indicator
+        const typing = document.createElement('div');
+        typing.className = 'typing';
+        typing.innerHTML = '<span></span><span></span><span></span>';
+        messagesEl.appendChild(typing);
+        scrollToBottom();
+
+        try {
+            const res = await fetch('/api/pre-report', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    mode: state.mode,
+                    exercise: state.exercise,
+                    messages: state.messages
+                })
+            });
+
+            const reader = res.body.getReader();
+            const decoder = new TextDecoder();
+            let buffer = '';
+
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+                buffer += decoder.decode(value, { stream: true });
+                const lines = buffer.split('\n');
+                buffer = lines.pop();
+
+                for (const line of lines) {
+                    if (!line.startsWith('data: ')) continue;
+                    const raw = line.slice(6);
+                    if (raw === '[DONE]') continue;
+                    try {
+                        const parsed = JSON.parse(raw);
+                        if (parsed.text) {
+                            if (!agentDiv) {
+                                typing.remove();
+                                agentDiv = document.createElement('div');
+                                agentDiv.className = 'msg msg-agent';
+                                messagesEl.appendChild(agentDiv);
+                            }
+                            fullText += parsed.text;
+                            agentDiv.innerHTML = renderMarkdown(fullText);
+                            scrollToBottom();
+                        }
+                    } catch (e) { /* skip malformed */ }
+                }
+            }
+        } catch (err) {
+            typing.remove();
+        }
+
+        // Add to conversation so it's included in the report context
+        if (fullText) {
+            state.messages.push({ role: 'assistant', content: fullText });
+        }
+
+        // Re-enable button — next click generates the report
+        reportCtaBtn.disabled = false;
+        reportCtaBtn.textContent = 'Generate my report →';
+        scrollToBottom();
         return;
     }
+
     generateReport();
 });
-
-// Pre-report handoff removed — conversation-first mode handles this naturally
 
 // === SHARED LEAD CAPTURE LOGIC ===
 
@@ -2189,41 +2138,83 @@ leadForm.addEventListener('submit', (e) => {
 // === REPORT PDF DOWNLOAD ===
 
 async function downloadReport() {
-    // Server-side PDF generation via WeasyPrint
+    const exName = EXERCISE_LABELS[state.exercise] || state.exercise;
+    const mName = MODE_LABELS[state.mode] || state.mode;
+    const stageColor = { untangle: '#27BDBE', spark: '#F15A22', test: '#ED3694', build: '#E4E517' }[state.mode] || '#F15A22';
+    const stageTextColor = state.mode === 'build' ? '#1a1a2e' : '#fff';
+    const date = new Date().toLocaleDateString('en-AU', { year: 'numeric', month: 'long', day: 'numeric' });
+
+    // Embed logo as base64 so it shows in the printed PDF
+    let logoSrc = '';
     try {
-        const res = await fetch('/api/report/pdf', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                report: state.reportText,
-                synopsis: state.reportSynopsis || {},
-                exercise: state.exercise || '',
-                mode: state.mode || ''
-            })
-        });
-        if (!res.ok) {
-            console.error('[PDF] Server error:', res.status);
-            // Fallback: open report as printable HTML
-            const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Report</title><style>body{font-family:Arial,sans-serif;max-width:700px;margin:2cm auto;line-height:1.6;color:#333}h2{color:#1E194F;border-bottom:2px solid #F15A22;padding-bottom:4px}</style></head><body>${reportContent.innerHTML}</body></html>`;
-            const url = URL.createObjectURL(new Blob([html], { type: 'text/html' }));
-            const win = window.open(url, '_blank');
-            if (win) win.addEventListener('load', () => { setTimeout(() => { win.print(); URL.revokeObjectURL(url); }, 500); });
-            return;
-        }
+        const res = await fetch('/logo.png');
         const blob = await res.blob();
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        const title = (state.reportSynopsis?.title || 'Studio Report').replace(/[^a-zA-Z0-9 \-_]/g, '').trim().slice(0, 60);
-        a.href = url;
-        a.download = `${title} - The Studio.pdf`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        trackEvent('report_download', { format: 'pdf' });
-    } catch (err) {
-        console.error('[PDF] Download error:', err);
-    }
+        logoSrc = await new Promise(r => { const fr = new FileReader(); fr.onload = e => r(e.target.result); fr.readAsDataURL(blob); });
+    } catch(e) {}
+
+    const html = `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">
+<title>Studio Workshop Summary — ${exName} · Wade Institute</title>
+<style>
+@page { margin: 22mm 20mm 20mm; }
+*, *::before, *::after { box-sizing: border-box; }
+body { font-family: Georgia, 'Times New Roman', serif; max-width: 680px; margin: 0 auto; color: #1e1b4b; line-height: 1.7; font-size: 13.5px; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+a { color: ${stageColor}; text-decoration: none; }
+/* Header */
+.rpt-header { display: flex; align-items: center; gap: 14px; padding-bottom: 14px; border-bottom: 3px solid ${stageColor}; margin-bottom: 28px; }
+.rpt-header img { height: 44px; width: auto; flex-shrink: 0; }
+.rpt-header-text { flex: 1; }
+.rpt-header-title { font-family: Arial, sans-serif; font-size: 19px; font-weight: 700; color: #12103a; line-height: 1.2; margin-bottom: 5px; }
+.rpt-header-meta { font-family: Arial, sans-serif; font-size: 10.5px; color: #888; letter-spacing: 0.07em; text-transform: uppercase; display: flex; align-items: center; gap: 8px; }
+.stage-pill { display: inline-block; background: ${stageColor}; color: ${stageTextColor}; font-size: 8.5px; font-family: Arial, sans-serif; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 2px 8px; border-radius: 3px; }
+/* Content typography */
+h1 { display: none; }
+h2 { font-family: Arial, sans-serif; font-size: 13.5px; font-weight: 700; color: #12103a; border-left: 3px solid ${stageColor}; padding: 2px 0 2px 10px; margin: 24px 0 8px; page-break-after: avoid; }
+h3 { font-family: Arial, sans-serif; font-size: 12.5px; font-weight: 700; color: #333; margin: 14px 0 5px; page-break-after: avoid; }
+p { margin: 0 0 10px; }
+ul, ol { padding-left: 20px; margin: 0 0 10px; }
+li { margin-bottom: 5px; }
+strong { font-weight: 700; color: #12103a; }
+em { font-style: italic; }
+hr { border: none; border-top: 1px solid #eee; margin: 14px 0; }
+/* Links show URL hint */
+a::after { content: " ↗"; font-size: 9px; opacity: 0.6; }
+/* Wade CTA block */
+.wade-cta-block { margin-top: 36px; padding: 18px 20px 16px; border: 1.5px solid ${stageColor}; border-radius: 5px; background: #fdf9f7; page-break-inside: avoid; }
+.wade-cta-label { font-family: Arial, sans-serif; font-size: 8.5px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: ${stageColor}; margin-bottom: 7px; }
+.wade-cta-block h3 { font-family: Arial, sans-serif; font-size: 14px; font-weight: 700; color: #12103a; margin: 0 0 7px; padding: 0; border: none; }
+.wade-cta-block p { font-size: 12px; color: #444; margin-bottom: 10px; }
+.wade-cta-contact { font-family: Arial, sans-serif; font-size: 11px; color: #666; margin-bottom: 10px; }
+.wade-cta-link { display: inline-block; font-family: Arial, sans-serif; font-size: 11px; font-weight: 700; color: ${stageColor}; }
+.wade-cta-link::after { content: " →"; }
+/* Footer */
+.rpt-footer { margin-top: 28px; padding-top: 10px; border-top: 1px solid #e0e0e0; font-family: Arial, sans-serif; font-size: 10px; color: #aaa; display: flex; justify-content: space-between; gap: 12px; }
+</style>
+</head><body>
+<div class="rpt-header">
+  ${logoSrc ? `<img src="${logoSrc}" alt="Wade Institute of Entrepreneurship">` : ''}
+  <div class="rpt-header-text">
+    <div class="rpt-header-title">Studio Workshop Summary</div>
+    <div class="rpt-header-meta"><span class="stage-pill">${mName}</span>${exName} &nbsp;·&nbsp; ${date}</div>
+  </div>
+</div>
+${state.reportSynopsis?.title ? `<h2 style="font-family:Arial,sans-serif;font-size:18px;font-weight:700;color:#12103a;border-left:none;padding:0;margin:0 0 8px;text-align:center;">${state.reportSynopsis.title}</h2>` : ''}
+${state.reportSynopsis?.hook ? `<p style="font-style:italic;color:#666;text-align:center;margin:0 0 24px;font-size:13px;">${state.reportSynopsis.hook}</p>` : ''}
+${reportContent.innerHTML}
+<div class="wade-cta-block">
+  <div class="wade-cta-label">Ready to go deeper?</div>
+  <h3>Talk to the Wade Team</h3>
+  <p>Interested in working with Wade Institute to build your innovation capability — or take this challenge further with a structured programme, expert facilitation, or a custom engagement?</p>
+  <div class="wade-cta-contact">enquiries@wadeinstitute.org.au &nbsp;·&nbsp; +61 3 9344 1100</div>
+  <a class="wade-cta-link" href="https://wadeinstitute.org.au/programs/">Explore Wade Programs</a>
+</div>
+<div class="rpt-footer">
+  <span>Wade Institute of Entrepreneurship &nbsp;·&nbsp; wadeinstitute.org.au</span>
+  <span>Generated by Wade Studio &nbsp;·&nbsp; For educational purposes only &nbsp;·&nbsp; Decisions remain yours.</span>
+</div>
+</body></html>`;
+    const url = URL.createObjectURL(new Blob([html], { type: 'text/html' }));
+    const win = window.open(url, '_blank');
+    if (win) win.addEventListener('load', () => { setTimeout(() => { win.print(); URL.revokeObjectURL(url); }, 500); });
 }
 
 // === REPORT ACTION BUTTONS (unified for top + bottom bars) ===
@@ -2232,15 +2223,10 @@ async function downloadReport() {
 
 let pendingDownloadFormat = null; // 'word' or 'pdf'
 
-// Synopsis "Download my report" button → go straight to format choice (lead already captured)
+// Synopsis "Download my report" button → show lead form
 document.getElementById('synopsisDownloadBtn')?.addEventListener('click', () => {
-    document.getElementById('reportSynopsis')?.classList.add('hidden');
-    const formatChoice = document.getElementById('reportFormatChoice');
-    if (formatChoice) {
-        formatChoice.classList.remove('hidden');
-        formatChoice.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-    renderNextExercisePanel();
+    reportUnlock.classList.remove('hidden');
+    reportUnlock.scrollIntoView({ behavior: 'smooth', block: 'center' });
 });
 
 // Synopsis close button
@@ -2248,7 +2234,7 @@ document.getElementById('synopsisCloseBtn')?.addEventListener('click', () => {
     document.getElementById('reportSynopsis')?.classList.add('hidden');
 });
 
-// Lead capture form submit → capture lead, then generate report
+// Lead capture form submit → email report, then show format choice
 document.getElementById('unlockForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     trackEvent('lead_capture');
@@ -2260,15 +2246,13 @@ document.getElementById('unlockForm')?.addEventListener('submit', async (e) => {
 
     if (!email) return;
     submitBtn.disabled = true;
-    submitBtn.textContent = 'Building your report...';
+    submitBtn.textContent = 'Sending your report...';
 
-    // Store lead data
+    // Store email for memory system
     state.userEmail = email;
-    state.leadCaptured = true;
-    state.leadData = { email, name, company, role };
     localStorage.setItem('wade_user_email', email);
 
-    // Generate session summary (async, non-blocking)
+    // Generate and store session summary (async, non-blocking)
     fetch('/api/summary', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -2281,32 +2265,36 @@ document.getElementById('unlockForm')?.addEventListener('submit', async (e) => {
         })
     }).catch(err => console.warn('[Summary] Failed:', err));
 
-    // Hide form, show progress
-    reportUnlock.classList.add('hidden');
-
-    // Now generate the report
-    await generateReport();
-
-    // After report generates, send the lead + email the report
-    if (state.reportGenerated && state.reportText) {
-        try {
-            await fetch('/api/lead', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    email, name, company, role,
-                    mode: state.mode,
-                    exercise: state.exercise,
-                    report: state.reportText,
-                    rating: state.rating,
-                    messages: state.messages
-                })
-            });
-        } catch (err) {
-            console.error('[Lead] Failed to send:', err);
-        }
+    // Send lead + email the report
+    try {
+        await fetch('/api/lead', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                email, name, company, role,
+                mode: state.mode,
+                exercise: state.exercise,
+                report: state.reportText,
+                rating: state.rating,
+                messages: state.messages
+            })
+        });
+    } catch (err) {
+        console.error('[Lead] Failed to send:', err);
     }
 
+    // Hide form + synopsis, show format choice
+    reportUnlock.classList.add('hidden');
+    document.getElementById('reportSynopsis')?.classList.add('hidden');
+    reportCta.classList.add('hidden');
+    const formatChoice = document.getElementById('reportFormatChoice');
+    if (formatChoice) {
+        formatChoice.classList.remove('hidden');
+        formatChoice.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    // Show next exercise suggestion
+    renderNextExercisePanel();
     saveSession();
 
     submitBtn.disabled = false;
@@ -2372,37 +2360,48 @@ document.querySelectorAll('.report-actions').forEach(bar => {
 
 // === DOWNLOAD AS WORD (.doc) ===
 
-async function downloadReportWord() {
-    // Server-side .docx generation via python-docx
-    try {
-        const res = await fetch('/api/report/docx', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                report: state.reportText,
-                synopsis: state.reportSynopsis || {},
-                exercise: state.exercise || '',
-                mode: state.mode || ''
-            })
-        });
-        if (!res.ok) {
-            console.error('[DOCX] Server error:', res.status);
-            return;
-        }
-        const blob = await res.blob();
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        const title = (state.reportSynopsis?.title || 'Studio Report').replace(/[^a-zA-Z0-9 \-_]/g, '').trim().slice(0, 60);
-        a.href = url;
-        a.download = `${title} - The Studio.docx`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        trackEvent('report_download', { format: 'docx' });
-    } catch (err) {
-        console.error('[DOCX] Download error:', err);
-    }
+function downloadReportWord() {
+    const content = $('#reportContent');
+    if (!content) return;
+
+    const mName = MODE_LABELS[state.mode] || state.mode;
+    const exName = EXERCISE_LABELS[state.exercise] || state.exercise;
+    const date = new Date().toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' });
+
+    const html = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
+<head><meta charset="utf-8"><title>${mName} · ${exName} · ${date}</title>
+<style>
+body { font-family: Arial, Helvetica, sans-serif; font-size: 11pt; color: #333; line-height: 1.5; max-width: 700px; margin: 0 auto; padding: 2rem; }
+h1 { font-size: 18pt; color: #1E194F; margin-bottom: 0.25em; }
+h2 { font-size: 14pt; color: #1E194F; margin-top: 1.5em; }
+h3 { font-size: 12pt; color: #1E194F; margin-top: 1.2em; }
+p { margin: 0.5em 0; }
+blockquote { border-left: 3px solid #ED3694; padding-left: 1em; margin: 1em 0; color: #555; font-style: italic; }
+a { color: #F15A22; }
+li { margin: 0.25em 0; }
+.meta { color: #888; font-size: 9pt; margin-bottom: 1.5em; }
+.footer { margin-top: 2em; padding-top: 1em; border-top: 1px solid #ddd; font-size: 9pt; color: #888; }
+</style></head><body>
+<h1>Studio Workshop Summary</h1>
+<div class="meta">${mName} · ${exName} · ${date}</div>
+${state.reportSynopsis?.title ? `<h2 style="text-align:center;margin-bottom:0.25em;">${state.reportSynopsis.title}</h2>` : ''}
+${state.reportSynopsis?.hook ? `<p style="font-style:italic;color:#666;text-align:center;margin-bottom:1.5em;">${state.reportSynopsis.hook}</p>` : ''}
+${content.innerHTML}
+<div class="footer">
+  <p>Wade Institute of Entrepreneurship · wadeinstitute.org.au</p>
+  <p>Generated by Wade Studio · For educational purposes only · Decisions remain yours.</p>
+</div>
+</body></html>`;
+
+    const blob = new Blob([html], { type: 'application/msword' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `Wade-Studio-${exName.replace(/\s+/g, '-')}-${date.replace(/\s+/g, '-')}.doc`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
 }
 
 // === EMAIL REPORT COPY ===
@@ -2475,61 +2474,31 @@ $('#reportNewSessionBtn')?.addEventListener('click', () => {
 // === NEXT EXERCISE PANEL (shown after full report revealed) ===
 
 function renderNextExercisePanel() {
-    if ($('#postDownloadPanel')) return; // already shown
+    const next = NEXT_STAGE[state.mode];
+    if (!next) return; // Develop is the last stage
+    if ($('#nextExercisePanel')) return; // already shown
 
     const panel = document.createElement('div');
-    panel.id = 'postDownloadPanel';
-    panel.className = 'post-download-panel';
+    panel.id = 'nextExercisePanel';
+    panel.className = 'next-exercise-panel';
+    const nextModeName = MODE_LABELS[next.mode] || next.mode;
+    const nextExName = EXERCISE_LABELS[next.exercise] || next.exercise;
+    const modeColor = next.mode; // untangle/spark/test/build
 
-    // Thank-you message
-    let html = `<div class="post-download-thanks">Your report is on its way. Nice work today.</div>`;
-
-    // Next tool suggestion (if not the last category)
-    const next = NEXT_STAGE[state.mode];
-    if (next) {
-        const nextModeName = MODE_LABELS[next.mode] || next.mode;
-        const nextExName = EXERCISE_LABELS[next.exercise] || next.exercise;
-        const modeColor = next.mode;
-        html += `
-            <div class="post-download-section">
-                <div class="post-download-label">Keep going?</div>
-                <div class="post-download-next">
-                    <span class="post-download-stage mode-${modeColor}">${nextModeName}</span>
-                    <span class="post-download-tool">${nextExName}</span>
-                    <span class="post-download-desc">${EXERCISE_DESCS[next.exercise] || ''}</span>
-                </div>
-                <button class="post-download-btn post-download-btn-${modeColor}" id="nextExerciseBtn">Start ${nextExName} →</button>
-            </div>
-        `;
-    }
-
-    // Browse toolbox + Wade team
-    html += `
-        <div class="post-download-links">
-            <a class="post-download-link" href="toolbox.html">Browse all 12 tools in the Toolbox →</a>
-            <a class="post-download-link" href="mailto:enquiries@wadeinstitute.org.au">Talk to the Wade team about your challenge →</a>
-            <a class="post-download-link" href="https://wadeinstitute.org.au/programs/" target="_blank" rel="noopener">Explore Wade programs →</a>
-        </div>
+    panel.innerHTML = `
+        <div class="next-exercise-label">Ready to keep going?</div>
+        <div class="next-exercise-stage mode-${modeColor}">${nextModeName}</div>
+        <div class="next-exercise-name">${nextExName}</div>
+        <p class="next-exercise-desc">${EXERCISE_DESCS[next.exercise] || ''}</p>
+        <button class="next-exercise-btn next-exercise-btn-${modeColor}" id="nextExerciseBtn">Start ${nextExName} →</button>
     `;
 
-    panel.innerHTML = html;
+    reportCard.insertAdjacentElement('afterend', panel);
 
-    // Insert after the format choice or synopsis card
-    const anchor = document.getElementById('reportFormatChoice') || document.getElementById('reportSynopsis');
-    if (anchor) {
-        anchor.insertAdjacentElement('afterend', panel);
-    }
-
-    // Wire up next exercise button
-    const nextBtn = panel.querySelector('#nextExerciseBtn');
-    if (nextBtn && next) {
-        nextBtn.addEventListener('click', () => {
-            panel.remove();
-            navigateToStage(next.mode, next.exercise);
-        });
-    }
-
-    panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    panel.querySelector('#nextExerciseBtn').addEventListener('click', () => {
+        panel.remove();
+        navigateToStage(next.mode, next.exercise);
+    });
 }
 
 // === WORKSHOP PHASE & PROGRESS ===
@@ -2555,19 +2524,7 @@ function updateProgressIndicator() {
     const expected = EXERCISE_EXCHANGES[state.exercise] || 8;
     const current = state.exchangeCount;
     const pct = Math.min(100, Math.round((current / expected) * 100));
-    let label;
-    if (state.wrapped) {
-        label = 'Session complete';
-    } else if (current >= expected) {
-        label = 'Wrapping up';
-    } else if (pct >= 80) {
-        label = 'Nearly there';
-    } else if (pct >= 50) {
-        label = 'Narrowing down';
-    } else {
-        label = `${current} of ~${expected}`;
-    }
-    el.innerHTML = `<span class="progress-count">${label}</span><div class="progress-bar-track"><div class="progress-bar-fill" style="width:${pct}%"></div></div>`;
+    el.innerHTML = `<span class="progress-count">${current} of ~${expected}</span><div class="progress-bar-track"><div class="progress-bar-fill" style="width:${pct}%"></div></div>`;
     el.classList.remove('hidden');
 }
 
@@ -2708,16 +2665,12 @@ function addBoardCard(text, zone, stage, source) {
         if (existNorm === newNorm) return true;
         // One contains the other (catches "LinkedIn outbound" vs "LinkedIn outbound campaign")
         if (existNorm.includes(newNorm) || newNorm.includes(existNorm)) return true;
-        // Word overlap — tighter threshold for same-zone (40%) vs cross-zone (60%)
+        // Word overlap similarity — 60% threshold catches most near-duplicates
         const existWords = new Set(c.text.toLowerCase().split(/\s+/).filter(w => w.length > 2));
         if (newWords.size === 0 || existWords.size === 0) return false;
         const overlap = [...newWords].filter(w => existWords.has(w)).length;
         const similarity = overlap / Math.min(newWords.size, existWords.size);
-        const threshold = (c.zone === zone) ? 0.3 : 0.5; // Strict within same zone (30%), moderate cross-zone (50%)
-        if (similarity >= threshold) return true;
-        // Also catch semantic near-dupes: if 3+ key words match in same zone, it's likely the same insight
-        if (c.zone === zone && overlap >= 3) return true;
-        return false;
+        return similarity >= 0.6;
     });
     if (isDupe) return null;
 
@@ -2874,22 +2827,11 @@ function updateBoardCounts() {
         total += count;
         const countEl = document.querySelector(`.zone-count[data-zone="${zone}"]`);
         if (countEl) countEl.textContent = count;
-        // Hide "No insights yet" placeholder when zone has cards
-        const zoneDiv = countEl?.closest('.board-zone');
-        const emptyEl = zoneDiv?.querySelector('.zone-empty');
-        if (emptyEl) emptyEl.style.display = count > 0 ? 'none' : '';
     });
     const boardCountEl = document.getElementById('boardCount');
     if (boardCountEl) {
-        const prev = parseInt(boardCountEl.textContent) || 0;
         boardCountEl.textContent = total;
         boardCountEl.classList.toggle('hidden', total === 0);
-        // Pulse animation when count increases (draws attention on narrow viewports)
-        if (total > prev && total > 0) {
-            boardCountEl.classList.remove('pulse');
-            void boardCountEl.offsetWidth; // force reflow
-            boardCountEl.classList.add('pulse');
-        }
     }
 }
 
@@ -3104,82 +3046,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 consolidateBtn.disabled = false;
                 consolidateBtn.classList.remove('consolidating');
             }
-        });
-    }
-
-    // Export: Copy all cards to clipboard as markdown
-    const copyBtn = document.getElementById('boardExportCopy');
-    if (copyBtn) {
-        copyBtn.addEventListener('click', () => {
-            const cards = state.board.cards;
-            if (!cards.length) { copyBtn.textContent = 'No cards yet'; setTimeout(() => { copyBtn.textContent = '📋 Copy'; }, 2000); return; }
-            const grouped = {};
-            cards.forEach(c => {
-                const zone = c.zone || 'general';
-                if (!grouped[zone]) grouped[zone] = [];
-                grouped[zone].push(c.text);
-            });
-            let md = `# Workshop Board — ${EXERCISE_LABELS[state.exercise] || 'Session'}\n\n`;
-            for (const [zone, items] of Object.entries(grouped)) {
-                md += `## ${zone.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}\n`;
-                items.forEach(item => { md += `- ${item}\n`; });
-                md += '\n';
-            }
-            md += `---\nThe Studio · Wade Institute of Entrepreneurship\n`;
-            navigator.clipboard.writeText(md).then(() => {
-                copyBtn.textContent = '✓ Copied';
-                setTimeout(() => { copyBtn.textContent = '📋 Copy'; }, 2000);
-            }).catch(() => {
-                copyBtn.textContent = 'Failed';
-                setTimeout(() => { copyBtn.textContent = '📋 Copy'; }, 2000);
-            });
-        });
-    }
-
-    // Export: Download board as PDF via server
-    const pdfBtn = document.getElementById('boardExportPdf');
-    if (pdfBtn) {
-        pdfBtn.addEventListener('click', async () => {
-            const cards = state.board.cards;
-            if (!cards.length) { pdfBtn.textContent = 'No cards yet'; setTimeout(() => { pdfBtn.textContent = '↓ PDF'; }, 2000); return; }
-            pdfBtn.disabled = true;
-            pdfBtn.textContent = '↓ Building...';
-            try {
-                // Build markdown from cards
-                const grouped = {};
-                cards.forEach(c => {
-                    const zone = c.zone || 'general';
-                    if (!grouped[zone]) grouped[zone] = [];
-                    grouped[zone].push(c.text);
-                });
-                let md = '';
-                for (const [zone, items] of Object.entries(grouped)) {
-                    md += `## ${zone.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}\n`;
-                    items.forEach(item => { md += `- ${item}\n`; });
-                    md += '\n';
-                }
-                const res = await fetch('/api/report/pdf', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        report: md,
-                        synopsis: { title: `Workshop Board — ${EXERCISE_LABELS[state.exercise] || 'Session'}` },
-                        exercise: state.exercise,
-                        mode: state.mode
-                    })
-                });
-                if (res.ok) {
-                    const blob = await res.blob();
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = `Workshop Board - ${EXERCISE_LABELS[state.exercise] || 'Session'}.pdf`;
-                    a.click();
-                    URL.revokeObjectURL(url);
-                }
-            } catch (e) { console.error('Board PDF export failed', e); }
-            pdfBtn.disabled = false;
-            pdfBtn.textContent = '↓ PDF';
         });
     }
 });
@@ -3480,21 +3346,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const submitBtn = document.getElementById('saveModalSubmit');
     const statusEl = document.getElementById('saveModalStatus');
 
-    // Save session — open email modal with session context
+    // Save session — open email modal
     if (saveBtn) saveBtn.addEventListener('click', () => {
         if (overlay) overlay.classList.remove('hidden');
-        // Reset stale success state on reopen
-        if (statusEl) { statusEl.textContent = ''; statusEl.classList.add('hidden'); }
-        if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Send link'; }
-        // Add session context to modal title
-        const titleEl = document.getElementById('saveModalTitle');
-        if (titleEl && state.exercise && state.exercise !== 'suggest') {
-            const toolName = EXERCISE_LABELS[state.exercise] || state.exercise;
-            const progress = state.exchangeCount ? ` (${state.exchangeCount} exchanges)` : '';
-            titleEl.textContent = `Save your ${toolName} session${progress}`;
-        } else if (titleEl && state.mode === 'routing') {
-            titleEl.textContent = 'Save your conversation with Pete';
-        }
         if (emailInput) emailInput.focus();
     });
 
@@ -3533,16 +3387,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await res.json();
             if (data.id) {
                 if (statusEl) {
-                    statusEl.textContent = '✓ Link sent! Check your inbox.';
+                    statusEl.textContent = 'Link sent! Check your inbox.';
                     statusEl.classList.remove('hidden');
-                    statusEl.style.color = '#22C55E';
                 }
-                // Flash the save icon green briefly
-                if (saveBtn) { saveBtn.style.borderColor = '#22C55E'; saveBtn.style.color = '#22C55E'; }
-                setTimeout(() => {
-                    if (overlay) overlay.classList.add('hidden');
-                    if (saveBtn) { saveBtn.style.borderColor = ''; saveBtn.style.color = ''; }
-                }, 3000);
+                setTimeout(() => { if (overlay) overlay.classList.add('hidden'); }, 2000);
             } else {
                 if (statusEl) {
                     statusEl.textContent = data.error || 'Something went wrong';
@@ -3741,9 +3589,9 @@ function showFeatureHint(targetSelector, text, hintKey) {
 
 // Register hints for features as they appear
 const featureHints = {
-    board: { selector: '#boardToggle', text: 'Your workshop board — insights, ideas, and actions build here as you work.', key: 'board' },
-    save: { selector: '#saveSessionBtn', text: 'Your session saves automatically. Use this to email yourself a link.', key: 'save' },
-    helpChallenge: { selector: '.help-btn', text: '"Help me" for encouragement. "Challenge me" for tough love. Use either any time.', key: 'helpchallenge' },
+    board: { selector: '#boardToggle', text: 'Your workshop board — ideas and insights build here as you work.', key: 'board' },
+    save: { selector: '#saveSessionBtn', text: 'Save your session and come back later via a magic link.', key: 'save' },
+    pitchPreview: { selector: '#pitchPreview', text: 'Your pitch builds here as you define each component.', key: 'pitch' },
     feedback: { selector: '#feedbackTab', text: 'We\'re in beta — your feedback shapes what we build next.', key: 'feedback' },
     toolMenu: { selector: '#toolDropdownToggle', text: 'Switch tools anytime from this menu.', key: 'toolmenu' }
 };
@@ -3818,17 +3666,6 @@ hintObserver.observe(document.body, { childList: true, subtree: true, attributes
         }
     });
 })();
-
-// === EXIT-INTENT PROTECTION ===
-// Warn users before they accidentally close the tab during an active session
-window.addEventListener('beforeunload', (e) => {
-    // Only warn if user has an active session with real exchanges
-    if (state.mode && state.mode !== 'routing' && state.exchangeCount >= 2 && !state.wrapped) {
-        e.preventDefault();
-        // Modern browsers ignore custom messages, but this triggers the native dialog
-        e.returnValue = '';
-    }
-});
 
 // === iOS KEYBOARD VIEWPORT FIX ===
 // On iOS, the virtual keyboard shrinks the visual viewport but position:fixed
