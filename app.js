@@ -140,7 +140,7 @@ function updateStageLogo(mode) {
 const STAGE_TOOLS = {
     untangle: ['five-whys', 'empathy-map', 'jtbd', 'socratic'],
     spark: ['crazy-8s', 'hmw', 'scamper', 'analogical'],
-    test: ['pre-mortem', 'devils-advocate', 'cold-open', 'reality-check'],
+    test: ['pre-mortem', 'devils-advocate', 'cold-open', 'reality-check', 'trade-off'],
     build: ['lean-canvas', 'effectuation', 'rapid-experiment', 'flywheel', 'theory-of-change']
 };
 
@@ -232,7 +232,8 @@ const EXERCISE_LABELS = {
     'socratic': 'Socratic Questioning',
     'cold-open': 'Cold Open',
     'reality-check': 'Reality Check',
-    'theory-of-change': 'Theory of Change'
+    'theory-of-change': 'Theory of Change',
+    'trade-off': 'The Trade-Off'
 };
 
 const MODE_LABELS = {
@@ -260,7 +261,8 @@ const EXERCISE_MODE = {
     'socratic': 'untangle',
     'cold-open': 'test',
     'reality-check': 'test',
-    'theory-of-change': 'build'
+    'theory-of-change': 'build',
+    'trade-off': 'test'
 };
 
 // Exercise descriptions (mirror of HTML card text)
@@ -281,7 +283,8 @@ const EXERCISE_DESCS = {
     'socratic':         'Test whether your problem is built on facts or assumptions.',
     'cold-open':         'Can your message survive first contact with a stranger?',
     'reality-check':     'Confront the gap between your story and your data.',
-    'theory-of-change':  'Map the causal chain from what you do to the change you create.'
+    'theory-of-change':  'Map the causal chain from what you do to the change you create.',
+    'trade-off':         'Force trade-offs to reveal what customers actually value.'
 };
 
 // Suggested prompt framings shown as input placeholder
@@ -299,6 +302,7 @@ const EXERCISE_HINTS = {
     'effectuation':     'e.g. "I have deep expertise in policy and a strong network in government — where do I start?"',
     'analogical':       'e.g. "How might we reduce handoff delays between teams the way Formula 1 does pit stops?"',
     'cold-open':        'e.g. "I need to explain what we do to investors who have never heard of us"',
+    'trade-off':        'e.g. "We have seven features and every stakeholder says theirs is essential"',
     'theory-of-change': 'e.g. "We built the platform but I can\'t explain how it actually leads to the impact we promise"',
     'reality-check':    'e.g. "I keep telling investors we have product-market fit but I\'m not sure the numbers back it up"',
     'socratic':         'e.g. "Everyone says the board will never approve this — but has anyone actually asked them?"',
@@ -319,6 +323,7 @@ const EXERCISE_ARCS = {
     'lean-canvas':      'We\'ll map your venture model on one page, then pressure-test the weakest blocks.',
     'effectuation':     'We\'ll start with what you have — skills, network, resources — then find where they point.',
     'analogical':       'We\'ll borrow solutions from unexpected places and adapt them to your challenge.',
+    'trade-off':        'Pete will force you to choose between your own features. The ones that survive every round are your core value.',
     'theory-of-change': 'We\'ll work backwards from the change you want to create, mapping every condition that has to be true, and find where the chain depends on things you can\'t control.',
     'reality-check':    'Pete will ask for the evidence behind every claim you make about your business — and show you where the story and the data diverge.',
     'cold-open':        'Pete will play a stranger who has no context. You\'ll pitch, get honest feedback, iterate, and build a message hierarchy that survives first contact.',
@@ -331,7 +336,7 @@ const EXERCISE_EXCHANGES = {
     'five-whys': 7, 'jtbd': 10, 'empathy-map': 10,
     'hmw': 8, 'scamper': 10, 'crazy-8s': 8,
     'pre-mortem': 10, 'devils-advocate': 10, 'rapid-experiment': 8,
-    'lean-canvas': 12, 'effectuation': 8, 'analogical': 8, 'flywheel': 10, 'socratic': 8, 'cold-open': 8, 'reality-check': 8, 'theory-of-change': 10
+    'lean-canvas': 12, 'effectuation': 8, 'analogical': 8, 'flywheel': 10, 'socratic': 8, 'cold-open': 8, 'reality-check': 8, 'theory-of-change': 10, 'trade-off': 10
 };
 
 // Human-readable time estimates per exercise
@@ -352,7 +357,8 @@ const EXERCISE_TIMES = {
     'socratic':       '20 min',
     'cold-open':      '20 min',
     'reality-check':  '20 min',
-    'theory-of-change':'25 min'
+    'theory-of-change':'25 min',
+    'trade-off':      '25 min'
 };
 
 // Stage order for progress strip
@@ -444,7 +450,8 @@ const TOOL_DETAIL_SLUG = {
     'socratic': 'socratic-questioning',
     'cold-open': 'cold-open',
     'reality-check': 'reality-check',
-    'theory-of-change': 'theory-of-change'
+    'theory-of-change': 'theory-of-change',
+    'trade-off': 'trade-off'
 };
 function toolDetailUrl(exercise) {
     const slug = TOOL_DETAIL_SLUG[exercise] || exercise;
