@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link rel="preload" href="fonts/GT-Walsheim-Regular.woff" as="font" type="font/woff" crossorigin>
     <link rel="preload" href="banner.webp" as="image" type="image/webp">
-    <link rel="stylesheet" href="styles.css?v=208">
+    <link rel="stylesheet" href="styles.css?v=210">
 </head>
 <body>
 
@@ -25,7 +25,7 @@
         </nav>
         <div class="header-controls">
             <div class="text-size-control" id="textSizeControl">
-                <button class="text-size-btn" id="textSizeToggle" title="Adjust text size">Aa</button>
+                <button class="text-size-btn" id="textSizeToggle" title="Adjust text size" aria-label="Adjust text size">Aa</button>
                 <div class="text-size-picker hidden" id="textSizePicker">
                     <button class="text-size-option" data-size="small">A<span class="text-size-label">Small</span></button>
                     <button class="text-size-option active" data-size="medium">A<span class="text-size-label">Medium</span></button>
@@ -35,8 +35,8 @@
             <button class="theme-toggle" id="themeToggle" title="Toggle light/dark mode" aria-label="Toggle light/dark mode">
                 <span class="theme-icon">☀</span>
             </button>
-            <button class="tour-help-btn" id="tourHelpBtn" title="Take a tour">?</button>
-            <button class="header-save-btn hidden" id="saveSessionBtn" title="Save session">
+            <button class="tour-help-btn" id="tourHelpBtn" title="Help — take a tour" aria-label="Help — take a tour">?</button>
+            <button class="header-save-btn hidden" id="saveSessionBtn" title="Save session" aria-label="Save session">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
             </button>
         </div>
@@ -337,14 +337,26 @@
                 </div>
             </section>
 
-            <!-- QUOTE -->
+            <!-- QUOTES -->
             <section class="lp-quote">
                 <div class="lp-container">
-                    <blockquote class="lp-blockquote">
-                        <span class="lp-quote-mark">"</span>
-                        <p class="lp-quote-text">Wade was a playground for connecting science and business — the kind of thinking you can't get from a textbook.</p>
-                        <cite class="lp-quote-cite">— Karolina Petkovic, Research Scientist, CSIRO; Founder, Iron WoMan; MoE Alumna</cite>
-                    </blockquote>
+                    <div class="lp-quotes-grid">
+                        <blockquote class="lp-blockquote">
+                            <span class="lp-quote-mark">"</span>
+                            <p class="lp-quote-text">Wade was a playground for connecting science and business — the kind of thinking you can't get from a textbook.</p>
+                            <cite class="lp-quote-cite">— Karolina Petkovic, Research Scientist, CSIRO; Founder, Iron WoMan</cite>
+                        </blockquote>
+                        <blockquote class="lp-blockquote">
+                            <span class="lp-quote-mark">"</span>
+                            <p class="lp-quote-text">The Five Whys session surfaced something we'd been dancing around for months. Twenty minutes and we had the root cause on the table.</p>
+                            <cite class="lp-quote-cite">— Corporate Innovation Lead, Wade Program Participant</cite>
+                        </blockquote>
+                        <blockquote class="lp-blockquote">
+                            <span class="lp-quote-mark">"</span>
+                            <p class="lp-quote-text">I came in with a vague idea and left with a Lean Canvas I could actually show to investors. Pete pushed me harder than my co-founder does.</p>
+                            <cite class="lp-quote-cite">— Early-Stage Founder, Master of Entrepreneurship Alumnus</cite>
+                        </blockquote>
+                    </div>
                 </div>
             </section>
 
@@ -635,6 +647,6 @@
         <button class="feedback-submit" id="feedbackSubmit">Send feedback</button>
     </div>
 
-    <script src="app.js?v=208"></script>
+    <script src="app.js?v=210"></script>
 </body>
 </html>

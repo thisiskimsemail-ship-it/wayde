@@ -341,6 +341,31 @@ const EXERCISE_ARCS = {
     'flywheel':         'We\'ll map the 3-5 things that reinforce each other in your business, test each connection, and find the bottleneck holding you back.'
 };
 
+
+// Tool-specific starter prompts (shown below input at session start)
+const STARTER_PROMPTS = {
+    'five-whys': ['Tell me about a problem that keeps coming back', 'Something in my team isn\'t working and I can\'t figure out why'],
+    'empathy-map': ['I need to understand how my customers actually feel', 'My stakeholders keep resisting a change I\'m proposing'],
+    'jtbd': ['I want to understand what job my product is really doing', 'Customers are using my product in ways I didn\'t expect'],
+    'socratic': ['Everyone says the board will never approve this', 'I\'ve been told our market is too small — but is it?'],
+    'iceberg': ['We keep losing our best people and nothing we try fixes it', 'The same kind of problem keeps happening no matter what we do'],
+    'crazy-8s': ['I need fresh ideas for a problem I\'ve been stuck on', 'Help me brainstorm — I want quantity, not quality'],
+    'hmw': ['I have a problem but I\'m not sure how to reframe it', 'Turn my frustration into an opportunity question'],
+    'scamper': ['I have an existing product I want to reinvent', 'Help me stretch this idea in unexpected directions'],
+    'analogical': ['I need solutions from outside my industry', 'How would a completely different field solve this?'],
+    'constraint-flip': ['We have no marketing budget and our competitors spend millions', 'I keep apologising for our limitations in pitches'],
+    'pre-mortem': ['We\'re about to launch — what could go wrong?', 'I need to stress-test this plan before we commit'],
+    'devils-advocate': ['I think I have the answer — challenge me', 'My team is too aligned — nobody is pushing back'],
+    'cold-open': ['I need to explain what we do to strangers', 'My elevator pitch doesn\'t land — help me fix it'],
+    'reality-check': ['I keep telling investors we have product-market fit', 'I suspect the numbers don\'t match the story I\'m telling'],
+    'trade-off': ['We have too many features and can\'t prioritise', 'Every stakeholder says their feature is essential'],
+    'lean-canvas': ['I have a business idea I want to map out', 'Help me pressure-test my business model'],
+    'effectuation': ['I want to start something but don\'t know where', 'I have skills and connections but no clear plan'],
+    'rapid-experiment': ['I need to validate an assumption before I build', 'Design me a quick test I can run this week'],
+    'flywheel': ['Growth has stalled and I can\'t figure out why', 'I can describe what we do but not why it compounds'],
+    'theory-of-change': ['I need to show funders how our work creates impact', 'There\'s a gap between what we do and what we hope happens']
+};
+
 // Expected exchange counts per exercise (for progress indicator)
 const EXERCISE_EXCHANGES = {
     'five-whys': 7, 'jtbd': 10, 'empathy-map': 10,
@@ -691,6 +716,33 @@ $$('.card-exercise-btn').forEach(btn => {
     });
 });
 
+
+// Render tool-specific starter prompt pills below input
+function renderStarterPrompts(exercise) {
+    const existing = document.getElementById('starterPrompts');
+    if (existing) existing.remove();
+    const prompts = STARTER_PROMPTS[exercise];
+    if (!prompts || prompts.length === 0) return;
+    const container = document.createElement('div');
+    container.id = 'starterPrompts';
+    container.className = 'starter-prompts';
+    prompts.forEach(text => {
+        const btn = document.createElement('button');
+        btn.className = 'starter-prompt-pill';
+        btn.textContent = text;
+        btn.addEventListener('click', () => {
+            container.remove();
+            sendMessage(text);
+        });
+        container.appendChild(btn);
+    });
+    const inputForm = document.getElementById('inputForm');
+    if (inputForm) inputForm.parentNode.insertBefore(container, inputForm);
+    // Auto-remove after first user message
+    const removeOnMessage = () => { container.remove(); };
+    document.getElementById('inputForm')?.addEventListener('submit', removeOnMessage, { once: true });
+}
+
 function startExercise(mode, exercise, startMsg = null) {
     trackEvent('tool_start', { tool: exercise });
     // If transitioning from routing, use the user's own description as the exercise kickoff
@@ -788,6 +840,9 @@ function startExercise(mode, exercise, startMsg = null) {
     document.querySelectorAll('.report-actions').forEach(bar => bar.classList.add('hidden'));
     $('#reportLinkedInBtn')?.classList.add('hidden');
     routingBack.classList.add('hidden');
+
+    // Show tool-specific starter prompts
+    if (!startMsg) renderStarterPrompts(exercise);
 
     // Switch board layout based on exercise — custom boards for structured tools
     const customLayouts = ['lean-canvas', 'elevator-pitch', 'pre-mortem', 'effectuation', 'flywheel', 'cold-open', 'iceberg', 'constraint-flip', 'socratic', 'reality-check', 'theory-of-change', 'trade-off'];

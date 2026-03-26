@@ -19,7 +19,7 @@
     --bg-light: #1e1b58;
     --text: #f5f5f5;
     --text-dim: #d0cee6;
-    --text-muted: #8a87a8;
+    --text-muted: #9e9bc0;
     --orange: #F15A22;
     --pink: #ED3694;
     --teal: #27BDBE;
@@ -1403,10 +1403,10 @@ body.in-session .header-nav { display: none; }
     cursor: pointer;
 }
 .lp-tool-pill:hover { background: rgba(255,255,255,0.08); transform: translateY(-1px); }
-.lp-cat-untangle .lp-tool-pill { color: var(--teal); border-color: rgba(39,189,190,0.3); }
-.lp-cat-spark .lp-tool-pill { color: var(--orange); border-color: rgba(241,90,34,0.3); }
-.lp-cat-test .lp-tool-pill { color: var(--pink); border-color: rgba(237,54,148,0.3); }
-.lp-cat-build .lp-tool-pill { color: var(--yellow); border-color: rgba(228,229,23,0.3); }
+.lp-cat-untangle .lp-tool-pill { color: var(--teal); border-color: rgba(39,189,190,0.5); }
+.lp-cat-spark .lp-tool-pill { color: var(--orange); border-color: rgba(241,90,34,0.5); }
+.lp-cat-test .lp-tool-pill { color: var(--pink); border-color: rgba(237,54,148,0.5); }
+.lp-cat-build .lp-tool-pill { color: var(--yellow); border-color: rgba(228,229,23,0.5); }
 
 /* STATS */
 .lp-stats {
@@ -4989,3 +4989,138 @@ body.light .feedback-input, html[data-theme="light"] .feedback-input { backgroun
 .board-grid-trade-off .board-zone[data-zone="actions"] { grid-column: 1 / -1; grid-row: 5; }
 .board-grid-trade-off .zone-name { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
 @media (max-width: 640px) { .board-grid-trade-off { grid-template-columns: 1fr; } .board-grid-trade-off .board-zone { grid-column: 1 !important; grid-row: auto !important; } }
+
+/* === MOBILE 390px (iPhone SE/14) === */
+@media (max-width: 430px) {
+    .header { padding: 0.5rem 0.75rem; }
+    .logo { height: 48px; }
+    .header-nav { display: none; }
+    .header-controls { gap: 0.25rem; }
+    .header-controls button { width: 28px; height: 28px; font-size: 0.75rem; }
+    .text-size-control { display: none; }
+
+    .lp-container { padding: 0 0.75rem; }
+    .lp-hero { padding: 1rem 0 0; }
+    .lp-hero-inner { grid-template-columns: 1fr; gap: 1rem; }
+    .lp-hero-visual { order: -1; max-height: 200px; overflow: hidden; }
+    .lp-hero-heading { font-size: 1.75rem; }
+    .lp-hero-sub { font-size: 0.9rem; }
+    .lp-hero-lead { font-size: 0.9rem; }
+    .lp-hero-desc { font-size: 0.85rem; }
+    .lp-hero-stages { gap: 0.3rem; }
+    .lp-stage-icon { width: 32px; height: 32px; }
+    .lp-stage-icon svg { width: 16px; height: 16px; }
+    .lp-cta { font-size: 0.9rem; padding: 0.75rem 1.5rem; }
+    .lp-cta-caption { font-size: 0.7rem; }
+
+    .lp-section-heading { font-size: 1.4rem; }
+    .lp-section-sub { font-size: 0.85rem; }
+
+    .lp-process-grid { grid-template-columns: 1fr !important; gap: 1rem; }
+    .lp-process-card { padding: 1rem; }
+    .lp-cat-badge { font-size: 0.65rem; }
+    .lp-process-tagline { font-size: 0.95rem; }
+    .lp-process-desc { font-size: 0.85rem; }
+    .lp-tool-pill { font-size: 0.65rem; padding: 0.15rem 0.5rem; }
+
+    .lp-stats { padding: 1.5rem 0; }
+    .lp-stats-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+    .lp-stat-number { font-size: 1.5rem; }
+    .lp-stat-label { font-size: 0.65rem; }
+
+    .lp-features { padding: 2rem 0; }
+    .lp-features-inner { grid-template-columns: 1fr; }
+    .lp-features-grid { grid-template-columns: 1fr; }
+    .lp-feature-item { gap: 0.5rem; }
+    .lp-feature-icon { width: 32px; height: 32px; }
+    .lp-feature-icon svg { width: 16px; height: 16px; }
+
+    .lp-board-section { padding: 2rem 0; }
+    .lp-board-inner { grid-template-columns: 1fr; }
+
+    .lp-report-section { padding: 2rem 0; }
+    .lp-report-inner { grid-template-columns: 1fr; }
+
+    .lp-personas { padding: 2rem 0; }
+    .lp-persona-grid { grid-template-columns: 1fr; }
+
+    .lp-quote { padding: 2rem 0; }
+    .lp-blockquote { padding-left: 1rem; }
+    .lp-quote-text { font-size: 1rem; }
+
+    .lp-bottom-cta { padding: 2rem 0; }
+    .lp-bottom-heading { font-size: 1.4rem; }
+
+    .lp-footer-inner { flex-direction: column; text-align: center; gap: 0.5rem; }
+    .lp-footer-links { flex-direction: column; gap: 0.25rem; }
+
+    /* Session interface mobile */
+    .session-bar { padding: 0.25rem 0.5rem; }
+    .breadcrumb-stage { font-size: 0.6rem; }
+    .breadcrumb-tool { font-size: 0.7rem; }
+    .progress-indicator { font-size: 0.65rem; }
+
+    .input-field { font-size: 0.9rem; min-height: 2.5rem; }
+    .input-btns { gap: 0.25rem; }
+    .mic-btn, .send-btn { width: 36px; height: 36px; }
+
+    .msg-agent, .msg-user { font-size: 0.9rem; max-width: 95%; }
+    .option-chip { font-size: 0.8rem; padding: 0.35rem 0.7rem; }
+
+    /* Board on mobile — full width */
+    .workshop-layout.board-active { grid-template-columns: 1fr; }
+    .board-pane { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 500; background: var(--bg); overflow-y: auto; }
+    .board-close-btn { display: block; }
+
+    .feedback-tab { font-size: 0.65rem; padding: 0.35rem 0.6rem; right: 0.5rem; bottom: 0.5rem; }
+}
+
+/* Starter prompt pills — shown below input at session start */
+.starter-prompts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    justify-content: center;
+}
+.starter-prompt-pill {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 999px;
+    padding: 0.4rem 1rem;
+    font-family: var(--font);
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+}
+.starter-prompt-pill:hover {
+    background: rgba(255,255,255,0.08);
+    border-color: var(--stage-color, rgba(255,255,255,0.25));
+    color: var(--text);
+}
+@media (max-width: 430px) {
+    .starter-prompts { padding: 0.25rem 0.5rem; }
+    .starter-prompt-pill { font-size: 0.75rem; padding: 0.3rem 0.75rem; }
+}
+html[data-theme="light"] .starter-prompt-pill {
+    background: rgba(30,25,79,0.03);
+    border-color: rgba(30,25,79,0.12);
+    color: rgba(30,25,79,0.6);
+}
+html[data-theme="light"] .starter-prompt-pill:hover {
+    background: rgba(30,25,79,0.06);
+    border-color: rgba(30,25,79,0.25);
+    color: #1E194F;
+}
+
+/* Quotes grid — 3 testimonials side by side */
+.lp-quotes-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+}
+.lp-quotes-grid .lp-blockquote { max-width: none; }
+@media (max-width: 1024px) { .lp-quotes-grid { grid-template-columns: 1fr; gap: 1.5rem; } }
+@media (max-width: 430px) { .lp-quotes-grid { gap: 1rem; } }
