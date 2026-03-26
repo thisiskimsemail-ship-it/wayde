@@ -140,7 +140,7 @@ function updateStageLogo(mode) {
 const STAGE_TOOLS = {
     untangle: ['five-whys', 'empathy-map', 'jtbd', 'socratic'],
     spark: ['crazy-8s', 'hmw', 'scamper'],
-    test: ['pre-mortem', 'devils-advocate', 'analogical', 'cold-open'],
+    test: ['pre-mortem', 'devils-advocate', 'analogical', 'cold-open', 'reality-check'],
     build: ['lean-canvas', 'effectuation', 'rapid-experiment', 'flywheel']
 };
 
@@ -230,7 +230,8 @@ const EXERCISE_LABELS = {
     'effectuation': 'Effectuation',
     'flywheel': 'Flywheel',
     'socratic': 'Socratic Questioning',
-    'cold-open': 'Cold Open'
+    'cold-open': 'Cold Open',
+    'reality-check': 'Reality Check'
 };
 
 const MODE_LABELS = {
@@ -256,7 +257,8 @@ const EXERCISE_MODE = {
     'rapid-experiment': 'build',
     'flywheel': 'build',
     'socratic': 'untangle',
-    'cold-open': 'test'
+    'cold-open': 'test',
+    'reality-check': 'test'
 };
 
 // Exercise descriptions (mirror of HTML card text)
@@ -275,7 +277,8 @@ const EXERCISE_DESCS = {
     'analogical':       'Borrow solutions from unexpected places.',
     'flywheel':         'Map the reinforcing loop that drives your growth and find the bottleneck.',
     'socratic':         'Test whether your problem is built on facts or assumptions.',
-    'cold-open':         'Can your message survive first contact with a stranger?'
+    'cold-open':         'Can your message survive first contact with a stranger?',
+    'reality-check':     'Confront the gap between your story and your data.'
 };
 
 // Suggested prompt framings shown as input placeholder
@@ -293,6 +296,7 @@ const EXERCISE_HINTS = {
     'effectuation':     'e.g. "I have deep expertise in policy and a strong network in government — where do I start?"',
     'analogical':       'e.g. "How might we reduce handoff delays between teams the way Formula 1 does pit stops?"',
     'cold-open':        'e.g. "I need to explain what we do to investors who have never heard of us"',
+    'reality-check':    'e.g. "I keep telling investors we have product-market fit but I\'m not sure the numbers back it up"',
     'socratic':         'e.g. "Everyone says the board will never approve this — but has anyone actually asked them?"',
     'flywheel':         'e.g. "Our users love the product but growth has stalled — what\'s the engine underneath?"'
 };
@@ -311,6 +315,7 @@ const EXERCISE_ARCS = {
     'lean-canvas':      'We\'ll map your venture model on one page, then pressure-test the weakest blocks.',
     'effectuation':     'We\'ll start with what you have — skills, network, resources — then find where they point.',
     'analogical':       'We\'ll borrow solutions from unexpected places and adapt them to your challenge.',
+    'reality-check':    'Pete will ask for the evidence behind every claim you make about your business — and show you where the story and the data diverge.',
     'cold-open':        'Pete will play a stranger who has no context. You\'ll pitch, get honest feedback, iterate, and build a message hierarchy that survives first contact.',
     'socratic':         'We\'ll examine every belief behind your problem — separating facts from assumptions — and find the one thing to test first.',
     'flywheel':         'We\'ll map the 3-5 things that reinforce each other in your business, test each connection, and find the bottleneck holding you back.'
@@ -321,7 +326,7 @@ const EXERCISE_EXCHANGES = {
     'five-whys': 7, 'jtbd': 10, 'empathy-map': 10,
     'hmw': 8, 'scamper': 10, 'crazy-8s': 8,
     'pre-mortem': 10, 'devils-advocate': 10, 'rapid-experiment': 8,
-    'lean-canvas': 12, 'effectuation': 8, 'analogical': 8, 'flywheel': 10, 'socratic': 8, 'cold-open': 8
+    'lean-canvas': 12, 'effectuation': 8, 'analogical': 8, 'flywheel': 10, 'socratic': 8, 'cold-open': 8, 'reality-check': 8
 };
 
 // Human-readable time estimates per exercise
@@ -340,7 +345,8 @@ const EXERCISE_TIMES = {
     'analogical':     '15 min',
     'flywheel':       '25 min',
     'socratic':       '20 min',
-    'cold-open':      '20 min'
+    'cold-open':      '20 min',
+    'reality-check':  '20 min'
 };
 
 // Stage order for progress strip
@@ -430,7 +436,8 @@ const TOOL_DETAIL_SLUG = {
     'hmw': 'how-might-we',
     'analogical': 'analogical-thinking',
     'socratic': 'socratic-questioning',
-    'cold-open': 'cold-open'
+    'cold-open': 'cold-open',
+    'reality-check': 'reality-check'
 };
 function toolDetailUrl(exercise) {
     const slug = TOOL_DETAIL_SLUG[exercise] || exercise;
