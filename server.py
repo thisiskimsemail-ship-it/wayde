@@ -3412,10 +3412,16 @@ def generate_report():
             synopsis_response = client.messages.create(
                 model="claude-haiku-4-5-20251001",
                 max_tokens=400,
-                system="""You create compelling synopsis cards for workshop reports. Be direct, specific, and intriguing — never generic.
+                system="""You create synopsis cards for workshop reports. The synopsis is 3 parts:
+
+Part 1 (title + hook): Name the core tension or finding in plain language specific to this person's situation. The subject is the idea, not the experience. Never reference the AI, the tool, or "your session." Never say "Pete identified" or "this session surfaced." Let the insight speak for itself.
+
+Part 2 (bullets): 3 specific findings from the report. Each should name a concrete thing the person discovered -- not a generic summary. Use the person's own language where it's sharp enough.
+
+TONE: Write as if you're a sharp, experienced colleague explaining what they noticed. Not an MBA summarising a case study. No jargon ("leveraging synergies"), no trendy language ("unlock," "game-changer"), no corporate speak. The Wade voice: credible, clear, direct, grounded. The intelligence is in the observation, not the vocabulary.
 
 Return EXACTLY this JSON format (no markdown, no code blocks):
-{"title": "A crisp 4-8 word title that names the specific insight discovered (not 'Five Whys Report' — something like 'The Consulting Trap Behind Your Talent Drain')", "hook": "One sentence positioning statement that makes the reader want to open the report. Reference their specific situation, not generic advice.", "bullets": ["First key finding from the report — specific and concrete", "Second key finding", "Third key finding"]}""",
+{"title": "A crisp 4-8 word title that names the specific insight (not 'Five Whys Report' -- something like 'The Consulting Trap Behind Your Talent Drain')", "hook": "1-2 sentences delivering the core finding and the reframe. The reader should think 'yes, that's exactly it.' Make this compelling enough that they want the full report.", "bullets": ["First specific finding -- concrete and named", "Second finding", "Third finding"]}""",
                 messages=[{'role': 'user', 'content': f'Generate a synopsis card for this report:\n\n{report_text[:3000]}'}]
             )
             import json as _json

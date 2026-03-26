@@ -1764,12 +1764,35 @@ async function streamResponse() {
             // Show wrap-up card if facilitator signalled the exercise is complete
             if (wrapSignaled && !state.reportGenerated) {
                 state.wrapped = true;
-                // Hide input bar — session is over
-                if (inputArea) inputArea.style.display = 'none';
-                renderWrapPrompt();
-                // Auto-generate report in the background while user reads Pete's closing message
-                generateReport();
-                // Auto-save session summary to memory (no email needed)
+                updateProgressIndicator();
+                // Step 2: Auto-open board for review
+                if (!state.board.visible && state.board.cards.length > 0) {
+                    toggleBoard();
+                }
+                // Auto-consolidate if 5+ cards (1s delay for board to render)
+                if (state.board.cards.length >= 5) {
+                    setTimeout(() => {
+                        const consolidateBtn = document.getElementById('boardConsolidate');
+                        if (consolidateBtn && !consolidateBtn.disabled) consolidateBtn.click();
+                    }, 1000);
+                }
+                // Step 3: Show "happy with board" chip + report button
+                const boardChip = document.createElement('div');
+                boardChip.className = 'option-chips wrap-board-chips';
+                boardChip.innerHTML = `
+                    <button class="option-chip wrap-chip-report">I'm happy with the board — generate my report</button>
+                `;
+                messagesEl.appendChild(boardChip);
+                boardChip.querySelector('.wrap-chip-report').addEventListener('click', () => {
+                    boardChip.remove();
+                    generateReport();
+                });
+                scrollToBottom();
+                // Also show report CTA in footer
+                reportCta.classList.remove('hidden');
+                reportCtaBtn.disabled = false;
+                reportCtaBtn.textContent = 'Generate my report →';
+                // Auto-save session summary
                 autoSaveSessionSummary();
             }
         }
@@ -1803,6 +1826,14 @@ function showReportProgress() {
                 <div class="report-progress-bar-fill" id="reportProgressFill"></div>
             </div>
             <div class="report-progress-status" id="reportProgressStatus">Analysing your session...</div>
+            <div class="report-progress-time">This usually takes about 2 minutes</div>
+            <div class="report-wait-cta">
+                <p class="report-wait-heading">While your report is being prepared</p>
+                <p class="report-wait-desc">Based on your session, you might find these useful.</p>
+                <a class="report-wait-btn" href="https://wadeinstitute.org.au/programs/" target="_blank" rel="noopener">Explore Wade programs →</a>
+                <a class="report-wait-link" href="https://wadeinstitute.org.au/entrepreneurship-starts-with-a-problem-you-really-want-to-solve/" target="_blank" rel="noopener">Read: Start with a problem you really want to solve →</a>
+                <a class="report-wait-link" href="mailto:enquiries@wadeinstitute.org.au">Talk to the Wade team →</a>
+            </div>
         `;
         if (wrapPrompt) {
             // Insert after the wrap-prompt-text
