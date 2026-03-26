@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link rel="preload" href="fonts/GT-Walsheim-Regular.woff" as="font" type="font/woff" crossorigin>
     <link rel="preload" href="banner.webp" as="image" type="image/webp">
-    <link rel="stylesheet" href="styles.css?v=186">
+    <link rel="stylesheet" href="styles.css?v=190">
 </head>
 <body>
 
@@ -472,6 +472,7 @@
                 <h3 class="board-title">Workshop Board</h3>
                 <button class="board-add-card-btn" id="boardAddCard">+ Add card</button>
                 <button class="board-consolidate-btn" id="boardConsolidate" title="AI consolidate — merge duplicates and sharpen">✦ Consolidate</button>
+                <button class="board-canvas-toggle hidden" id="boardCanvasToggle" title="Toggle canvas view">◫ Canvas</button>
                 <button class="board-maximise-btn" id="boardMaxBtn" title="Maximise board">⛶</button>
                 <button class="board-close-btn" id="boardCloseBtn" title="Close board">✕</button>
             </div>
@@ -497,6 +498,7 @@
                     <div class="zone-empty">Concrete next steps go here</div>
                 </div>
             </div>
+            <div class="board-canvas-view hidden" id="boardCanvasView"></div>
         </div><!-- /board-pane -->
 
       </div><!-- /workshop-layout -->

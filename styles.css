@@ -1572,6 +1572,23 @@ body.in-session .header-nav { display: none; }
     .lp-footer-links { flex-direction: column; gap: 0.5rem; }
 }
 
+/* === BOARD CANVAS VIEW TOGGLE === */
+.board-canvas-toggle {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 6px;
+    padding: 0.2rem 0.6rem;
+    font-family: var(--font);
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.board-canvas-toggle:hover { border-color: rgba(255,255,255,0.3); color: var(--text); }
+.board-canvas-view { padding: 0.5rem; overflow: auto; }
+.board-canvas-view svg { border-radius: 8px; }
+
 /* === TOOL CONFIRMATION CARD === */
 .tool-confirm-card {
     max-width: 500px;
