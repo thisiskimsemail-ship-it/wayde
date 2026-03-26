@@ -397,6 +397,17 @@ const uploadBtn = $('#uploadBtn');
 const fileInput = $('#fileInput');
 const modeLabel = $('#modeLabel');
 const toolLearnLink = $('#toolLearnLink');
+
+// Map exercise keys to tool detail page filenames (where they differ)
+const TOOL_DETAIL_SLUG = {
+    'jtbd': 'jobs-to-be-done',
+    'hmw': 'how-might-we',
+    'analogical': 'analogical-thinking'
+};
+function toolDetailUrl(exercise) {
+    const slug = TOOL_DETAIL_SLUG[exercise] || exercise;
+    return `tool-detail-${slug}.html`;
+}
 const sessionBar = $('#sessionBar');
 const sessionMode = $('#sessionMode');
 const sessionExercise = $('#sessionExercise');
@@ -694,7 +705,7 @@ function startExercise(mode, exercise, startMsg = null) {
 
     // Update footer label + learn more link
     modeLabel.innerHTML = `${EXERCISE_LABELS[exercise] || exercise} ·`;
-    if (toolLearnLink) { toolLearnLink.href = `tool-detail-${exercise}.html`; toolLearnLink.classList.remove('hidden'); }
+    if (toolLearnLink) { toolLearnLink.href = toolDetailUrl(exercise); toolLearnLink.classList.remove('hidden'); }
 
     // Update stage progress strip
     updateStageProgress(mode);
@@ -922,7 +933,7 @@ function swapToTool(mode, exercise, swapEl) {
     sessionMode.textContent = MODE_LABELS[mode] || mode;
     sessionExercise.textContent = EXERCISE_LABELS[exercise] || exercise;
     modeLabel.innerHTML = `<a class="mode-label-link" href="toolbox.html#${exercise}" target="_blank" rel="noopener">${EXERCISE_LABELS[exercise] || exercise}</a> ·`;
-    if (toolLearnLink) { toolLearnLink.href = `tool-detail-${exercise}.html`; toolLearnLink.classList.remove('hidden'); }
+    if (toolLearnLink) { toolLearnLink.href = toolDetailUrl(exercise); toolLearnLink.classList.remove('hidden'); }
     updateStageProgress(mode);
 
     // Reset tool picker
@@ -1357,7 +1368,7 @@ function restoreSession(session) {
     sessionMode.textContent = MODE_LABELS[state.mode] || state.mode;
     sessionExercise.textContent = EXERCISE_LABELS[state.exercise] || state.exercise;
     modeLabel.innerHTML = `<a class="mode-label-link" href="toolbox.html#${state.exercise}" target="_blank" rel="noopener">${EXERCISE_LABELS[state.exercise] || state.exercise}</a> ·`;
-    if (toolLearnLink) { toolLearnLink.href = `tool-detail-${state.exercise}.html`; toolLearnLink.classList.remove('hidden'); }
+    if (toolLearnLink) { toolLearnLink.href = toolDetailUrl(state.exercise); toolLearnLink.classList.remove('hidden'); }
     reportCta.classList.remove('hidden');
     updateStageProgress(state.mode);
     // Restore tool picker state
