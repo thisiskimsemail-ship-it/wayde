@@ -1835,12 +1835,26 @@ async function streamResponse() {
 
         // Parse [INSIGHT:], [IDEA:], [ACTION:] tags — workshop board cards
         const boardTagMap = { INSIGHT: 'insights', IDEA: 'ideas', ACTION: 'actions' };
-        Object.entries(boardTagMap).forEach(([tag, zone]) => {
+        Object.entries(boardTagMap).forEach(([tag, defaultZone]) => {
             const regex = new RegExp(`\\[${tag}:\\s*([^\\]]+)\\]`, 'g');
             const matches = fullText.match(regex);
             if (matches) {
                 matches.forEach(m => {
                     const desc = m.match(new RegExp(`\\[${tag}:\\s*([^\\]]+)\\]`))[1].trim();
+                    // Check if the default zone exists on the current board; if not, use first available zone
+                    let zone = defaultZone;
+                    const layout = BOARD_LAYOUTS[state.boardMode || state.exercise];
+                    if (layout && layout.zones) {
+                        const zoneExists = layout.zones.some(z => z.id === defaultZone);
+                        if (!zoneExists) {
+                            // Route to first zone of matching type
+                            if (tag === 'ACTION') {
+                                zone = layout.zones.find(z => z.id === 'actions' || z.id.includes('action'))?.id || layout.zones[layout.zones.length - 1].id;
+                            } else {
+                                zone = layout.zones[0].id; // First zone as fallback for insights/ideas
+                            }
+                        }
+                    }
                     addBoardCard(desc, zone, state.mode, EXERCISE_LABELS[state.exercise] || state.exercise || 'session');
                 });
                 fullText = fullText.replace(new RegExp(`\\n?\\[${tag}:\\s*[^\\]]+\\]`, 'g'), '').trim();
@@ -1931,6 +1945,22 @@ async function streamResponse() {
         if (fullText.includes('[BOARD:close]')) {
             if (state.board.visible) toggleBoard();
             fullText = fullText.replace(/\n?\[BOARD:close\]/g, '').trim();
+        }
+
+
+        // Universal tool-specific tag parser: [BOARD:zone-key: text]
+        // Uses TOOL_TAG_MAPS to route to the correct custom board zone
+        if (state.exercise && TOOL_TAG_MAPS[state.exercise]) {
+            const toolMap = TOOL_TAG_MAPS[state.exercise];
+            const toolTagRegex = /\[BOARD:([a-z0-9_-]+):\s*([^\]]+)\]/g;
+            for (const tm of fullText.matchAll(toolTagRegex)) {
+                const tagKey = tm[1].trim().toLowerCase();
+                const tagText = tm[2].trim();
+                const zone = toolMap[tagKey] || tagKey;
+                addBoardCard(tagText, zone, state.mode, EXERCISE_LABELS[state.exercise] || state.exercise);
+            }
+            fullText = fullText.replace(/\n?\[BOARD:[a-z0-9_-]+:\s*[^\]]+\]/g, '').trim();
+            if (agentDiv) agentDiv.innerHTML = renderMarkdown(fullText);
         }
 
         if (agentDiv) agentDiv.innerHTML = renderMarkdown(fullText);
@@ -3141,6 +3171,110 @@ const RISK_TAG_MAP = {
     'competition': 'risk-competition',
     'timing': 'risk-timing',
     'mitigation': 'risk-mitigations', 'mitigations': 'risk-mitigations'
+};
+
+
+// === TOOL-SPECIFIC BOARD TAG MAPS ===
+
+const FIVE_WHYS_TAG_MAP = {
+    'problem': 'fw-problem', 'presenting-problem': 'fw-problem',
+    'why1': 'fw-why1', 'why-1': 'fw-why1',
+    'why2': 'fw-why2', 'why-2': 'fw-why2',
+    'why3': 'fw-why3', 'why-3': 'fw-why3',
+    'why4': 'fw-why4', 'why-4': 'fw-why4',
+    'why5': 'fw-why5', 'why-5': 'fw-why5', 'root-cause': 'fw-why5', 'root': 'fw-why5'
+};
+const EMPATHY_TAG_MAP = {
+    'user': 'em-user', 'persona': 'em-user', 'says': 'em-says', 'thinks': 'em-thinks',
+    'does': 'em-does', 'feels': 'em-feels',
+    'contradiction': 'em-contradictions', 'gap': 'em-contradictions',
+    'insight': 'insights', 'key-insight': 'insights'
+};
+const JTBD_TAG_MAP_TOOL = {
+    'situation': 'jtbd-situation', 'context': 'jtbd-situation',
+    'functional': 'jtbd-functional', 'emotional': 'jtbd-emotional', 'social': 'jtbd-social',
+    'hiring': 'jtbd-hiring', 'criteria': 'jtbd-hiring',
+    'underserved': 'insights', 'opportunity': 'insights'
+};
+const CRAZY8S_TAG_MAP = {
+    'idea-1': 'c8-1', '1': 'c8-1', 'idea-2': 'c8-2', '2': 'c8-2',
+    'idea-3': 'c8-3', '3': 'c8-3', 'idea-4': 'c8-4', '4': 'c8-4',
+    'idea-5': 'c8-5', '5': 'c8-5', 'idea-6': 'c8-6', '6': 'c8-6',
+    'idea-7': 'c8-7', '7': 'c8-7', 'idea-8': 'c8-8', '8': 'c8-8',
+    'shortlist': 'c8-shortlist', 'selected': 'c8-shortlist'
+};
+const HMW_TAG_MAP = {
+    'problem': 'hmw-problem', 'challenge': 'hmw-problem',
+    'hmw-1': 'hmw-q1', 'q1': 'hmw-q1', 'hmw-2': 'hmw-q2', 'q2': 'hmw-q2',
+    'hmw-3': 'hmw-q3', 'q3': 'hmw-q3', 'hmw-4': 'hmw-q4', 'q4': 'hmw-q4',
+    'hmw-5': 'hmw-q5', 'q5': 'hmw-q5',
+    'best': 'hmw-best', 'most-promising': 'hmw-best'
+};
+const SCAMPER_TAG_MAP = {
+    'substitute': 'sc-s', 's': 'sc-s', 'combine': 'sc-c', 'c': 'sc-c',
+    'adapt': 'sc-a', 'a': 'sc-a', 'modify': 'sc-m', 'm': 'sc-m',
+    'put': 'sc-p', 'p': 'sc-p', 'eliminate': 'sc-e', 'e': 'sc-e',
+    'reverse': 'sc-r', 'r': 'sc-r', 'shortlist': 'sc-shortlist'
+};
+const DEVILS_TAG_MAP = {
+    'idea': 'da-idea', 'for': 'da-for', 'case-for': 'da-for',
+    'against': 'da-against', 'objection': 'da-against',
+    'rebuttal': 'da-rebuttals', 'response': 'da-rebuttals',
+    'verdict': 'da-verdict'
+};
+const RAPID_TAG_MAP = {
+    'hypothesis': 're-hypothesis', 'assumption': 're-assumption', 'riskiest': 're-assumption',
+    'method': 're-method', 'metric': 're-metric',
+    'pass': 're-pass', 'fail': 're-fail',
+    'predicted': 're-predicted', 'actual': 're-actual'
+};
+const SOCRATIC_TAG_MAP = {
+    'verified': 'sq-verified', 'tested': 'sq-verified',
+    'assumed': 'sq-assumed', 'untested': 'sq-assumed',
+    'inherited': 'sq-inherited',
+    'critical': 'sq-critical', 'critical-assumption': 'sq-critical'
+};
+const REALITY_TAG_MAP = {
+    'claim': 'rc-claims', 'story': 'rc-claims', 'evidence': 'rc-evidence', 'data': 'rc-evidence',
+    'supported': 'rc-supported', 'gap': 'rc-gap', 'unsupported': 'rc-gap',
+    'revised': 'rc-revised', 'metric': 'rc-metrics'
+};
+const TOC_TAG_MAP = {
+    'outcome': 'toc-outcome', 'control': 'toc-control', 'influence': 'toc-influence',
+    'outside': 'toc-outside', 'external': 'toc-outside',
+    'activity': 'toc-activities', 'weakest': 'toc-weakest'
+};
+const TRADEOFF_TAG_MAP = {
+    'feature': 'to-features', 'round': 'to-rounds',
+    'must-have': 'to-musthave', 'nice-to-have': 'to-nicetohave',
+    'expendable': 'to-expendable', 'surprise': 'to-surprise',
+    'mvo': 'to-mvo', 'minimum-viable': 'to-mvo'
+};
+const ICEBERG_TAG_MAP = {
+    'event': 'ice-event', 'pattern': 'ice-patterns', 'patterns': 'ice-patterns',
+    'structure': 'ice-structures', 'structures': 'ice-structures',
+    'mental-model': 'ice-mental', 'belief': 'ice-mental',
+    'leverage': 'ice-leverage'
+};
+const CONSTRAINT_TAG_MAP = {
+    'constraint': 'cf-constraint', 'limitation': 'cf-constraint',
+    'flip': 'cf-flip', 'advantage': 'cf-flip',
+    'idea': 'cf-ideas', 'moat': 'cf-moat'
+};
+const COLD_OPEN_TAG_MAP = {
+    'v1': 'co-v1', 'v2': 'co-v2', 'v3': 'co-v3',
+    'hook': 'co-hook', 'follow-up': 'co-followup', 'followup': 'co-followup',
+    'detail': 'co-detail'
+};
+const TOOL_TAG_MAPS = {
+    'five-whys': FIVE_WHYS_TAG_MAP, 'empathy-map': EMPATHY_TAG_MAP,
+    'jtbd': JTBD_TAG_MAP_TOOL, 'crazy-8s': CRAZY8S_TAG_MAP,
+    'hmw': HMW_TAG_MAP, 'scamper': SCAMPER_TAG_MAP,
+    'devils-advocate': DEVILS_TAG_MAP, 'rapid-experiment': RAPID_TAG_MAP,
+    'socratic': SOCRATIC_TAG_MAP, 'reality-check': REALITY_TAG_MAP,
+    'theory-of-change': TOC_TAG_MAP, 'trade-off': TRADEOFF_TAG_MAP,
+    'iceberg': ICEBERG_TAG_MAP, 'constraint-flip': CONSTRAINT_TAG_MAP,
+    'cold-open': COLD_OPEN_TAG_MAP
 };
 
 // Effectuation principle tag mapping
