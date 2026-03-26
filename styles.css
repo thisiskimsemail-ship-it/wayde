@@ -4863,7 +4863,7 @@ body.light .feedback-input, html[data-theme="light"] .feedback-input { backgroun
 .board-grid-iceberg {
     display: grid;
     grid-template-columns: 1fr;
-    grid-template-rows: auto 2px auto auto auto auto auto;
+    grid-template-rows: repeat(6, auto);
     gap: 0;
     overflow-y: auto;
     flex: 1;
