@@ -1439,12 +1439,11 @@ function appendMessage(role, content) {
 function scrollToBottom() {
     // Use rAF to ensure DOM has rendered before scrolling
     requestAnimationFrame(() => {
-        // When board is open, the chat-pane is the scrollable container
         const chatPane = document.getElementById('chatPane');
-        if (chatPane && state.board.visible) {
-            chatPane.scrollTop = chatPane.scrollHeight;
-        }
-        chatArea.scrollTop = chatArea.scrollHeight;
+        // Always scroll chatPane — it's the scrollable container for messages
+        if (chatPane) chatPane.scrollTop = chatPane.scrollHeight;
+        // Also scroll chatArea as fallback
+        if (chatArea) chatArea.scrollTop = chatArea.scrollHeight;
     });
 }
 
@@ -1749,6 +1748,50 @@ async function streamResponse() {
                 suggestedKeys = suggestMatch[1].split(',').map(s => s.trim()).filter(k => EXERCISE_MODE[k]);
                 fullText = fullText.replace(/\n?\[SUGGEST:\s*[^\]]+\]/, '').trim();
                 if (agentDiv) agentDiv.innerHTML = renderMarkdown(fullText);
+                // Auto-start the first suggested tool if Pete is already facilitating
+                // (user accepted via conversation, not via pill click)
+                if (suggestedKeys.length > 0 && state.exchangeCount >= 2) {
+                    const autoKey = suggestedKeys[0];
+                    const autoMode = EXERCISE_MODE[autoKey];
+                    if (autoMode && autoKey) {
+                        // Transition to exercise mode without resetting conversation
+                        state.mode = autoMode;
+                        state.exercise = autoKey;
+                        state.routing = false;
+                        document.body.dataset.mode = autoMode;
+                        document.body.classList.add('in-session');
+                        updateStageLogo(autoMode);
+                        // Show session bar
+                        const sessionBar = document.getElementById('sessionBar');
+                        if (sessionBar) sessionBar.classList.remove('hidden');
+                        const breadcrumbStage = document.getElementById('breadcrumbStage');
+                        const breadcrumbTool = document.getElementById('breadcrumbTool');
+                        if (breadcrumbStage) breadcrumbStage.textContent = (MODE_LABELS[autoMode] || autoMode).toUpperCase();
+                        if (breadcrumbTool) breadcrumbTool.innerHTML = (EXERCISE_LABELS[autoKey] || autoKey) + ' <svg class="breadcrumb-chevron" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg>';
+                        // Switch board layout
+                        const customLayouts = ['lean-canvas', 'elevator-pitch', 'pre-mortem', 'effectuation', 'flywheel', 'cold-open', 'iceberg', 'constraint-flip', 'socratic', 'reality-check', 'theory-of-change', 'trade-off', 'five-whys', 'empathy-map', 'jtbd', 'crazy-8s', 'hmw', 'scamper', 'devils-advocate', 'rapid-experiment'];
+                        if (customLayouts.includes(autoKey)) {
+                            switchBoardLayout(autoKey);
+                        } else {
+                            switchBoardLayout('default');
+                        }
+                        // Update input placeholder
+                        if (EXERCISE_HINTS[autoKey]) {
+                            inputField.placeholder = EXERCISE_HINTS[autoKey];
+                        }
+                        // Update progress
+                        state.exchangeCount = 1;
+                        updateProgressIndicator();
+                        updateStageProgress(autoMode);
+                        updateBreadcrumbDropdown();
+                        // Hide report CTA during exercise
+                        reportCta.classList.add('hidden');
+                        // Remove starter prompts if any
+                        document.getElementById('starterPrompts')?.remove();
+                        saveSession();
+                        suggestedKeys = []; // Don't render buttons — already started
+                    }
+                }
             }
         } else {
             // Check for [WRAP] signal — natural end of exercise
