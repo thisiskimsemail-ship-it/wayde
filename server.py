@@ -4440,6 +4440,21 @@ def track_event():
     return jsonify({'ok': True})
 
 
+@app.route('/api/sessions', methods=['GET'])
+def list_sessions():
+    """List session summaries for a device_id."""
+    device_id = request.args.get('device_id', '')
+    if not device_id:
+        return jsonify({'sessions': []})
+    sessions = get_recent_sessions(device_id, limit=20)
+    # Convert datetime objects to strings
+    for s in sessions:
+        for k, v in s.items():
+            if hasattr(v, 'isoformat'):
+                s[k] = v.isoformat()
+    return jsonify({'sessions': sessions})
+
+
 @app.route('/api/analytics', methods=['GET'])
 def get_analytics():
     """Simple analytics dashboard data."""
