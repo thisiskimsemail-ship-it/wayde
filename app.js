@@ -2555,9 +2555,10 @@ function updateProgressIndicator() {
     const expected = EXERCISE_EXCHANGES[state.exercise] || 8;
     const current = state.exchangeCount;
     const pct = Math.min(100, Math.round((current / expected) * 100));
-    // When past the estimate, switch to qualitative labels instead of "18 of ~12"
     let label;
-    if (current > expected) {
+    if (state.wrapped) {
+        label = 'Session complete';
+    } else if (current >= expected) {
         label = 'Wrapping up';
     } else if (pct >= 80) {
         label = 'Nearly there';
@@ -2712,8 +2713,11 @@ function addBoardCard(text, zone, stage, source) {
         if (newWords.size === 0 || existWords.size === 0) return false;
         const overlap = [...newWords].filter(w => existWords.has(w)).length;
         const similarity = overlap / Math.min(newWords.size, existWords.size);
-        const threshold = (c.zone === zone) ? 0.4 : 0.6; // Much stricter within same zone
-        return similarity >= threshold;
+        const threshold = (c.zone === zone) ? 0.3 : 0.5; // Strict within same zone (30%), moderate cross-zone (50%)
+        if (similarity >= threshold) return true;
+        // Also catch semantic near-dupes: if 3+ key words match in same zone, it's likely the same insight
+        if (c.zone === zone && overlap >= 3) return true;
+        return false;
     });
     if (isDupe) return null;
 
