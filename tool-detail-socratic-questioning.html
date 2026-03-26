@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preload" href="fonts/GT-Walsheim-Regular.woff" as="font" type="font/woff" crossorigin>
+<title>Socratic Questioning — Wade Innovation Toolbox</title>
+<style>
+  @font-face { font-family: "GT Walsheim"; src: url("fonts/GT-Walsheim-Regular.woff") format("woff"), url("fonts/GT-Walsheim-Regular.ttf") format("truetype"); font-weight: 400; font-style: normal; font-display: swap; }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --navy: #1E194F;
+    --navy-deep: #12103a;
+    --orange: #F15A22;
+    --orange-hover: #d14e1b;
+    --white: #FFFFFF;
+    --text-body: #b8b5d0;
+    --text-light: #6e6a8a;
+    --border: rgba(255,255,255,0.08);
+    --border-light: rgba(255,255,255,0.15);
+    --card-bg: #1a1750;
+    --card-hover: #221d5a;
+    --cat-color: #27BDBE;
+    --untangle: #27BDBE;
+    --spark: #F15A22;
+    --test: #ED3694;
+    --build: #E4E517;
+  }
+
+  body {
+    font-family: 'GT Walsheim', 'Space Grotesk', sans-serif;
+    color: var(--text-body);
+    background: var(--navy-deep);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── HEADER ── */
+  header {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: var(--navy-deep);
+    border-bottom: 2px solid var(--orange);
+    padding: 0 60px; height: 72px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .logo { font-weight: 700; font-size: 15px; line-height: 1.15; color: var(--orange); letter-spacing: 0.4px; text-transform: uppercase; }
+  .header-nav { display: flex; gap: 12px; align-items: center; }
+  .nav-pill { font-size: 14px; font-weight: 500; padding: 8px 20px; border-radius: 100px; border: 1.5px solid rgba(255,255,255,0.25); background: transparent; color: var(--white); cursor: pointer; text-decoration: none; transition: all 0.2s; font-family: 'GT Walsheim', 'Space Grotesk', sans-serif; }
+  .nav-pill:hover { background: rgba(255,255,255,0.1); }
+  .nav-pill.active { background: var(--white); color: var(--navy); border-color: var(--white); }
+  .nav-icon { width: 36px; height: 36px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,0.25); display: flex; align-items: center; justify-content: center; color: var(--white); font-size: 14px; text-decoration: none; }
+
+  /* ── TOOL HERO ── */
+  .tool-hero {
+    padding: 140px 60px 60px;
+    max-width: 1300px;
+    margin: 0 auto;
+  }
+
+  .breadcrumb {
+    font-size: 14px; color: var(--text-light); margin-bottom: 28px;
+  }
+  .breadcrumb a { color: var(--cat-color); text-decoration: none; }
+  .breadcrumb a:hover { text-decoration: underline; }
+  .breadcrumb span { margin: 0 8px; color: var(--border-light); }
+
+  .tool-hero-grid {
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: 60px;
+    align-items: start;
+  }
+
+  .tool-hero-left .stage-badge {
+    display: inline-block;
+    font-size: 11px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase;
+    padding: 5px 14px; border-radius: 100px;
+    background: var(--cat-color); color: var(--white);
+    margin-bottom: 16px;
+  }
+
+  .tool-hero-left h1 {
+    font-family: 'GT Walsheim', 'Space Grotesk', sans-serif;
+    font-size: 56px; font-weight: 400; color: var(--white);
+    line-height: 1.1; margin-bottom: 12px;
+  }
+
+  .tool-headline {
+    font-family: 'GT Walsheim', 'Space Grotesk', sans-serif;
+    font-size: 24px; font-weight: 400; color: var(--cat-color);
+    font-style: italic; margin-bottom: 24px;
+  }
+
+  .tool-intro {
+    font-size: 18px; line-height: 1.7; color: var(--text-body);
+    max-width: 600px;
+  }
+
+  /* Right sidebar — quick facts card */
+  .quick-facts {
+    background: var(--card-bg);
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    padding: 32px;
+  }
+
+  .qf-title {
+    font-size: 13px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+    color: var(--text-light); margin-bottom: 20px;
+  }
+
+  .qf-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .qf-row:last-of-type { border-bottom: none; }
+
+  .qf-label { font-size: 14px; color: var(--text-light); }
+  .qf-value { font-size: 14px; font-weight: 600; color: var(--white); }
+
+  .qf-pathways {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+
+  .qf-pathways-label {
+    font-size: 13px; color: var(--text-light); margin-bottom: 10px;
+  }
+
+  .pathway-tags {
+    display: flex; flex-wrap: wrap; gap: 6px;
+  }
+
+  .pathway-tag {
+    font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 100px; border: 1px solid;
+  }
+  .pathway-tag.untangle { border-color: rgba(39,189,190,0.4); color: var(--untangle); }
+  .pathway-tag.spark { border-color: rgba(241,90,34,0.4); color: var(--spark); }
+  .pathway-tag.test { border-color: rgba(237,54,148,0.4); color: var(--test); }
+  .pathway-tag.build { border-color: rgba(228,229,23,0.4); color: var(--build); }
+
+  .qf-cta {
+    display: block; width: 100%; text-align: center;
+    margin-top: 24px; padding: 14px 24px;
+    background: var(--cat-color); color: var(--white);
+    border-radius: 100px; border: none;
+    font-size: 16px; font-weight: 600; font-family: 'GT Walsheim', 'Space Grotesk', sans-serif;
+    cursor: pointer; text-decoration: none; transition: all 0.2s;
+  }
+  .qf-cta:hover { filter: brightness(0.9); }
+
+  /* ── CONTENT SECTIONS ── */
+  .content-area {
+    padding: 0 60px 80px;
+    max-width: 1300px;
+    margin: 0 auto;
+  }
+
+  .content-grid {
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: 60px;
+  }
+
+  .content-main { max-width: 100%; }
+
+  .section-block {
+    margin-bottom: 56px;
+  }
+
+  .section-block h2 {
+    font-family: 'GT Walsheim', 'Space Grotesk', sans-serif;
+    font-size: 32px; font-weight: 400; color: var(--white);
+    margin-bottom: 20px;
+  }
+
+  .section-block p {
+    font-size: 17px; line-height: 1.75; color: var(--text-body);
+    margin-bottom: 16px;
+  }
+
+  .section-block p strong { color: var(--white); }
+
+  /* How it works — step timeline */
+  .steps-timeline {
+    position: relative;
+    padding-left: 40px;
+  }
+
+  .steps-timeline::before {
+    content: '';
+    position: absolute;
+    left: 14px; top: 8px; bottom: 8px;
+    width: 2px;
+    background: var(--border);
+  }
+
+  .step-item {
+    position: relative;
+    padding-bottom: 32px;
+  }
+  .step-item:last-child { padding-bottom: 0; }
+
+  .step-number {
+    position: absolute;
+    left: -40px; top: 0;
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background: var(--card-bg);
+    border: 2px solid var(--cat-color);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; color: var(--cat-color);
+  }
+
+  .step-title {
+    font-size: 17px; font-weight: 600; color: var(--white);
+    margin-bottom: 6px;
+  }
+
+  .step-desc {
+    font-size: 15px; color: var(--text-body); line-height: 1.6;
+  }
+
+  /* Sample output card */
+  .sample-output {
+    background: var(--card-bg);
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    padding: 32px;
+    margin-top: 8px;
+  }
+
+  .sample-label {
+    font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+    color: var(--cat-color); margin-bottom: 20px;
+  }
+
+  .sample-claim {
+    padding: 14px 16px;
+    border-radius: 10px;
+    border-left: 4px solid;
+    margin-bottom: 10px;
+    background: rgba(255,255,255,0.03);
+  }
+  .sample-claim.verified { border-left-color: #22C55E; }
+  .sample-claim.assumed { border-left-color: #F59E0B; }
+  .sample-claim.inherited { border-left-color: #EF4444; }
+  .sample-claim.critical { border-left-color: #F59E0B; border-left-width: 4px; background: rgba(245,158,11,0.08); }
+
+  .sample-claim-status {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .sample-claim-status.verified { color: #22C55E; }
+  .sample-claim-status.assumed { color: #F59E0B; }
+  .sample-claim-status.inherited { color: #EF4444; }
+
+  .sample-claim-text {
+    font-size: 14px; color: var(--white); line-height: 1.5;
+  }
+
+  .sample-root {
+    margin-top: 20px; padding-top: 20px;
+    border-top: 2px solid var(--cat-color);
+  }
+
+  .sample-root-label {
+    font-size: 12px; font-weight: 700; color: var(--cat-color); text-transform: uppercase;
+    letter-spacing: 0.8px; margin-bottom: 6px;
+  }
+
+  .sample-root-text {
+    font-family: 'GT Walsheim', 'Space Grotesk', sans-serif;
+    font-size: 20px; color: var(--white); line-height: 1.4;
+  }
+
+  .sample-test {
+    margin-top: 16px; padding: 16px;
+    border-radius: 10px;
+    background: rgba(39,189,190,0.08);
+    border: 1px solid rgba(39,189,190,0.25);
+  }
+
+  .sample-test-label {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase;
+    color: var(--cat-color); margin-bottom: 4px;
+  }
+
+  .sample-test-text {
+    font-size: 14px; color: var(--white); line-height: 1.5;
+  }
+
+  /* Foundation / credibility section */
+  .foundation-logos {
+    display: flex; flex-wrap: wrap; gap: 16px;
+    margin-top: 16px;
+  }
+
+  .org-badge {
+    font-size: 12px; font-weight: 600; padding: 8px 16px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+    color: var(--text-light);
+  }
+
+  /* Sidebar — related tools */
+  .sidebar {
+    display: flex; flex-direction: column; gap: 24px;
+  }
+
+  .sidebar-card {
+    background: var(--card-bg);
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    padding: 24px;
+    transition: all 0.2s;
+  }
+  .sidebar-card:hover { border-color: var(--border-light); background: var(--card-hover); }
+
+  .sidebar-card-label {
+    font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+    color: var(--text-light); margin-bottom: 16px;
+  }
+
+  .related-tool {
+    display: flex; gap: 14px; align-items: flex-start;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+    text-decoration: none;
+  }
+  .related-tool:last-child { border-bottom: none; }
+
+  .related-tool-icon {
+    width: 36px; height: 36px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 700; flex-shrink: 0;
+  }
+  .related-tool-icon.untangle { background: rgba(39,189,190,0.15); color: #27BDBE; }
+  .related-tool-icon.spark { background: rgba(241,90,34,0.15); color: #F15A22; }
+  .related-tool-icon.test { background: rgba(237,54,148,0.15); color: #ED3694; }
+  .related-tool-icon.build { background: rgba(228,229,23,0.15); color: #E4E517; }
+
+  .related-tool-text h4 {
+    font-size: 14px; font-weight: 600; color: var(--white); margin-bottom: 2px;
+  }
+  .related-tool-text p {
+    font-size: 13px; color: var(--text-light); line-height: 1.4;
+  }
+
+  /* Pete's coaching note */
+  .pete-note {
+    background: linear-gradient(135deg, rgba(39,189,190,0.08), rgba(39,189,190,0.04));
+    border: 1px solid rgba(39,189,190,0.25);
+    border-radius: 14px;
+    padding: 24px;
+  }
+
+  .pete-avatar-row {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .pete-avatar {
+    width: 32px; height: 32px; border-radius: 8px;
+    background: var(--navy); display: flex; align-items: center; justify-content: center;
+    color: var(--white); font-weight: 700; font-size: 13px;
+  }
+
+  .pete-label { font-size: 13px; font-weight: 600; color: var(--white); }
+
+  .pete-text {
+    font-size: 14px; color: var(--text-body); line-height: 1.6; font-style: italic;
+  }
+
+  /* ── BOTTOM CTA BAR ── */
+  .tool-bottom-cta {
+    padding: 60px;
+    max-width: 1300px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid var(--border);
+  }
+
+  .tool-bottom-left h3 {
+    font-family: 'GT Walsheim', 'Space Grotesk', sans-serif;
+    font-size: 28px; font-weight: 400; color: var(--white);
+    margin-bottom: 6px;
+  }
+  .tool-bottom-left p { font-size: 15px; color: var(--text-light); }
+
+  .tool-bottom-right { display: flex; gap: 16px; align-items: center; }
+
+  .back-link {
+    font-size: 15px; color: var(--text-light); text-decoration: none;
+    transition: color 0.2s;
+  }
+  .back-link:hover { color: var(--white); }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 40px 60px; border-top: 2px solid var(--orange);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .footer-left { display: flex; align-items: center; gap: 32px; }
+  .footer-logo { font-weight: 700; font-size: 13px; line-height: 1.15; color: var(--orange); letter-spacing: 0.4px; text-transform: uppercase; }
+  .footer-links { display: flex; gap: 24px; }
+  .footer-links a { font-size: 14px; color: var(--text-light); text-decoration: none; }
+  .footer-links a:hover { color: var(--white); }
+  .footer-right { font-size: 13px; color: var(--text-light); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 1000px) {
+    .tool-hero-grid, .content-grid { grid-template-columns: 1fr; gap: 32px; }
+    header { padding: 0 32px; }
+    .tool-hero, .content-area, .tool-bottom-cta { padding-left: 32px; padding-right: 32px; }
+  }
+  @media (max-width: 600px) {
+    .tool-hero-left h1 { font-size: 40px; }
+    .section-block h2 { font-size: 28px; }
+    footer { flex-direction: column; gap: 16px; text-align: center; }
+    .tool-bottom-cta { flex-direction: column; gap: 24px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <a href="index.html"><img class="logo" src="logo.png" alt="Wade Institute" style="height:50px;width:auto;"></a>
+  <nav class="header-nav">
+    <a href="index.html" class="nav-pill">The Studio</a>
+    <a href="toolbox.html" class="nav-pill active">Toolbox</a>
+    <a href="#" class="nav-icon">Aa</a>
+    <a href="#" class="nav-icon">&#x2731;</a>
+    <a href="#" class="nav-icon">?</a>
+  </nav>
+</header>
+
+<!-- TOOL HERO -->
+<section class="tool-hero">
+  <div class="breadcrumb">
+    <a href="index.html">The Studio</a>
+    <span>/</span>
+    <a href="toolbox.html">Toolbox</a>
+    <span>/</span>
+    <a href="toolbox.html#untangle">The Untangle</a>
+    <span>/</span>
+    Socratic Questioning
+  </div>
+
+  <div class="tool-hero-grid">
+    <div class="tool-hero-left">
+      <div class="stage-badge">THE UNTANGLE</div>
+      <h1>Socratic Questioning</h1>
+      <p class="tool-headline">Test whether your problem is built on facts or assumptions.</p>
+      <p class="tool-intro">Tests whether the problem is real in the first place. People walk in saying "our customers don't want to pay" or "the board will never approve that" and treat those as fixed truths. Pete asks "how do you know that?" until you discover what's verified, what's assumed, and what's never been tested.</p>
+    </div>
+
+    <div class="quick-facts">
+      <div class="qf-title">Quick Facts</div>
+      <div class="qf-row">
+        <span class="qf-label">Duration</span>
+        <span class="qf-value">~20 minutes</span>
+      </div>
+      <div class="qf-row">
+        <span class="qf-label">Category</span>
+        <span class="qf-value">The Untangle</span>
+      </div>
+      <div class="qf-row">
+        <span class="qf-label">Origin</span>
+        <span class="qf-value">Socratic method, 470 BC</span>
+      </div>
+      <div class="qf-row">
+        <span class="qf-label">Created by</span>
+        <span class="qf-value">Socrates / Wade Institute</span>
+      </div>
+      <div class="qf-pathways">
+        <div class="qf-pathways-label">Used in pathways</div>
+        <div class="pathway-tags">
+          <span class="pathway-tag untangle">The Untangle</span>
+        </div>
+      </div>
+      <a href="index.html?tool=socratic" class="qf-cta">Try Socratic Questioning &rarr;</a>
+    </div>
+  </div>
+</section>
+
+<!-- CONTENT -->
+<section class="content-area">
+  <div class="content-grid">
+    <div class="content-main">
+
+      <!-- WHEN TO USE -->
+      <div class="section-block">
+        <h2>When to use it</h2>
+        <p>Use Socratic Questioning before making a significant decision. When you're stuck and feel like you've "tried everything" — within constraints you assumed were fixed. When someone tells you your idea won't work and you want to test whether their objections are evidence-based or just inherited wisdom.</p>
+        <p>It's a natural entry point for <strong>The Untangle</strong> — especially when the problem feels certain but hasn't actually been tested.</p>
+      </div>
+
+      <!-- HOW IT WORKS IN THE STUDIO -->
+      <div class="section-block">
+        <h2>How it works in The Studio</h2>
+        <p>Here's how a session works with Pete:</p>
+
+        <div class="steps-timeline">
+          <div class="step-item">
+            <div class="step-number">1</div>
+            <div class="step-title">State Your Case</div>
+            <div class="step-desc">Pete asks you to describe your situation fully. He listens, asks clarifying questions, and doesn't challenge yet. The goal is to get your full mental model on the table.</div>
+          </div>
+          <div class="step-item">
+            <div class="step-number">2</div>
+            <div class="step-title">The Questioning</div>
+            <div class="step-desc">Pete takes your strongest-held beliefs and asks "how do you know that?" Each claim gets classified: Verified (tested, evidence exists), Assumed (believed but untested), or Inherited (someone told you, you accepted it).</div>
+          </div>
+          <div class="step-item">
+            <div class="step-number">3</div>
+            <div class="step-title">The Map</div>
+            <div class="step-desc">A visual map of what you actually know vs what you think you know. Pete asks: "Which assumption, if wrong, would change everything?" Then: "What's the simplest way to test that in two weeks?"</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SAMPLE OUTPUT -->
+      <div class="section-block">
+        <h2>Sample output</h2>
+        <p>Here's what an assumption map looks like in practice:</p>
+
+        <div class="sample-output">
+          <div class="sample-label">Example: Enterprise US Expansion</div>
+
+          <div class="sample-claim verified">
+            <div class="sample-claim-status verified">Verified</div>
+            <div class="sample-claim-text">US regulatory environment is favourable</div>
+          </div>
+
+          <div class="sample-claim verified">
+            <div class="sample-claim-status verified">Verified</div>
+            <div class="sample-claim-text">Australian team can manage US operations</div>
+          </div>
+
+          <div class="sample-claim verified">
+            <div class="sample-claim-status verified">Verified</div>
+            <div class="sample-claim-text">Brand recognition transfers internationally</div>
+          </div>
+
+          <div class="sample-claim assumed">
+            <div class="sample-claim-status assumed">Assumed</div>
+            <div class="sample-claim-text">Product works without modification in US</div>
+          </div>
+
+          <div class="sample-claim critical">
+            <div class="sample-claim-status assumed">Assumed — Critical</div>
+            <div class="sample-claim-text">Partnership model scales to larger market</div>
+          </div>
+
+          <div class="sample-claim assumed">
+            <div class="sample-claim-status assumed">Assumed</div>
+            <div class="sample-claim-text">US pricing matches Australian margins</div>
+          </div>
+
+          <div class="sample-claim inherited">
+            <div class="sample-claim-status inherited">Inherited</div>
+            <div class="sample-claim-text">Board will approve the investment</div>
+          </div>
+
+          <div class="sample-claim inherited">
+            <div class="sample-claim-status inherited">Inherited</div>
+            <div class="sample-claim-text">Competitors won't respond for 12 months</div>
+          </div>
+
+          <div class="sample-root">
+            <div class="sample-root-label">Critical Assumption</div>
+            <div class="sample-root-text">Partnership model scales to US market — believed by the whole team, never tested with a single US partner.</div>
+          </div>
+
+          <div class="sample-test">
+            <div class="sample-test-label">Test</div>
+            <div class="sample-test-text">Run 3 partnership conversations with US distributors this month. If none show interest in the current model, rethink before committing budget.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- WHAT YOU GET -->
+      <div class="section-block">
+        <h2>What you get</h2>
+        <p>A colour-coded assumption map showing what's verified (green), assumed (amber), and inherited (red). The critical assumption — the one belief that everything else depends on — is highlighted. You walk away with a specific, low-cost test to validate it.</p>
+        <p>Your downloadable report includes the full assumption map, Pete's coaching observations, and a recommended next step with relevant Wade articles and programs.</p>
+      </div>
+
+      <!-- FOUNDATION -->
+      <div class="section-block">
+        <h2>Foundation</h2>
+        <p>Rooted in the <strong>Socratic method</strong> (470 BC, Athens). Used in Harvard Law School's case method. Informed by Richard Paul and Linda Elder's critical thinking pedagogy. Adapted for entrepreneurial contexts by Wade Institute's facilitator methodology.</p>
+        <div class="foundation-logos">
+          <span class="org-badge">Socratic Method (470 BC)</span>
+          <span class="org-badge">Harvard Law School</span>
+          <span class="org-badge">Richard Paul & Linda Elder</span>
+          <span class="org-badge">Wade Institute</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+
+      <!-- Pete's coaching note -->
+      <div class="pete-note">
+        <div class="pete-avatar-row">
+          <div class="pete-avatar">P</div>
+          <div class="pete-label">Pete's note</div>
+        </div>
+        <p class="pete-text">"Most people walk in treating their assumptions as facts. My job is to ask 'how do you know?' until we find the one belief that everything else depends on — and that nobody's ever tested."</p>
+      </div>
+
+      <!-- Often paired with -->
+      <div class="sidebar-card">
+        <div class="sidebar-card-label">Often paired with</div>
+
+        <a href="tool-detail-five-whys.html" class="related-tool">
+          <div class="related-tool-icon untangle">5</div>
+          <div class="related-tool-text">
+            <h4>Five Whys</h4>
+            <p>Dig deeper into the root cause once assumptions are tested</p>
+          </div>
+        </a>
+
+        <a href="tool-detail-rapid-experiment.html" class="related-tool">
+          <div class="related-tool-icon test">R</div>
+          <div class="related-tool-text">
+            <h4>Rapid Experiment</h4>
+            <p>Design a fast test for your critical assumption</p>
+          </div>
+        </a>
+      </div>
+
+      <!-- Also in this category -->
+      <div class="sidebar-card">
+        <div class="sidebar-card-label">Also in The Untangle</div>
+
+        <a href="tool-detail-five-whys.html" class="related-tool">
+          <div class="related-tool-icon untangle">5</div>
+          <div class="related-tool-text">
+            <h4>Five Whys</h4>
+            <p>Uncover the root cause behind a problem</p>
+          </div>
+        </a>
+
+        <a href="tool-detail-empathy-map.html" class="related-tool">
+          <div class="related-tool-icon untangle">E</div>
+          <div class="related-tool-text">
+            <h4>Empathy Map</h4>
+            <p>Step into your user's world to reveal hidden insights</p>
+          </div>
+        </a>
+
+        <a href="tool-detail-jobs-to-be-done.html" class="related-tool">
+          <div class="related-tool-icon untangle">J</div>
+          <div class="related-tool-text">
+            <h4>Jobs to Be Done</h4>
+            <p>Understand what customers are really hiring for</p>
+          </div>
+        </a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- BOTTOM CTA -->
+<div class="tool-bottom-cta">
+  <div class="tool-bottom-left">
+    <h3>Try Socratic Questioning?</h3>
+    <p>Pete will guide you. About 20 minutes, always free.</p>
+  </div>
+  <div class="tool-bottom-right">
+    <a href="toolbox.html" class="back-link">&larr; Back to toolbox</a>
+    <a href="index.html?tool=socratic" class="qf-cta" style="display:inline-block; width:auto;">Start Socratic Questioning &rarr;</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-left">
+    <a href="index.html"><img src="wade-icon.png" alt="Wade Institute" style="height:28px;width:auto;"></a>
+    <div class="footer-links">
+      <a href="https://wadeinstitute.org.au">wadeinstitute.org.au</a>
+      <a href="mailto:enquiries@wadeinstitute.org.au">Contact</a>
+      <a href="privacy.html">Privacy</a>
+    </div>
+  </div>
+  <div class="footer-right">&copy; 2026 Wade Institute of Entrepreneurship</div>
+</footer>
+
+</body>
+</html>
