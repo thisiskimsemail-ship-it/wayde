@@ -3379,9 +3379,12 @@ html[data-theme="light"] .report-synopsis {
 }
 
 /* Text size classes on body */
-body.text-small .msg { font-size: 0.82rem; }
+/* Text size toggle — applies to root so everything scales */
+body.text-small { font-size: 14px; }
+body.text-small .msg { font-size: 0.85rem; }
 body.text-small .input-field { font-size: 0.88rem; }
-body.text-large .msg { font-size: 1.1rem; }
+body.text-large { font-size: 18px; }
+body.text-large .msg { font-size: 1.15rem; }
 body.text-large .input-field { font-size: 1.15rem; }
 
 html[data-theme="light"] .text-size-btn { background: #fff; border-color: rgba(0,0,0,0.1); box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
@@ -5207,3 +5210,18 @@ button.lp-tool-pill {
     cursor: pointer;
     font-family: var(--font);
 }
+
+/* Skip-nav link — WCAG 2.4.1 */
+.skip-nav {
+    position: absolute;
+    top: -100px;
+    left: 0;
+    background: var(--orange);
+    color: #fff;
+    padding: 0.5rem 1rem;
+    z-index: 10000;
+    font-size: 0.9rem;
+    text-decoration: none;
+    border-radius: 0 0 8px 0;
+}
+.skip-nav:focus { top: 0; }

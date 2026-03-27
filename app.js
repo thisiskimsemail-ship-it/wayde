@@ -4284,15 +4284,15 @@ function startTour() {
 }
 
 function showTourStep() {
-    if (tourStep >= TOUR_STEPS.length) { endTour(); return; }
-    const step = TOUR_STEPS[tourStep];
+    // Filter to only visible steps
+    const visibleSteps = TOUR_STEPS.filter(s => {
+        const el = document.querySelector(s.el);
+        return el && el.offsetParent !== null;
+    });
+    if (tourStep >= visibleSteps.length) { endTour(); return; }
+    const step = visibleSteps[tourStep];
     const target = document.querySelector(step.el);
-    if (!target || target.offsetParent === null) {
-        // Element not visible — skip
-        tourStep++;
-        showTourStep();
-        return;
-    }
+    if (!target) { endTour(); return; }
     const rect = target.getBoundingClientRect();
     const pad = 6;
     tourSpotlight.style.top = (rect.top - pad) + 'px';
@@ -4301,8 +4301,9 @@ function showTourStep() {
     tourSpotlight.style.height = (rect.height + pad * 2) + 'px';
 
     tourText.textContent = step.text;
-    tourStepCount.textContent = (tourStep + 1) + ' of ' + TOUR_STEPS.length;
-    tourNext.textContent = tourStep === TOUR_STEPS.length - 1 ? 'Done' : 'Next →';
+    const visibleCount = TOUR_STEPS.filter(s => { const el = document.querySelector(s.el); return el && el.offsetParent !== null; }).length;
+    tourStepCount.textContent = (tourStep + 1) + ' of ' + visibleCount;
+    tourNext.textContent = tourStep === visibleCount - 1 ? 'Done' : 'Next →';
 
     // Position tooltip
     const ttWidth = 300;
