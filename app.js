@@ -1155,6 +1155,21 @@ function doCloseSession() {
     state.reportText = '';
     delete document.body.dataset.mode;
 
+    // Close and reset the board
+    const boardPane = document.getElementById('boardPane');
+    if (boardPane) boardPane.classList.add('hidden');
+    state.board = { cards: [], visible: false };
+    const workshopLayout = document.getElementById('workshopLayout');
+    if (workshopLayout) workshopLayout.classList.remove('board-active', 'board-lean-canvas');
+    document.body.classList.remove('board-open');
+
+    // Hide synopsis, lead form, format choice, post-session screen
+    document.getElementById('reportSynopsis')?.classList.add('hidden');
+    document.getElementById('reportUnlock')?.classList.add('hidden');
+    document.getElementById('reportFormatChoice')?.classList.add('hidden');
+    document.getElementById('postSessionScreen')?.remove();
+    document.getElementById('postDownloadPanel')?.remove();
+
     // Show welcome, move input back, hide session bar
     welcome.classList.remove('hidden');
     moveInputToWelcome();
@@ -4662,4 +4677,13 @@ hintObserver.observe(document.body, { childList: true, subtree: true, attributes
 
     vv.addEventListener('resize', onViewportResize);
     vv.addEventListener('scroll', onViewportResize);
+
+// Exit protection — warn before closing tab during active session
+window.addEventListener('beforeunload', (e) => {
+    if (state.mode && state.mode !== 'routing' && state.messages.length > 2 && !state.reportGenerated) {
+        e.preventDefault();
+        e.returnValue = '';
+    }
+});
+
 })();
