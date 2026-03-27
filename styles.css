@@ -5208,9 +5208,12 @@ html[data-theme="light"] .starter-prompt-pill:hover {
 
 /* Tool pill buttons (homepage) — match link pill styling */
 button.lp-tool-pill {
-    background: transparent;
+    background: transparent !important;
     cursor: pointer;
     font-family: var(--font);
+    color: inherit;
+    -webkit-appearance: none;
+    appearance: none;
 }
 
 /* Skip-nav link — WCAG 2.4.1 */
