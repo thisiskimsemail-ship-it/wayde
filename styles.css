@@ -1398,9 +1398,11 @@ body.in-session .header-nav { display: none; }
     padding: 0.2rem 0.6rem;
     border-radius: 999px;
     border: 1px solid;
+    background: transparent;
     text-decoration: none;
     transition: background 0.15s, transform 0.15s;
     cursor: pointer;
+    font-family: var(--font);
 }
 .lp-tool-pill:hover { background: rgba(255,255,255,0.08); transform: translateY(-1px); }
 .lp-cat-untangle .lp-tool-pill { color: var(--teal); border-color: rgba(39,189,190,0.5); }
