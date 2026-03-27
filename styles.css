@@ -5230,3 +5230,44 @@ button.lp-tool-pill {
     border-radius: 0 0 8px 0;
 }
 .skip-nav:focus { top: 0; }
+
+/* Go Deeper card (Step 8 — during progress bar) */
+.go-deeper-card { padding: 1rem; border-radius: 10px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); }
+.go-deeper-heading { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--orange); margin-bottom: 0.5rem; }
+.go-deeper-bridge { font-size: 0.9rem; color: var(--text-dim); line-height: 1.6; margin-bottom: 0.75rem; }
+.go-deeper-program { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--orange); text-decoration: none; font-size: 0.9rem; font-weight: 600; transition: color 0.2s; }
+.go-deeper-program:hover { color: #fff; }
+.go-deeper-program span { font-weight: 400; }
+
+/* Post-session Go Deeper screen (Step 10) */
+.post-session-screen {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 2rem;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    text-align: center;
+    animation: fadeIn 0.5s ease;
+}
+.post-session-complete { font-size: 1rem; color: var(--text-dim); margin-bottom: 1.5rem; }
+.post-session-deeper { margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.06); }
+.post-session-heading { font-size: 1.1rem; font-weight: 700; color: var(--orange); margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; }
+.post-session-bridge { font-size: 0.95rem; color: var(--text-dim); line-height: 1.6; margin-bottom: 1rem; text-align: left; }
+.post-session-corp { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem; font-style: italic; }
+.post-session-program-btn {
+    display: inline-block;
+    background: var(--orange);
+    color: #fff;
+    font-family: var(--font);
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 0.6rem 1.5rem;
+    border-radius: 999px;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+.post-session-program-btn:hover { background: #d14e1b; transform: translateY(-1px); }
+.post-session-alt { font-size: 0.85rem; color: var(--text-muted); }
+.post-session-alt-link { color: var(--orange); text-decoration: none; font-weight: 500; margin-left: 0.25rem; }
+.post-session-alt-link:hover { color: #fff; }

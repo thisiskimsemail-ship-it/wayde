@@ -363,6 +363,137 @@ const SESSION_RECOMMENDATIONS = {
     }
 };
 
+
+// Tool-to-Program mapping for Go Deeper (Steps 8, 10, and report)
+const TOOL_PROGRAM_MAP = {
+    'five-whys': {
+        program: 'Master of Entrepreneurship',
+        programUrl: 'https://wadeinstitute.org.au/programs/entrepreneurs/master-of-entrepreneurship/',
+        bridge: 'Root cause analysis is one of the foundational practices in Wade\'s Master of Entrepreneurship — a 10-month program that builds the skills to identify and solve the problems that matter.',
+        segment: 'founder'
+    },
+    'empathy-map': {
+        program: 'Master of Entrepreneurship',
+        programUrl: 'https://wadeinstitute.org.au/programs/entrepreneurs/master-of-entrepreneurship/',
+        bridge: 'Understanding your user is the starting point of Wade\'s design-led approach to entrepreneurship. The Master of Entrepreneurship goes deeper into user research, validation, and customer development.',
+        segment: 'founder'
+    },
+    'jtbd': {
+        program: 'Master of Entrepreneurship',
+        programUrl: 'https://wadeinstitute.org.au/programs/entrepreneurs/master-of-entrepreneurship/',
+        bridge: 'Jobs to Be Done is a core framework in Wade\'s entrepreneurship curriculum. The Master of Entrepreneurship teaches you to build businesses around the jobs customers are actually hiring for.',
+        segment: 'founder'
+    },
+    'socratic': {
+        program: 'Master of Entrepreneurship',
+        programUrl: 'https://wadeinstitute.org.au/programs/entrepreneurs/master-of-entrepreneurship/',
+        bridge: 'Testing your assumptions before you build is what Wade\'s Master of Entrepreneurship is built around — 10 months of rigorous, mentor-led entrepreneurial thinking.',
+        segment: 'founder'
+    },
+    'iceberg': {
+        program: 'Executive Education',
+        programUrl: 'https://wadeinstitute.org.au/programs/entrepreneurs/think-like-an-entrepreneur/',
+        bridge: 'Systems thinking is at the heart of Wade\'s approach to innovation leadership. Wade\'s executive programs help leaders see the structures and mental models driving organisational challenges.',
+        segment: 'corporate'
+    },
+    'crazy-8s': {
+        program: 'Master of Entrepreneurship',
+        programUrl: 'https://wadeinstitute.org.au/programs/entrepreneurs/master-of-entrepreneurship/',
+        bridge: 'Rapid ideation is just the beginning. Wade\'s Master of Entrepreneurship takes you from ideas to validated business models in 10 months.',
+        segment: 'founder'
+    },
+    'hmw': {
+        program: 'Master of Entrepreneurship',
+        programUrl: 'https://wadeinstitute.org.au/programs/entrepreneurs/master-of-entrepreneurship/',
+        bridge: 'Reframing problems is a design thinking practice Wade teaches across all its programs. The Master of Entrepreneurship applies it to real ventures, with real stakes.',
+        segment: 'founder'
+    },
+    'scamper': {
+        program: 'Master of Entrepreneurship',
+        programUrl: 'https://wadeinstitute.org.au/programs/entrepreneurs/master-of-entrepreneurship/',
+        bridge: 'Creative frameworks like SCAMPER are part of Wade\'s innovation toolkit. The Master of Entrepreneurship teaches 20 frameworks and helps you apply them to your own venture.',
+        segment: 'founder'
+    },
+    'analogical': {
+        program: 'Master of Entrepreneurship',
+        programUrl: 'https://wadeinstitute.org.au/programs/entrepreneurs/master-of-entrepreneurship/',
+        bridge: 'Cross-domain thinking is one of the most powerful innovation skills. Wade\'s Master of Entrepreneurship builds this muscle over 10 months of structured practice.',
+        segment: 'founder'
+    },
+    'constraint-flip': {
+        program: 'Master of Entrepreneurship',
+        programUrl: 'https://wadeinstitute.org.au/programs/entrepreneurs/master-of-entrepreneurship/',
+        bridge: 'Turning constraints into advantages is a skill Wade\'s founders practise throughout the Master of Entrepreneurship — because every early-stage venture has more constraints than resources.',
+        segment: 'founder'
+    },
+    'pre-mortem': {
+        program: 'Executive Education',
+        programUrl: 'https://wadeinstitute.org.au/programs/entrepreneurs/think-like-an-entrepreneur/',
+        bridge: 'Stress-testing before you commit is a practice Wade brings to its executive programs. Wade works with corporate innovation teams to build the discipline of testing ideas before scaling them.',
+        segment: 'corporate'
+    },
+    'devils-advocate': {
+        program: 'Executive Education',
+        programUrl: 'https://wadeinstitute.org.au/programs/entrepreneurs/think-like-an-entrepreneur/',
+        bridge: 'Rigorous thinking under pressure is what Wade\'s executive programs are designed to develop. If your team needs to make better decisions, Wade can help.',
+        segment: 'corporate'
+    },
+    'cold-open': {
+        program: 'Master of Entrepreneurship',
+        programUrl: 'https://wadeinstitute.org.au/programs/entrepreneurs/master-of-entrepreneurship/',
+        bridge: 'Getting your message right is critical for founders. Wade\'s Master of Entrepreneurship includes pitch development, investor communication, and customer messaging as core curriculum.',
+        segment: 'founder'
+    },
+    'reality-check': {
+        program: 'Executive Education',
+        programUrl: 'https://wadeinstitute.org.au/programs/entrepreneurs/think-like-an-entrepreneur/',
+        bridge: 'Confronting the gap between narrative and evidence is what Wade helps leaders do — in executive programs designed for innovation teams inside organisations.',
+        segment: 'corporate'
+    },
+    'trade-off': {
+        program: 'Master of Entrepreneurship',
+        programUrl: 'https://wadeinstitute.org.au/programs/entrepreneurs/master-of-entrepreneurship/',
+        bridge: 'Understanding what customers actually value is the foundation of product-market fit. Wade\'s Master of Entrepreneurship teaches founders to test value propositions rigorously before they build.',
+        segment: 'founder'
+    },
+    'lean-canvas': {
+        program: 'Master of Entrepreneurship',
+        programUrl: 'https://wadeinstitute.org.au/programs/entrepreneurs/master-of-entrepreneurship/',
+        bridge: 'The Lean Canvas is the starting point for business model design in Wade\'s Master of Entrepreneurship — where you build, test, and refine a real venture over 10 months.',
+        segment: 'founder'
+    },
+    'effectuation': {
+        program: 'Master of Entrepreneurship',
+        programUrl: 'https://wadeinstitute.org.au/programs/entrepreneurs/master-of-entrepreneurship/',
+        bridge: 'Starting with what you have is the effectuation principle Wade teaches every cohort. The Master of Entrepreneurship helps you turn your resources into a venture.',
+        segment: 'founder'
+    },
+    'rapid-experiment': {
+        program: 'Master of Entrepreneurship',
+        programUrl: 'https://wadeinstitute.org.au/programs/entrepreneurs/master-of-entrepreneurship/',
+        bridge: 'Designing experiments for your riskiest assumptions is a core practice in Wade\'s Master of Entrepreneurship. The program teaches you to test before you build.',
+        segment: 'founder'
+    },
+    'flywheel': {
+        program: 'Growth Engine',
+        programUrl: 'https://wadeinstitute.org.au/programs/entrepreneurs/growth-engine/',
+        bridge: 'Mapping your growth engine is essential for ventures ready to scale. Wade\'s Growth Engine program helps founders identify and unlock the flywheel that drives sustainable growth.',
+        segment: 'founder'
+    },
+    'theory-of-change': {
+        program: 'Master of Entrepreneurship',
+        programUrl: 'https://wadeinstitute.org.au/programs/entrepreneurs/master-of-entrepreneurship/',
+        bridge: 'Reverse-engineering impact is what Wade teaches social entrepreneurs and impact founders. The Master of Entrepreneurship includes a dedicated impact track for ventures creating systemic change.',
+        segment: 'founder'
+    }
+};
+const TOOL_PROGRAM_FALLBACK = {
+    program: 'Wade Institute Programs',
+    programUrl: 'https://wadeinstitute.org.au/programs/',
+    bridge: 'This session is powered by Wade Institute\'s innovation methodology. Wade offers programs for founders, innovation leaders, and teams who want to go deeper.',
+    segment: 'founder'
+};
+
 // Tool-specific starter prompts (shown below input at session start)
 const STARTER_PROMPTS = {
     'five-whys': ['Tell me about a problem that keeps coming back', 'Something in my team isn\'t working and I can\'t figure out why'],
@@ -2613,23 +2744,22 @@ document.getElementById('unlockForm')?.addEventListener('submit', async (e) => {
         document.getElementById('dlStage1').classList.add('done');
         document.getElementById('dlStage2').classList.add('active');
         document.getElementById('dlRecommendations').classList.remove('hidden');
-        // Populate contextual recommendations
-        const reco = SESSION_RECOMMENDATIONS[state.mode] || SESSION_RECOMMENDATIONS['untangle'];
+        // Populate contextual Go Deeper card from tool-to-program mapping
+        const toolMap = TOOL_PROGRAM_MAP[state.exercise] || TOOL_PROGRAM_FALLBACK;
         const recoEl = document.getElementById('dlRecoContent');
-        if (recoEl && reco) {
+        if (recoEl && toolMap) {
+            const isCorporate = toolMap.segment === 'corporate';
+            const heading = isCorporate ? 'Bring This to Your Team' : 'Go Deeper with Wade';
+            const toolName = EXERCISE_LABELS[state.exercise] || state.exercise || 'this tool';
             recoEl.innerHTML = `
-                <a class="download-reco-card" href="${reco.program.url}" target="_blank" rel="noopener">
-                    <strong>${reco.program.name}</strong>
-                    <span>${reco.program.desc}</span>
-                </a>
-                <a class="download-reco-card" href="${reco.article.url}" target="_blank" rel="noopener">
-                    <strong>${reco.article.name}</strong>
-                    <span>${reco.article.desc}</span>
-                </a>
-                <a class="download-reco-card" href="mailto:enquiries@wadeinstitute.org.au">
-                    <strong>Talk to the Wade team</strong>
-                    <span>Want to go deeper on what you uncovered today?</span>
-                </a>
+                <div class="go-deeper-card">
+                    <p class="go-deeper-heading">${heading}</p>
+                    <p class="go-deeper-bridge">${toolMap.bridge}</p>
+                    <a class="go-deeper-program" href="${toolMap.programUrl}" target="_blank" rel="noopener">
+                        <strong>${toolMap.program}</strong>
+                        <span>Learn more \u2192</span>
+                    </a>
+                </div>
             `;
         }
     }, 2000);
@@ -2841,7 +2971,46 @@ $('#reportNewSessionBtn')?.addEventListener('click', () => {
 
 // === NEXT EXERCISE PANEL (shown after full report revealed) ===
 
+function renderPostSessionScreen() {
+    if (document.getElementById('postSessionScreen')) return;
+    const toolMap = TOOL_PROGRAM_MAP[state.exercise] || TOOL_PROGRAM_FALLBACK;
+    const toolName = EXERCISE_LABELS[state.exercise] || state.exercise || 'this tool';
+    const isCorporate = toolMap.segment === 'corporate';
+
+    const screen = document.createElement('div');
+    screen.id = 'postSessionScreen';
+    screen.className = 'post-session-screen';
+
+    const heading = isCorporate ? 'Bring This to Your Team' : 'Go Deeper with Wade';
+    const corpNote = isCorporate
+        ? '<p class="post-session-corp">Wade Executive Education — Structured innovation programs for corporate teams.</p>'
+        : '';
+
+    screen.innerHTML = `
+        <div class="post-session-complete">You just completed ${toolName}</div>
+        <div class="post-session-deeper">
+            <h3 class="post-session-heading">${heading}</h3>
+            <p class="post-session-bridge">${toolMap.bridge}</p>
+            ${corpNote}
+            <a class="post-session-program-btn" href="${toolMap.programUrl}" target="_blank" rel="noopener">${toolMap.program} — Learn more \u2192</a>
+        </div>
+        <div class="post-session-alt">
+            <span>Or:</span>
+            <a class="post-session-alt-link" href="toolbox.html">Explore another tool in The Studio \u2192</a>
+        </div>
+    `;
+
+    // Insert after the download progress or synopsis
+    const anchor = document.querySelector('.download-progress') || document.getElementById('reportSynopsis');
+    if (anchor) anchor.after(screen);
+    screen.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
 function renderNextExercisePanel() {
+    // Post-session screen replaces the old next-exercise panel
+    renderPostSessionScreen();
+    return;
+
     const next = NEXT_STAGE[state.mode];
     if (!next) return; // Develop is the last stage
     if ($('#nextExercisePanel')) return; // already shown
