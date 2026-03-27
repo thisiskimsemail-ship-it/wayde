@@ -1,12 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="700" viewBox="0 0 800 700">
   <defs>
-    <style>
-      text { font-family: Arial, sans-serif; }
-    </style>
+    <style>text { font-family: Arial, sans-serif; }</style>
   </defs>
 
   <!-- Background -->
-  <rect width="800" height="600" fill="#1B2A4A" rx="8"/>
+  <rect width="800" height="700" fill="#1B2A4A" rx="8"/>
 
   <!-- Title bar -->
   <rect x="0" y="0" width="800" height="56" fill="#1F2E4D" rx="8"/>
@@ -16,96 +14,93 @@
   <text x="130" y="36" fill="#FFFFFF" font-size="18" font-weight="bold">LEAN CANVAS</text>
 
   <!-- Lean Canvas grid -->
-  <!-- Column widths: 5 columns at ~150px each with gaps -->
-  <!-- Row 1-2 height: ~240px total (120 each), Row 3: ~100px -->
-
   <!-- Col 1: PROBLEM (spans rows 1-2) -->
-  <rect x="24" y="76" width="148" height="240" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
+  <rect x="24" y="76" width="148" height="260" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
   <text x="36" y="96" fill="#E4E517" font-size="10" font-weight="bold" letter-spacing="1">PROBLEM</text>
-  <text x="36" y="116" fill="#B8BCC8" font-size="11">1. Users abandon</text>
-  <text x="36" y="130" fill="#B8BCC8" font-size="11">   onboarding early</text>
-  <text x="36" y="152" fill="#B8BCC8" font-size="11">2. No clear path from</text>
-  <text x="36" y="166" fill="#B8BCC8" font-size="11">   sign-up to value</text>
-  <text x="36" y="188" fill="#B8BCC8" font-size="11">3. Complexity kills</text>
-  <text x="36" y="202" fill="#B8BCC8" font-size="11">   first impressions</text>
-  <line x1="36" y1="218" x2="160" y2="218" stroke="#2A3656" stroke-width="0.5"/>
-  <text x="36" y="236" fill="#7A7F8E" font-size="10">EXISTING ALTERNATIVES</text>
-  <text x="36" y="252" fill="#B8BCC8" font-size="10">Tutorial videos,</text>
-  <text x="36" y="264" fill="#B8BCC8" font-size="10">documentation, webinars</text>
+  <text x="36" y="118" fill="#B8BCC8" font-size="12">1. Users abandon</text>
+  <text x="36" y="134" fill="#B8BCC8" font-size="12">   onboarding early</text>
+  <text x="36" y="158" fill="#B8BCC8" font-size="12">2. No clear path from</text>
+  <text x="36" y="174" fill="#B8BCC8" font-size="12">   sign-up to value</text>
+  <text x="36" y="198" fill="#B8BCC8" font-size="12">3. Complexity kills</text>
+  <text x="36" y="214" fill="#B8BCC8" font-size="12">   first impressions</text>
+  <line x1="36" y1="232" x2="160" y2="232" stroke="#2A3656" stroke-width="0.5"/>
+  <text x="36" y="252" fill="#7A7F8E" font-size="10">EXISTING ALTERNATIVES</text>
+  <text x="36" y="270" fill="#B8BCC8" font-size="11">Tutorial videos,</text>
+  <text x="36" y="284" fill="#B8BCC8" font-size="11">documentation, webinars</text>
 
   <!-- Col 2 Row 1: SOLUTION -->
-  <rect x="178" y="76" width="148" height="116" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
+  <rect x="178" y="76" width="148" height="126" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
   <text x="190" y="96" fill="#E4E517" font-size="10" font-weight="bold" letter-spacing="1">SOLUTION</text>
-  <text x="190" y="116" fill="#B8BCC8" font-size="11">AI-guided onboarding</text>
-  <text x="190" y="130" fill="#B8BCC8" font-size="11">that adapts to user</text>
-  <text x="190" y="144" fill="#B8BCC8" font-size="11">behaviour and goals</text>
-  <text x="190" y="166" fill="#B8BCC8" font-size="11">Pre-built templates</text>
-  <text x="190" y="180" fill="#B8BCC8" font-size="11">for instant start</text>
+  <text x="190" y="118" fill="#B8BCC8" font-size="12">AI-guided onboarding</text>
+  <text x="190" y="134" fill="#B8BCC8" font-size="12">that adapts to user</text>
+  <text x="190" y="150" fill="#B8BCC8" font-size="12">behaviour and goals</text>
+  <text x="190" y="174" fill="#B8BCC8" font-size="12">Pre-built templates</text>
+  <text x="190" y="190" fill="#B8BCC8" font-size="12">for instant start</text>
 
   <!-- Col 2 Row 2: KEY METRICS -->
-  <rect x="178" y="200" width="148" height="116" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
-  <text x="190" y="220" fill="#E4E517" font-size="10" font-weight="bold" letter-spacing="1">KEY METRICS</text>
-  <text x="190" y="240" fill="#B8BCC8" font-size="11">Activation rate (Day 1)</text>
-  <text x="190" y="258" fill="#B8BCC8" font-size="11">Time to first value</text>
-  <text x="190" y="276" fill="#B8BCC8" font-size="11">30-day retention</text>
-  <text x="190" y="294" fill="#B8BCC8" font-size="11">NPS at week 2</text>
+  <rect x="178" y="210" width="148" height="126" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
+  <text x="190" y="230" fill="#E4E517" font-size="10" font-weight="bold" letter-spacing="1">KEY METRICS</text>
+  <text x="190" y="252" fill="#B8BCC8" font-size="12">Activation rate (Day 1)</text>
+  <text x="190" y="270" fill="#B8BCC8" font-size="12">Time to first value</text>
+  <text x="190" y="288" fill="#B8BCC8" font-size="12">30-day retention</text>
+  <text x="190" y="306" fill="#B8BCC8" font-size="12">NPS at week 2</text>
 
   <!-- Col 3: UVP (spans rows 1-2) -->
-  <rect x="332" y="76" width="148" height="240" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
+  <rect x="332" y="76" width="148" height="260" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
   <text x="344" y="96" fill="#E4E517" font-size="10" font-weight="bold" letter-spacing="1">UNIQUE VALUE PROP</text>
-  <text x="344" y="120" fill="#FFFFFF" font-size="12" font-weight="bold">Get your first win in</text>
-  <text x="344" y="136" fill="#FFFFFF" font-size="12" font-weight="bold">5 minutes, not 5 days</text>
-  <line x1="344" y1="154" x2="468" y2="154" stroke="#2A3656" stroke-width="0.5"/>
-  <text x="344" y="174" fill="#7A7F8E" font-size="10">HIGH-LEVEL CONCEPT</text>
-  <text x="344" y="192" fill="#B8BCC8" font-size="11">"Duolingo for SaaS</text>
-  <text x="344" y="206" fill="#B8BCC8" font-size="11"> onboarding"</text>
+  <text x="344" y="122" fill="#FFFFFF" font-size="12" font-weight="bold">Get your first win in</text>
+  <text x="344" y="138" fill="#FFFFFF" font-size="12" font-weight="bold">5 minutes, not 5 days</text>
+  <line x1="344" y1="156" x2="468" y2="156" stroke="#2A3656" stroke-width="0.5"/>
+  <text x="344" y="176" fill="#7A7F8E" font-size="10">HIGH-LEVEL CONCEPT</text>
+  <text x="344" y="196" fill="#B8BCC8" font-size="12">"Duolingo for SaaS</text>
+  <text x="344" y="212" fill="#B8BCC8" font-size="12"> onboarding"</text>
 
   <!-- Col 4 Row 1: UNFAIR ADVANTAGE -->
-  <rect x="486" y="76" width="148" height="116" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
+  <rect x="486" y="76" width="148" height="126" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
   <text x="498" y="96" fill="#E4E517" font-size="10" font-weight="bold" letter-spacing="1">UNFAIR ADVANTAGE</text>
-  <text x="498" y="116" fill="#B8BCC8" font-size="11">Proprietary dataset of</text>
-  <text x="498" y="130" fill="#B8BCC8" font-size="11">10K+ onboarding flows</text>
-  <text x="498" y="152" fill="#B8BCC8" font-size="11">Team from top SaaS</text>
-  <text x="498" y="166" fill="#B8BCC8" font-size="11">growth orgs</text>
+  <text x="498" y="118" fill="#B8BCC8" font-size="12">Proprietary dataset of</text>
+  <text x="498" y="134" fill="#B8BCC8" font-size="12">10K+ onboarding flows</text>
+  <text x="498" y="158" fill="#B8BCC8" font-size="12">Team from top SaaS</text>
+  <text x="498" y="174" fill="#B8BCC8" font-size="12">growth orgs</text>
 
   <!-- Col 4 Row 2: CHANNELS -->
-  <rect x="486" y="200" width="148" height="116" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
-  <text x="498" y="220" fill="#E4E517" font-size="10" font-weight="bold" letter-spacing="1">CHANNELS</text>
-  <text x="498" y="240" fill="#B8BCC8" font-size="11">Product-led growth</text>
-  <text x="498" y="258" fill="#B8BCC8" font-size="11">Content marketing</text>
-  <text x="498" y="276" fill="#B8BCC8" font-size="11">SaaS founder communities</text>
-  <text x="498" y="294" fill="#B8BCC8" font-size="11">Integration partners</text>
+  <rect x="486" y="210" width="148" height="126" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
+  <text x="498" y="230" fill="#E4E517" font-size="10" font-weight="bold" letter-spacing="1">CHANNELS</text>
+  <text x="498" y="252" fill="#B8BCC8" font-size="12">Product-led growth</text>
+  <text x="498" y="270" fill="#B8BCC8" font-size="12">Content marketing</text>
+  <text x="498" y="288" fill="#B8BCC8" font-size="12">SaaS founder communities</text>
+  <text x="498" y="306" fill="#B8BCC8" font-size="12">Integration partners</text>
 
   <!-- Col 5: CUSTOMER SEGMENTS (spans rows 1-2) -->
-  <rect x="640" y="76" width="136" height="240" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
+  <rect x="640" y="76" width="136" height="260" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
   <text x="652" y="96" fill="#E4E517" font-size="10" font-weight="bold" letter-spacing="1">CUSTOMER SEGMENTS</text>
-  <text x="652" y="120" fill="#B8BCC8" font-size="11">B2B SaaS founders</text>
-  <text x="652" y="136" fill="#B8BCC8" font-size="11">(Series A, 10-50</text>
-  <text x="652" y="150" fill="#B8BCC8" font-size="11">employees)</text>
-  <line x1="652" y1="166" x2="764" y2="166" stroke="#2A3656" stroke-width="0.5"/>
-  <text x="652" y="184" fill="#7A7F8E" font-size="10">EARLY ADOPTERS</text>
-  <text x="652" y="202" fill="#B8BCC8" font-size="11">Product-led growth</text>
-  <text x="652" y="216" fill="#B8BCC8" font-size="11">teams with 1000+</text>
-  <text x="652" y="230" fill="#B8BCC8" font-size="11">monthly sign-ups</text>
+  <text x="652" y="122" fill="#B8BCC8" font-size="12">B2B SaaS founders</text>
+  <text x="652" y="138" fill="#B8BCC8" font-size="12">(Series A, 10-50</text>
+  <text x="652" y="154" fill="#B8BCC8" font-size="12">employees)</text>
+  <line x1="652" y1="170" x2="764" y2="170" stroke="#2A3656" stroke-width="0.5"/>
+  <text x="652" y="190" fill="#7A7F8E" font-size="10">EARLY ADOPTERS</text>
+  <text x="652" y="210" fill="#B8BCC8" font-size="12">Product-led growth</text>
+  <text x="652" y="226" fill="#B8BCC8" font-size="12">teams with 1000+</text>
+  <text x="652" y="242" fill="#B8BCC8" font-size="12">monthly sign-ups</text>
 
   <!-- Row 3: Cost Structure + Revenue Streams -->
   <!-- Cost Structure (cols 1-2) -->
-  <rect x="24" y="328" width="302" height="100" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
-  <text x="36" y="348" fill="#E4E517" font-size="10" font-weight="bold" letter-spacing="1">COST STRUCTURE</text>
-  <text x="36" y="370" fill="#B8BCC8" font-size="11">AI/ML infrastructure (40% of costs)</text>
-  <text x="36" y="388" fill="#B8BCC8" font-size="11">Engineering team (3 FTEs)</text>
-  <text x="36" y="406" fill="#B8BCC8" font-size="11">Customer success + content creation</text>
+  <rect x="24" y="350" width="302" height="100" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
+  <text x="36" y="370" fill="#E4E517" font-size="10" font-weight="bold" letter-spacing="1">COST STRUCTURE</text>
+  <text x="36" y="392" fill="#B8BCC8" font-size="12">AI/ML infrastructure (40% of costs)</text>
+  <text x="36" y="410" fill="#B8BCC8" font-size="12">Engineering team (3 FTEs)</text>
+  <text x="36" y="428" fill="#B8BCC8" font-size="12">Customer success + content creation</text>
 
   <!-- Revenue Streams (cols 3-5) -->
-  <rect x="332" y="328" width="444" height="100" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
-  <text x="344" y="348" fill="#E4E517" font-size="10" font-weight="bold" letter-spacing="1">REVENUE STREAMS</text>
-  <text x="344" y="370" fill="#B8BCC8" font-size="11">SaaS subscription: $199/mo (Growth) | $499/mo (Scale) | Enterprise custom</text>
-  <text x="344" y="388" fill="#B8BCC8" font-size="11">Usage-based: per active user beyond plan limits</text>
-  <text x="344" y="406" fill="#B8BCC8" font-size="11">Professional services: custom onboarding flow design</text>
+  <rect x="332" y="350" width="444" height="100" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
+  <text x="344" y="370" fill="#E4E517" font-size="10" font-weight="bold" letter-spacing="1">REVENUE STREAMS</text>
+  <text x="344" y="392" fill="#B8BCC8" font-size="12">SaaS subscription: $199/mo (Growth) | $499/mo (Scale) | Enterprise custom</text>
+  <text x="344" y="410" fill="#B8BCC8" font-size="12">Usage-based: per active user beyond plan limits</text>
+  <text x="344" y="428" fill="#B8BCC8" font-size="12">Professional services: custom onboarding flow design</text>
 
   <!-- Riskiest Assumption callout -->
-  <rect x="24" y="448" width="752" height="56" fill="#1F2E4D" rx="8" stroke="#E4E517" stroke-width="1.5"/>
-  <rect x="24" y="448" width="752" height="3" fill="#E4E517"/>
-  <text x="44" y="472" fill="#E4E517" font-size="11" font-weight="bold" letter-spacing="1">RISKIEST ASSUMPTION</text>
-  <text x="44" y="494" fill="#FFFFFF" font-size="13" font-weight="bold">That B2B SaaS founders will pay for an onboarding tool rather than building custom flows in-house.</text>
+  <rect x="24" y="470" width="752" height="56" fill="#1F2E4D" rx="8" stroke="#E4E517" stroke-width="1.5"/>
+  <rect x="24" y="470" width="752" height="3" fill="#E4E517"/>
+  <text x="44" y="494" fill="#E4E517" font-size="11" font-weight="bold" letter-spacing="1">RISKIEST ASSUMPTION</text>
+  <text x="44" y="516" fill="#FFFFFF" font-size="13" font-weight="bold">That B2B SaaS founders will pay for an onboarding tool rather than building custom flows in-house.</text>
 </svg>

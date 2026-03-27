@@ -1,8 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="800" height="700" viewBox="0 0 800 700">
   <defs>
-    <style>
-      text { font-family: Arial, sans-serif; }
-    </style>
+    <style>text { font-family: Arial, sans-serif; }</style>
   </defs>
 
   <!-- Background -->

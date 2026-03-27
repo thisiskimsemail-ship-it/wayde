@@ -1,8 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="800" height="700" viewBox="0 0 800 700">
   <defs>
-    <style>
-      text { font-family: Arial, sans-serif; }
-    </style>
+    <style>text { font-family: Arial, sans-serif; }</style>
   </defs>
 
   <!-- Background -->
@@ -17,33 +15,33 @@
 
   <!-- Three main columns -->
   <!-- WHO I AM -->
-  <rect x="24" y="76" width="240" height="220" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
+  <rect x="24" y="76" width="240" height="230" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
   <!-- Person icon -->
   <circle cx="48" cy="96" r="8" fill="none" stroke="#E4E517" stroke-width="1.5"/>
   <line x1="48" y1="104" x2="48" y2="116" stroke="#E4E517" stroke-width="1.5"/>
   <text x="64" y="102" fill="#E4E517" font-size="12" font-weight="bold" letter-spacing="1">WHO I AM</text>
   <text x="64" y="118" fill="#7A7F8E" font-size="10">Identity, values, traits</text>
-  <line x1="36" y1="130" x2="252" y2="130" stroke="#2A3656" stroke-width="0.5"/>
-  <text x="36" y="152" fill="#B8BCC8" font-size="12">Resilient problem-solver</text>
-  <text x="36" y="172" fill="#B8BCC8" font-size="12">Strong communicator</text>
-  <text x="36" y="192" fill="#B8BCC8" font-size="12">Comfortable with ambiguity</text>
-  <text x="36" y="212" fill="#B8BCC8" font-size="12">Value collaboration over control</text>
+  <line x1="36" y1="132" x2="252" y2="132" stroke="#2A3656" stroke-width="0.5"/>
+  <text x="36" y="156" fill="#B8BCC8" font-size="12">Resilient problem-solver</text>
+  <text x="36" y="178" fill="#B8BCC8" font-size="12">Strong communicator</text>
+  <text x="36" y="200" fill="#B8BCC8" font-size="12">Comfortable with ambiguity</text>
+  <text x="36" y="222" fill="#B8BCC8" font-size="12">Value collaboration over control</text>
 
   <!-- WHAT I KNOW -->
-  <rect x="280" y="76" width="240" height="220" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
+  <rect x="280" y="76" width="240" height="230" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
   <!-- Brain icon -->
   <circle cx="304" cy="96" r="9" fill="none" stroke="#E4E517" stroke-width="1.5"/>
   <path d="M299,93 Q304,88 309,93" fill="none" stroke="#E4E517" stroke-width="1"/>
   <text x="320" y="102" fill="#E4E517" font-size="12" font-weight="bold" letter-spacing="1">WHAT I KNOW</text>
   <text x="320" y="118" fill="#7A7F8E" font-size="10">Skills, expertise, education</text>
-  <line x1="292" y1="130" x2="508" y2="130" stroke="#2A3656" stroke-width="0.5"/>
-  <text x="292" y="152" fill="#B8BCC8" font-size="12">Product management (8 years)</text>
-  <text x="292" y="172" fill="#B8BCC8" font-size="12">Data analytics and user research</text>
-  <text x="292" y="192" fill="#B8BCC8" font-size="12">EdTech domain expertise</text>
-  <text x="292" y="212" fill="#B8BCC8" font-size="12">MBA from Melbourne Business School</text>
+  <line x1="292" y1="132" x2="508" y2="132" stroke="#2A3656" stroke-width="0.5"/>
+  <text x="292" y="156" fill="#B8BCC8" font-size="12">Product management (8 years)</text>
+  <text x="292" y="178" fill="#B8BCC8" font-size="12">Data analytics and user research</text>
+  <text x="292" y="200" fill="#B8BCC8" font-size="12">EdTech domain expertise</text>
+  <text x="292" y="222" fill="#B8BCC8" font-size="12">MBA from Melbourne Business School</text>
 
   <!-- WHO I KNOW -->
-  <rect x="536" y="76" width="240" height="220" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
+  <rect x="536" y="76" width="240" height="230" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
   <!-- Network icon -->
   <circle cx="560" cy="90" r="4" fill="#E4E517"/>
   <circle cx="572" cy="100" r="4" fill="#E4E517"/>
@@ -52,48 +50,48 @@
   <line x1="560" y1="90" x2="556" y2="104" stroke="#E4E517" stroke-width="1"/>
   <text x="584" y="102" fill="#E4E517" font-size="12" font-weight="bold" letter-spacing="1">WHO I KNOW</text>
   <text x="584" y="118" fill="#7A7F8E" font-size="10">Network, contacts, community</text>
-  <line x1="548" y1="130" x2="764" y2="130" stroke="#2A3656" stroke-width="0.5"/>
-  <text x="548" y="152" fill="#B8BCC8" font-size="12">3 potential co-founders in tech</text>
-  <text x="548" y="172" fill="#B8BCC8" font-size="12">Wade Institute alumni network</text>
-  <text x="548" y="192" fill="#B8BCC8" font-size="12">Former colleagues at 2 SaaS cos</text>
-  <text x="548" y="212" fill="#B8BCC8" font-size="12">Angel investor from past startup</text>
+  <line x1="548" y1="132" x2="764" y2="132" stroke="#2A3656" stroke-width="0.5"/>
+  <text x="548" y="156" fill="#B8BCC8" font-size="12">3 potential co-founders in tech</text>
+  <text x="548" y="178" fill="#B8BCC8" font-size="12">Wade Institute alumni network</text>
+  <text x="548" y="200" fill="#B8BCC8" font-size="12">Former colleagues at 2 SaaS cos</text>
+  <text x="548" y="222" fill="#B8BCC8" font-size="12">Angel investor from past startup</text>
 
   <!-- Second row: three principles -->
   <!-- Affordable Loss -->
-  <rect x="24" y="314" width="240" height="120" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
-  <text x="44" y="340" fill="#E4E517" font-size="12" font-weight="bold" letter-spacing="1">AFFORDABLE LOSS</text>
-  <text x="44" y="356" fill="#7A7F8E" font-size="10">What can you risk without it being catastrophic?</text>
-  <line x1="36" y1="366" x2="252" y2="366" stroke="#2A3656" stroke-width="0.5"/>
-  <text x="44" y="386" fill="#B8BCC8" font-size="12">6 months of savings ($30K)</text>
-  <text x="44" y="404" fill="#B8BCC8" font-size="12">Evenings + weekends before quitting</text>
-  <text x="44" y="422" fill="#B8BCC8" font-size="12">Reputation risk: low (supportive network)</text>
+  <rect x="24" y="326" width="240" height="130" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
+  <text x="44" y="352" fill="#E4E517" font-size="12" font-weight="bold" letter-spacing="1">AFFORDABLE LOSS</text>
+  <text x="44" y="370" fill="#7A7F8E" font-size="10">What can you risk without it being catastrophic?</text>
+  <line x1="36" y1="380" x2="252" y2="380" stroke="#2A3656" stroke-width="0.5"/>
+  <text x="44" y="400" fill="#B8BCC8" font-size="12">6 months of savings ($30K)</text>
+  <text x="44" y="420" fill="#B8BCC8" font-size="12">Evenings + weekends before quitting</text>
+  <text x="44" y="440" fill="#B8BCC8" font-size="12">Reputation risk: low (supportive network)</text>
 
   <!-- Crazy Quilt -->
-  <rect x="280" y="314" width="240" height="120" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
-  <text x="300" y="340" fill="#E4E517" font-size="12" font-weight="bold" letter-spacing="1">CRAZY QUILT</text>
-  <text x="300" y="356" fill="#7A7F8E" font-size="10">Who could become a partner or co-creator?</text>
-  <line x1="292" y1="366" x2="508" y2="366" stroke="#2A3656" stroke-width="0.5"/>
-  <text x="300" y="386" fill="#B8BCC8" font-size="12">Ex-colleague with engineering skills</text>
-  <text x="300" y="404" fill="#B8BCC8" font-size="12">University partner for pilot program</text>
-  <text x="300" y="422" fill="#B8BCC8" font-size="12">Early customer willing to co-design</text>
+  <rect x="280" y="326" width="240" height="130" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
+  <text x="300" y="352" fill="#E4E517" font-size="12" font-weight="bold" letter-spacing="1">CRAZY QUILT</text>
+  <text x="300" y="370" fill="#7A7F8E" font-size="10">Who could become a partner or co-creator?</text>
+  <line x1="292" y1="380" x2="508" y2="380" stroke="#2A3656" stroke-width="0.5"/>
+  <text x="300" y="400" fill="#B8BCC8" font-size="12">Ex-colleague with engineering skills</text>
+  <text x="300" y="420" fill="#B8BCC8" font-size="12">University partner for pilot program</text>
+  <text x="300" y="440" fill="#B8BCC8" font-size="12">Early customer willing to co-design</text>
 
   <!-- Lemonade -->
-  <rect x="536" y="314" width="240" height="120" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
-  <text x="556" y="340" fill="#E4E517" font-size="12" font-weight="bold" letter-spacing="1">LEMONADE</text>
-  <text x="556" y="356" fill="#7A7F8E" font-size="10">What surprises could you leverage?</text>
-  <line x1="548" y1="366" x2="764" y2="366" stroke="#2A3656" stroke-width="0.5"/>
-  <text x="556" y="386" fill="#B8BCC8" font-size="12">AI tools making MVPs faster to build</text>
-  <text x="556" y="404" fill="#B8BCC8" font-size="12">Remote work normalised async collaboration</text>
-  <text x="556" y="422" fill="#B8BCC8" font-size="12">Competitor just shut down (market gap)</text>
+  <rect x="536" y="326" width="240" height="130" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
+  <text x="556" y="352" fill="#E4E517" font-size="12" font-weight="bold" letter-spacing="1">LEMONADE</text>
+  <text x="556" y="370" fill="#7A7F8E" font-size="10">What surprises could you leverage?</text>
+  <line x1="548" y1="380" x2="764" y2="380" stroke="#2A3656" stroke-width="0.5"/>
+  <text x="556" y="400" fill="#B8BCC8" font-size="12">AI tools making MVPs faster to build</text>
+  <text x="556" y="420" fill="#B8BCC8" font-size="12">Remote work normalised async collab</text>
+  <text x="556" y="440" fill="#B8BCC8" font-size="12">Competitor just shut down (market gap)</text>
 
   <!-- Arrow down -->
-  <line x1="400" y1="446" x2="400" y2="462" stroke="#E4E517" stroke-width="2"/>
-  <polygon points="392,460 400,472 408,460" fill="#E4E517"/>
+  <line x1="400" y1="468" x2="400" y2="488" stroke="#E4E517" stroke-width="2"/>
+  <polygon points="392,486 400,498 408,486" fill="#E4E517"/>
 
   <!-- First Move box -->
-  <rect x="24" y="480" width="752" height="90" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
-  <rect x="24" y="480" width="752" height="3" fill="#E4E517"/>
-  <text x="44" y="508" fill="#E4E517" font-size="13" font-weight="bold" letter-spacing="1">FIRST MOVE — NEXT 48 HOURS</text>
-  <text x="44" y="534" fill="#FFFFFF" font-size="14" font-weight="bold">Call 3 people from my network who match the early adopter profile and ask:</text>
-  <text x="44" y="556" fill="#FFFFFF" font-size="14" font-weight="bold">"What's the most frustrating part of onboarding new users to your product?"</text>
+  <rect x="24" y="508" width="752" height="100" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
+  <rect x="24" y="508" width="752" height="3" fill="#E4E517"/>
+  <text x="44" y="536" fill="#E4E517" font-size="13" font-weight="bold" letter-spacing="1">FIRST MOVE — NEXT 48 HOURS</text>
+  <text x="44" y="564" fill="#FFFFFF" font-size="14" font-weight="bold">Call 3 people from my network who match the early adopter profile and ask:</text>
+  <text x="44" y="590" fill="#FFFFFF" font-size="14" font-weight="bold">"What's the most frustrating part of onboarding new users to your product?"</text>
 </svg>

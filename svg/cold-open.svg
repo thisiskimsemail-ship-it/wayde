@@ -1,102 +1,95 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 650" width="800" height="650">
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="700" viewBox="0 0 800 700">
   <defs>
-    <style>
-      .bg { fill: #1B2A4A; }
-      .card { fill: #1F2E4D; stroke: #2A3656; stroke-width: 1; }
-      .card-pink { fill: #1F2E4D; stroke: #ED3694; stroke-width: 1.5; }
-      .title { fill: #FFFFFF; font-family: Arial, sans-serif; font-size: 14px; font-weight: bold; }
-      .subtitle { fill: #ED3694; font-family: Arial, sans-serif; font-size: 11px; font-weight: bold; letter-spacing: 1px; }
-      .body { fill: #8B9DC3; font-family: Arial, sans-serif; font-size: 12px; }
-      .body-white { fill: #FFFFFF; font-family: Arial, sans-serif; font-size: 12px; }
-      .landed { fill: #4ADE80; font-family: Arial, sans-serif; font-size: 11px; }
-      .lost { fill: #F87171; font-family: Arial, sans-serif; font-size: 11px; }
-      .version-label { fill: #ED3694; font-family: Arial, sans-serif; font-size: 12px; font-weight: bold; }
-      .hierarchy-title { fill: #FFFFFF; font-family: Arial, sans-serif; font-size: 16px; font-weight: bold; }
-      .level-label { fill: #ED3694; font-family: Arial, sans-serif; font-size: 10px; font-weight: bold; letter-spacing: 1px; }
-      .level-text { fill: #FFFFFF; font-family: Arial, sans-serif; font-size: 13px; }
-      .section-label { fill: #6B7FA3; font-family: Arial, sans-serif; font-size: 10px; font-weight: bold; letter-spacing: 1.5px; }
-    </style>
+    <style>text { font-family: Arial, sans-serif; }</style>
   </defs>
 
   <!-- Background -->
-  <rect class="bg" width="800" height="650" rx="0"/>
+  <rect width="800" height="700" fill="#1B2A4A" rx="8"/>
 
-  <!-- Section label: ITERATIONS -->
-  <text class="section-label" x="30" y="30">ITERATION RECORD</text>
+  <!-- Title bar -->
+  <rect x="0" y="0" width="800" height="56" fill="#1F2E4D" rx="8"/>
+  <rect x="0" y="48" width="800" height="8" fill="#1F2E4D"/>
+  <rect x="0" y="0" width="3" height="56" fill="#ED3694"/>
+  <text x="24" y="36" fill="#ED3694" font-size="13" font-weight="bold" letter-spacing="2">THE TEST</text>
+  <text x="120" y="36" fill="#FFFFFF" font-size="18" font-weight="bold">COLD OPEN</text>
+
+  <!-- Left column label -->
+  <text x="30" y="88" fill="#7A7F8E" font-size="10" font-weight="bold" letter-spacing="1.5">ITERATION RECORD</text>
 
   <!-- V1 Card -->
-  <rect class="card" x="20" y="42" width="360" height="150" rx="8"/>
-  <text class="version-label" x="36" y="66">V1</text>
-  <text class="body-white" x="36" y="86">"We build AI-powered customer success</text>
-  <text class="body-white" x="36" y="102">platforms with predictive analytics..."</text>
-  <text class="landed" x="36" y="128">What landed: "customer success" got attention</text>
-  <text class="lost" x="36" y="148">Where I lost you: "predictive analytics" — eyes glazed</text>
-  <text class="lost" x="36" y="164">Too many features, no clear outcome</text>
+  <rect x="20" y="100" width="370" height="150" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
+  <text x="36" y="124" fill="#ED3694" font-size="12" font-weight="bold">V1</text>
+  <text x="36" y="146" fill="#FFFFFF" font-size="12">"We use AI to optimise enterprise workflows"</text>
+  <text x="36" y="172" fill="#ED3694" font-size="11" opacity="0.5">FEEDBACK</text>
+  <text x="36" y="190" fill="#B8BCC8" font-size="11">Lost me at "optimise enterprise workflows"</text>
+  <text x="36" y="208" fill="#B8BCC8" font-size="11">Too abstract. No outcome. No urgency.</text>
+  <!-- V1 strength indicator: weak (opacity 0.3) -->
+  <rect x="340" y="110" width="36" height="16" fill="#ED3694" fill-opacity="0.1" rx="4"/>
+  <text x="358" y="122" fill="#ED3694" font-size="9" font-weight="bold" text-anchor="middle" opacity="0.3">WEAK</text>
 
   <!-- V2 Card -->
-  <rect class="card" x="20" y="204" width="360" height="150" rx="8"/>
-  <text class="version-label" x="36" y="228">V2</text>
-  <text class="body-white" x="36" y="248">"We stop enterprise customers from</text>
-  <text class="body-white" x="36" y="264">churning in the first 90 days."</text>
-  <text class="landed" x="36" y="290">What landed: "first 90 days" — specific and urgent</text>
-  <text class="landed" x="36" y="306">The problem is clear now</text>
-  <text class="lost" x="36" y="326">Still two ideas competing — churn + onboarding</text>
+  <rect x="20" y="262" width="370" height="150" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
+  <text x="36" y="286" fill="#ED3694" font-size="12" font-weight="bold">V2</text>
+  <text x="36" y="308" fill="#FFFFFF" font-size="12">"We stop enterprise teams losing customers</text>
+  <text x="36" y="324" fill="#FFFFFF" font-size="12">in the first 90 days"</text>
+  <text x="36" y="348" fill="#ED3694" font-size="11" opacity="0.5">FEEDBACK</text>
+  <text x="36" y="366" fill="#B8BCC8" font-size="11">Better — but why would I care?</text>
+  <text x="36" y="384" fill="#B8BCC8" font-size="11">Problem is clearer. Still two ideas competing.</text>
+  <!-- V2 strength indicator: medium (opacity 0.6) -->
+  <rect x="326" y="272" width="50" height="16" fill="#ED3694" fill-opacity="0.15" rx="4"/>
+  <text x="351" y="284" fill="#ED3694" font-size="9" font-weight="bold" text-anchor="middle" opacity="0.6">BETTER</text>
 
-  <!-- V3 Card -->
-  <rect class="card" x="20" y="366" width="360" height="150" rx="8"/>
-  <text class="version-label" x="36" y="390">V3</text>
-  <text class="body-white" x="36" y="410">"We make it impossible to lose a customer</text>
-  <text class="body-white" x="36" y="426">in the first 90 days."</text>
-  <text class="landed" x="36" y="452">What landed: One hook. Led with the outcome.</text>
-  <text class="landed" x="36" y="468">"Tell me more" — the right reaction</text>
-  <text class="landed" x="36" y="488">Energy shifted. This is the one.</text>
+  <!-- V3 Card — winner -->
+  <rect x="20" y="424" width="370" height="150" fill="#1F2E4D" rx="8" stroke="#ED3694" stroke-width="2"/>
+  <text x="36" y="448" fill="#ED3694" font-size="12" font-weight="bold">V3</text>
+  <text x="36" y="470" fill="#FFFFFF" font-size="12">"40% of enterprise customers churn in 90 days.</text>
+  <text x="36" y="486" fill="#FFFFFF" font-size="12">We fix that."</text>
+  <text x="36" y="510" fill="#ED3694" font-size="11">FEEDBACK</text>
+  <text x="36" y="528" fill="#B8BCC8" font-size="11">Now I'm listening. One hook. Led with outcome.</text>
+  <text x="36" y="546" fill="#B8BCC8" font-size="11">"Tell me more" — the right reaction.</text>
+  <!-- V3 strength indicator: strong (full opacity) -->
+  <rect x="316" y="434" width="60" height="16" fill="#ED3694" fill-opacity="0.2" rx="4"/>
+  <text x="346" y="446" fill="#ED3694" font-size="9" font-weight="bold" text-anchor="middle">LANDED</text>
 
-  <!-- Section label: MESSAGE HIERARCHY -->
-  <text class="section-label" x="420" y="30">MESSAGE HIERARCHY</text>
+  <!-- Right column label -->
+  <text x="420" y="88" fill="#7A7F8E" font-size="10" font-weight="bold" letter-spacing="1.5">MESSAGE HIERARCHY</text>
 
   <!-- Hook (Level 1) — largest, pink border -->
-  <rect class="card-pink" x="410" y="42" width="370" height="130" rx="8"/>
-  <text class="level-label" x="426" y="66">LEVEL 1 — THE HOOK</text>
-  <text class="level-text" x="426" y="92">We make it impossible for</text>
-  <text class="level-text" x="426" y="110">enterprise teams to lose a customer</text>
-  <text class="level-text" x="426" y="128">in the first 90 days.</text>
-  <line x1="426" y1="142" x2="764" y2="142" stroke="#ED3694" stroke-width="1" opacity="0.3"/>
-  <text class="body" x="426" y="158">The dinner party sentence</text>
+  <rect x="410" y="100" width="370" height="130" fill="#1F2E4D" rx="8" stroke="#ED3694" stroke-width="1.5"/>
+  <text x="426" y="124" fill="#ED3694" font-size="10" font-weight="bold" letter-spacing="1">LEVEL 1 — THE HOOK</text>
+  <text x="426" y="150" fill="#FFFFFF" font-size="13">40% of enterprise customers churn</text>
+  <text x="426" y="168" fill="#FFFFFF" font-size="13">in 90 days. We fix that.</text>
+  <line x1="426" y1="182" x2="764" y2="182" stroke="#ED3694" stroke-width="1" opacity="0.3"/>
+  <text x="426" y="200" fill="#7A7F8E" font-size="11">The dinner party sentence</text>
 
   <!-- Follow-up (Level 2) -->
-  <rect class="card" x="410" y="190" width="370" height="120" rx="8"/>
-  <rect x="410" y="190" width="4" height="120" rx="2" fill="#ED3694" opacity="0.6"/>
-  <text class="level-label" x="430" y="214">LEVEL 2 — THE FOLLOW-UP</text>
-  <text class="level-text" x="430" y="240">Most churn happens because</text>
-  <text class="level-text" x="430" y="258">onboarding is broken. We fix the</text>
-  <text class="level-text" x="430" y="276">first 90 days.</text>
-  <text class="body" x="430" y="298">Problem + insight</text>
+  <rect x="410" y="248" width="370" height="120" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
+  <rect x="410" y="248" width="4" height="120" rx="2" fill="#ED3694" opacity="0.6"/>
+  <text x="430" y="272" fill="#ED3694" font-size="10" font-weight="bold" letter-spacing="1">LEVEL 2 — THE FOLLOW-UP</text>
+  <text x="430" y="298" fill="#FFFFFF" font-size="13">Most churn happens because</text>
+  <text x="430" y="316" fill="#FFFFFF" font-size="13">onboarding is broken. We automate</text>
+  <text x="430" y="334" fill="#FFFFFF" font-size="13">the first 90 days.</text>
+  <text x="430" y="356" fill="#7A7F8E" font-size="11">Problem + insight</text>
 
   <!-- Detail (Level 3) -->
-  <rect class="card" x="410" y="328" width="370" height="130" rx="8"/>
-  <rect x="410" y="328" width="4" height="130" rx="2" fill="#ED3694" opacity="0.3"/>
-  <text class="level-label" x="430" y="352">LEVEL 3 — THE DETAIL</text>
-  <text class="level-text" x="430" y="378">AI-powered onboarding workflows</text>
-  <text class="level-text" x="430" y="396">that adapt to each customer's</text>
-  <text class="level-text" x="430" y="414">behaviour. 40% reduction in churn</text>
-  <text class="level-text" x="430" y="432">for enterprise SaaS.</text>
-  <text class="body" x="430" y="450">Features + proof points</text>
+  <rect x="410" y="386" width="370" height="130" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
+  <rect x="410" y="386" width="4" height="130" rx="2" fill="#ED3694" opacity="0.3"/>
+  <text x="430" y="410" fill="#ED3694" font-size="10" font-weight="bold" letter-spacing="1">LEVEL 3 — THE DETAIL</text>
+  <text x="430" y="436" fill="#FFFFFF" font-size="13">AI-powered onboarding workflows</text>
+  <text x="430" y="454" fill="#FFFFFF" font-size="13">that adapt to each customer's</text>
+  <text x="430" y="472" fill="#FFFFFF" font-size="13">behaviour. 40% churn reduction.</text>
+  <text x="430" y="494" fill="#FFFFFF" font-size="13">Enterprise SaaS.</text>
+  <text x="430" y="510" fill="#7A7F8E" font-size="11">Features + proof points</text>
 
   <!-- Arrow indicators connecting hierarchy levels -->
-  <path d="M 595 172 L 595 188" stroke="#ED3694" stroke-width="1.5" fill="none" marker-end="url(#arrowhead)"/>
-  <path d="M 595 312 L 595 326" stroke="#ED3694" stroke-width="1.5" fill="none" marker-end="url(#arrowhead)"/>
-
-  <defs>
-    <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
-      <polygon points="0 0, 8 3, 0 6" fill="#ED3694"/>
-    </marker>
-  </defs>
+  <line x1="595" y1="230" x2="595" y2="246" stroke="#ED3694" stroke-width="1.5"/>
+  <polygon points="589,244 595,252 601,244" fill="#ED3694" opacity="0.6"/>
+  <line x1="595" y1="368" x2="595" y2="384" stroke="#ED3694" stroke-width="1.5"/>
+  <polygon points="589,382 595,390 601,382" fill="#ED3694" opacity="0.4"/>
 
   <!-- Bottom context bar -->
-  <rect class="card" x="20" y="540" width="760" height="90" rx="8"/>
-  <text class="subtitle" x="36" y="564">CONTEXT ADAPTATIONS</text>
-  <text class="body" x="36" y="586">Homepage: Lead with the hook. One sentence above the fold.</text>
-  <text class="body" x="36" y="604">Pitch deck: Hook on slide 1. Follow-up on slide 2. Detail in appendix.</text>
-  <text class="body" x="36" y="622">Email: Hook as subject line. Follow-up as first paragraph. Detail as CTA link.</text>
-
+  <rect x="20" y="596" width="760" height="80" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
+  <text x="36" y="620" fill="#ED3694" font-size="11" font-weight="bold" letter-spacing="1">CONTEXT ADAPTATIONS</text>
+  <text x="36" y="642" fill="#B8BCC8" font-size="11">Homepage: Lead with the hook. One sentence above the fold.</text>
+  <text x="36" y="658" fill="#B8BCC8" font-size="11">Pitch deck: Hook on slide 1. Follow-up on slide 2. Detail in appendix.</text>
 </svg>

@@ -1,8 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="800" height="700" viewBox="0 0 800 700">
   <defs>
-    <style>
-      text { font-family: Arial, sans-serif; }
-    </style>
+    <style>text { font-family: Arial, sans-serif; }</style>
   </defs>
 
   <!-- Background -->
@@ -76,22 +74,22 @@
   <text x="510" y="524" fill="#7A7F8E" font-size="11" font-weight="bold">DE-RISK ACTION</text>
   <line x1="44" y1="532" x2="756" y2="532" stroke="#2A3656" stroke-width="1"/>
 
-  <!-- Mitigation 1 -->
+  <!-- Mitigation 1: High likelihood, Critical impact -->
   <text x="44" y="554" fill="#B8BCC8" font-size="12">Runway runs out</text>
   <text x="280" y="554" fill="#ED3694" font-size="12">High</text>
   <text x="400" y="554" fill="#ED3694" font-size="12">Critical</text>
   <text x="510" y="554" fill="#B8BCC8" font-size="12">Cut burn rate 30%, secure bridge round</text>
 
-  <!-- Mitigation 2 -->
+  <!-- Mitigation 2: Medium likelihood -->
   <text x="44" y="586" fill="#B8BCC8" font-size="12">Product-market misfit</text>
-  <text x="280" y="586" fill="#F15A22" font-size="12">Medium</text>
+  <text x="280" y="586" fill="#ED3694" font-size="12" opacity="0.6">Medium</text>
   <text x="400" y="586" fill="#ED3694" font-size="12">Critical</text>
   <text x="510" y="586" fill="#B8BCC8" font-size="12">Run 20 discovery interviews this month</text>
 
-  <!-- Mitigation 3 -->
+  <!-- Mitigation 3: Medium likelihood, High impact -->
   <text x="44" y="618" fill="#B8BCC8" font-size="12">Key person leaves</text>
-  <text x="280" y="618" fill="#F15A22" font-size="12">Medium</text>
-  <text x="400" y="618" fill="#F15A22" font-size="12">High</text>
+  <text x="280" y="618" fill="#ED3694" font-size="12" opacity="0.6">Medium</text>
+  <text x="400" y="618" fill="#ED3694" font-size="12" opacity="0.6">High</text>
   <text x="510" y="618" fill="#B8BCC8" font-size="12">Document everything, vest equity monthly</text>
 
   <!-- Dividers -->

@@ -1,12 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="800" height="750" viewBox="0 0 800 750">
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="700" viewBox="0 0 800 700">
   <defs>
-    <style>
-      text { font-family: Arial, sans-serif; }
-    </style>
+    <style>text { font-family: Arial, sans-serif; }</style>
   </defs>
 
   <!-- Background -->
-  <rect width="800" height="750" fill="#1B2A4A" rx="8"/>
+  <rect width="800" height="700" fill="#1B2A4A" rx="8"/>
 
   <!-- Title bar -->
   <rect x="0" y="0" width="800" height="56" fill="#1F2E4D" rx="8"/>
@@ -57,7 +55,7 @@
   <text x="44" y="474" fill="#B8BCC8" font-size="12">Model break-even at 2% conversion. 5% is stretch target, not the viability threshold.</text>
 
   <!-- Objection 4 -->
-  <rect x="24" y="502" width="752" height="100" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
+  <rect x="24" y="502" width="752" height="88" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
   <text x="44" y="526" fill="#ED3694" font-size="12" font-weight="bold">OBJECTION #4</text>
   <text x="44" y="548" fill="#B8BCC8" font-size="13">Support burden from free users will overwhelm the small CS team and degrade paid experience.</text>
   <!-- Strength: 1 dot (weak) -->
@@ -66,13 +64,12 @@
   <circle cx="704" cy="522" r="5" fill="none" stroke="#ED3694" stroke-width="1.5"/>
   <circle cx="720" cy="522" r="5" fill="none" stroke="#ED3694" stroke-width="1.5"/>
   <text x="44" y="570" fill="#7A7F8E" font-size="10" letter-spacing="1">REBUTTAL</text>
-  <text x="44" y="588" fill="#B8BCC8" font-size="12">Free tier is self-serve only with community forum. No human support included.</text>
+  <text x="44" y="578" fill="#B8BCC8" font-size="12">Free tier is self-serve only with community forum. No human support included.</text>
 
   <!-- Verdict -->
-  <rect x="24" y="626" width="752" height="100" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
-  <rect x="24" y="626" width="752" height="3" fill="#ED3694"/>
-  <text x="44" y="654" fill="#ED3694" font-size="12" font-weight="bold" letter-spacing="1">VERDICT</text>
-  <text x="140" y="654" fill="#27BDBE" font-size="13" font-weight="bold">SURVIVES WITH CONDITIONS</text>
-  <text x="44" y="678" fill="#B8BCC8" font-size="13">The freemium model is viable if: (1) break-even is modelled at 2% not 5%, (2) free tier has hard</text>
-  <text x="44" y="698" fill="#B8BCC8" font-size="13">resource caps, and (3) conversion triggers are built into the product experience from day one.</text>
+  <rect x="24" y="610" width="752" height="68" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
+  <rect x="24" y="610" width="752" height="3" fill="#ED3694"/>
+  <text x="44" y="638" fill="#ED3694" font-size="12" font-weight="bold" letter-spacing="1">VERDICT</text>
+  <text x="140" y="638" fill="#FFFFFF" font-size="13" font-weight="bold">SURVIVES WITH CONDITIONS</text>
+  <text x="44" y="662" fill="#B8BCC8" font-size="12">The freemium model is viable if: (1) break-even is modelled at 2% not 5%, (2) free tier has hard</text>
 </svg>

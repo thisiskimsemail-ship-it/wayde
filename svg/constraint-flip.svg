@@ -1,15 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="800" height="650" viewBox="0 0 800 650">
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="700" viewBox="0 0 800 700">
   <defs>
-    <style>
-      text { font-family: Arial, sans-serif; }
-    </style>
+    <style>text { font-family: Arial, sans-serif; }</style>
     <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
       <polygon points="0 0, 10 3.5, 0 7" fill="#F15A22"/>
     </marker>
   </defs>
 
   <!-- Background -->
-  <rect width="800" height="650" fill="#1B2A4A" rx="8"/>
+  <rect width="800" height="700" fill="#1B2A4A" rx="8"/>
 
   <!-- Title bar -->
   <rect x="0" y="0" width="800" height="56" fill="#1F2E4D" rx="8"/>
@@ -25,7 +23,7 @@
 
   <!-- LEFT: CONSTRAINT card -->
   <rect x="24" y="100" width="200" height="160" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
-  <rect x="24" y="100" width="3" height="160" fill="#F15A22" rx="0"/>
+  <rect x="24" y="100" width="3" height="160" fill="#F15A22"/>
   <text x="40" y="124" fill="#F15A22" font-size="11" font-weight="bold" letter-spacing="1">THE LIMITATION</text>
   <text x="40" y="148" fill="#FFFFFF" font-size="13" font-weight="bold">Two-person team</text>
   <text x="40" y="166" fill="#FFFFFF" font-size="13" font-weight="bold">No funding</text>
@@ -33,7 +31,7 @@
   <text x="40" y="202" fill="#FFFFFF" font-size="13" font-weight="bold">platforms</text>
   <text x="40" y="230" fill="#7A7F8E" font-size="11" font-style="italic">"We can't outbuild them."</text>
 
-  <!-- Arrow: Constraint → Flip -->
+  <!-- Arrow: Constraint to Flip -->
   <line x1="234" y1="180" x2="284" y2="180" stroke="#F15A22" stroke-width="2.5" marker-end="url(#arrowhead)"/>
   <text x="259" y="170" fill="#F15A22" font-size="18" text-anchor="middle" font-weight="bold">&#x21BB;</text>
 
@@ -42,48 +40,44 @@
   <text x="310" y="124" fill="#F15A22" font-size="11" font-weight="bold" letter-spacing="1">REFRAMED AS ADVANTAGE</text>
   <text x="310" y="148" fill="#FFFFFF" font-size="13" font-weight="bold">Can't outbuild —</text>
   <text x="310" y="166" fill="#FFFFFF" font-size="13" font-weight="bold">but can outcare</text>
-  <text x="310" y="194" fill="#b8b5d0" font-size="11">Every customer talks to</text>
-  <text x="310" y="210" fill="#b8b5d0" font-size="11">a founder. Decisions in</text>
-  <text x="310" y="226" fill="#b8b5d0" font-size="11">hours, not quarters.</text>
+  <text x="310" y="194" fill="#B8BCC8" font-size="11">Every customer talks to</text>
+  <text x="310" y="210" fill="#B8BCC8" font-size="11">a founder. Decisions in</text>
+  <text x="310" y="226" fill="#B8BCC8" font-size="11">hours, not quarters.</text>
 
-  <!-- Arrow: Flip → Ideas -->
+  <!-- Arrow: Flip to Ideas -->
   <line x1="504" y1="180" x2="524" y2="140" stroke="#F15A22" stroke-width="1.5" stroke-dasharray="4,3"/>
   <line x1="504" y1="180" x2="524" y2="195" stroke="#F15A22" stroke-width="1.5" stroke-dasharray="4,3"/>
   <line x1="504" y1="180" x2="524" y2="250" stroke="#F15A22" stroke-width="1.5" stroke-dasharray="4,3"/>
   <line x1="504" y1="180" x2="524" y2="305" stroke="#F15A22" stroke-width="1.5" stroke-dasharray="4,3"/>
 
   <!-- RIGHT: IDEA cards -->
-  <!-- Idea 1 -->
   <rect x="534" y="100" width="242" height="52" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
   <text x="550" y="122" fill="#FFFFFF" font-size="12" font-weight="bold">Concierge-first model</text>
   <text x="550" y="138" fill="#7A7F8E" font-size="10">Hand-hold every customer personally</text>
 
-  <!-- Idea 2 -->
   <rect x="534" y="162" width="242" height="52" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
   <text x="550" y="184" fill="#FFFFFF" font-size="12" font-weight="bold">Founder-led onboarding</text>
   <text x="550" y="200" fill="#7A7F8E" font-size="10">CEO does every onboarding call</text>
 
-  <!-- Idea 3 -->
   <rect x="534" y="224" width="242" height="52" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
   <text x="550" y="246" fill="#FFFFFF" font-size="12" font-weight="bold">Community not features</text>
   <text x="550" y="262" fill="#7A7F8E" font-size="10">Build users, not a feature roadmap</text>
 
-  <!-- Idea 4 -->
   <rect x="534" y="286" width="242" height="52" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
   <text x="550" y="308" fill="#FFFFFF" font-size="12" font-weight="bold">Opinionated defaults</text>
   <text x="550" y="324" fill="#7A7F8E" font-size="10">Fewer features, each one exactly right</text>
 
   <!-- Constraint dependency tags -->
-  <rect x="695" y="110" width="72" height="18" fill="rgba(241,90,34,0.15)" rx="9"/>
+  <rect x="695" y="110" width="72" height="18" fill="rgba(241,90,34,0.15)" rx="8"/>
   <text x="731" y="123" fill="#F15A22" font-size="9" font-weight="bold" text-anchor="middle">USES: SIZE</text>
 
-  <rect x="695" y="172" width="72" height="18" fill="rgba(241,90,34,0.15)" rx="9"/>
+  <rect x="695" y="172" width="72" height="18" fill="rgba(241,90,34,0.15)" rx="8"/>
   <text x="731" y="185" fill="#F15A22" font-size="9" font-weight="bold" text-anchor="middle">USES: SIZE</text>
 
-  <rect x="680" y="234" width="87" height="18" fill="rgba(241,90,34,0.15)" rx="9"/>
+  <rect x="680" y="234" width="87" height="18" fill="rgba(241,90,34,0.15)" rx="8"/>
   <text x="723" y="247" fill="#F15A22" font-size="9" font-weight="bold" text-anchor="middle">USES: NO FUND</text>
 
-  <rect x="680" y="296" width="87" height="18" fill="rgba(241,90,34,0.15)" rx="9"/>
+  <rect x="680" y="296" width="87" height="18" fill="rgba(241,90,34,0.15)" rx="8"/>
   <text x="723" y="309" fill="#F15A22" font-size="9" font-weight="bold" text-anchor="middle">USES: FOCUS</text>
 
   <!-- Divider line -->
@@ -96,23 +90,22 @@
   <rect x="120" y="428" width="560" height="130" fill="#1F2E4D" rx="8" stroke="#F15A22" stroke-width="2.5"/>
 
   <!-- Moat icon -->
-  <rect x="140" y="448" width="60" height="24" fill="rgba(241,90,34,0.15)" rx="12"/>
-  <text x="170" y="464" fill="#F15A22" font-size="10" font-weight="bold" text-anchor="middle">&#x1F3F0; MOAT</text>
+  <rect x="140" y="448" width="60" height="24" fill="rgba(241,90,34,0.15)" rx="8"/>
+  <text x="170" y="464" fill="#F15A22" font-size="10" font-weight="bold" text-anchor="middle">MOAT</text>
 
   <text x="216" y="462" fill="#FFFFFF" font-size="16" font-weight="bold">Concierge-first where the product IS the relationship</text>
 
-  <text x="140" y="492" fill="#b8b5d0" font-size="12">A VC-backed competitor can't copy this without dismantling their</text>
-  <text x="140" y="510" fill="#b8b5d0" font-size="12">scale model. The constraint (small team) becomes the moat.</text>
+  <text x="140" y="492" fill="#B8BCC8" font-size="12">A VC-backed competitor can't copy this without dismantling their</text>
+  <text x="140" y="510" fill="#B8BCC8" font-size="12">scale model. The constraint (small team) becomes the moat.</text>
 
-  <rect x="140" y="526" width="130" height="20" fill="rgba(241,90,34,0.15)" rx="10"/>
-  <text x="205" y="540" fill="#F15A22" font-size="10" font-weight="bold" text-anchor="middle">HARD TO COPY &#x2713;</text>
+  <rect x="140" y="526" width="130" height="20" fill="rgba(241,90,34,0.15)" rx="8"/>
+  <text x="205" y="540" fill="#F15A22" font-size="10" font-weight="bold" text-anchor="middle">HARD TO COPY</text>
 
-  <rect x="284" y="526" width="160" height="20" fill="rgba(241,90,34,0.15)" rx="10"/>
-  <text x="364" y="540" fill="#F15A22" font-size="10" font-weight="bold" text-anchor="middle">DEPENDS ON CONSTRAINT &#x2713;</text>
+  <rect x="284" y="526" width="160" height="20" fill="rgba(241,90,34,0.15)" rx="8"/>
+  <text x="364" y="540" fill="#F15A22" font-size="10" font-weight="bold" text-anchor="middle">DEPENDS ON CONSTRAINT</text>
 
   <!-- Bottom action -->
   <rect x="24" y="586" width="752" height="44" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
   <text x="40" y="612" fill="#F15A22" font-size="11" font-weight="bold" letter-spacing="1">FIRST TEST</text>
   <text x="134" y="612" fill="#FFFFFF" font-size="12">Offer concierge onboarding to next 10 signups. Measure retention vs self-serve cohort.</text>
-
 </svg>
