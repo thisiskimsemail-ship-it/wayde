@@ -215,7 +215,6 @@ function trackEvent(event, meta = {}) {
 }
 
 // === EXERCISE LABELS ===
-c
 // === TOOL-SPECIFIC BOARD TAG MAPS ===
 
 const FIVE_WHYS_TAG_MAP = {
