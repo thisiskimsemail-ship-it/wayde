@@ -4846,6 +4846,14 @@ function maybeStartTour() {
 }
 
 // === QUICK-FIRE BUTTON INJECTION (backup for missed OPTIONS) ===
+
+// Header feedback link opens the feedback panel
+document.getElementById('headerFeedbackLink')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    const panel = document.getElementById('feedbackPanel');
+    if (panel) panel.classList.toggle('hidden');
+});
+
 // Conversation-first: MutationObserver for quickfire removed.
 // Pete uses [OPTIONS] tags inline when he wants to offer choices.
 // The OPTIONS parser in streamResponse handles rendering.
