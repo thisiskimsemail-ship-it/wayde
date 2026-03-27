@@ -5200,3 +5200,10 @@ html[data-theme="light"] .starter-prompt-pill:hover {
 .board-grid-rapid-experiment .board-zone[data-zone="re-actual"] { border-top: 1px solid rgba(255,255,255,0.06); grid-column: 2 / -1; background: rgba(39,189,190,0.03); }
 .board-grid-rapid-experiment .board-zone[data-zone="actions"] { grid-column: 1 / -1; border-top: 2px solid var(--orange); }
 @media (max-width: 640px) { .board-grid-rapid-experiment { grid-template-columns: 1fr; } .board-grid-rapid-experiment .board-zone { grid-column: 1 !important; } }
+
+/* Tool pill buttons (homepage) — match link pill styling */
+button.lp-tool-pill {
+    background: transparent;
+    cursor: pointer;
+    font-family: var(--font);
+}
