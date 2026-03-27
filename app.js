@@ -1122,6 +1122,13 @@ function forceCloseSession() {
     // Hide pitch preview card
     const pitchPreview = document.getElementById('pitchPreview');
     if (pitchPreview) pitchPreview.classList.add('hidden');
+    // Clean up post-session screens
+    if (typeof cleanupPostSessionScreens === 'function') cleanupPostSessionScreens();
+    document.querySelector('.download-progress')?.remove();
+    document.getElementById('postSessionScreen')?.remove();
+    // Restore chat pane visibility (in case post-session flow hid it)
+    const chatPaneEl = document.getElementById('chatPane');
+    if (chatPaneEl) chatPaneEl.style.display = '';
     // Hide input bar on welcome
     if (inputArea) inputArea.style.display = 'none';
     document.body.classList.remove('in-session', 'board-open');
@@ -2184,7 +2191,7 @@ async function streamResponse() {
                 messagesEl.appendChild(boardChip);
                 boardChip.querySelector('.wrap-chip-report').addEventListener('click', () => {
                     boardChip.remove();
-                    generateReport();
+                    startPostSessionFlow();
                 });
                 scrollToBottom();
                 // Also show report CTA in footer
@@ -2514,7 +2521,7 @@ reportCtaBtn.addEventListener('click', async () => {
         return;
     }
 
-    generateReport();
+    startPostSessionFlow();
 });
 
 // === SHARED LEAD CAPTURE LOGIC ===
@@ -3046,6 +3053,332 @@ function renderNextExercisePanel() {
         panel.remove();
         navigateToStage(next.mode, next.exercise);
     });
+}
+
+// === POST-SESSION FLOW (3-screen experience) ===
+
+async function startPostSessionFlow() {
+    if (reportGenerating || state.reportGenerated) return;
+    trackEvent('post_session_start', { exchanges: state.exchangeCount });
+    reportGenerating = true;
+
+    const exName = EXERCISE_LABELS[state.exercise] || state.exercise;
+    const toolMap = TOOL_PROGRAM_MAP[state.exercise] || TOOL_PROGRAM_FALLBACK;
+
+    // Hide chat pane elements, board, report CTA
+    const chatPane = document.getElementById('chatPane');
+    const boardPane = document.getElementById('boardPane');
+    const workshopLayout = document.getElementById('workshopLayout');
+    if (chatPane) chatPane.style.display = 'none';
+    if (boardPane) boardPane.classList.add('hidden');
+    if (workshopLayout) workshopLayout.classList.remove('board-active');
+    reportCta.classList.add('hidden');
+    if (inputArea) inputArea.style.display = 'none';
+    sessionBar.classList.add('hidden');
+
+    // ---- Screen 1: Loading ----
+    const loadingScreen = document.getElementById('postSessionLoading');
+    loadingScreen.classList.remove('hidden');
+    loadingScreen.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    // Populate subtitle
+    const subtitle = document.getElementById('psLoadingSubtitle');
+    if (subtitle) subtitle.textContent = `Pete is assembling your ${exName} report and visual`;
+
+    // Populate program recommendation card
+    const programName = document.getElementById('psProgramName');
+    const programBridge = document.getElementById('psProgramBridge');
+    const programLink = document.getElementById('psProgramLink');
+    if (programName) programName.textContent = toolMap.program;
+    if (programBridge) programBridge.textContent = toolMap.bridge;
+    if (programLink) programLink.href = toolMap.programUrl;
+
+    // Animate progress bar and steps
+    const progressFill = document.getElementById('psProgressFill');
+    const steps = [
+        { el: document.getElementById('psStep1'), pct: 20 },
+        { el: document.getElementById('psStep2'), pct: 45 },
+        { el: document.getElementById('psStep3'), pct: 70 },
+        { el: document.getElementById('psStep4'), pct: 90 }
+    ];
+
+    let stepIdx = 0;
+    const stepInterval = setInterval(() => {
+        if (stepIdx > 0 && steps[stepIdx - 1].el) {
+            steps[stepIdx - 1].el.classList.remove('active');
+            steps[stepIdx - 1].el.classList.add('done');
+            const icon = steps[stepIdx - 1].el.querySelector('.ps-step-icon');
+            if (icon) icon.textContent = '\u2713';
+        }
+        if (stepIdx < steps.length) {
+            steps[stepIdx].el.classList.add('active');
+            const icon = steps[stepIdx].el.querySelector('.ps-step-icon');
+            if (icon) icon.textContent = '\u25CF';
+            if (progressFill) progressFill.style.width = steps[stepIdx].pct + '%';
+            stepIdx++;
+        }
+    }, 4000);
+
+    // Prepare messages for both calls
+    let reportMessages = [...state.messages];
+    const switchIdx = reportMessages.findLastIndex(m => m._switchPoint);
+    if (switchIdx > 0) {
+        const preSummary = reportMessages.slice(0, switchIdx)
+            .filter(m => m.role === 'user' && !m.content.startsWith('[SYSTEM]'))
+            .map(m => m.content).join(' | ');
+        reportMessages = [
+            { role: 'user', content: `[Context from previous exercise]: ${preSummary}` },
+            { role: 'assistant', content: 'Understood \u2014 I have the context from your previous exercise.' },
+            ...reportMessages.slice(switchIdx).map(m => ({ role: m.role, content: m.content }))
+        ];
+    }
+
+    // Fire both API calls in parallel
+    const reportPromise = fetch('/api/report', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            mode: state.mode,
+            exercise: state.exercise,
+            messages: reportMessages,
+            parking_lot: state.parkingLot,
+            board_cards: state.board.cards
+        })
+    }).then(r => r.ok ? r.json() : Promise.reject('Report failed'));
+
+    const revealPromise = fetch('/api/session/reveal', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            mode: state.mode,
+            exercise: state.exercise,
+            messages: reportMessages,
+            board_cards: state.board.cards
+        })
+    }).then(r => r.ok ? r.json() : Promise.reject('Reveal failed'));
+
+    try {
+        const [reportData, revealData] = await Promise.all([reportPromise, revealPromise]);
+        clearInterval(stepInterval);
+
+        // Mark all steps done
+        steps.forEach(s => {
+            if (s.el) {
+                s.el.classList.remove('active');
+                s.el.classList.add('done');
+                const icon = s.el.querySelector('.ps-step-icon');
+                if (icon) icon.textContent = '\u2713';
+            }
+        });
+        if (progressFill) progressFill.style.width = '100%';
+
+        // Store report data
+        state.reportText = reportData.report || '';
+        state.reportSynopsis = reportData.synopsis || {};
+        state.reportGenerated = true;
+
+        // Prepare full report in background (hidden card)
+        if (reportContent) reportContent.innerHTML = renderMarkdown(state.reportText);
+        populateReportMeta();
+
+        // Brief pause then transition to Screen 2
+        await new Promise(resolve => setTimeout(resolve, 800));
+        loadingScreen.classList.add('hidden');
+
+        // ---- Screen 2: Reveal ----
+        const revealScreen = document.getElementById('postSessionReveal');
+        revealScreen.classList.remove('hidden');
+        revealScreen.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+        // Populate reveal content
+        const closingText = document.getElementById('psClosingText');
+        const headline = document.getElementById('psHeadline');
+        const synopsisText = document.getElementById('psSynopsisText');
+        const recoList = document.getElementById('psRecommendations');
+
+        if (closingText) closingText.textContent = revealData.closing_message || '';
+        if (headline) {
+            // Put last few words in <em> for yellow emphasis
+            const words = (revealData.headline || '').split(' ');
+            if (words.length > 3) {
+                const last2 = words.splice(-2).join(' ');
+                headline.innerHTML = words.join(' ') + ' <em>' + last2 + '</em>';
+            } else {
+                headline.textContent = revealData.headline || '';
+            }
+        }
+        if (synopsisText) synopsisText.textContent = revealData.synopsis || '';
+        if (recoList && revealData.recommendations) {
+            recoList.innerHTML = revealData.recommendations
+                .map(r => `<li><strong>${EXERCISE_LABELS[r.exercise] || r.exercise}</strong> \u2014 ${r.reason}</li>`)
+                .join('');
+        }
+
+        // Store reveal recommendations for Screen 3
+        state._revealRecommendations = revealData.recommendations || [];
+
+        // Wire email form
+        const emailForm = document.getElementById('psEmailForm');
+        const emailCapture = document.getElementById('psEmailCapture');
+        const formatButtons = document.getElementById('psFormatButtons');
+
+        emailForm?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('psDownloadBtn');
+            const email = document.getElementById('psEmailInput')?.value?.trim();
+            const name = document.getElementById('psNameInput')?.value?.trim();
+            const company = document.getElementById('psCompanyInput')?.value?.trim();
+            if (!email) return;
+
+            btn.disabled = true;
+            btn.textContent = 'Sending...';
+
+            state.userEmail = email;
+            localStorage.setItem('wade_user_email', email);
+
+            // Send lead
+            try {
+                await fetch('/api/lead', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email, name, company, role: '',
+                        mode: state.mode,
+                        exercise: state.exercise,
+                        report: state.reportText,
+                        rating: state.rating,
+                        messages: state.messages
+                    })
+                });
+            } catch (err) {
+                console.error('[PostSession] Lead capture failed:', err);
+            }
+
+            // Save session summary
+            fetch('/api/summary', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email,
+                    device_id: state.deviceId,
+                    mode: state.mode,
+                    exercise: state.exercise,
+                    messages: state.messages
+                })
+            }).catch(() => {});
+
+            // Hide email form, show format buttons
+            emailCapture.classList.add('hidden');
+            formatButtons.classList.remove('hidden');
+
+            // Auto-download Word
+            downloadReportWord();
+
+            // After brief delay, transition to Screen 3
+            setTimeout(() => transitionToPostDownload(), 2000);
+        });
+
+        // Wire format button
+        document.getElementById('psFormatWord')?.addEventListener('click', () => {
+            downloadReportWord();
+        });
+
+    } catch (err) {
+        clearInterval(stepInterval);
+        console.error('[PostSession] Flow failed:', err);
+        // Fallback: restore chat pane and use old flow
+        loadingScreen.classList.add('hidden');
+        if (chatPane) chatPane.style.display = '';
+        if (inputArea) inputArea.style.display = '';
+        sessionBar.classList.remove('hidden');
+        reportCta.classList.remove('hidden');
+        reportGenerating = false;
+        reportCtaBtn.disabled = false;
+        reportCtaBtn.textContent = 'Generate my report \u2192';
+    }
+}
+
+function transitionToPostDownload() {
+    const revealScreen = document.getElementById('postSessionReveal');
+    const nextScreen = document.getElementById('postSessionNext');
+    if (!nextScreen) return;
+
+    revealScreen?.classList.add('hidden');
+    nextScreen.classList.remove('hidden');
+    nextScreen.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    // Populate next-tool recommendations from reveal data
+    const nextTools = document.getElementById('psNextTools');
+    const recommendations = state._revealRecommendations || [];
+
+    if (nextTools && recommendations.length > 0) {
+        nextTools.innerHTML = recommendations.map(r => {
+            const mode = EXERCISE_MODE[r.exercise] || 'untangle';
+            const modeName = MODE_LABELS[mode] || mode;
+            const name = EXERCISE_LABELS[r.exercise] || r.exercise;
+            return `
+                <div class="ps-next-card" data-mode="${mode}" data-exercise="${r.exercise}">
+                    <div class="ps-next-card-mode">${modeName}</div>
+                    <div class="ps-next-card-name">${name}</div>
+                    <div class="ps-next-card-desc">${r.reason}</div>
+                </div>
+            `;
+        }).join('');
+
+        // Wire card clicks
+        nextTools.querySelectorAll('.ps-next-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const mode = card.dataset.mode;
+                const exercise = card.dataset.exercise;
+                cleanupPostSessionScreens();
+                startExercise(mode, exercise);
+            });
+        });
+    }
+
+    // Populate explore grid — all tools except current
+    const exploreGrid = document.getElementById('psExploreGrid');
+    if (exploreGrid) {
+        const allTools = Object.entries(EXERCISE_MODE)
+            .filter(([ex]) => ex !== state.exercise)
+            .slice(0, 8); // show 8 max
+
+        exploreGrid.innerHTML = allTools.map(([ex, mode]) => {
+            const name = EXERCISE_LABELS[ex] || ex;
+            const modeName = MODE_LABELS[mode] || mode;
+            return `
+                <div class="ps-explore-tile" data-mode="${mode}" data-exercise="${ex}">
+                    <div class="ps-explore-tile-name">${name}</div>
+                    <div class="ps-explore-tile-mode">${modeName}</div>
+                </div>
+            `;
+        }).join('');
+
+        exploreGrid.querySelectorAll('.ps-explore-tile').forEach(tile => {
+            tile.addEventListener('click', () => {
+                const mode = tile.dataset.mode;
+                const exercise = tile.dataset.exercise;
+                cleanupPostSessionScreens();
+                startExercise(mode, exercise);
+            });
+        });
+    }
+
+    // Wire new session button
+    document.getElementById('psNewSessionBtn')?.addEventListener('click', () => {
+        cleanupPostSessionScreens();
+        forceCloseSession();
+    });
+}
+
+function cleanupPostSessionScreens() {
+    document.getElementById('postSessionLoading')?.classList.add('hidden');
+    document.getElementById('postSessionReveal')?.classList.add('hidden');
+    document.getElementById('postSessionNext')?.classList.add('hidden');
+
+    // Restore chat pane visibility
+    const chatPane = document.getElementById('chatPane');
+    if (chatPane) chatPane.style.display = '';
 }
 
 // === WORKSHOP PHASE & PROGRESS ===
@@ -4377,8 +4710,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!state.messages.length) return;
         // Trigger the report card directly
         const reportCard = document.getElementById('reportCard');
-        if (reportCard && typeof generateReport === 'function') {
-            generateReport();
+        if (reportCard && typeof startPostSessionFlow === 'function') {
+            startPostSessionFlow();
         }
     });
 

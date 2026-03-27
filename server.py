@@ -4069,6 +4069,107 @@ Return EXACTLY this JSON format (no markdown, no code blocks):
         return jsonify({'error': str(e)}), 500
 
 
+# === SESSION REVEAL (post-session headline + synopsis + recommendations) ===
+
+SESSION_REVEAL_PROMPT = """You are Pete, the AI coach at The Studio (Wade Institute of Entrepreneurship).
+You have just finished guiding a user through a structured innovation exercise. Now generate a concise, hard-hitting session reveal.
+
+You must return EXACTLY this JSON format (no markdown, no code blocks):
+{
+  "headline": "A single sentence that identifies the biggest structural weakness OR the most important opportunity uncovered. Must be specific to THIS person's situation. Use concrete nouns. Under 15 words. This should make someone stop and think.",
+  "closing_message": "3-4 sentences. Direct, expert, encouraging but honest. Address the person directly. Name what they did well and what still needs work. Sound like a respected mentor, not a chatbot.",
+  "synopsis": "2-3 sentences summarising what was uncovered, followed by 4 bullet-point recommendations. Each bullet should be a concrete, actionable next step — not a platitude.",
+  "recommendations": [
+    {"exercise": "exercise-key", "reason": "A personalised 1-sentence reason why this specific tool would serve them next, based on what they said."},
+    {"exercise": "exercise-key", "reason": "Another personalised reason."},
+    {"exercise": "exercise-key", "reason": "A third personalised reason."}
+  ]
+}
+
+AVAILABLE TOOLS for recommendations (use exact keys):
+five-whys, jtbd, empathy-map, socratic, iceberg, crazy-8s, hmw, scamper, analogical, constraint-flip, pre-mortem, devils-advocate, cold-open, reality-check, trade-off, lean-canvas, effectuation, rapid-experiment, flywheel, theory-of-change
+
+IMPORTANT:
+- Do NOT recommend the tool they just used.
+- Each recommendation must feel genuinely tailored to what the user shared — not generic.
+- The headline should name the specific insight, not describe the process.
+- TONE: credible, clear, direct, grounded. The Wade voice. No jargon, no buzzwords.
+"""
+
+@app.route('/api/session/reveal', methods=['POST'])
+def session_reveal():
+    data = request.json
+    mode = data.get('mode', 'untangle')
+    exercise = data.get('exercise', '')
+    messages = data.get('messages', [])
+    board_cards = data.get('board_cards', [])
+
+    exercise_name = EXERCISE_NAMES.get(exercise, exercise)
+    mode_name = MODE_NAMES.get(mode, mode)
+
+    # Build board context
+    board_block = ''
+    if board_cards:
+        grouped = {}
+        for card in board_cards:
+            zone = card.get('zone', 'general')
+            text = card.get('text', '')
+            if text:
+                grouped.setdefault(zone, []).append(text)
+        lines = []
+        for zone, items_list in grouped.items():
+            zone_label = zone.replace('-', ' ').title()
+            lines.append(f"**{zone_label}:**")
+            for item in items_list:
+                lines.append(f"- {item}")
+        board_block = "\n\nWORKSHOP BOARD:\n" + '\n'.join(lines) + "\n"
+
+    system = f"This session used the **{exercise_name}** exercise from **{mode_name}**. Do NOT recommend {exercise} in your recommendations.\n\n" + SESSION_REVEAL_PROMPT + board_block
+
+    # Trim messages
+    reveal_messages = list(messages)
+    if len(reveal_messages) > 14:
+        reveal_messages = reveal_messages[:2] + reveal_messages[-10:]
+
+    if reveal_messages and reveal_messages[-1].get('role') == 'assistant':
+        reveal_messages.append({'role': 'user', 'content': 'Generate the session reveal now.'})
+
+    try:
+        print(f"[REVEAL] Generating for {exercise_name} ({mode_name}), {len(reveal_messages)} messages")
+        response = client.messages.create(
+            model="claude-haiku-4-5-20251001",
+            max_tokens=1200,
+            system=system,
+            messages=reveal_messages,
+        )
+        reveal_text = ''
+        for block in response.content:
+            if hasattr(block, 'text'):
+                reveal_text += block.text
+
+        import json as _json
+        # Handle potential markdown code blocks
+        clean = reveal_text.strip()
+        if clean.startswith('```'):
+            clean = clean.split('\n', 1)[1].rsplit('```', 1)[0].strip()
+        result = _json.loads(clean)
+        print(f"[REVEAL] Generated headline: {result.get('headline', 'no headline')}")
+        return jsonify(result)
+    except Exception as e:
+        print(f"[REVEAL] ERROR: {str(e)}")
+        # Fallback
+        return jsonify({
+            'headline': f'Your {exercise_name} session uncovered something worth exploring.',
+            'closing_message': 'Good session. You did real work here. The report captures what matters most.',
+            'synopsis': 'Your session produced actionable insights. Review the full report for the complete breakdown.',
+            'recommendations': [
+                {'exercise': 'pre-mortem', 'reason': 'Stress-test what you built before committing.'},
+                {'exercise': 'lean-canvas', 'reason': 'Map the business model behind your idea.'},
+                {'exercise': 'five-whys', 'reason': 'Dig deeper into any assumptions that surfaced.'}
+            ]
+        })
+
+
 # === LINKEDIN POST GENERATOR ===
 
 @app.route('/api/linkedin', methods=['POST'])

@@ -23,7 +23,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link rel="preload" href="fonts/GT-Walsheim-Regular.woff" as="font" type="font/woff" crossorigin>
     <link rel="preload" href="banner.webp" as="image" type="image/webp">
-    <link rel="stylesheet" href="styles.css?v=210">
+    <link rel="stylesheet" href="styles.css?v=211">
 </head>
 <body>
 
@@ -493,6 +493,92 @@
             </div>
         </div>
 
+        <!-- === POST-SESSION FLOW: 3 screens === -->
+
+        <!-- Screen 1: Loading -->
+        <div class="ps-screen ps-loading hidden" id="postSessionLoading">
+            <div class="ps-loading-spinner">
+                <svg class="ps-spinner-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+            </div>
+            <h2 class="ps-loading-title">Creating your workshop outputs</h2>
+            <p class="ps-loading-subtitle" id="psLoadingSubtitle">Pete is assembling your report and visual</p>
+            <div class="ps-loading-steps">
+                <div class="ps-step active" id="psStep1"><span class="ps-step-icon">&#9679;</span> Analysing your session</div>
+                <div class="ps-step" id="psStep2"><span class="ps-step-icon">&#9675;</span> Writing report</div>
+                <div class="ps-step" id="psStep3"><span class="ps-step-icon">&#9675;</span> Building insights</div>
+                <div class="ps-step" id="psStep4"><span class="ps-step-icon">&#9675;</span> Assembling deck</div>
+            </div>
+            <div class="ps-progress-track">
+                <div class="ps-progress-fill" id="psProgressFill"></div>
+            </div>
+            <div class="ps-wait-divider"><span>WHILE YOU WAIT</span></div>
+            <div class="ps-program-card" id="psProgramCard">
+                <p class="ps-program-label">Pete recommends</p>
+                <h3 class="ps-program-name" id="psProgramName"></h3>
+                <p class="ps-program-bridge" id="psProgramBridge"></p>
+                <a class="ps-program-link" id="psProgramLink" href="#" target="_blank" rel="noopener">Learn more &#8594;</a>
+            </div>
+        </div>
+
+        <!-- Screen 2: Reveal -->
+        <div class="ps-screen ps-reveal hidden" id="postSessionReveal">
+            <div class="ps-closing-bubble" id="psClosingBubble">
+                <img class="ps-pete-avatar" src="wade-icon.png" alt="Pete" width="36" height="36">
+                <div class="ps-closing-text" id="psClosingText"></div>
+            </div>
+            <div class="ps-reveal-divider"><span>YOUR WORKSHOP OUTPUT</span></div>
+            <h2 class="ps-headline" id="psHeadline"></h2>
+            <div class="ps-synopsis-card" id="psSynopsisCard">
+                <div class="ps-svg-placeholder" id="psSvgPlaceholder"></div>
+                <p class="ps-synopsis-text" id="psSynopsisText"></p>
+                <ul class="ps-recommendations" id="psRecommendations"></ul>
+                <div class="ps-email-capture" id="psEmailCapture">
+                    <p class="ps-email-label">Enter your email to download your report</p>
+                    <form class="ps-email-form" id="psEmailForm">
+                        <input type="text" class="ps-email-input" id="psNameInput" placeholder="Name" required>
+                        <input type="email" class="ps-email-input" id="psEmailInput" placeholder="Email" required>
+                        <input type="text" class="ps-email-input" id="psCompanyInput" placeholder="Company (optional)">
+                        <button type="submit" class="ps-download-btn" id="psDownloadBtn">Download</button>
+                    </form>
+                    <p class="ps-legal">Your details are shared with Wade Institute. <a href="/privacy.html">Privacy</a></p>
+                </div>
+                <div class="ps-format-buttons hidden" id="psFormatButtons">
+                    <p class="ps-format-label">Your report is ready. Choose a format:</p>
+                    <div class="ps-format-row">
+                        <button class="ps-format-btn" id="psFormatWord" data-format="word">Word (.docx)</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Screen 3: Post-Download -->
+        <div class="ps-screen ps-post-download hidden" id="postSessionNext">
+            <div class="ps-confirm-banner">
+                <span class="ps-confirm-check">&#10003;</span>
+                <span>Your report has been downloaded and emailed to you</span>
+            </div>
+            <div class="ps-next-section">
+                <h3 class="ps-next-heading">Pete Recommends Next</h3>
+                <div class="ps-next-tools" id="psNextTools"></div>
+            </div>
+            <div class="ps-wade-nudge">
+                <p class="ps-nudge-label">READY TO GO DEEPER?</p>
+                <h3 class="ps-nudge-heading">Talk to the Wade Team</h3>
+                <p class="ps-nudge-text">Take this challenge further with a structured programme, expert facilitation, or a custom engagement.</p>
+                <a class="ps-nudge-link" href="mailto:enquiries@wadeinstitute.org.au">enquiries@wadeinstitute.org.au</a>
+                <a class="ps-nudge-btn" href="https://wadeinstitute.org.au/programs/" target="_blank" rel="noopener">Explore Wade Programs &#8594;</a>
+            </div>
+            <div class="ps-explore-section">
+                <h3 class="ps-explore-heading">Explore More Tools</h3>
+                <div class="ps-explore-grid" id="psExploreGrid"></div>
+            </div>
+            <div class="ps-final-cta">
+                <button class="ps-new-session-btn" id="psNewSessionBtn">Start a new session &#8594;</button>
+            </div>
+        </div>
+
+        <!-- === END POST-SESSION FLOW === -->
+
         <!-- Routing back to tools (shown after WAiDE's tool suggestion) -->
         <div class="routing-back hidden" id="routingBack">
             <button class="routing-back-btn" id="routingBackBtn">← Back to tools</button>
@@ -659,6 +745,6 @@
         <button class="feedback-submit" id="feedbackSubmit">Send feedback</button>
     </div>
 
-    <script src="app.js?v=240"></script>
+    <script src="app.js?v=241"></script>
 </body>
 </html>

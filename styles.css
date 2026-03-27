@@ -5292,3 +5292,583 @@ button.lp-tool-pill:active {
 .lp-process-card {
     cursor: pointer;
 }
+
+/* ========================================================
+   POST-SESSION FLOW — 3-screen experience
+   ======================================================== */
+
+/* Shared animations */
+@keyframes psFadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes psPulse {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.6; }
+}
+@keyframes psSpin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}
+
+/* Screen container (shared) */
+.ps-screen {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+    text-align: center;
+}
+.ps-screen.hidden { display: none; }
+
+/* ---- Screen 1: Loading ---- */
+
+.ps-loading-spinner {
+    margin-bottom: 1.5rem;
+}
+.ps-spinner-icon {
+    color: var(--teal);
+    animation: psSpin 3s linear infinite;
+}
+.ps-loading-title {
+    font-family: var(--font);
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+    animation: psFadeUp 0.5s ease-out;
+}
+.ps-loading-subtitle {
+    font-size: 0.9rem;
+    color: var(--text-dim);
+    margin-bottom: 2rem;
+    animation: psFadeUp 0.6s ease-out;
+}
+
+/* Steps */
+.ps-loading-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    margin-bottom: 1.5rem;
+    text-align: left;
+    max-width: 320px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.ps-step {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: color 0.3s;
+}
+.ps-step.active {
+    color: var(--teal);
+}
+.ps-step.done {
+    color: var(--text-dim);
+}
+.ps-step.done .ps-step-icon::after {
+    content: '\\2713';
+}
+.ps-step-icon {
+    font-size: 0.7rem;
+    width: 1rem;
+    text-align: center;
+}
+
+/* Progress bar */
+.ps-progress-track {
+    width: 100%;
+    height: 4px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+.ps-progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--teal), var(--yellow));
+    border-radius: 2px;
+    transition: width 1.5s ease;
+}
+
+/* Wait divider */
+.ps-wait-divider {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    color: var(--text-muted);
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+.ps-wait-divider::before,
+.ps-wait-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(255,255,255,0.08);
+}
+
+/* Program recommendation card */
+.ps-program-card {
+    background: var(--card-bg, #1A1750);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+    text-align: left;
+    animation: psFadeUp 0.8s ease-out;
+}
+.ps-program-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--orange);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+.ps-program-name {
+    font-family: var(--font);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+}
+.ps-program-bridge {
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    line-height: 1.6;
+    margin-bottom: 0.75rem;
+}
+.ps-program-link {
+    font-size: 0.8rem;
+    color: var(--orange);
+    font-weight: 600;
+    text-decoration: none;
+}
+.ps-program-link:hover { color: #fff; }
+
+/* ---- Screen 2: Reveal ---- */
+
+.ps-closing-bubble {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    background: var(--card-bg, #1A1750);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 14px;
+    padding: 1rem 1.25rem;
+    text-align: left;
+    margin-bottom: 1.5rem;
+    animation: psFadeUp 0.5s ease-out;
+}
+.ps-pete-avatar {
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+.ps-closing-text {
+    font-size: 0.9rem;
+    color: var(--text-dim);
+    line-height: 1.6;
+}
+.ps-reveal-divider {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    color: var(--text-muted);
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+.ps-reveal-divider::before,
+.ps-reveal-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(255,255,255,0.08);
+}
+.ps-headline {
+    font-family: var(--font);
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.3;
+    margin-bottom: 1.5rem;
+    animation: psFadeUp 0.6s ease-out;
+}
+.ps-headline em {
+    color: var(--yellow);
+    font-style: normal;
+}
+
+/* Synopsis card */
+.ps-synopsis-card {
+    background: var(--card-bg, #1A1750);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 14px;
+    padding: 1.5rem;
+    text-align: left;
+    animation: psFadeUp 0.7s ease-out;
+}
+.ps-svg-placeholder {
+    width: 100%;
+    min-height: 80px;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    display: none; /* shown when SVG is available */
+}
+.ps-synopsis-text {
+    font-size: 0.9rem;
+    color: var(--text-dim);
+    line-height: 1.7;
+    margin-bottom: 1rem;
+}
+.ps-recommendations {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.5rem;
+}
+.ps-recommendations li {
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    padding: 0.4rem 0;
+    padding-left: 1.2rem;
+    position: relative;
+}
+.ps-recommendations li::before {
+    content: '\\2192';
+    position: absolute;
+    left: 0;
+    color: var(--teal);
+}
+
+/* Email capture inside synopsis */
+.ps-email-capture {
+    border-top: 1px solid rgba(255,255,255,0.06);
+    padding-top: 1.25rem;
+}
+.ps-email-label {
+    font-size: 0.85rem;
+    color: var(--text);
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+.ps-email-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+.ps-email-input {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    padding: 0.6rem 0.75rem;
+    color: var(--text);
+    font-size: 0.85rem;
+    font-family: var(--font);
+}
+.ps-email-input:focus {
+    outline: none;
+    border-color: var(--teal);
+}
+.ps-download-btn {
+    background: var(--teal);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 0.65rem 1.5rem;
+    font-family: var(--font);
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+}
+.ps-download-btn:hover { background: #22a7a8; transform: translateY(-1px); }
+.ps-download-btn:disabled { opacity: 0.5; cursor: default; transform: none; }
+.ps-legal {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin-top: 0.75rem;
+}
+.ps-legal a { color: var(--text-muted); text-decoration: underline; }
+
+/* Format buttons (post-capture) */
+.ps-format-buttons {
+    border-top: 1px solid rgba(255,255,255,0.06);
+    padding-top: 1.25rem;
+}
+.ps-format-buttons.hidden { display: none; }
+.ps-format-label {
+    font-size: 0.85rem;
+    color: var(--text);
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+.ps-format-row {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+.ps-format-btn {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: var(--text);
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    font-family: var(--font);
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+}
+.ps-format-btn:hover {
+    background: rgba(255,255,255,0.1);
+    border-color: var(--teal);
+}
+
+/* ---- Screen 3: Post-Download ---- */
+
+.ps-confirm-banner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: rgba(39,189,190,0.1);
+    border: 1px solid rgba(39,189,190,0.2);
+    border-radius: 10px;
+    padding: 0.75rem 1.25rem;
+    margin-bottom: 2rem;
+    animation: psFadeUp 0.5s ease-out;
+}
+.ps-confirm-check {
+    color: var(--teal);
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+.ps-confirm-banner span:last-child {
+    font-size: 0.85rem;
+    color: var(--text);
+}
+
+/* Next tools section */
+.ps-next-section {
+    margin-bottom: 2rem;
+    text-align: left;
+}
+.ps-next-heading {
+    font-family: var(--font);
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+.ps-next-tools {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+}
+.ps-next-card {
+    background: var(--card-bg, #1A1750);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    cursor: pointer;
+    text-align: left;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s, transform 0.2s;
+    animation: psFadeUp 0.6s ease-out both;
+}
+.ps-next-card:nth-child(2) { animation-delay: 0.1s; }
+.ps-next-card:nth-child(3) { animation-delay: 0.2s; }
+.ps-next-card:hover {
+    border-color: rgba(255,255,255,0.15);
+    transform: translateY(-2px);
+}
+.ps-next-card::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+}
+.ps-next-card[data-mode="untangle"]::before { background: var(--teal); }
+.ps-next-card[data-mode="spark"]::before    { background: var(--orange); }
+.ps-next-card[data-mode="test"]::before     { background: var(--pink); }
+.ps-next-card[data-mode="build"]::before    { background: var(--yellow); }
+.ps-next-card-name {
+    font-family: var(--font);
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 0.25rem;
+}
+.ps-next-card-mode {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    margin-bottom: 0.4rem;
+}
+.ps-next-card-desc {
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    line-height: 1.5;
+}
+
+/* Wade nudge card */
+.ps-wade-nudge {
+    background: linear-gradient(135deg, #1A1750 0%, #12103A 100%);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+    padding: 1.5rem;
+    text-align: left;
+    margin-bottom: 2rem;
+    animation: psFadeUp 0.7s ease-out;
+}
+.ps-nudge-label {
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--orange);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+.ps-nudge-heading {
+    font-family: var(--font);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+}
+.ps-nudge-text {
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    line-height: 1.6;
+    margin-bottom: 0.75rem;
+}
+.ps-nudge-link {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--teal);
+    text-decoration: none;
+    margin-bottom: 0.75rem;
+}
+.ps-nudge-btn {
+    display: inline-block;
+    background: var(--orange);
+    color: #fff;
+    text-decoration: none;
+    border-radius: 8px;
+    padding: 0.55rem 1.25rem;
+    font-family: var(--font);
+    font-size: 0.8rem;
+    font-weight: 700;
+    transition: background 0.2s, transform 0.1s;
+}
+.ps-nudge-btn:hover { background: #d14e1b; transform: translateY(-1px); }
+
+/* Explore more tools */
+.ps-explore-section {
+    text-align: left;
+    margin-bottom: 2rem;
+}
+.ps-explore-heading {
+    font-family: var(--font);
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 1rem;
+}
+.ps-explore-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+}
+@media (min-width: 600px) {
+    .ps-explore-grid { grid-template-columns: repeat(4, 1fr); }
+    .ps-next-tools { grid-template-columns: repeat(3, 1fr); }
+}
+.ps-explore-tile {
+    background: var(--card-bg, #1A1750);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 8px;
+    padding: 0.6rem 0.75rem;
+    text-align: left;
+    cursor: pointer;
+    transition: border-color 0.2s, transform 0.2s;
+}
+.ps-explore-tile:hover {
+    border-color: rgba(255,255,255,0.15);
+    transform: translateY(-1px);
+}
+.ps-explore-tile-name {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text);
+}
+.ps-explore-tile-mode {
+    font-size: 0.6rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+/* New session button */
+.ps-final-cta {
+    margin-top: 1rem;
+}
+.ps-new-session-btn {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.15);
+    color: var(--text);
+    border-radius: 10px;
+    padding: 0.75rem 2rem;
+    font-family: var(--font);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+}
+.ps-new-session-btn:hover {
+    background: rgba(255,255,255,0.05);
+    border-color: var(--teal);
+}
+
+/* ---- Light theme overrides ---- */
+html[data-theme="light"] .ps-program-card,
+html[data-theme="light"] .ps-closing-bubble,
+html[data-theme="light"] .ps-synopsis-card,
+html[data-theme="light"] .ps-next-card,
+html[data-theme="light"] .ps-wade-nudge,
+html[data-theme="light"] .ps-explore-tile {
+    background: #fff;
+    border-color: #e7e6e5;
+}
+html[data-theme="light"] .ps-email-input {
+    background: #f6f5f5;
+    border-color: #e7e6e5;
+    color: #1e1b4b;
+}
+html[data-theme="light"] .ps-progress-track {
+    background: #e7e6e5;
+}
+html[data-theme="light"] .ps-confirm-banner {
+    background: rgba(39,189,190,0.08);
+    border-color: rgba(39,189,190,0.15);
+}
+html[data-theme="light"] .ps-wait-divider::before,
+html[data-theme="light"] .ps-wait-divider::after,
+html[data-theme="light"] .ps-reveal-divider::before,
+html[data-theme="light"] .ps-reveal-divider::after {
+    background: #e7e6e5;
+}
