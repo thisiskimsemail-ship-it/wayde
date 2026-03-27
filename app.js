@@ -2909,6 +2909,8 @@ function downloadReportWord() {
 
 // Fallback: client-side HTML-as-doc (used if server endpoint fails)
 function downloadReportWordFallback() {
+    // No-op fallback — server-side DOCX is the primary method
+}
 
 // === EMAIL REPORT COPY ===
 
