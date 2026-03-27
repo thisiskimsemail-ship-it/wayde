@@ -5279,3 +5279,16 @@ html[data-theme="light"] .lp-tool-pill {
 html[data-theme="light"] .lp-tool-pill:hover {
     background: rgba(0,0,0,0.08) !important;
 }
+
+/* P1 #6: Hover feedback on interactive elements */
+button.lp-tool-pill:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    filter: brightness(1.15);
+}
+button.lp-tool-pill:active {
+    transform: translateY(0);
+}
+.lp-process-card {
+    cursor: pointer;
+}
