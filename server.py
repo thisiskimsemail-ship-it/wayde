@@ -5150,3 +5150,264 @@ FEEDBACK DATA:
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 3000))
     app.run(host='0.0.0.0', port=port, debug=os.environ.get('FLASK_DEBUG', 'false').lower() == 'true')
+
+
+# === BRANDED DOCX REPORT GENERATION ===
+
+@app.route('/api/report/docx', methods=['POST'])
+def generate_branded_docx():
+    """Generate a branded .docx report with Wade logo, SVG canvas, and structured content."""
+    from docx import Document
+    from docx.shared import Inches, Pt, Cm, RGBColor
+    from docx.enum.text import WD_ALIGN_PARAGRAPH
+    from docx.enum.style import WD_STYLE_TYPE
+    import re as _re
+    import io
+
+    data = request.json or {}
+    report_text = data.get('report', '')
+    synopsis = data.get('synopsis', {})
+    exercise = data.get('exercise', '')
+    mode = data.get('mode', '')
+    board_cards = data.get('board_cards', [])
+
+    if not report_text:
+        return jsonify({'error': 'No report text provided'}), 400
+
+    exercise_name = EXERCISE_NAMES.get(exercise, exercise or 'Coaching Session')
+    mode_name = MODE_NAMES.get(mode, mode or 'The Studio')
+    title = synopsis.get('title', f'{exercise_name} Report')
+    hook = synopsis.get('hook', '')
+    bullets = synopsis.get('bullets', [])
+    date_str = __import__('datetime').datetime.now().strftime('%d %B %Y')
+
+    # Category colours
+    cat_colors = {
+        'untangle': RGBColor(0x27, 0xBD, 0xBE),
+        'spark': RGBColor(0xF1, 0x5A, 0x22),
+        'test': RGBColor(0xED, 0x36, 0x94),
+        'build': RGBColor(0xE4, 0xE5, 0x17),
+    }
+    accent = cat_colors.get(mode, RGBColor(0xF1, 0x5A, 0x22))
+    navy = RGBColor(0x1E, 0x19, 0x4F)
+    grey = RGBColor(0x66, 0x66, 0x66)
+    light_grey = RGBColor(0x99, 0x99, 0x99)
+
+    try:
+        doc = Document()
+
+        # Page margins
+        for section in doc.sections:
+            section.top_margin = Cm(2)
+            section.bottom_margin = Cm(2)
+            section.left_margin = Cm(2.5)
+            section.right_margin = Cm(2.5)
+
+        # Styles
+        style = doc.styles['Normal']
+        style.font.name = 'Arial'
+        style.font.size = Pt(11)
+        style.font.color.rgb = RGBColor(0x33, 0x33, 0x33)
+        style.paragraph_format.line_spacing = 1.4
+        style.paragraph_format.space_after = Pt(6)
+
+        # Wade logo
+        logo_path = os.path.join(os.path.dirname(__file__), 'logo-orange.png')
+        if os.path.exists(logo_path):
+            logo_para = doc.add_paragraph()
+            logo_para.alignment = WD_ALIGN_PARAGRAPH.LEFT
+            run = logo_para.add_run()
+            run.add_picture(logo_path, width=Inches(1.8))
+
+        # Category + Tool + Date line
+        meta = doc.add_paragraph()
+        meta.alignment = WD_ALIGN_PARAGRAPH.LEFT
+        meta.paragraph_format.space_before = Pt(4)
+        meta.paragraph_format.space_after = Pt(12)
+        run = meta.add_run(f'{mode_name.upper()}  ·  {exercise_name.upper()}  ·  {date_str.upper()}')
+        run.font.size = Pt(9)
+        run.font.color.rgb = light_grey
+        run.font.name = 'Arial'
+
+        # Accent line
+        accent_para = doc.add_paragraph()
+        accent_para.paragraph_format.space_after = Pt(16)
+        # Use a border-bottom effect via a coloured run
+        run = accent_para.add_run('━' * 60)
+        run.font.size = Pt(4)
+        run.font.color.rgb = accent
+
+        # Title (the AI-generated insight title)
+        title_para = doc.add_paragraph()
+        title_para.alignment = WD_ALIGN_PARAGRAPH.LEFT
+        title_para.paragraph_format.space_after = Pt(8)
+        run = title_para.add_run(title)
+        run.font.size = Pt(22)
+        run.font.color.rgb = navy
+        run.font.bold = True
+        run.font.name = 'Arial'
+
+        # Hook (italic subtitle)
+        if hook:
+            hook_para = doc.add_paragraph()
+            hook_para.paragraph_format.space_after = Pt(16)
+            run = hook_para.add_run(hook)
+            run.font.size = Pt(12)
+            run.font.color.rgb = grey
+            run.font.italic = True
+            run.font.name = 'Arial'
+
+        # Synopsis bullets
+        if bullets:
+            for bullet in bullets:
+                bp = doc.add_paragraph(style='List Bullet')
+                run = bp.add_run(bullet)
+                run.font.size = Pt(10)
+                run.font.color.rgb = grey
+            doc.add_paragraph()  # spacer
+
+        # Accent line before body
+        sep = doc.add_paragraph()
+        run = sep.add_run('━' * 60)
+        run.font.size = Pt(4)
+        run.font.color.rgb = accent
+        sep.paragraph_format.space_after = Pt(16)
+
+        # Report body — parse markdown to docx
+        for line in report_text.split('\n'):
+            stripped = line.strip()
+            if not stripped:
+                continue
+
+            if stripped.startswith('### '):
+                p = doc.add_paragraph()
+                p.paragraph_format.space_before = Pt(16)
+                p.paragraph_format.space_after = Pt(6)
+                run = p.add_run(stripped[4:])
+                run.font.size = Pt(13)
+                run.font.bold = True
+                run.font.color.rgb = navy
+            elif stripped.startswith('## '):
+                p = doc.add_paragraph()
+                p.paragraph_format.space_before = Pt(20)
+                p.paragraph_format.space_after = Pt(8)
+                run = p.add_run(stripped[3:])
+                run.font.size = Pt(15)
+                run.font.bold = True
+                run.font.color.rgb = navy
+            elif stripped.startswith('# '):
+                p = doc.add_paragraph()
+                p.paragraph_format.space_before = Pt(24)
+                p.paragraph_format.space_after = Pt(10)
+                run = p.add_run(stripped[2:])
+                run.font.size = Pt(18)
+                run.font.bold = True
+                run.font.color.rgb = navy
+            elif stripped.startswith('- ') or stripped.startswith('* '):
+                clean = _re.sub(r'\*\*([^*]+)\*\*', r'\1', stripped[2:])
+                p = doc.add_paragraph(style='List Bullet')
+                # Handle bold within bullets
+                parts = _re.split(r'(\*\*[^*]+\*\*)', stripped[2:])
+                for part in parts:
+                    if part.startswith('**') and part.endswith('**'):
+                        run = p.add_run(part[2:-2])
+                        run.bold = True
+                    else:
+                        p.add_run(part)
+            elif stripped.startswith('>'):
+                # Blockquote
+                p = doc.add_paragraph()
+                p.paragraph_format.left_indent = Cm(1)
+                clean = stripped.lstrip('> ')
+                run = p.add_run(clean)
+                run.font.italic = True
+                run.font.color.rgb = grey
+            elif _re.match(r'^\d+\.', stripped):
+                # Numbered list
+                clean = _re.sub(r'^\d+\.\s*', '', stripped)
+                parts = _re.split(r'(\*\*[^*]+\*\*)', clean)
+                p = doc.add_paragraph(style='List Number')
+                for part in parts:
+                    if part.startswith('**') and part.endswith('**'):
+                        run = p.add_run(part[2:-2])
+                        run.bold = True
+                    else:
+                        # Strip markdown links
+                        part = _re.sub(r'\[([^\]]+)\]\([^)]+\)', r'\1', part)
+                        p.add_run(part)
+            else:
+                # Regular paragraph
+                clean = _re.sub(r'\[([^\]]+)\]\([^)]+\)', r'\1', stripped)
+                parts = _re.split(r'(\*\*[^*]+\*\*)', clean)
+                p = doc.add_paragraph()
+                for part in parts:
+                    if part.startswith('**') and part.endswith('**'):
+                        run = p.add_run(part[2:-2])
+                        run.bold = True
+                    else:
+                        p.add_run(part)
+
+        # Workshop Board section (if cards exist)
+        if board_cards:
+            doc.add_paragraph()
+            sep2 = doc.add_paragraph()
+            run = sep2.add_run('━' * 60)
+            run.font.size = Pt(4)
+            run.font.color.rgb = accent
+
+            board_head = doc.add_paragraph()
+            board_head.paragraph_format.space_before = Pt(16)
+            run = board_head.add_run('WORKSHOP BOARD')
+            run.font.size = Pt(11)
+            run.font.bold = True
+            run.font.color.rgb = accent
+
+            # Group by zone
+            grouped = {}
+            for card in board_cards:
+                zone = card.get('zone', 'general')
+                text = card.get('text', '')
+                if text:
+                    grouped.setdefault(zone, []).append(text)
+
+            for zone, items in grouped.items():
+                zone_label = zone.replace('-', ' ').replace('_', ' ').title()
+                zp = doc.add_paragraph()
+                zp.paragraph_format.space_before = Pt(10)
+                run = zp.add_run(zone_label)
+                run.font.size = Pt(10)
+                run.font.bold = True
+                run.font.color.rgb = navy
+                for item in items:
+                    bp = doc.add_paragraph(style='List Bullet')
+                    bp.add_run(item)
+
+        # Footer
+        doc.add_paragraph()
+        footer_sep = doc.add_paragraph()
+        run = footer_sep.add_run('━' * 60)
+        run.font.size = Pt(4)
+        run.font.color.rgb = light_grey
+
+        footer = doc.add_paragraph()
+        footer.alignment = WD_ALIGN_PARAGRAPH.LEFT
+        footer.paragraph_format.space_before = Pt(8)
+        run = footer.add_run(f'The Studio  ·  Wade Institute of Entrepreneurship  ·  wadeinstitute.org.au')
+        run.font.size = Pt(8)
+        run.font.color.rgb = light_grey
+
+        # Save to buffer
+        buffer = io.BytesIO()
+        doc.save(buffer)
+        buffer.seek(0)
+
+        response = make_response(buffer.read())
+        response.headers['Content-Type'] = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+        safe_title = ''.join(c for c in title if c.isalnum() or c in ' -_').strip()[:60]
+        response.headers['Content-Disposition'] = f'attachment; filename="{safe_title} - The Studio.docx"'
+        print(f"[DOCX] Generated branded report for {exercise_name}")
+        return response
+
+    except Exception as e:
+        print(f"[DOCX] ERROR: {str(e)}")
+        return jsonify({'error': f'DOCX generation failed: {str(e)}'}), 500
