@@ -3437,7 +3437,7 @@ const COLD_OPEN_TAG_MAP = {
     'hook': 'co-hook', 'follow-up': 'co-followup', 'followup': 'co-followup',
     'detail': 'co-detail'
 };
-const TOOL_TAG_MAPS = {
+var TOOL_TAG_MAPS = {
     'five-whys': FIVE_WHYS_TAG_MAP, 'empathy-map': EMPATHY_TAG_MAP,
     'jtbd': JTBD_TAG_MAP_TOOL, 'crazy-8s': CRAZY8S_TAG_MAP,
     'hmw': HMW_TAG_MAP, 'scamper': SCAMPER_TAG_MAP,
