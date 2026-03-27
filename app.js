@@ -3067,6 +3067,26 @@ function updateProgressIndicator() {
 
 // === WORKSHOP BOARD ===
 
+
+// === TOOL-SPECIFIC BOARD TAG MAPS ===
+const TOOL_TAG_MAPS = {
+    'five-whys': { 'problem': 'fw-problem', 'why1': 'fw-why1', 'why-1': 'fw-why1', 'why2': 'fw-why2', 'why-2': 'fw-why2', 'why3': 'fw-why3', 'why-3': 'fw-why3', 'why4': 'fw-why4', 'why-4': 'fw-why4', 'why5': 'fw-why5', 'why-5': 'fw-why5', 'root-cause': 'fw-why5', 'root': 'fw-why5' },
+    'empathy-map': { 'user': 'em-user', 'persona': 'em-user', 'says': 'em-says', 'thinks': 'em-thinks', 'does': 'em-does', 'feels': 'em-feels', 'contradiction': 'em-contradictions', 'gap': 'em-contradictions', 'insight': 'insights' },
+    'jtbd': { 'situation': 'jtbd-situation', 'functional': 'jtbd-functional', 'emotional': 'jtbd-emotional', 'social': 'jtbd-social', 'hiring': 'jtbd-hiring', 'underserved': 'insights' },
+    'crazy-8s': { 'idea-1': 'c8-1', 'idea-2': 'c8-2', 'idea-3': 'c8-3', 'idea-4': 'c8-4', 'idea-5': 'c8-5', 'idea-6': 'c8-6', 'idea-7': 'c8-7', 'idea-8': 'c8-8', 'shortlist': 'c8-shortlist' },
+    'hmw': { 'problem': 'hmw-problem', 'hmw-1': 'hmw-q1', 'hmw-2': 'hmw-q2', 'hmw-3': 'hmw-q3', 'hmw-4': 'hmw-q4', 'hmw-5': 'hmw-q5', 'best': 'hmw-best' },
+    'scamper': { 'substitute': 'sc-s', 'combine': 'sc-c', 'adapt': 'sc-a', 'modify': 'sc-m', 'put': 'sc-p', 'eliminate': 'sc-e', 'reverse': 'sc-r', 'shortlist': 'sc-shortlist' },
+    'devils-advocate': { 'idea': 'da-idea', 'for': 'da-for', 'against': 'da-against', 'objection': 'da-against', 'rebuttal': 'da-rebuttals', 'verdict': 'da-verdict' },
+    'rapid-experiment': { 'hypothesis': 're-hypothesis', 'assumption': 're-assumption', 'method': 're-method', 'metric': 're-metric', 'pass': 're-pass', 'fail': 're-fail', 'predicted': 're-predicted' },
+    'socratic': { 'verified': 'sq-verified', 'assumed': 'sq-assumed', 'inherited': 'sq-inherited', 'critical': 'sq-critical' },
+    'reality-check': { 'claim': 'rc-claims', 'story': 'rc-claims', 'evidence': 'rc-evidence', 'supported': 'rc-supported', 'gap': 'rc-gap', 'unsupported': 'rc-gap', 'revised': 'rc-revised', 'metric': 'rc-metrics' },
+    'theory-of-change': { 'outcome': 'toc-outcome', 'control': 'toc-control', 'influence': 'toc-influence', 'outside': 'toc-outside', 'external': 'toc-outside', 'activity': 'toc-activities', 'weakest': 'toc-weakest' },
+    'trade-off': { 'feature': 'to-features', 'round': 'to-rounds', 'must-have': 'to-musthave', 'nice-to-have': 'to-nicetohave', 'expendable': 'to-expendable', 'surprise': 'to-surprise', 'mvo': 'to-mvo' },
+    'iceberg': { 'event': 'ice-event', 'pattern': 'ice-patterns', 'patterns': 'ice-patterns', 'structure': 'ice-structures', 'structures': 'ice-structures', 'mental-model': 'ice-mental', 'belief': 'ice-mental', 'leverage': 'ice-leverage' },
+    'constraint-flip': { 'constraint': 'cf-constraint', 'flip': 'cf-flip', 'advantage': 'cf-flip', 'idea': 'cf-ideas', 'moat': 'cf-moat' },
+    'cold-open': { 'v1': 'co-v1', 'v2': 'co-v2', 'v3': 'co-v3', 'hook': 'co-hook', 'follow-up': 'co-followup', 'followup': 'co-followup', 'detail': 'co-detail' }
+};
+
 const BOARD_LAYOUTS = {
     'five-whys': {
         zones: [
