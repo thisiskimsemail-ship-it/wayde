@@ -138,10 +138,10 @@ function updateStageLogo(mode) {
 
 // === BREADCRUMB DROPDOWN ===
 const STAGE_TOOLS = {
-    untangle: ['five-whys', 'empathy-map', 'jtbd'],
-    spark: ['crazy-8s', 'hmw', 'scamper'],
-    test: ['pre-mortem', 'devils-advocate', 'analogical'],
-    build: ['lean-canvas', 'effectuation', 'rapid-experiment']
+    untangle: ['five-whys', 'empathy-map', 'jtbd', 'socratic', 'iceberg'],
+    spark: ['crazy-8s', 'hmw', 'scamper', 'analogical', 'constraint-flip'],
+    test: ['pre-mortem', 'devils-advocate', 'cold-open', 'reality-check', 'trade-off'],
+    build: ['lean-canvas', 'effectuation', 'rapid-experiment', 'flywheel', 'theory-of-change']
 };
 
 function updateBreadcrumbDropdown(currentMode, currentExercise) {
@@ -227,7 +227,15 @@ const EXERCISE_LABELS = {
     'rapid-experiment': 'Rapid Experiment',
     'empathy-map': 'Empathy Map',
     'lean-canvas': 'Lean Canvas',
-    'effectuation': 'Effectuation'
+    'effectuation': 'Effectuation',
+    'flywheel': 'Flywheel',
+    'socratic': 'Socratic Questioning',
+    'cold-open': 'Cold Open',
+    'reality-check': 'Reality Check',
+    'theory-of-change': 'Theory of Change',
+    'trade-off': 'The Trade-Off',
+    'iceberg': 'The Iceberg',
+    'constraint-flip': 'Constraint Flip'
 };
 
 const MODE_LABELS = {
@@ -247,10 +255,18 @@ const EXERCISE_MODE = {
     'crazy-8s':         'spark',
     'pre-mortem':       'test',
     'devils-advocate':  'test',
-    'analogical':       'test',
+    'analogical':       'spark',
     'lean-canvas':      'build',
     'effectuation':     'build',
-    'rapid-experiment': 'build'
+    'rapid-experiment': 'build',
+    'flywheel': 'build',
+    'socratic': 'untangle',
+    'cold-open': 'test',
+    'reality-check': 'test',
+    'theory-of-change': 'build',
+    'trade-off': 'test',
+    'iceberg': 'untangle',
+    'constraint-flip': 'spark'
 };
 
 // Exercise descriptions (mirror of HTML card text)
@@ -266,7 +282,15 @@ const EXERCISE_DESCS = {
     'rapid-experiment': 'Design a quick test to learn before you build.',
     'lean-canvas':      'Outline your venture model on a single page.',
     'effectuation':     'Build using the resources and relationships you already have.',
-    'analogical':       'Borrow solutions from unexpected places.'
+    'analogical':       'Borrow solutions from unexpected places.',
+    'flywheel':         'Map the reinforcing loop that drives your growth and find the bottleneck.',
+    'socratic':         'Test whether your problem is built on facts or assumptions.',
+    'cold-open':         'Can your message survive first contact with a stranger?',
+    'reality-check':     'Confront the gap between your story and your data.',
+    'theory-of-change':  'Map the causal chain from what you do to the change you create.',
+    'trade-off':         'Force trade-offs to reveal what customers actually value.',
+    'iceberg':           'See the system beneath the surface problem.',
+    'constraint-flip':   'Turn your biggest limitation into your deepest advantage.'
 };
 
 // Suggested prompt framings shown as input placeholder
@@ -282,7 +306,15 @@ const EXERCISE_HINTS = {
     'rapid-experiment': 'e.g. "I think our clients would value a monthly insight briefing — but I\'m not sure"',
     'lean-canvas':      'e.g. "I\'m developing a new service offering within our division"',
     'effectuation':     'e.g. "I have deep expertise in policy and a strong network in government — where do I start?"',
-    'analogical':       'e.g. "How might we reduce handoff delays between teams the way Formula 1 does pit stops?"'
+    'analogical':       'e.g. "How might we reduce handoff delays between teams the way Formula 1 does pit stops?"',
+    'cold-open':        'e.g. "I need to explain what we do to investors who have never heard of us"',
+    'iceberg':          'e.g. "We keep losing our best people and nothing we try seems to fix it"',
+    'constraint-flip':  'e.g. "We have no marketing budget and our competitors are spending millions"',
+    'trade-off':        'e.g. "We have seven features and every stakeholder says theirs is essential"',
+    'theory-of-change': 'e.g. "We built the platform but I can\'t explain how it actually leads to the impact we promise"',
+    'reality-check':    'e.g. "I keep telling investors we have product-market fit but I\'m not sure the numbers back it up"',
+    'socratic':         'e.g. "Everyone says the board will never approve this — but has anyone actually asked them?"',
+    'flywheel':         'e.g. "Our users love the product but growth has stalled — what\'s the engine underneath?"'
 };
 
 // Exercise arc descriptions for activity brief cards
@@ -298,7 +330,192 @@ const EXERCISE_ARCS = {
     'rapid-experiment': 'We\'ll design a quick, cheap test to validate your riskiest assumption before you build.',
     'lean-canvas':      'We\'ll map your venture model on one page, then pressure-test the weakest blocks.',
     'effectuation':     'We\'ll start with what you have — skills, network, resources — then find where they point.',
-    'analogical':       'We\'ll borrow solutions from unexpected places and adapt them to your challenge.'
+    'analogical':       'We\'ll borrow solutions from unexpected places and adapt them to your challenge.',
+    'iceberg':          'We\'ll go four levels deep — from what happened, to the pattern, to the structure, to the belief holding it all in place.',
+    'constraint-flip':  'Pete will help you see your biggest constraint as your deepest competitive advantage. Ideas that only work because of the limitation.',
+    'trade-off':        'Pete will force you to choose between your own features. The ones that survive every round are your core value.',
+    'theory-of-change': 'We\'ll work backwards from the change you want to create, mapping every condition that has to be true, and find where the chain depends on things you can\'t control.',
+    'reality-check':    'Pete will ask for the evidence behind every claim you make about your business — and show you where the story and the data diverge.',
+    'cold-open':        'Pete will play a stranger who has no context. You\'ll pitch, get honest feedback, iterate, and build a message hierarchy that survives first contact.',
+    'socratic':         'We\'ll examine every belief behind your problem — separating facts from assumptions — and find the one thing to test first.',
+    'flywheel':         'We\'ll map the 3-5 things that reinforce each other in your business, test each connection, and find the bottleneck holding you back.'
+};
+
+
+
+// Contextual program + article recommendations by pathway
+const SESSION_RECOMMENDATIONS = {
+    untangle: {
+        program: { name: 'Think Like an Entrepreneur', url: 'https://wadeinstitute.org.au/programs/entrepreneurs/think-like-an-entrepreneur/', desc: 'Build the mindset to lead change inside organisations.' },
+        article: { name: 'Start with a problem you really want to solve', url: 'https://wadeinstitute.org.au/entrepreneurship-starts-with-a-problem-you-really-want-to-solve/', desc: 'Why problem definition is the first entrepreneurial skill.' }
+    },
+    spark: {
+        program: { name: 'Growth Engine', url: 'https://wadeinstitute.org.au/programs/entrepreneurs/growth-engine/', desc: 'A three-day intensive for founders scaling from 30 to 100+ people.' },
+        article: { name: 'Thrill of a big idea', url: 'https://wadeinstitute.org.au/thrill-of-a-big-idea/', desc: 'What happens when ideation meets execution.' }
+    },
+    test: {
+        program: { name: 'VC Catalyst', url: 'https://wadeinstitute.org.au/programs/investors/vc-catalyst/', desc: 'Build the skills and judgement to invest in early-stage ventures.' },
+        article: { name: 'Making mistakes and staying humble', url: 'https://wadeinstitute.org.au/making-mistakes-and-staying-humble-lessons-from-leigh-jasper/', desc: 'Lessons from the co-founder of Aconex on resilience and humility.' }
+    },
+    build: {
+        program: { name: 'Growth Engine', url: 'https://wadeinstitute.org.au/programs/entrepreneurs/growth-engine/', desc: 'Stress-test your growth model with peers facing similar challenges.' },
+        article: { name: '5 steps to turn your idea into a business', url: 'https://wadeinstitute.org.au/5-steps-to-turn-your-idea-into-a-business/', desc: 'From idea to business model — the practical path.' }
+    }
+};
+
+
+// Tool-to-Program mapping for Go Deeper (Steps 8, 10, and report)
+const TOOL_PROGRAM_MAP = {
+    'five-whys': {
+        program: 'Master of Entrepreneurship',
+        programUrl: 'https://wadeinstitute.org.au/programs/entrepreneurs/master-of-entrepreneurship/',
+        bridge: 'Root cause analysis is one of the foundational practices in Wade\'s Master of Entrepreneurship — a 10-month program that builds the skills to identify and solve the problems that matter.',
+        segment: 'founder'
+    },
+    'empathy-map': {
+        program: 'Master of Entrepreneurship',
+        programUrl: 'https://wadeinstitute.org.au/programs/entrepreneurs/master-of-entrepreneurship/',
+        bridge: 'Understanding your user is the starting point of Wade\'s design-led approach to entrepreneurship. The Master of Entrepreneurship goes deeper into user research, validation, and customer development.',
+        segment: 'founder'
+    },
+    'jtbd': {
+        program: 'Master of Entrepreneurship',
+        programUrl: 'https://wadeinstitute.org.au/programs/entrepreneurs/master-of-entrepreneurship/',
+        bridge: 'Jobs to Be Done is a core framework in Wade\'s entrepreneurship curriculum. The Master of Entrepreneurship teaches you to build businesses around the jobs customers are actually hiring for.',
+        segment: 'founder'
+    },
+    'socratic': {
+        program: 'Master of Entrepreneurship',
+        programUrl: 'https://wadeinstitute.org.au/programs/entrepreneurs/master-of-entrepreneurship/',
+        bridge: 'Testing your assumptions before you build is what Wade\'s Master of Entrepreneurship is built around — 10 months of rigorous, mentor-led entrepreneurial thinking.',
+        segment: 'founder'
+    },
+    'iceberg': {
+        program: 'Executive Education',
+        programUrl: 'https://wadeinstitute.org.au/programs/entrepreneurs/think-like-an-entrepreneur/',
+        bridge: 'Systems thinking is at the heart of Wade\'s approach to innovation leadership. Wade\'s executive programs help leaders see the structures and mental models driving organisational challenges.',
+        segment: 'corporate'
+    },
+    'crazy-8s': {
+        program: 'Master of Entrepreneurship',
+        programUrl: 'https://wadeinstitute.org.au/programs/entrepreneurs/master-of-entrepreneurship/',
+        bridge: 'Rapid ideation is just the beginning. Wade\'s Master of Entrepreneurship takes you from ideas to validated business models in 10 months.',
+        segment: 'founder'
+    },
+    'hmw': {
+        program: 'Master of Entrepreneurship',
+        programUrl: 'https://wadeinstitute.org.au/programs/entrepreneurs/master-of-entrepreneurship/',
+        bridge: 'Reframing problems is a design thinking practice Wade teaches across all its programs. The Master of Entrepreneurship applies it to real ventures, with real stakes.',
+        segment: 'founder'
+    },
+    'scamper': {
+        program: 'Master of Entrepreneurship',
+        programUrl: 'https://wadeinstitute.org.au/programs/entrepreneurs/master-of-entrepreneurship/',
+        bridge: 'Creative frameworks like SCAMPER are part of Wade\'s innovation toolkit. The Master of Entrepreneurship teaches 20 frameworks and helps you apply them to your own venture.',
+        segment: 'founder'
+    },
+    'analogical': {
+        program: 'Master of Entrepreneurship',
+        programUrl: 'https://wadeinstitute.org.au/programs/entrepreneurs/master-of-entrepreneurship/',
+        bridge: 'Cross-domain thinking is one of the most powerful innovation skills. Wade\'s Master of Entrepreneurship builds this muscle over 10 months of structured practice.',
+        segment: 'founder'
+    },
+    'constraint-flip': {
+        program: 'Master of Entrepreneurship',
+        programUrl: 'https://wadeinstitute.org.au/programs/entrepreneurs/master-of-entrepreneurship/',
+        bridge: 'Turning constraints into advantages is a skill Wade\'s founders practise throughout the Master of Entrepreneurship — because every early-stage venture has more constraints than resources.',
+        segment: 'founder'
+    },
+    'pre-mortem': {
+        program: 'Executive Education',
+        programUrl: 'https://wadeinstitute.org.au/programs/entrepreneurs/think-like-an-entrepreneur/',
+        bridge: 'Stress-testing before you commit is a practice Wade brings to its executive programs. Wade works with corporate innovation teams to build the discipline of testing ideas before scaling them.',
+        segment: 'corporate'
+    },
+    'devils-advocate': {
+        program: 'Executive Education',
+        programUrl: 'https://wadeinstitute.org.au/programs/entrepreneurs/think-like-an-entrepreneur/',
+        bridge: 'Rigorous thinking under pressure is what Wade\'s executive programs are designed to develop. If your team needs to make better decisions, Wade can help.',
+        segment: 'corporate'
+    },
+    'cold-open': {
+        program: 'Master of Entrepreneurship',
+        programUrl: 'https://wadeinstitute.org.au/programs/entrepreneurs/master-of-entrepreneurship/',
+        bridge: 'Getting your message right is critical for founders. Wade\'s Master of Entrepreneurship includes pitch development, investor communication, and customer messaging as core curriculum.',
+        segment: 'founder'
+    },
+    'reality-check': {
+        program: 'Executive Education',
+        programUrl: 'https://wadeinstitute.org.au/programs/entrepreneurs/think-like-an-entrepreneur/',
+        bridge: 'Confronting the gap between narrative and evidence is what Wade helps leaders do — in executive programs designed for innovation teams inside organisations.',
+        segment: 'corporate'
+    },
+    'trade-off': {
+        program: 'Master of Entrepreneurship',
+        programUrl: 'https://wadeinstitute.org.au/programs/entrepreneurs/master-of-entrepreneurship/',
+        bridge: 'Understanding what customers actually value is the foundation of product-market fit. Wade\'s Master of Entrepreneurship teaches founders to test value propositions rigorously before they build.',
+        segment: 'founder'
+    },
+    'lean-canvas': {
+        program: 'Master of Entrepreneurship',
+        programUrl: 'https://wadeinstitute.org.au/programs/entrepreneurs/master-of-entrepreneurship/',
+        bridge: 'The Lean Canvas is the starting point for business model design in Wade\'s Master of Entrepreneurship — where you build, test, and refine a real venture over 10 months.',
+        segment: 'founder'
+    },
+    'effectuation': {
+        program: 'Master of Entrepreneurship',
+        programUrl: 'https://wadeinstitute.org.au/programs/entrepreneurs/master-of-entrepreneurship/',
+        bridge: 'Starting with what you have is the effectuation principle Wade teaches every cohort. The Master of Entrepreneurship helps you turn your resources into a venture.',
+        segment: 'founder'
+    },
+    'rapid-experiment': {
+        program: 'Master of Entrepreneurship',
+        programUrl: 'https://wadeinstitute.org.au/programs/entrepreneurs/master-of-entrepreneurship/',
+        bridge: 'Designing experiments for your riskiest assumptions is a core practice in Wade\'s Master of Entrepreneurship. The program teaches you to test before you build.',
+        segment: 'founder'
+    },
+    'flywheel': {
+        program: 'Growth Engine',
+        programUrl: 'https://wadeinstitute.org.au/programs/entrepreneurs/growth-engine/',
+        bridge: 'Mapping your growth engine is essential for ventures ready to scale. Wade\'s Growth Engine program helps founders identify and unlock the flywheel that drives sustainable growth.',
+        segment: 'founder'
+    },
+    'theory-of-change': {
+        program: 'Master of Entrepreneurship',
+        programUrl: 'https://wadeinstitute.org.au/programs/entrepreneurs/master-of-entrepreneurship/',
+        bridge: 'Reverse-engineering impact is what Wade teaches social entrepreneurs and impact founders. The Master of Entrepreneurship includes a dedicated impact track for ventures creating systemic change.',
+        segment: 'founder'
+    }
+};
+const TOOL_PROGRAM_FALLBACK = {
+    program: 'Wade Institute Programs',
+    programUrl: 'https://wadeinstitute.org.au/programs/',
+    bridge: 'This session is powered by Wade Institute\'s innovation methodology. Wade offers programs for founders, innovation leaders, and teams who want to go deeper.',
+    segment: 'founder'
+};
+
+// Tool-specific starter prompts (shown below input at session start)
+const STARTER_PROMPTS = {
+    'five-whys': ['Tell me about a problem that keeps coming back', 'Something in my team isn\'t working and I can\'t figure out why'],
+    'empathy-map': ['I need to understand how my customers actually feel', 'My stakeholders keep resisting a change I\'m proposing'],
+    'jtbd': ['I want to understand what job my product is really doing', 'Customers are using my product in ways I didn\'t expect'],
+    'socratic': ['Everyone says the board will never approve this', 'I\'ve been told our market is too small — but is it?'],
+    'iceberg': ['We keep losing our best people and nothing we try fixes it', 'The same kind of problem keeps happening no matter what we do'],
+    'crazy-8s': ['I need fresh ideas for a problem I\'ve been stuck on', 'Help me brainstorm — I want quantity, not quality'],
+    'hmw': ['I have a problem but I\'m not sure how to reframe it', 'Turn my frustration into an opportunity question'],
+    'scamper': ['I have an existing product I want to reinvent', 'Help me stretch this idea in unexpected directions'],
+    'analogical': ['I need solutions from outside my industry', 'How would a completely different field solve this?'],
+    'constraint-flip': ['We have no marketing budget and our competitors spend millions', 'I keep apologising for our limitations in pitches'],
+    'pre-mortem': ['We\'re about to launch — what could go wrong?', 'I need to stress-test this plan before we commit'],
+    'devils-advocate': ['I think I have the answer — challenge me', 'My team is too aligned — nobody is pushing back'],
+    'cold-open': ['I need to explain what we do to strangers', 'My elevator pitch doesn\'t land — help me fix it'],
+    'reality-check': ['I keep telling investors we have product-market fit', 'I suspect the numbers don\'t match the story I\'m telling'],
+    'trade-off': ['We have too many features and can\'t prioritise', 'Every stakeholder says their feature is essential'],
+    'lean-canvas': ['I have a business idea I want to map out', 'Help me pressure-test my business model'],
+    'effectuation': ['I want to start something but don\'t know where', 'I have skills and connections but no clear plan'],
+    'rapid-experiment': ['I need to validate an assumption before I build', 'Design me a quick test I can run this week'],
+    'flywheel': ['Growth has stalled and I can\'t figure out why', 'I can describe what we do but not why it compounds'],
+    'theory-of-change': ['I need to show funders how our work creates impact', 'There\'s a gap between what we do and what we hope happens']
 };
 
 // Expected exchange counts per exercise (for progress indicator)
@@ -306,7 +523,7 @@ const EXERCISE_EXCHANGES = {
     'five-whys': 7, 'jtbd': 10, 'empathy-map': 10,
     'hmw': 8, 'scamper': 10, 'crazy-8s': 8,
     'pre-mortem': 10, 'devils-advocate': 10, 'rapid-experiment': 8,
-    'lean-canvas': 12, 'effectuation': 8, 'analogical': 8
+    'lean-canvas': 12, 'effectuation': 8, 'analogical': 8, 'flywheel': 10, 'socratic': 8, 'cold-open': 8, 'reality-check': 8, 'theory-of-change': 10, 'trade-off': 10, 'iceberg': 8, 'constraint-flip': 8
 };
 
 // Human-readable time estimates per exercise
@@ -322,7 +539,15 @@ const EXERCISE_TIMES = {
     'rapid-experiment':'15 min',
     'lean-canvas':    '20 min',
     'effectuation':   '20 min',
-    'analogical':     '15 min'
+    'analogical':     '15 min',
+    'flywheel':       '25 min',
+    'socratic':       '20 min',
+    'cold-open':      '20 min',
+    'reality-check':  '20 min',
+    'theory-of-change':'25 min',
+    'trade-off':      '25 min',
+    'iceberg':        '20 min',
+    'constraint-flip':'20 min'
 };
 
 // Stage order for progress strip
@@ -346,10 +571,18 @@ const STAGE_DEFAULT = {
 
 // All exercises grouped by category
 const TOOLS_BY_MODE = {
-    untangle: ['five-whys', 'empathy-map', 'jtbd'],
-    spark:    ['crazy-8s', 'hmw', 'scamper'],
-    test:     ['pre-mortem', 'devils-advocate', 'analogical'],
-    build:    ['lean-canvas', 'effectuation', 'rapid-experiment']
+    untangle: ['five-whys', 'empathy-map', 'jtbd', 'socratic', 'iceberg'],
+    spark:    ['crazy-8s', 'hmw', 'scamper', 'analogical'],
+    test:     ['pre-mortem', 'devils-advocate', 'cold-open'],
+    build:    ['lean-canvas', 'effectuation', 'rapid-experiment', 'flywheel']
+};
+
+// Category prompts — used by homepage cards and ?category= URL param
+const CATEGORY_PROMPTS = {
+    untangle: "I have a problem I need to get to the bottom of. I'm not sure what's really going on — help me untangle it.",
+    spark: "I have the beginning of an idea and I want to explore it. Help me push it in directions I haven't tried.",
+    test: "I have a proposal I think is ready — but I want to stress-test it before I commit.",
+    build: "I know what I want to create. Help me turn it into a concrete plan I can act on."
 };
 
 // === STATE ===
@@ -397,6 +630,24 @@ const uploadBtn = $('#uploadBtn');
 const fileInput = $('#fileInput');
 const modeLabel = $('#modeLabel');
 const toolLearnLink = $('#toolLearnLink');
+
+// Map exercise keys to tool detail page filenames (where they differ)
+const TOOL_DETAIL_SLUG = {
+    'jtbd': 'jobs-to-be-done',
+    'hmw': 'how-might-we',
+    'analogical': 'analogical-thinking',
+    'socratic': 'socratic-questioning',
+    'cold-open': 'cold-open',
+    'reality-check': 'reality-check',
+    'theory-of-change': 'theory-of-change',
+    'trade-off': 'trade-off',
+    'iceberg': 'iceberg',
+    'constraint-flip': 'constraint-flip'
+};
+function toolDetailUrl(exercise) {
+    const slug = TOOL_DETAIL_SLUG[exercise] || exercise;
+    return `tool-detail-${slug}.html`;
+}
 const sessionBar = $('#sessionBar');
 const sessionMode = $('#sessionMode');
 const sessionExercise = $('#sessionExercise');
@@ -617,6 +868,33 @@ $$('.card-exercise-btn').forEach(btn => {
     });
 });
 
+
+// Render tool-specific starter prompt pills below input
+function renderStarterPrompts(exercise) {
+    const existing = document.getElementById('starterPrompts');
+    if (existing) existing.remove();
+    const prompts = STARTER_PROMPTS[exercise];
+    if (!prompts || prompts.length === 0) return;
+    const container = document.createElement('div');
+    container.id = 'starterPrompts';
+    container.className = 'starter-prompts';
+    prompts.forEach(text => {
+        const btn = document.createElement('button');
+        btn.className = 'starter-prompt-pill';
+        btn.textContent = text;
+        btn.addEventListener('click', () => {
+            container.remove();
+            sendMessage(text);
+        });
+        container.appendChild(btn);
+    });
+    const inputForm = document.getElementById('inputForm');
+    if (inputForm) inputForm.parentNode.insertBefore(container, inputForm);
+    // Auto-remove after first user message
+    const removeOnMessage = () => { container.remove(); };
+    document.getElementById('inputForm')?.addEventListener('submit', removeOnMessage, { once: true });
+}
+
 function startExercise(mode, exercise, startMsg = null) {
     trackEvent('tool_start', { tool: exercise });
     // If transitioning from routing, use the user's own description as the exercise kickoff
@@ -694,7 +972,7 @@ function startExercise(mode, exercise, startMsg = null) {
 
     // Update footer label + learn more link
     modeLabel.innerHTML = `${EXERCISE_LABELS[exercise] || exercise} ·`;
-    if (toolLearnLink) { toolLearnLink.href = `tool-detail-${exercise}.html`; toolLearnLink.classList.remove('hidden'); }
+    if (toolLearnLink) { toolLearnLink.href = toolDetailUrl(exercise); toolLearnLink.classList.remove('hidden'); }
 
     // Update stage progress strip
     updateStageProgress(mode);
@@ -715,8 +993,11 @@ function startExercise(mode, exercise, startMsg = null) {
     $('#reportLinkedInBtn')?.classList.add('hidden');
     routingBack.classList.add('hidden');
 
+    // Show tool-specific starter prompts
+    if (!startMsg) renderStarterPrompts(exercise);
+
     // Switch board layout based on exercise — custom boards for structured tools
-    const customLayouts = ['lean-canvas', 'elevator-pitch', 'pre-mortem', 'effectuation'];
+    const customLayouts = ['lean-canvas', 'elevator-pitch', 'pre-mortem', 'effectuation', 'flywheel', 'cold-open', 'iceberg', 'constraint-flip', 'socratic', 'reality-check', 'theory-of-change', 'trade-off', 'five-whys', 'empathy-map', 'jtbd', 'crazy-8s', 'hmw', 'scamper', 'devils-advocate', 'rapid-experiment'];
     if (customLayouts.includes(exercise)) {
         switchBoardLayout(exercise);
     } else {
@@ -922,7 +1203,7 @@ function swapToTool(mode, exercise, swapEl) {
     sessionMode.textContent = MODE_LABELS[mode] || mode;
     sessionExercise.textContent = EXERCISE_LABELS[exercise] || exercise;
     modeLabel.innerHTML = `<a class="mode-label-link" href="toolbox.html#${exercise}" target="_blank" rel="noopener">${EXERCISE_LABELS[exercise] || exercise}</a> ·`;
-    if (toolLearnLink) { toolLearnLink.href = `tool-detail-${exercise}.html`; toolLearnLink.classList.remove('hidden'); }
+    if (toolLearnLink) { toolLearnLink.href = toolDetailUrl(exercise); toolLearnLink.classList.remove('hidden'); }
     updateStageProgress(mode);
 
     // Reset tool picker
@@ -1026,6 +1307,19 @@ document.addEventListener('DOMContentLoaded', () => {
     // Bind all secondary CTA buttons (e.g. bottom CTA on landing page)
     document.querySelectorAll('.enter-studio-trigger').forEach(btn => {
         if (btn !== enterBtn) btn.addEventListener('click', enterStudio);
+    });
+
+    // Clickable category cards on homepage — start session with category context
+    document.querySelectorAll('.lp-process-card[data-category]').forEach(card => {
+        card.addEventListener('click', (e) => {
+            // Don't intercept clicks on tool pill links
+            if (e.target.closest('.lp-tool-pill')) return;
+            const cat = card.dataset.category;
+            if (cat && CATEGORY_PROMPTS[cat]) {
+                enterStudio();
+                setTimeout(() => sendMessage(CATEGORY_PROMPTS[cat]), 3000);
+            }
+        });
     });
 });
 
@@ -1276,12 +1570,11 @@ function appendMessage(role, content) {
 function scrollToBottom() {
     // Use rAF to ensure DOM has rendered before scrolling
     requestAnimationFrame(() => {
-        // When board is open, the chat-pane is the scrollable container
         const chatPane = document.getElementById('chatPane');
-        if (chatPane && state.board.visible) {
-            chatPane.scrollTop = chatPane.scrollHeight;
-        }
-        chatArea.scrollTop = chatArea.scrollHeight;
+        // Always scroll chatPane — it's the scrollable container for messages
+        if (chatPane) chatPane.scrollTop = chatPane.scrollHeight;
+        // Also scroll chatArea as fallback
+        if (chatArea) chatArea.scrollTop = chatArea.scrollHeight;
     });
 }
 
@@ -1357,7 +1650,7 @@ function restoreSession(session) {
     sessionMode.textContent = MODE_LABELS[state.mode] || state.mode;
     sessionExercise.textContent = EXERCISE_LABELS[state.exercise] || state.exercise;
     modeLabel.innerHTML = `<a class="mode-label-link" href="toolbox.html#${state.exercise}" target="_blank" rel="noopener">${EXERCISE_LABELS[state.exercise] || state.exercise}</a> ·`;
-    if (toolLearnLink) { toolLearnLink.href = `tool-detail-${state.exercise}.html`; toolLearnLink.classList.remove('hidden'); }
+    if (toolLearnLink) { toolLearnLink.href = toolDetailUrl(state.exercise); toolLearnLink.classList.remove('hidden'); }
     reportCta.classList.remove('hidden');
     updateStageProgress(state.mode);
     // Restore tool picker state
@@ -1586,6 +1879,50 @@ async function streamResponse() {
                 suggestedKeys = suggestMatch[1].split(',').map(s => s.trim()).filter(k => EXERCISE_MODE[k]);
                 fullText = fullText.replace(/\n?\[SUGGEST:\s*[^\]]+\]/, '').trim();
                 if (agentDiv) agentDiv.innerHTML = renderMarkdown(fullText);
+                // Auto-start the first suggested tool if Pete is already facilitating
+                // (user accepted via conversation, not via pill click)
+                if (suggestedKeys.length > 0 && state.exchangeCount >= 2) {
+                    const autoKey = suggestedKeys[0];
+                    const autoMode = EXERCISE_MODE[autoKey];
+                    if (autoMode && autoKey) {
+                        // Transition to exercise mode without resetting conversation
+                        state.mode = autoMode;
+                        state.exercise = autoKey;
+                        state.routing = false;
+                        document.body.dataset.mode = autoMode;
+                        document.body.classList.add('in-session');
+                        updateStageLogo(autoMode);
+                        // Show session bar
+                        const sessionBar = document.getElementById('sessionBar');
+                        if (sessionBar) sessionBar.classList.remove('hidden');
+                        const breadcrumbStage = document.getElementById('breadcrumbStage');
+                        const breadcrumbTool = document.getElementById('breadcrumbTool');
+                        if (breadcrumbStage) breadcrumbStage.textContent = (MODE_LABELS[autoMode] || autoMode).toUpperCase();
+                        if (breadcrumbTool) breadcrumbTool.innerHTML = (EXERCISE_LABELS[autoKey] || autoKey) + ' <svg class="breadcrumb-chevron" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg>';
+                        // Switch board layout
+                        const customLayouts = ['lean-canvas', 'elevator-pitch', 'pre-mortem', 'effectuation', 'flywheel', 'cold-open', 'iceberg', 'constraint-flip', 'socratic', 'reality-check', 'theory-of-change', 'trade-off', 'five-whys', 'empathy-map', 'jtbd', 'crazy-8s', 'hmw', 'scamper', 'devils-advocate', 'rapid-experiment'];
+                        if (customLayouts.includes(autoKey)) {
+                            switchBoardLayout(autoKey);
+                        } else {
+                            switchBoardLayout('default');
+                        }
+                        // Update input placeholder
+                        if (EXERCISE_HINTS[autoKey]) {
+                            inputField.placeholder = EXERCISE_HINTS[autoKey];
+                        }
+                        // Update progress
+                        state.exchangeCount = 1;
+                        updateProgressIndicator();
+                        updateStageProgress(autoMode);
+                        updateBreadcrumbDropdown();
+                        // Hide report CTA during exercise
+                        reportCta.classList.add('hidden');
+                        // Remove starter prompts if any
+                        document.getElementById('starterPrompts')?.remove();
+                        saveSession();
+                        suggestedKeys = []; // Don't render buttons — already started
+                    }
+                }
             }
         } else {
             // Check for [WRAP] signal — natural end of exercise
@@ -1629,12 +1966,26 @@ async function streamResponse() {
 
         // Parse [INSIGHT:], [IDEA:], [ACTION:] tags — workshop board cards
         const boardTagMap = { INSIGHT: 'insights', IDEA: 'ideas', ACTION: 'actions' };
-        Object.entries(boardTagMap).forEach(([tag, zone]) => {
+        Object.entries(boardTagMap).forEach(([tag, defaultZone]) => {
             const regex = new RegExp(`\\[${tag}:\\s*([^\\]]+)\\]`, 'g');
             const matches = fullText.match(regex);
             if (matches) {
                 matches.forEach(m => {
                     const desc = m.match(new RegExp(`\\[${tag}:\\s*([^\\]]+)\\]`))[1].trim();
+                    // Check if the default zone exists on the current board; if not, use first available zone
+                    let zone = defaultZone;
+                    const layout = BOARD_LAYOUTS[state.boardMode || state.exercise];
+                    if (layout && layout.zones) {
+                        const zoneExists = layout.zones.some(z => z.id === defaultZone);
+                        if (!zoneExists) {
+                            // Route to first zone of matching type
+                            if (tag === 'ACTION') {
+                                zone = layout.zones.find(z => z.id === 'actions' || z.id.includes('action'))?.id || layout.zones[layout.zones.length - 1].id;
+                            } else {
+                                zone = layout.zones[0].id; // First zone as fallback for insights/ideas
+                            }
+                        }
+                    }
                     addBoardCard(desc, zone, state.mode, EXERCISE_LABELS[state.exercise] || state.exercise || 'session');
                 });
                 fullText = fullText.replace(new RegExp(`\\n?\\[${tag}:\\s*[^\\]]+\\]`, 'g'), '').trim();
@@ -1660,6 +2011,27 @@ async function streamResponse() {
             }
         }
         fullText = fullText.replace(/\n?\[CANVAS:[a-z_-]+:\s*[^\]]+\]/g, '').trim();
+
+        // Parse [FLYWHEEL:component-N: text] and [FLYWHEEL:bottleneck: text] tags
+        const fwRegex = /\[FLYWHEEL:([a-z0-9_-]+):\s*([^\]]+)\]/g;
+        const fwMatches = fullText.matchAll(fwRegex);
+        for (const fm of fwMatches) {
+            const fwKey = fm[1].trim().toLowerCase();
+            const fwText = fm[2].trim();
+            // Connection tags (A -> B | strength | mechanism) go to insights
+            if (fwKey === 'connection') {
+                addBoardCard(fwText, 'insights', state.mode, 'Flywheel');
+            } else {
+                const zone = FLYWHEEL_TAG_MAP[fwKey];
+                if (zone) {
+                    // Replace existing card in this zone (flywheel components update, not stack)
+                    const existing = state.board.cards.find(c => c.zone === zone);
+                    if (existing) removeBoardCard(existing.id);
+                    addBoardCard(fwText, zone, state.mode, 'Flywheel');
+                }
+            }
+        }
+        fullText = fullText.replace(/\n?\[FLYWHEEL:[a-z0-9_-]+:\s*[^\]]+\]/g, '').trim();
 
         // Parse [PITCH:component: text] tags — Elevator Pitch components
         const pitchRegex = /\[PITCH:([a-z_-]+):\s*([^\]]+)\]/g;
@@ -1704,6 +2076,22 @@ async function streamResponse() {
         if (fullText.includes('[BOARD:close]')) {
             if (state.board.visible) toggleBoard();
             fullText = fullText.replace(/\n?\[BOARD:close\]/g, '').trim();
+        }
+
+
+        // Universal tool-specific tag parser: [BOARD:zone-key: text]
+        // Uses TOOL_TAG_MAPS to route to the correct custom board zone
+        if (state.exercise && TOOL_TAG_MAPS[state.exercise]) {
+            const toolMap = TOOL_TAG_MAPS[state.exercise];
+            const toolTagRegex = /\[BOARD:([a-z0-9_-]+):\s*([^\]]+)\]/g;
+            for (const tm of fullText.matchAll(toolTagRegex)) {
+                const tagKey = tm[1].trim().toLowerCase();
+                const tagText = tm[2].trim();
+                const zone = toolMap[tagKey] || tagKey;
+                addBoardCard(tagText, zone, state.mode, EXERCISE_LABELS[state.exercise] || state.exercise);
+            }
+            fullText = fullText.replace(/\n?\[BOARD:[a-z0-9_-]+:\s*[^\]]+\]/g, '').trim();
+            if (agentDiv) agentDiv.innerHTML = renderMarkdown(fullText);
         }
 
         if (agentDiv) agentDiv.innerHTML = renderMarkdown(fullText);
@@ -1764,12 +2152,35 @@ async function streamResponse() {
             // Show wrap-up card if facilitator signalled the exercise is complete
             if (wrapSignaled && !state.reportGenerated) {
                 state.wrapped = true;
-                // Hide input bar — session is over
-                if (inputArea) inputArea.style.display = 'none';
-                renderWrapPrompt();
-                // Auto-generate report in the background while user reads Pete's closing message
-                generateReport();
-                // Auto-save session summary to memory (no email needed)
+                updateProgressIndicator();
+                // Step 2: Auto-open board for review
+                if (!state.board.visible && state.board.cards.length > 0) {
+                    toggleBoard();
+                }
+                // Auto-consolidate if 5+ cards (1s delay for board to render)
+                if (state.board.cards.length >= 5) {
+                    setTimeout(() => {
+                        const consolidateBtn = document.getElementById('boardConsolidate');
+                        if (consolidateBtn && !consolidateBtn.disabled) consolidateBtn.click();
+                    }, 1000);
+                }
+                // Step 3: Show "happy with board" chip + report button
+                const boardChip = document.createElement('div');
+                boardChip.className = 'option-chips wrap-board-chips';
+                boardChip.innerHTML = `
+                    <button class="option-chip wrap-chip-report">I'm happy with the board — generate my report</button>
+                `;
+                messagesEl.appendChild(boardChip);
+                boardChip.querySelector('.wrap-chip-report').addEventListener('click', () => {
+                    boardChip.remove();
+                    generateReport();
+                });
+                scrollToBottom();
+                // Also show report CTA in footer
+                reportCta.classList.remove('hidden');
+                reportCtaBtn.disabled = false;
+                reportCtaBtn.textContent = 'Generate my report →';
+                // Auto-save session summary
                 autoSaveSessionSummary();
             }
         }
@@ -1803,6 +2214,14 @@ function showReportProgress() {
                 <div class="report-progress-bar-fill" id="reportProgressFill"></div>
             </div>
             <div class="report-progress-status" id="reportProgressStatus">Analysing your session...</div>
+            <div class="report-progress-time">This usually takes about 2 minutes</div>
+            <div class="report-wait-cta">
+                <p class="report-wait-heading">While your report is being prepared</p>
+                <p class="report-wait-desc">Based on your session, you might find these useful.</p>
+                <a class="report-wait-btn" href="https://wadeinstitute.org.au/programs/" target="_blank" rel="noopener">Explore Wade programs →</a>
+                <a class="report-wait-link" href="https://wadeinstitute.org.au/entrepreneurship-starts-with-a-problem-you-really-want-to-solve/" target="_blank" rel="noopener">Read: Start with a problem you really want to solve →</a>
+                <a class="report-wait-link" href="mailto:enquiries@wadeinstitute.org.au">Talk to the Wade team →</a>
+            </div>
         `;
         if (wrapPrompt) {
             // Insert after the wrap-prompt-text
@@ -2283,35 +2702,114 @@ document.getElementById('unlockForm')?.addEventListener('submit', async (e) => {
         console.error('[Lead] Failed to send:', err);
     }
 
-    // Hide form + synopsis, show format choice
+    // Hide form, keep synopsis visible, show progress bar
     reportUnlock.classList.add('hidden');
-    document.getElementById('reportSynopsis')?.classList.add('hidden');
     reportCta.classList.add('hidden');
-    const formatChoice = document.getElementById('reportFormatChoice');
-    if (formatChoice) {
-        formatChoice.classList.remove('hidden');
-        formatChoice.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
 
-    // Show next exercise suggestion
-    renderNextExercisePanel();
+    // Show staged progress bar (Steps 7-8 from wrap sequence)
+    const downloadProgress = document.createElement('div');
+    downloadProgress.className = 'download-progress';
+    downloadProgress.innerHTML = `
+        <div class="download-progress-stages">
+            <div class="download-stage active" id="dlStage1">
+                <span class="download-stage-check">⟳</span>
+                <span>Analysing your session...</span>
+            </div>
+            <div class="download-stage" id="dlStage2">
+                <span class="download-stage-check"></span>
+                <span>Building your report...</span>
+            </div>
+            <div class="download-stage" id="dlStage3">
+                <span class="download-stage-check"></span>
+                <span>Formatting for download...</span>
+            </div>
+        </div>
+        <div class="download-recommendations hidden" id="dlRecommendations">
+            <p class="download-reco-label">Based on your session...</p>
+            <div id="dlRecoContent"></div>
+        </div>
+        <div class="download-ready hidden" id="dlReady">
+            <p class="download-ready-text">Your report is ready</p>
+            <button class="download-ready-btn" id="dlDownloadBtn">Download Report (.docx)</button>
+            <p class="download-ready-note">It was good thinking with you today.</p>
+        </div>
+    `;
+    const synopsisCard = document.getElementById('reportSynopsis');
+    if (synopsisCard) synopsisCard.after(downloadProgress);
+    downloadProgress.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+    // Animate stages sequentially
+    setTimeout(() => {
+        document.getElementById('dlStage1').querySelector('.download-stage-check').textContent = '✓';
+        document.getElementById('dlStage1').classList.add('done');
+        document.getElementById('dlStage2').classList.add('active');
+        document.getElementById('dlRecommendations').classList.remove('hidden');
+        // Populate contextual Go Deeper card from tool-to-program mapping
+        const toolMap = TOOL_PROGRAM_MAP[state.exercise] || TOOL_PROGRAM_FALLBACK;
+        const recoEl = document.getElementById('dlRecoContent');
+        if (recoEl && toolMap) {
+            const isCorporate = toolMap.segment === 'corporate';
+            const heading = isCorporate ? 'Bring This to Your Team' : 'Go Deeper with Wade';
+            const toolName = EXERCISE_LABELS[state.exercise] || state.exercise || 'this tool';
+            recoEl.innerHTML = `
+                <div class="go-deeper-card">
+                    <p class="go-deeper-heading">${heading}</p>
+                    <p class="go-deeper-bridge">${toolMap.bridge}</p>
+                    <a class="go-deeper-program" href="${toolMap.programUrl}" target="_blank" rel="noopener">
+                        <strong>${toolMap.program}</strong>
+                        <span>Learn more \u2192</span>
+                    </a>
+                </div>
+            `;
+        }
+    }, 2000);
+
+    setTimeout(() => {
+        document.getElementById('dlStage2').querySelector('.download-stage-check').textContent = '✓';
+        document.getElementById('dlStage2').classList.add('done');
+        document.getElementById('dlStage3').classList.add('active');
+    }, 4000);
+
+    setTimeout(() => {
+        document.getElementById('dlStage3').querySelector('.download-stage-check').textContent = '✓';
+        document.getElementById('dlStage3').classList.add('done');
+        document.getElementById('dlReady').classList.remove('hidden');
+        document.getElementById('dlReady').scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+        // Wire download button
+        document.getElementById('dlDownloadBtn')?.addEventListener('click', () => {
+            downloadReportWord();
+            renderNextExercisePanel();
+        });
+    }, 6000);
+
     saveSession();
 
     submitBtn.disabled = false;
-    submitBtn.textContent = 'Send me my report →';
+    submitBtn.textContent = 'Get My Report';
 });
 
 // Format choice buttons → trigger download, then show next exercise
+// Auto-download Word when format choice appears (PDF removed)
 document.getElementById('formatWordBtn')?.addEventListener('click', () => {
     downloadReportWord();
     document.getElementById('reportFormatChoice')?.classList.add('hidden');
     renderNextExercisePanel();
 });
-document.getElementById('formatPdfBtn')?.addEventListener('click', () => {
-    downloadReport();
-    document.getElementById('reportFormatChoice')?.classList.add('hidden');
-    renderNextExercisePanel();
+
+// Auto-trigger Word download when format choice is shown
+const _formatObserver = new MutationObserver(() => {
+    const formatChoice = document.getElementById('reportFormatChoice');
+    if (formatChoice && !formatChoice.classList.contains('hidden')) {
+        setTimeout(() => {
+            downloadReportWord();
+            formatChoice.classList.add('hidden');
+            renderNextExercisePanel();
+        }, 1500); // Brief delay so user sees "Your report is on its way"
+        _formatObserver.disconnect();
+    }
 });
+_formatObserver.observe(document.body, { attributes: true, subtree: true, attributeFilter: ['class'] });
 
 function handleReportAction(btn, action) {
     switch (action) {
@@ -2473,7 +2971,46 @@ $('#reportNewSessionBtn')?.addEventListener('click', () => {
 
 // === NEXT EXERCISE PANEL (shown after full report revealed) ===
 
+function renderPostSessionScreen() {
+    if (document.getElementById('postSessionScreen')) return;
+    const toolMap = TOOL_PROGRAM_MAP[state.exercise] || TOOL_PROGRAM_FALLBACK;
+    const toolName = EXERCISE_LABELS[state.exercise] || state.exercise || 'this tool';
+    const isCorporate = toolMap.segment === 'corporate';
+
+    const screen = document.createElement('div');
+    screen.id = 'postSessionScreen';
+    screen.className = 'post-session-screen';
+
+    const heading = isCorporate ? 'Bring This to Your Team' : 'Go Deeper with Wade';
+    const corpNote = isCorporate
+        ? '<p class="post-session-corp">Wade Executive Education — Structured innovation programs for corporate teams.</p>'
+        : '';
+
+    screen.innerHTML = `
+        <div class="post-session-complete">You just completed ${toolName}</div>
+        <div class="post-session-deeper">
+            <h3 class="post-session-heading">${heading}</h3>
+            <p class="post-session-bridge">${toolMap.bridge}</p>
+            ${corpNote}
+            <a class="post-session-program-btn" href="${toolMap.programUrl}" target="_blank" rel="noopener">${toolMap.program} — Learn more \u2192</a>
+        </div>
+        <div class="post-session-alt">
+            <span>Or:</span>
+            <a class="post-session-alt-link" href="toolbox.html">Explore another tool in The Studio \u2192</a>
+        </div>
+    `;
+
+    // Insert after the download progress or synopsis
+    const anchor = document.querySelector('.download-progress') || document.getElementById('reportSynopsis');
+    if (anchor) anchor.after(screen);
+    screen.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
 function renderNextExercisePanel() {
+    // Post-session screen replaces the old next-exercise panel
+    renderPostSessionScreen();
+    return;
+
     const next = NEXT_STAGE[state.mode];
     if (!next) return; // Develop is the last stage
     if ($('#nextExercisePanel')) return; // already shown
@@ -2531,6 +3068,106 @@ function updateProgressIndicator() {
 // === WORKSHOP BOARD ===
 
 const BOARD_LAYOUTS = {
+    'five-whys': {
+        zones: [
+            { id: 'fw-problem', name: 'Presenting Problem', empty: 'The surface problem', hint: 'What happened?', colour: 'teal' },
+            { id: 'fw-why1', name: 'Why #1', empty: 'First answer', hint: 'Why is that a problem?', colour: 'teal' },
+            { id: 'fw-why2', name: 'Why #2', empty: 'Deeper', hint: 'Why does that happen?', colour: 'teal' },
+            { id: 'fw-why3', name: 'Why #3', empty: 'Deeper still', hint: 'Why?', colour: 'teal' },
+            { id: 'fw-why4', name: 'Why #4', empty: 'Approaching root', hint: 'Why?', colour: 'teal' },
+            { id: 'fw-why5', name: 'Root Cause', empty: 'The real insight', hint: 'The deepest why', colour: 'orange' },
+            { id: 'actions', name: 'Actions', empty: 'What to do about it', hint: 'Next steps', colour: 'orange' }
+        ],
+        gridClass: 'board-grid-five-whys'
+    },
+    'empathy-map': {
+        zones: [
+            { id: 'em-user', name: 'User', empty: 'Who are we mapping?', hint: 'Specific person or persona', colour: 'teal' },
+            { id: 'em-says', name: 'Says', empty: 'What they say out loud', hint: 'Direct quotes, public statements', colour: 'teal' },
+            { id: 'em-thinks', name: 'Thinks', empty: 'What they think privately', hint: 'Inner thoughts, worries, hopes', colour: 'teal' },
+            { id: 'em-does', name: 'Does', empty: 'Observable behaviour', hint: 'Actions, habits, routines', colour: 'teal' },
+            { id: 'em-feels', name: 'Feels', empty: 'Emotions', hint: 'Anxious, excited, frustrated, hopeful', colour: 'teal' },
+            { id: 'em-contradictions', name: 'Contradictions', empty: 'Where says and does don\'t match', hint: 'The gaps are the insights', colour: 'orange' },
+            { id: 'insights', name: 'Key Insight', empty: 'The most important discovery', hint: 'What changes because of this?', colour: 'orange' }
+        ],
+        gridClass: 'board-grid-empathy-map'
+    },
+    'jtbd': {
+        zones: [
+            { id: 'jtbd-situation', name: 'Situation', empty: 'When I\'m...', hint: 'The context that triggers the need', colour: 'teal' },
+            { id: 'jtbd-functional', name: 'Functional Job', empty: 'What task am I trying to accomplish?', hint: 'The practical thing they need done', colour: 'teal' },
+            { id: 'jtbd-emotional', name: 'Emotional Job', empty: 'How do I want to feel?', hint: 'Confidence, relief, excitement', colour: 'pink' },
+            { id: 'jtbd-social', name: 'Social Job', empty: 'How do I want to be perceived?', hint: 'Competent, innovative, caring', colour: 'pink' },
+            { id: 'jtbd-hiring', name: 'Hiring Criteria', empty: 'What makes them choose?', hint: 'Speed, cost, trust, outcome', colour: 'orange' },
+            { id: 'insights', name: 'Underserved Job', empty: 'The job no one does well', hint: 'This is the opportunity', colour: 'orange' }
+        ],
+        gridClass: 'board-grid-jtbd'
+    },
+    'crazy-8s': {
+        zones: [
+            { id: 'c8-1', name: 'Idea 1', empty: 'First idea', hint: '~1 minute', colour: 'orange' },
+            { id: 'c8-2', name: 'Idea 2', empty: 'Second idea', hint: '~1 minute', colour: 'orange' },
+            { id: 'c8-3', name: 'Idea 3', empty: 'Third idea', hint: '~1 minute', colour: 'orange' },
+            { id: 'c8-4', name: 'Idea 4', empty: 'Fourth idea', hint: '~1 minute', colour: 'orange' },
+            { id: 'c8-5', name: 'Idea 5', empty: 'Fifth idea', hint: '~1 minute', colour: 'orange' },
+            { id: 'c8-6', name: 'Idea 6', empty: 'Sixth idea', hint: '~1 minute', colour: 'orange' },
+            { id: 'c8-7', name: 'Idea 7', empty: 'Seventh idea', hint: '~1 minute', colour: 'orange' },
+            { id: 'c8-8', name: 'Idea 8', empty: 'Eighth idea', hint: '~1 minute', colour: 'orange' },
+            { id: 'c8-shortlist', name: 'Shortlist', empty: 'Best ideas selected', hint: 'Star your favourites', colour: 'teal' }
+        ],
+        gridClass: 'board-grid-crazy8s'
+    },
+    'hmw': {
+        zones: [
+            { id: 'hmw-problem', name: 'Problem Statement', empty: 'The challenge to reframe', hint: 'What\'s the problem?', colour: 'orange' },
+            { id: 'hmw-q1', name: 'HMW #1', empty: 'First reframe', hint: 'How might we...?', colour: 'orange' },
+            { id: 'hmw-q2', name: 'HMW #2', empty: 'Second reframe', hint: 'How might we...?', colour: 'orange' },
+            { id: 'hmw-q3', name: 'HMW #3', empty: 'Third reframe', hint: 'How might we...?', colour: 'orange' },
+            { id: 'hmw-q4', name: 'HMW #4', empty: 'Fourth reframe', hint: 'How might we...?', colour: 'orange' },
+            { id: 'hmw-q5', name: 'HMW #5', empty: 'Fifth reframe', hint: 'How might we...?', colour: 'orange' },
+            { id: 'hmw-best', name: 'Most Promising', empty: 'The reframe with the most potential', hint: 'Which one opens the most interesting direction?', colour: 'teal' },
+            { id: 'actions', name: 'Actions', empty: 'Next steps', hint: 'What to explore from here', colour: 'teal' }
+        ],
+        gridClass: 'board-grid-hmw'
+    },
+    'scamper': {
+        zones: [
+            { id: 'sc-s', name: 'S — Substitute', empty: 'What could you replace?', hint: 'Materials, people, processes', colour: 'orange' },
+            { id: 'sc-c', name: 'C — Combine', empty: 'What could you merge?', hint: 'Features, ideas, audiences', colour: 'orange' },
+            { id: 'sc-a', name: 'A — Adapt', empty: 'What could you borrow?', hint: 'From other industries, contexts', colour: 'orange' },
+            { id: 'sc-m', name: 'M — Modify', empty: 'What could you change?', hint: 'Size, shape, timing, frequency', colour: 'orange' },
+            { id: 'sc-p', name: 'P — Put to Other Uses', empty: 'What else could this do?', hint: 'New markets, new contexts', colour: 'orange' },
+            { id: 'sc-e', name: 'E — Eliminate', empty: 'What could you remove?', hint: 'The hardest question', colour: 'orange' },
+            { id: 'sc-r', name: 'R — Reverse', empty: 'What if you did the opposite?', hint: 'Flip the assumption', colour: 'orange' },
+            { id: 'sc-shortlist', name: 'Shortlist', empty: 'Best ideas across all lenses', hint: 'Star your favourites', colour: 'teal' }
+        ],
+        gridClass: 'board-grid-scamper'
+    },
+    'devils-advocate': {
+        zones: [
+            { id: 'da-idea', name: 'The Idea', empty: 'What are you defending?', hint: 'State your case', colour: 'pink' },
+            { id: 'da-for', name: 'Case For', empty: 'Your strongest arguments', hint: 'Why this should work', colour: 'teal' },
+            { id: 'da-against', name: 'Case Against', empty: 'Pete\'s challenges', hint: 'Why this might not work', colour: 'pink' },
+            { id: 'da-rebuttals', name: 'Rebuttals', empty: 'Your responses', hint: 'How you address each challenge', colour: 'orange' },
+            { id: 'da-verdict', name: 'Verdict', empty: 'What survived and what didn\'t', hint: 'The honest assessment', colour: 'teal' },
+            { id: 'actions', name: 'Actions', empty: 'Weaknesses to address', hint: 'What to fix before committing', colour: 'orange' }
+        ],
+        gridClass: 'board-grid-devils-advocate'
+    },
+    'rapid-experiment': {
+        zones: [
+            { id: 're-hypothesis', name: 'Hypothesis', empty: 'What do you believe?', hint: 'If we [do X], then [Y] will happen', colour: 'yellow' },
+            { id: 're-assumption', name: 'Riskiest Assumption', empty: 'What must be true?', hint: 'The one that kills the idea if wrong', colour: 'orange' },
+            { id: 're-method', name: 'Test Method', empty: 'How you\'ll test it', hint: 'Concierge, landing page, pre-sell...', colour: 'yellow' },
+            { id: 're-metric', name: 'Success Metric', empty: 'The number you\'ll measure', hint: 'Specific, measurable', colour: 'yellow' },
+            { id: 're-pass', name: 'Pass Criteria', empty: 'What counts as success?', hint: 'The threshold', colour: 'teal' },
+            { id: 're-fail', name: 'Fail Criteria', empty: 'What counts as failure?', hint: 'Be honest before you see the data', colour: 'pink' },
+            { id: 're-predicted', name: 'Predicted Outcome', empty: 'What you expect', hint: 'Write this before running', colour: 'yellow' },
+            { id: 're-actual', name: 'Actual Outcome', empty: '(Fill in after running)', hint: 'What actually happened', colour: 'teal' },
+            { id: 'actions', name: 'Next Step', empty: '48-hour action', hint: 'Build it, run it, ship it', colour: 'orange' }
+        ],
+        gridClass: 'board-grid-rapid-experiment'
+    },
     'default': {
         zones: [
             { id: 'insights', name: 'Key Insights', empty: 'No insights yet — keep digging' },
@@ -2586,6 +3223,98 @@ const BOARD_LAYOUTS = {
             { id: 'pitch-differentiator', name: 'Differentiator', empty: 'Why you, not them?', hint: 'What makes you different from alternatives', colour: 'yellow' }
         ],
         gridClass: 'board-grid-pitch'
+    },
+    'iceberg': {
+        zones: [
+            { id: 'ice-event', name: 'The Event', empty: 'What happened?', hint: 'The visible surface problem', colour: 'teal' },
+            { id: 'ice-patterns', name: 'Patterns', empty: 'What keeps happening?', hint: 'Recurring themes beneath the event', colour: 'teal' },
+            { id: 'ice-structures', name: 'Structures', empty: 'What causes the pattern?', hint: 'Incentives, processes, power dynamics', colour: 'teal' },
+            { id: 'ice-mental', name: 'Mental Models', empty: 'What belief holds this in place?', hint: 'The deepest assumption', colour: 'teal' },
+            { id: 'ice-leverage', name: 'Leverage Point', empty: 'Where to intervene', hint: 'The change with the greatest impact', colour: 'orange' },
+            { id: 'actions', name: 'Actions', empty: 'Next steps', hint: 'Test or shift the mental model', colour: 'orange' }
+        ],
+        gridClass: 'board-grid-iceberg'
+    },
+    'constraint-flip': {
+        zones: [
+            { id: 'cf-constraint', name: 'The Constraint', empty: 'Your biggest limitation', hint: 'Be specific — not just "no money"', colour: 'orange' },
+            { id: 'cf-flip', name: 'The Flip', empty: 'The same fact, seen as an advantage', hint: 'What can you do because of this?', colour: 'orange' },
+            { id: 'cf-ideas', name: 'Constraint-Driven Ideas', empty: 'Ideas that depend on the constraint', hint: 'If the constraint disappeared, would the idea still work?', colour: 'pink' },
+            { id: 'cf-moat', name: 'The Moat Idea', empty: 'The idea competitors can\'t copy', hint: 'Only works because of your specific limitation', colour: 'orange' },
+            { id: 'actions', name: 'Actions', empty: 'First test', hint: 'How to validate the moat idea', colour: 'teal' }
+        ],
+        gridClass: 'board-grid-constraint-flip'
+    },
+    'socratic': {
+        zones: [
+            { id: 'sq-verified', name: 'Verified', empty: 'Tested — evidence exists', hint: 'Claims with real data behind them', colour: 'teal' },
+            { id: 'sq-assumed', name: 'Assumed', empty: 'Believed but untested', hint: 'Feels true but no evidence', colour: 'orange' },
+            { id: 'sq-inherited', name: 'Inherited', empty: 'Someone told you — you accepted it', hint: 'Absorbed from others without testing', colour: 'pink' },
+            { id: 'sq-critical', name: 'Critical Assumption', empty: 'The one that changes everything', hint: 'If this is wrong, the whole plan shifts', colour: 'orange' },
+            { id: 'actions', name: 'The Test', empty: 'How to validate the critical assumption', hint: 'Simplest test in the next two weeks', colour: 'teal' }
+        ],
+        gridClass: 'board-grid-socratic'
+    },
+    'reality-check': {
+        zones: [
+            { id: 'rc-claims', name: 'The Story', empty: 'Your narrative claims', hint: 'What you say about how things are going', colour: 'teal' },
+            { id: 'rc-evidence', name: 'The Evidence', empty: 'Actual data for each claim', hint: 'Numbers, dates, measurements', colour: 'pink' },
+            { id: 'rc-supported', name: 'Supported', empty: 'Story matches data', hint: 'Claims with evidence behind them', colour: 'teal' },
+            { id: 'rc-gap', name: 'The Gap', empty: 'Where story and data diverge', hint: 'Claims with weak or no evidence', colour: 'orange' },
+            { id: 'rc-revised', name: 'The Honest Version', empty: 'Revised narrative grounded in data', hint: 'What you\'d say if you had to be completely honest', colour: 'teal' },
+            { id: 'rc-metrics', name: '3 Key Metrics', empty: 'The numbers that actually matter', hint: 'Not vanity metrics — signal metrics', colour: 'orange' },
+            { id: 'actions', name: 'Actions', empty: 'Close the biggest gap this week', hint: 'One concrete step', colour: 'orange' }
+        ],
+        gridClass: 'board-grid-reality-check'
+    },
+    'theory-of-change': {
+        zones: [
+            { id: 'toc-outcome', name: 'The Outcome', empty: 'Long-term change you want to create', hint: 'Not what you do — what\'s different in the world', colour: 'yellow' },
+            { id: 'toc-control', name: 'Within Control', empty: 'Preconditions you can create', hint: 'Actions and conditions you directly influence', colour: 'teal' },
+            { id: 'toc-influence', name: 'Within Influence', empty: 'Preconditions you can nudge', hint: 'Can\'t guarantee but can increase likelihood', colour: 'orange' },
+            { id: 'toc-outside', name: 'Outside Control', empty: 'Must happen independently', hint: 'The assumptions your whole plan rests on', colour: 'pink' },
+            { id: 'toc-activities', name: 'Activities', empty: 'What you\'ll actually do', hint: 'Specific actions to create controllable conditions', colour: 'yellow' },
+            { id: 'toc-weakest', name: 'Weakest Link', empty: 'The connection you\'re least confident about', hint: 'Where the chain is most likely to break', colour: 'pink' },
+            { id: 'actions', name: 'The Test', empty: 'Validate the weakest link', hint: 'Simplest test in the next month', colour: 'orange' }
+        ],
+        gridClass: 'board-grid-toc'
+    },
+    'trade-off': {
+        zones: [
+            { id: 'to-features', name: 'All Features', empty: 'The full offer, deconstructed', hint: '5-7 dimensions with levels', colour: 'pink' },
+            { id: 'to-rounds', name: 'Trade-Off Rounds', empty: 'Package A vs Package B', hint: 'Each round forces a sacrifice', colour: 'pink' },
+            { id: 'to-musthave', name: 'Must-Have', empty: 'Won 5-6+ rounds', hint: 'Core value — customers always choose this', colour: 'teal' },
+            { id: 'to-nicetohave', name: 'Nice-to-Have', empty: 'Won 2-4 rounds', hint: 'Valuable but tradeable', colour: 'orange' },
+            { id: 'to-expendable', name: 'Expendable', empty: 'Won 0-1 rounds', hint: 'You care more than your customer does', colour: 'pink' },
+            { id: 'to-surprise', name: 'The Surprise', empty: 'The feature you were most wrong about', hint: 'Overvalued or undervalued going in', colour: 'orange' },
+            { id: 'to-mvo', name: 'Minimum Viable Offer', empty: 'Survivors only — the simplest version someone would pay for', hint: 'Strip everything else away', colour: 'teal' },
+            { id: 'actions', name: 'Actions', empty: 'What changes because of this', hint: 'Roadmap, pricing, or positioning shift', colour: 'orange' }
+        ],
+        gridClass: 'board-grid-trade-off'
+    },
+    'cold-open': {
+        zones: [
+            { id: 'co-v1', name: 'Version 1', empty: 'First attempt', hint: '30 seconds, no context', colour: 'pink' },
+            { id: 'co-v2', name: 'Version 2', empty: 'Second attempt', hint: 'After feedback', colour: 'pink' },
+            { id: 'co-v3', name: 'Version 3', empty: 'Third attempt', hint: 'Final iteration', colour: 'pink' },
+            { id: 'co-hook', name: 'The Hook', empty: 'One sentence that earns "tell me more"', hint: 'The dinner party sentence', colour: 'orange' },
+            { id: 'co-followup', name: 'The Follow-up', empty: 'Problem + insight + why it matters', hint: 'Once they\'re listening', colour: 'orange' },
+            { id: 'co-detail', name: 'The Detail', empty: 'Features + evidence + proof', hint: 'Save for the real conversation', colour: 'teal' },
+            { id: 'insights', name: 'Key Insights', empty: 'What Pete noticed', hint: 'Patterns and observations', colour: 'teal' }
+        ],
+        gridClass: 'board-grid-cold-open'
+    },
+    'flywheel': {
+        zones: [
+            { id: 'fw-component-1', name: 'Component 1', empty: 'The engine — what makes everything easier?', hint: 'The core activity', colour: 'yellow' },
+            { id: 'fw-component-2', name: 'Component 2', empty: 'What does Component 1 lead to?', hint: 'The next link in the chain', colour: 'yellow' },
+            { id: 'fw-component-3', name: 'Component 3', empty: 'What does Component 2 lead to?', hint: 'The next link', colour: 'yellow' },
+            { id: 'fw-component-4', name: 'Component 4', empty: 'What completes the loop?', hint: 'How it feeds back to the start', colour: 'yellow' },
+            { id: 'fw-bottleneck', name: 'Bottleneck', empty: 'The weakest link', hint: 'Which connection loses the most energy?', colour: 'orange' },
+            { id: 'insights', name: 'Key Insights', empty: 'What emerged', hint: 'Patterns and observations', colour: 'teal' },
+            { id: 'actions', name: 'Actions', empty: 'Next steps', hint: '90-day plan + 48-hour first step', colour: 'orange' }
+        ],
+        gridClass: 'board-grid-flywheel'
     }
 };
 
@@ -2613,6 +3342,110 @@ const RISK_TAG_MAP = {
     'mitigation': 'risk-mitigations', 'mitigations': 'risk-mitigations'
 };
 
+
+// === TOOL-SPECIFIC BOARD TAG MAPS ===
+
+const FIVE_WHYS_TAG_MAP = {
+    'problem': 'fw-problem', 'presenting-problem': 'fw-problem',
+    'why1': 'fw-why1', 'why-1': 'fw-why1',
+    'why2': 'fw-why2', 'why-2': 'fw-why2',
+    'why3': 'fw-why3', 'why-3': 'fw-why3',
+    'why4': 'fw-why4', 'why-4': 'fw-why4',
+    'why5': 'fw-why5', 'why-5': 'fw-why5', 'root-cause': 'fw-why5', 'root': 'fw-why5'
+};
+const EMPATHY_TAG_MAP = {
+    'user': 'em-user', 'persona': 'em-user', 'says': 'em-says', 'thinks': 'em-thinks',
+    'does': 'em-does', 'feels': 'em-feels',
+    'contradiction': 'em-contradictions', 'gap': 'em-contradictions',
+    'insight': 'insights', 'key-insight': 'insights'
+};
+const JTBD_TAG_MAP_TOOL = {
+    'situation': 'jtbd-situation', 'context': 'jtbd-situation',
+    'functional': 'jtbd-functional', 'emotional': 'jtbd-emotional', 'social': 'jtbd-social',
+    'hiring': 'jtbd-hiring', 'criteria': 'jtbd-hiring',
+    'underserved': 'insights', 'opportunity': 'insights'
+};
+const CRAZY8S_TAG_MAP = {
+    'idea-1': 'c8-1', '1': 'c8-1', 'idea-2': 'c8-2', '2': 'c8-2',
+    'idea-3': 'c8-3', '3': 'c8-3', 'idea-4': 'c8-4', '4': 'c8-4',
+    'idea-5': 'c8-5', '5': 'c8-5', 'idea-6': 'c8-6', '6': 'c8-6',
+    'idea-7': 'c8-7', '7': 'c8-7', 'idea-8': 'c8-8', '8': 'c8-8',
+    'shortlist': 'c8-shortlist', 'selected': 'c8-shortlist'
+};
+const HMW_TAG_MAP = {
+    'problem': 'hmw-problem', 'challenge': 'hmw-problem',
+    'hmw-1': 'hmw-q1', 'q1': 'hmw-q1', 'hmw-2': 'hmw-q2', 'q2': 'hmw-q2',
+    'hmw-3': 'hmw-q3', 'q3': 'hmw-q3', 'hmw-4': 'hmw-q4', 'q4': 'hmw-q4',
+    'hmw-5': 'hmw-q5', 'q5': 'hmw-q5',
+    'best': 'hmw-best', 'most-promising': 'hmw-best'
+};
+const SCAMPER_TAG_MAP = {
+    'substitute': 'sc-s', 's': 'sc-s', 'combine': 'sc-c', 'c': 'sc-c',
+    'adapt': 'sc-a', 'a': 'sc-a', 'modify': 'sc-m', 'm': 'sc-m',
+    'put': 'sc-p', 'p': 'sc-p', 'eliminate': 'sc-e', 'e': 'sc-e',
+    'reverse': 'sc-r', 'r': 'sc-r', 'shortlist': 'sc-shortlist'
+};
+const DEVILS_TAG_MAP = {
+    'idea': 'da-idea', 'for': 'da-for', 'case-for': 'da-for',
+    'against': 'da-against', 'objection': 'da-against',
+    'rebuttal': 'da-rebuttals', 'response': 'da-rebuttals',
+    'verdict': 'da-verdict'
+};
+const RAPID_TAG_MAP = {
+    'hypothesis': 're-hypothesis', 'assumption': 're-assumption', 'riskiest': 're-assumption',
+    'method': 're-method', 'metric': 're-metric',
+    'pass': 're-pass', 'fail': 're-fail',
+    'predicted': 're-predicted', 'actual': 're-actual'
+};
+const SOCRATIC_TAG_MAP = {
+    'verified': 'sq-verified', 'tested': 'sq-verified',
+    'assumed': 'sq-assumed', 'untested': 'sq-assumed',
+    'inherited': 'sq-inherited',
+    'critical': 'sq-critical', 'critical-assumption': 'sq-critical'
+};
+const REALITY_TAG_MAP = {
+    'claim': 'rc-claims', 'story': 'rc-claims', 'evidence': 'rc-evidence', 'data': 'rc-evidence',
+    'supported': 'rc-supported', 'gap': 'rc-gap', 'unsupported': 'rc-gap',
+    'revised': 'rc-revised', 'metric': 'rc-metrics'
+};
+const TOC_TAG_MAP = {
+    'outcome': 'toc-outcome', 'control': 'toc-control', 'influence': 'toc-influence',
+    'outside': 'toc-outside', 'external': 'toc-outside',
+    'activity': 'toc-activities', 'weakest': 'toc-weakest'
+};
+const TRADEOFF_TAG_MAP = {
+    'feature': 'to-features', 'round': 'to-rounds',
+    'must-have': 'to-musthave', 'nice-to-have': 'to-nicetohave',
+    'expendable': 'to-expendable', 'surprise': 'to-surprise',
+    'mvo': 'to-mvo', 'minimum-viable': 'to-mvo'
+};
+const ICEBERG_TAG_MAP = {
+    'event': 'ice-event', 'pattern': 'ice-patterns', 'patterns': 'ice-patterns',
+    'structure': 'ice-structures', 'structures': 'ice-structures',
+    'mental-model': 'ice-mental', 'belief': 'ice-mental',
+    'leverage': 'ice-leverage'
+};
+const CONSTRAINT_TAG_MAP = {
+    'constraint': 'cf-constraint', 'limitation': 'cf-constraint',
+    'flip': 'cf-flip', 'advantage': 'cf-flip',
+    'idea': 'cf-ideas', 'moat': 'cf-moat'
+};
+const COLD_OPEN_TAG_MAP = {
+    'v1': 'co-v1', 'v2': 'co-v2', 'v3': 'co-v3',
+    'hook': 'co-hook', 'follow-up': 'co-followup', 'followup': 'co-followup',
+    'detail': 'co-detail'
+};
+var TOOL_TAG_MAPS = {
+    'five-whys': FIVE_WHYS_TAG_MAP, 'empathy-map': EMPATHY_TAG_MAP,
+    'jtbd': JTBD_TAG_MAP_TOOL, 'crazy-8s': CRAZY8S_TAG_MAP,
+    'hmw': HMW_TAG_MAP, 'scamper': SCAMPER_TAG_MAP,
+    'devils-advocate': DEVILS_TAG_MAP, 'rapid-experiment': RAPID_TAG_MAP,
+    'socratic': SOCRATIC_TAG_MAP, 'reality-check': REALITY_TAG_MAP,
+    'theory-of-change': TOC_TAG_MAP, 'trade-off': TRADEOFF_TAG_MAP,
+    'iceberg': ICEBERG_TAG_MAP, 'constraint-flip': CONSTRAINT_TAG_MAP,
+    'cold-open': COLD_OPEN_TAG_MAP
+};
+
 // Effectuation principle tag mapping
 const EFF_TAG_MAP = {
     'means': 'eff-means', 'bird-in-hand': 'eff-means',
@@ -2621,6 +3454,13 @@ const EFF_TAG_MAP = {
     'lemonade': 'eff-lemonade',
     'pilot': 'eff-pilot', 'pilot-in-the-plane': 'eff-pilot',
     'action': 'eff-action', 'first-move': 'eff-action'
+};
+
+// Flywheel component tag mapping
+const FLYWHEEL_TAG_MAP = {
+    'component-1': 'fw-component-1', 'component-2': 'fw-component-2',
+    'component-3': 'fw-component-3', 'component-4': 'fw-component-4',
+    'bottleneck': 'fw-bottleneck'
 };
 
 function switchBoardLayout(mode) {
@@ -2652,6 +3492,7 @@ function switchBoardLayout(mode) {
         if (zoneEl) renderBoardCard(card);
     });
     updateBoardCounts();
+    showCanvasToggle(); // Show/hide SVG canvas toggle based on tool
 }
 
 function addBoardCard(text, zone, stage, source) {
@@ -2834,6 +3675,110 @@ function updateBoardCounts() {
         boardCountEl.classList.toggle('hidden', total === 0);
     }
 }
+
+// === SVG CANVAS VIEW (Lean Canvas only for now) ===
+
+const CANVAS_VIEW_TOOLS = ['lean-canvas']; // Tools that support SVG canvas view
+
+function showCanvasToggle() {
+    const btn = document.getElementById('boardCanvasToggle');
+    if (!btn) return;
+    btn.classList.toggle('hidden', !CANVAS_VIEW_TOOLS.includes(state.exercise));
+}
+
+function toggleCanvasView() {
+    const zonesEl = document.getElementById('boardZones');
+    const canvasEl = document.getElementById('boardCanvasView');
+    if (!zonesEl || !canvasEl) return;
+
+    const isCanvas = !canvasEl.classList.contains('hidden');
+    if (isCanvas) {
+        // Switch back to HTML board
+        canvasEl.classList.add('hidden');
+        zonesEl.classList.remove('hidden');
+        document.getElementById('boardCanvasToggle').textContent = '◫ Canvas';
+    } else {
+        // Switch to SVG canvas view
+        zonesEl.classList.add('hidden');
+        canvasEl.classList.remove('hidden');
+        document.getElementById('boardCanvasToggle').textContent = '☰ List';
+        renderCanvasSVG();
+    }
+}
+
+function renderCanvasSVG() {
+    const container = document.getElementById('boardCanvasView');
+    if (!container) return;
+
+    // Lean Canvas layout: 5 columns, 3 rows
+    const zones = [
+        { id: 'problem', name: 'PROBLEM', col: 0, row: 0, rowSpan: 2, colSpan: 1 },
+        { id: 'solution', name: 'SOLUTION', col: 1, row: 0, rowSpan: 1, colSpan: 1 },
+        { id: 'uvp', name: 'UNIQUE VALUE PROP', col: 2, row: 0, rowSpan: 2, colSpan: 1 },
+        { id: 'unfair', name: 'UNFAIR ADVANTAGE', col: 3, row: 0, rowSpan: 1, colSpan: 1 },
+        { id: 'segments', name: 'CUSTOMER SEGMENTS', col: 4, row: 0, rowSpan: 2, colSpan: 1 },
+        { id: 'metrics', name: 'KEY METRICS', col: 1, row: 1, rowSpan: 1, colSpan: 1 },
+        { id: 'channels', name: 'CHANNELS', col: 3, row: 1, rowSpan: 1, colSpan: 1 },
+        { id: 'costs', name: 'COST STRUCTURE', col: 0, row: 2, rowSpan: 1, colSpan: 2 },
+        { id: 'revenue', name: 'REVENUE STREAMS', col: 2, row: 2, rowSpan: 1, colSpan: 3 }
+    ];
+
+    const W = 900, H = 620;
+    const pad = 16, headerH = 50, gap = 6;
+    const colW = (W - pad * 2 - gap * 4) / 5;
+    const rowH = (H - headerH - pad - gap * 2) / 3;
+    const stageColor = '#E4E517'; // Build = yellow
+
+    let svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block;">`;
+
+    // Background
+    svg += `<rect width="${W}" height="${H}" fill="#12103a" rx="8"/>`;
+
+    // Header
+    svg += `<rect x="0" y="0" width="${W}" height="${headerH}" fill="#1a1750" rx="8"/>`;
+    svg += `<rect x="0" y="${headerH - 8}" width="${W}" height="8" fill="#1a1750"/>`;
+    svg += `<text x="${pad}" y="32" fill="${stageColor}" font-family="Arial,sans-serif" font-size="11" font-weight="bold" letter-spacing="2">LEAN CANVAS</text>`;
+
+    // Zones
+    zones.forEach(z => {
+        const x = pad + z.col * (colW + gap);
+        const y = headerH + z.row * (rowH + gap);
+        const w = z.colSpan * colW + (z.colSpan - 1) * gap;
+        const h = z.rowSpan * rowH + (z.rowSpan - 1) * gap;
+
+        // Zone background
+        svg += `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="#1a1750" rx="6" stroke="#2a2660" stroke-width="1"/>`;
+
+        // Zone label
+        svg += `<text x="${x + 8}" y="${y + 16}" fill="${stageColor}" font-family="Arial,sans-serif" font-size="9" font-weight="bold" letter-spacing="1.5">${z.name}</text>`;
+
+        // Cards for this zone
+        const cards = state.board.cards.filter(c => c.zone === z.id);
+        let cardY = y + 26;
+        cards.forEach(card => {
+            const text = card.text.length > 60 ? card.text.slice(0, 57) + '...' : card.text;
+            // Card background
+            svg += `<rect x="${x + 4}" y="${cardY}" width="${w - 8}" height="22" fill="rgba(255,255,255,0.05)" rx="3"/>`;
+            svg += `<text x="${x + 8}" y="${cardY + 15}" fill="#B8BCC8" font-family="Arial,sans-serif" font-size="10">${escapeHtml(text)}</text>`;
+            cardY += 26;
+        });
+
+        // Empty state
+        if (cards.length === 0) {
+            svg += `<text x="${x + 8}" y="${cardY + 10}" fill="#4a4670" font-family="Arial,sans-serif" font-size="9" font-style="italic">${BOARD_LAYOUTS['lean-canvas'].zones.find(bz => bz.id === z.id)?.hint || ''}</text>`;
+        }
+    });
+
+    svg += '</svg>';
+    container.innerHTML = svg;
+}
+
+function escapeHtml(text) {
+    return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+// Wire up canvas toggle
+document.getElementById('boardCanvasToggle')?.addEventListener('click', toggleCanvasView);
 
 function toggleBoard() {
     const layout = document.getElementById('workshopLayout');
@@ -3464,10 +4409,19 @@ document.addEventListener('DOMContentLoaded', () => {
         const mode = EXERCISE_MODE[toolParam];
         history.replaceState({}, '', '/');
         startExercise(mode, toolParam);
-        // Belt-and-suspenders: ensure input bar is visible after direct tool launch
         if (inputArea) inputArea.style.display = '';
-        // Double-ensure after any async reflows
         setTimeout(() => { if (inputArea) inputArea.style.display = ''; }, 500);
+    }
+
+    // Category launch from toolbox/homepage (?category=untangle)
+    const categoryParam = params.get('category');
+    if (categoryParam && CATEGORY_PROMPTS[categoryParam]) {
+        history.replaceState({}, '', '/');
+        enterStudio();
+        // After Pete's opening message, inject the category context
+        setTimeout(() => {
+            sendMessage(CATEGORY_PROMPTS[categoryParam]);
+        }, 3000);
     }
 });
 
@@ -3499,15 +4453,15 @@ function startTour() {
 }
 
 function showTourStep() {
-    if (tourStep >= TOUR_STEPS.length) { endTour(); return; }
-    const step = TOUR_STEPS[tourStep];
+    // Filter to only visible steps
+    const visibleSteps = TOUR_STEPS.filter(s => {
+        const el = document.querySelector(s.el);
+        return el && el.offsetParent !== null;
+    });
+    if (tourStep >= visibleSteps.length) { endTour(); return; }
+    const step = visibleSteps[tourStep];
     const target = document.querySelector(step.el);
-    if (!target || target.offsetParent === null) {
-        // Element not visible — skip
-        tourStep++;
-        showTourStep();
-        return;
-    }
+    if (!target) { endTour(); return; }
     const rect = target.getBoundingClientRect();
     const pad = 6;
     tourSpotlight.style.top = (rect.top - pad) + 'px';
@@ -3516,8 +4470,9 @@ function showTourStep() {
     tourSpotlight.style.height = (rect.height + pad * 2) + 'px';
 
     tourText.textContent = step.text;
-    tourStepCount.textContent = (tourStep + 1) + ' of ' + TOUR_STEPS.length;
-    tourNext.textContent = tourStep === TOUR_STEPS.length - 1 ? 'Done' : 'Next →';
+    const visibleCount = TOUR_STEPS.filter(s => { const el = document.querySelector(s.el); return el && el.offsetParent !== null; }).length;
+    tourStepCount.textContent = (tourStep + 1) + ' of ' + visibleCount;
+    tourNext.textContent = tourStep === visibleCount - 1 ? 'Done' : 'Next →';
 
     // Position tooltip
     const ttWidth = 300;
