@@ -1,56 +1,47 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="800" height="700" viewBox="0 0 800 700">
   <defs>
-    <style>text { font-family: Arial, sans-serif; }</style>
+    <style>text { font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif; }</style>
   </defs>
 
   <!-- Background -->
-  <rect width="800" height="700" fill="#1B2A4A" rx="8"/>
+  <rect width="800" height="700" fill="#1B2A4A"/>
 
   <!-- Title bar -->
-  <rect x="0" y="0" width="800" height="56" fill="#1F2E4D" rx="8"/>
-  <rect x="0" y="48" width="800" height="8" fill="#1F2E4D"/>
-  <rect x="0" y="0" width="3" height="56" fill="#27BDBE"/>
-  <text x="24" y="36" fill="#27BDBE" font-size="13" font-weight="bold" letter-spacing="2">THE UNTANGLE</text>
-  <text x="180" y="36" fill="#FFFFFF" font-size="18" font-weight="bold">JOBS TO BE DONE</text>
+  <rect x="0" y="0" width="2" height="40" fill="#27BDBE"/>
+  <text x="16" y="26" fill="#27BDBE" font-size="11" font-weight="600" letter-spacing="3">UNTANGLE</text>
+  <text x="784" y="26" fill="#FFFFFF" font-size="16" font-weight="700" text-anchor="end">Jobs to Be Done</text>
+  <line x1="0" y1="40" x2="800" y2="40" stroke="#2A3656" stroke-width="1"/>
 
-  <!-- Main statement card -->
-  <rect x="24" y="76" width="752" height="72" fill="#1F2E4D" rx="8" stroke="#27BDBE" stroke-width="1.5"/>
-  <text x="400" y="104" fill="#7A7F8E" font-size="12" text-anchor="middle">CORE JOB STATEMENT</text>
-  <text x="44" y="130" fill="#FFFFFF" font-size="14">When <tspan fill="#27BDBE">I'm scaling my startup past 10 employees</tspan>, I want to <tspan fill="#27BDBE">make confident hiring decisions</tspan>,</text>
-  <text x="44" y="148" fill="#FFFFFF" font-size="14">so I can <tspan fill="#27BDBE">build a team that executes without me managing every detail</tspan>.</text>
+  <!-- Core job statement -->
+  <rect x="16" y="56" width="768" height="80" fill="#1F2E4D" rx="4" stroke="#27BDBE" stroke-width="1"/>
+  <text x="400" y="76" fill="#6B7A8E" font-size="11" font-weight="600" letter-spacing="2" text-anchor="middle">CORE JOB STATEMENT</text>
+  <text x="40" y="100" fill="#FFFFFF" font-size="13">When <tspan fill="#27BDBE">I'm scaling past 10 employees</tspan>, I want to <tspan fill="#27BDBE">make confident hiring decisions</tspan>,</text>
+  <text x="40" y="120" fill="#FFFFFF" font-size="13">so I can <tspan fill="#27BDBE">build a team that executes without me managing every detail</tspan>.</text>
 
   <!-- Functional Job -->
-  <rect x="24" y="172" width="752" height="120" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
-  <!-- Icon placeholder: gear -->
-  <circle cx="56" cy="206" r="16" fill="none" stroke="#27BDBE" stroke-width="1.5"/>
-  <circle cx="56" cy="206" r="4" fill="#27BDBE"/>
-  <text x="84" y="200" fill="#27BDBE" font-size="12" font-weight="bold" letter-spacing="1">FUNCTIONAL JOB</text>
-  <text x="84" y="218" fill="#7A7F8E" font-size="11">What task are they trying to accomplish?</text>
-  <text x="84" y="244" fill="#B8BCC8" font-size="13">Evaluate candidates quickly and accurately for culture + skill fit</text>
-  <text x="84" y="264" fill="#B8BCC8" font-size="13">Create a repeatable hiring process that scales beyond founder intuition</text>
+  <rect x="16" y="152" width="768" height="120" fill="#1F2E4D" rx="4" stroke="#2A3656" stroke-width="1"/>
+  <text x="40" y="176" fill="#27BDBE" font-size="11" font-weight="600" letter-spacing="2">FUNCTIONAL JOB</text>
+  <text x="40" y="196" fill="#6B7A8E" font-size="11">What task are they trying to accomplish?</text>
+  <text x="40" y="224" fill="#C8CED8" font-size="13">Evaluate candidates quickly and accurately for culture and skill fit.</text>
+  <text x="40" y="248" fill="#C8CED8" font-size="13">Create a repeatable hiring process that scales beyond founder intuition.</text>
 
   <!-- Emotional Job -->
-  <rect x="24" y="310" width="752" height="120" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
-  <!-- Icon placeholder: heart -->
-  <path d="M48,340 C48,332 56,328 60,336 C64,328 72,332 72,340 C72,350 60,358 60,358 C60,358 48,350 48,340Z" fill="none" stroke="#27BDBE" stroke-width="1.5"/>
-  <text x="84" y="338" fill="#27BDBE" font-size="12" font-weight="bold" letter-spacing="1">EMOTIONAL JOB</text>
-  <text x="84" y="356" fill="#7A7F8E" font-size="11">How do they want to feel?</text>
-  <text x="84" y="382" fill="#B8BCC8" font-size="13">Confident that each hire won't derail the company culture</text>
-  <text x="84" y="402" fill="#B8BCC8" font-size="13">Relieved to stop being the bottleneck for every decision</text>
+  <rect x="16" y="288" width="768" height="120" fill="#1F2E4D" rx="4" stroke="#2A3656" stroke-width="1"/>
+  <text x="40" y="312" fill="#27BDBE" font-size="11" font-weight="600" letter-spacing="2">EMOTIONAL JOB</text>
+  <text x="40" y="332" fill="#6B7A8E" font-size="11">How do they want to feel?</text>
+  <text x="40" y="360" fill="#C8CED8" font-size="13">Confident that each hire won't derail the company culture.</text>
+  <text x="40" y="384" fill="#C8CED8" font-size="13">Relieved to stop being the bottleneck for every decision.</text>
 
   <!-- Social Job -->
-  <rect x="24" y="448" width="752" height="120" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
-  <!-- Icon placeholder: people -->
-  <circle cx="52" cy="476" r="8" fill="none" stroke="#27BDBE" stroke-width="1.5"/>
-  <circle cx="68" cy="476" r="8" fill="none" stroke="#27BDBE" stroke-width="1.5"/>
-  <text x="84" y="476" fill="#27BDBE" font-size="12" font-weight="bold" letter-spacing="1">SOCIAL JOB</text>
-  <text x="84" y="494" fill="#7A7F8E" font-size="11">How do they want to be perceived?</text>
-  <text x="84" y="520" fill="#B8BCC8" font-size="13">Seen by investors as a founder who can build and lead a strong team</text>
-  <text x="84" y="540" fill="#B8BCC8" font-size="13">Respected by employees as someone who hires well and delegates trust</text>
+  <rect x="16" y="424" width="768" height="120" fill="#1F2E4D" rx="4" stroke="#2A3656" stroke-width="1"/>
+  <text x="40" y="448" fill="#27BDBE" font-size="11" font-weight="600" letter-spacing="2">SOCIAL JOB</text>
+  <text x="40" y="468" fill="#6B7A8E" font-size="11">How do they want to be perceived?</text>
+  <text x="40" y="496" fill="#C8CED8" font-size="13">Seen by investors as a founder who builds and leads strong teams.</text>
+  <text x="40" y="520" fill="#C8CED8" font-size="13">Respected by employees as someone who hires well and delegates trust.</text>
 
   <!-- Current Solutions -->
-  <rect x="24" y="590" width="752" height="78" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
-  <text x="44" y="616" fill="#27BDBE" font-size="12" font-weight="bold" letter-spacing="1">CURRENT SOLUTIONS</text>
-  <text x="44" y="638" fill="#B8BCC8" font-size="13">Hiring through personal network only (limited reach) | Gut-feel interviews (inconsistent) | No structured onboarding</text>
-  <text x="44" y="656" fill="#7A7F8E" font-size="11">GAPS: No way to assess culture fit objectively. Process breaks when hiring 3+ roles at once.</text>
+  <rect x="16" y="560" width="768" height="104" fill="#1F2E4D" rx="4" stroke="#2A3656" stroke-width="1"/>
+  <text x="40" y="584" fill="#27BDBE" font-size="11" font-weight="600" letter-spacing="2">CURRENT SOLUTIONS</text>
+  <text x="40" y="612" fill="#C8CED8" font-size="13">Personal network only (limited reach) | Gut-feel interviews (inconsistent) | No structured onboarding</text>
+  <text x="40" y="640" fill="#6B7A8E" font-size="11">GAPS: No way to assess culture fit objectively. Process breaks at 3+ simultaneous roles.</text>
 </svg>

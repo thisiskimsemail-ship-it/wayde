@@ -1,93 +1,77 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="800" height="700" viewBox="0 0 800 700">
   <defs>
-    <style>text { font-family: Arial, sans-serif; }</style>
+    <style>text { font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif; }</style>
   </defs>
 
   <!-- Background -->
-  <rect width="800" height="700" fill="#1B2A4A" rx="8"/>
+  <rect width="800" height="700" fill="#1B2A4A"/>
 
   <!-- Title bar -->
-  <rect x="0" y="0" width="800" height="56" fill="#1F2E4D" rx="8"/>
-  <rect x="0" y="48" width="800" height="8" fill="#1F2E4D"/>
-  <rect x="0" y="0" width="3" height="56" fill="#F15A22"/>
-  <text x="24" y="36" fill="#F15A22" font-size="13" font-weight="bold" letter-spacing="2">THE SPARK</text>
-  <text x="140" y="36" fill="#FFFFFF" font-size="18" font-weight="bold">ANALOGICAL THINKING</text>
+  <rect x="0" y="0" width="2" height="40" fill="#F15A22"/>
+  <text x="16" y="26" fill="#F15A22" font-size="11" font-weight="600" letter-spacing="3">SPARK</text>
+  <text x="784" y="26" fill="#FFFFFF" font-size="16" font-weight="700" text-anchor="end">Analogical Thinking</text>
+  <line x1="0" y1="40" x2="800" y2="40" stroke="#2A3656" stroke-width="1"/>
 
   <!-- Your Challenge -->
-  <rect x="24" y="76" width="752" height="56" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
-  <text x="44" y="98" fill="#F15A22" font-size="11" font-weight="bold" letter-spacing="1">YOUR CHALLENGE</text>
-  <text x="44" y="120" fill="#FFFFFF" font-size="14">How do we onboard new users quickly without overwhelming them with features?</text>
+  <rect x="16" y="56" width="768" height="56" fill="#1F2E4D" rx="4" stroke="#2A3656" stroke-width="1"/>
+  <text x="40" y="80" fill="#F15A22" font-size="11" font-weight="600" letter-spacing="2">YOUR CHALLENGE</text>
+  <text x="40" y="100" fill="#FFFFFF" font-size="13">How do we onboard new users quickly without overwhelming them with features?</text>
 
-  <!-- Arrow down -->
-  <line x1="400" y1="132" x2="400" y2="148" stroke="#2A3656" stroke-width="1.5"/>
-  <polygon points="394,146 400,154 406,146" fill="#2A3656"/>
+  <!-- Arrow -->
+  <line x1="400" y1="112" x2="400" y2="128" stroke="#2A3656" stroke-width="1"/>
 
-  <!-- Pattern box -->
-  <rect x="24" y="156" width="752" height="56" fill="#1F2E4D" rx="8" stroke="#F15A22" stroke-width="1" stroke-opacity="0.5"/>
-  <text x="44" y="178" fill="#F15A22" font-size="11" font-weight="bold" letter-spacing="1">ABSTRACTED PATTERN</text>
-  <text x="44" y="200" fill="#FFFFFF" font-size="14">Introducing complexity gradually while maintaining engagement and confidence</text>
+  <!-- Abstracted Pattern -->
+  <rect x="16" y="128" width="768" height="56" fill="#1F2E4D" rx="4" stroke="#F15A22" stroke-width="1" stroke-opacity="0.4"/>
+  <text x="40" y="152" fill="#F15A22" font-size="11" font-weight="600" letter-spacing="2">ABSTRACTED PATTERN</text>
+  <text x="40" y="172" fill="#FFFFFF" font-size="13">Introducing complexity gradually while maintaining engagement and confidence.</text>
 
-  <!-- Arrow down -->
-  <line x1="400" y1="212" x2="400" y2="228" stroke="#2A3656" stroke-width="1.5"/>
-  <polygon points="394,226 400,234 406,226" fill="#2A3656"/>
+  <!-- Arrow -->
+  <line x1="400" y1="184" x2="400" y2="200" stroke="#2A3656" stroke-width="1"/>
 
   <!-- 3 Analogy cards -->
   <!-- Card 1: Medicine -->
-  <rect x="24" y="240" width="240" height="220" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
-  <!-- Icon placeholder: cross -->
-  <rect x="100" y="258" width="20" height="6" fill="#F15A22" rx="2"/>
-  <rect x="107" y="251" width="6" height="20" fill="#F15A22" rx="2"/>
-  <text x="144" y="268" fill="#FFFFFF" font-size="13" font-weight="bold">Medicine</text>
-  <line x1="40" y1="280" x2="248" y2="280" stroke="#2A3656" stroke-width="0.5"/>
-  <text x="40" y="298" fill="#7A7F8E" font-size="10" letter-spacing="1">THE PARALLEL</text>
-  <text x="40" y="316" fill="#B8BCC8" font-size="12">Drug dosage titration — start</text>
-  <text x="40" y="332" fill="#B8BCC8" font-size="12">low, increase as patient adapts</text>
-  <text x="40" y="358" fill="#7A7F8E" font-size="10" letter-spacing="1">TRANSFERABLE MECHANISM</text>
-  <text x="40" y="376" fill="#B8BCC8" font-size="12">Progressive feature unlocking</text>
-  <text x="40" y="392" fill="#B8BCC8" font-size="12">based on usage milestones</text>
+  <rect x="16" y="208" width="248" height="224" fill="#1F2E4D" rx="4" stroke="#2A3656" stroke-width="1"/>
+  <text x="40" y="236" fill="#FFFFFF" font-size="13" font-weight="700">Medicine</text>
+  <line x1="32" y1="248" x2="248" y2="248" stroke="#2A3656" stroke-width="0.5"/>
+  <text x="40" y="268" fill="#6B7A8E" font-size="10" letter-spacing="1">THE PARALLEL</text>
+  <text x="40" y="288" fill="#C8CED8" font-size="12">Drug dosage titration — start</text>
+  <text x="40" y="308" fill="#C8CED8" font-size="12">low, increase as patient adapts.</text>
+  <text x="40" y="340" fill="#6B7A8E" font-size="10" letter-spacing="1">TRANSFERABLE MECHANISM</text>
+  <text x="40" y="360" fill="#C8CED8" font-size="12">Progressive feature unlocking</text>
+  <text x="40" y="380" fill="#C8CED8" font-size="12">based on usage milestones.</text>
 
   <!-- Card 2: Aviation -->
-  <rect x="280" y="240" width="240" height="220" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
-  <!-- Icon placeholder: plane wing -->
-  <path d="M356,260 L376,254 L380,260 L360,264Z" fill="#F15A22"/>
-  <text x="394" y="268" fill="#FFFFFF" font-size="13" font-weight="bold">Aviation</text>
-  <line x1="296" y1="280" x2="504" y2="280" stroke="#2A3656" stroke-width="0.5"/>
-  <text x="296" y="298" fill="#7A7F8E" font-size="10" letter-spacing="1">THE PARALLEL</text>
-  <text x="296" y="316" fill="#B8BCC8" font-size="12">Pilot training uses simulators</text>
-  <text x="296" y="332" fill="#B8BCC8" font-size="12">before real cockpit exposure</text>
-  <text x="296" y="358" fill="#7A7F8E" font-size="10" letter-spacing="1">TRANSFERABLE MECHANISM</text>
-  <text x="296" y="376" fill="#B8BCC8" font-size="12">Sandbox environment with</text>
-  <text x="296" y="392" fill="#B8BCC8" font-size="12">sample data before going live</text>
+  <rect x="280" y="208" width="248" height="224" fill="#1F2E4D" rx="4" stroke="#2A3656" stroke-width="1"/>
+  <text x="304" y="236" fill="#FFFFFF" font-size="13" font-weight="700">Aviation</text>
+  <line x1="296" y1="248" x2="512" y2="248" stroke="#2A3656" stroke-width="0.5"/>
+  <text x="304" y="268" fill="#6B7A8E" font-size="10" letter-spacing="1">THE PARALLEL</text>
+  <text x="304" y="288" fill="#C8CED8" font-size="12">Pilot training uses simulators</text>
+  <text x="304" y="308" fill="#C8CED8" font-size="12">before real cockpit exposure.</text>
+  <text x="304" y="340" fill="#6B7A8E" font-size="10" letter-spacing="1">TRANSFERABLE MECHANISM</text>
+  <text x="304" y="360" fill="#C8CED8" font-size="12">Sandbox environment with</text>
+  <text x="304" y="380" fill="#C8CED8" font-size="12">sample data before going live.</text>
 
   <!-- Card 3: Nature — SELECTED -->
-  <rect x="536" y="240" width="240" height="220" fill="#1F2E4D" rx="8" stroke="#F15A22" stroke-width="2"/>
-  <!-- Icon placeholder: leaf -->
-  <path d="M612,256 C620,248 636,252 636,264 C636,272 628,278 620,278 C612,278 612,268 612,256Z" fill="none" stroke="#F15A22" stroke-width="1.5"/>
-  <text x="650" y="268" fill="#FFFFFF" font-size="13" font-weight="bold">Nature</text>
-  <line x1="552" y1="280" x2="760" y2="280" stroke="#2A3656" stroke-width="0.5"/>
-  <text x="552" y="298" fill="#7A7F8E" font-size="10" letter-spacing="1">THE PARALLEL</text>
-  <text x="552" y="316" fill="#B8BCC8" font-size="12">Seed germination — only the</text>
-  <text x="552" y="332" fill="#B8BCC8" font-size="12">right conditions trigger growth</text>
-  <text x="552" y="358" fill="#7A7F8E" font-size="10" letter-spacing="1">TRANSFERABLE MECHANISM</text>
-  <text x="552" y="376" fill="#B8BCC8" font-size="12">Context-aware feature reveals</text>
-  <text x="552" y="392" fill="#B8BCC8" font-size="12">triggered by user behaviour</text>
-  <!-- Selected badge -->
-  <rect x="620" y="436" width="76" height="16" fill="#F15A22" fill-opacity="0.2" rx="4"/>
-  <text x="658" y="448" fill="#F15A22" font-size="9" font-weight="bold" text-anchor="middle">SELECTED</text>
+  <rect x="544" y="208" width="240" height="224" fill="#1F2E4D" rx="4" stroke="#F15A22" stroke-width="1.5"/>
+  <text x="568" y="236" fill="#FFFFFF" font-size="13" font-weight="700">Nature</text>
+  <line x1="560" y1="248" x2="768" y2="248" stroke="#2A3656" stroke-width="0.5"/>
+  <text x="568" y="268" fill="#6B7A8E" font-size="10" letter-spacing="1">THE PARALLEL</text>
+  <text x="568" y="288" fill="#C8CED8" font-size="12">Seed germination — only the</text>
+  <text x="568" y="308" fill="#C8CED8" font-size="12">right conditions trigger growth.</text>
+  <text x="568" y="340" fill="#6B7A8E" font-size="10" letter-spacing="1">TRANSFERABLE MECHANISM</text>
+  <text x="568" y="360" fill="#C8CED8" font-size="12">Context-aware feature reveals</text>
+  <text x="568" y="380" fill="#C8CED8" font-size="12">triggered by user behaviour.</text>
+  <text x="664" y="416" fill="#F15A22" font-size="10" font-weight="600" text-anchor="middle">SELECTED</text>
 
-  <!-- Arrow down from selected -->
-  <line x1="656" y1="460" x2="400" y2="490" stroke="#F15A22" stroke-width="1.5" stroke-dasharray="4,3"/>
-  <polygon points="394,488 400,496 406,488" fill="#F15A22"/>
+  <!-- Selected Analogy -->
+  <rect x="16" y="456" width="768" height="56" fill="#1F2E4D" rx="4" stroke="#F15A22" stroke-width="1"/>
+  <text x="40" y="480" fill="#F15A22" font-size="11" font-weight="600" letter-spacing="2">SELECTED ANALOGY</text>
+  <text x="40" y="500" fill="#FFFFFF" font-size="13" font-weight="700">Nature: Seed germination — features emerge only when the user's context is ready for them.</text>
 
-  <!-- Selected Analogy + Application -->
-  <rect x="24" y="500" width="752" height="56" fill="#1F2E4D" rx="8" stroke="#F15A22" stroke-width="1.5"/>
-  <text x="44" y="522" fill="#F15A22" font-size="11" font-weight="bold" letter-spacing="1">SELECTED ANALOGY</text>
-  <text x="44" y="544" fill="#FFFFFF" font-size="13" font-weight="bold">Nature: Seed germination — features emerge only when the user's context is ready for them</text>
-
-  <!-- Application box -->
-  <rect x="24" y="572" width="752" height="86" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
-  <rect x="24" y="572" width="752" height="3" fill="#F15A22"/>
-  <text x="44" y="598" fill="#F15A22" font-size="11" font-weight="bold" letter-spacing="1">APPLICATION TO YOUR CONTEXT</text>
-  <text x="44" y="620" fill="#B8BCC8" font-size="13">Build behaviour-triggered feature discovery: when a user completes their 5th project, reveal</text>
-  <text x="44" y="638" fill="#B8BCC8" font-size="13">templates. When they invite a teammate, unlock collaboration tools. Growth follows readiness.</text>
+  <!-- Application -->
+  <rect x="16" y="528" width="768" height="104" fill="#1F2E4D" rx="4" stroke="#2A3656" stroke-width="1"/>
+  <rect x="16" y="528" width="768" height="2" fill="#F15A22"/>
+  <text x="40" y="560" fill="#F15A22" font-size="11" font-weight="600" letter-spacing="2">APPLICATION TO YOUR CONTEXT</text>
+  <text x="40" y="588" fill="#C8CED8" font-size="13">Build behaviour-triggered feature discovery: when a user completes their 5th project,</text>
+  <text x="40" y="612" fill="#C8CED8" font-size="13">reveal templates. When they invite a teammate, unlock collaboration. Growth follows readiness.</text>
 </svg>

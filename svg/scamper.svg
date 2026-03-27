@@ -1,70 +1,63 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="800" height="700" viewBox="0 0 800 700">
   <defs>
-    <style>text { font-family: Arial, sans-serif; }</style>
+    <style>text { font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif; }</style>
   </defs>
 
   <!-- Background -->
-  <rect width="800" height="700" fill="#1B2A4A" rx="8"/>
+  <rect width="800" height="700" fill="#1B2A4A"/>
 
   <!-- Title bar -->
-  <rect x="0" y="0" width="800" height="56" fill="#1F2E4D" rx="8"/>
-  <rect x="0" y="48" width="800" height="8" fill="#1F2E4D"/>
-  <rect x="0" y="0" width="3" height="56" fill="#F15A22"/>
-  <text x="24" y="36" fill="#F15A22" font-size="13" font-weight="bold" letter-spacing="2">THE SPARK</text>
-  <text x="140" y="36" fill="#FFFFFF" font-size="18" font-weight="bold">SCAMPER</text>
+  <rect x="0" y="0" width="2" height="40" fill="#F15A22"/>
+  <text x="16" y="26" fill="#F15A22" font-size="11" font-weight="600" letter-spacing="3">SPARK</text>
+  <text x="784" y="26" fill="#FFFFFF" font-size="16" font-weight="700" text-anchor="end">SCAMPER</text>
+  <line x1="0" y1="40" x2="800" y2="40" stroke="#2A3656" stroke-width="1"/>
 
-  <!-- S — Substitute -->
-  <rect x="24" y="76" width="752" height="78" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
-  <line x1="24" y1="154" x2="776" y2="154" stroke="#2A3656" stroke-width="0.5"/>
-  <text x="44" y="110" fill="#F15A22" font-size="24" font-weight="bold">S</text>
-  <text x="72" y="98" fill="#FFFFFF" font-size="14" font-weight="bold">Substitute</text>
-  <text x="72" y="116" fill="#7A7F8E" font-size="12">What components, materials, or people could you swap out?</text>
-  <text x="72" y="140" fill="#B8BCC8" font-size="13">Replace in-person workshops with async video modules</text>
+  <!-- S -->
+  <rect x="16" y="56" width="768" height="80" fill="#1F2E4D" rx="4" stroke="#2A3656" stroke-width="1"/>
+  <text x="40" y="84" fill="#F15A22" font-size="16" font-weight="700">S</text>
+  <text x="64" y="80" fill="#FFFFFF" font-size="13" font-weight="700">Substitute</text>
+  <text x="64" y="100" fill="#6B7A8E" font-size="11">What components, materials, or people could you swap out?</text>
+  <text x="64" y="124" fill="#C8CED8" font-size="12">Replace in-person workshops with async video modules.</text>
 
-  <!-- C — Combine -->
-  <rect x="24" y="160" width="752" height="78" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
-  <line x1="24" y1="238" x2="776" y2="238" stroke="#2A3656" stroke-width="0.5"/>
-  <text x="44" y="194" fill="#F15A22" font-size="24" font-weight="bold">C</text>
-  <text x="72" y="182" fill="#FFFFFF" font-size="14" font-weight="bold">Combine</text>
-  <text x="72" y="200" fill="#7A7F8E" font-size="12">What ideas, functions, or products could you merge?</text>
-  <text x="72" y="224" fill="#B8BCC8" font-size="13">Merge onboarding with first customer success call</text>
+  <!-- C -->
+  <rect x="16" y="144" width="768" height="80" fill="#1F2E4D" rx="4" stroke="#2A3656" stroke-width="1"/>
+  <text x="40" y="172" fill="#F15A22" font-size="16" font-weight="700">C</text>
+  <text x="64" y="168" fill="#FFFFFF" font-size="13" font-weight="700">Combine</text>
+  <text x="64" y="188" fill="#6B7A8E" font-size="11">What ideas, functions, or products could you merge?</text>
+  <text x="64" y="212" fill="#C8CED8" font-size="12">Merge onboarding with first customer success call.</text>
 
-  <!-- A — Adapt -->
-  <rect x="24" y="244" width="752" height="78" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
-  <line x1="24" y1="322" x2="776" y2="322" stroke="#2A3656" stroke-width="0.5"/>
-  <text x="44" y="278" fill="#F15A22" font-size="24" font-weight="bold">A</text>
-  <text x="72" y="266" fill="#FFFFFF" font-size="14" font-weight="bold">Adapt</text>
-  <text x="72" y="284" fill="#7A7F8E" font-size="12">What else is like this? What could you copy or borrow from another industry?</text>
-  <text x="72" y="308" fill="#B8BCC8" font-size="13">Adapt Duolingo's streak system for daily product engagement</text>
+  <!-- A -->
+  <rect x="16" y="232" width="768" height="80" fill="#1F2E4D" rx="4" stroke="#2A3656" stroke-width="1"/>
+  <text x="40" y="260" fill="#F15A22" font-size="16" font-weight="700">A</text>
+  <text x="64" y="256" fill="#FFFFFF" font-size="13" font-weight="700">Adapt</text>
+  <text x="64" y="276" fill="#6B7A8E" font-size="11">What could you borrow from another industry?</text>
+  <text x="64" y="300" fill="#C8CED8" font-size="12">Adapt Duolingo's streak system for daily product engagement.</text>
 
-  <!-- M — Modify / Magnify -->
-  <rect x="24" y="328" width="752" height="78" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
-  <line x1="24" y1="406" x2="776" y2="406" stroke="#2A3656" stroke-width="0.5"/>
-  <text x="44" y="362" fill="#F15A22" font-size="24" font-weight="bold">M</text>
-  <text x="72" y="350" fill="#FFFFFF" font-size="14" font-weight="bold">Modify / Magnify</text>
-  <text x="72" y="368" fill="#7A7F8E" font-size="12">What could you enlarge, exaggerate, or make more prominent?</text>
-  <text x="72" y="392" fill="#B8BCC8" font-size="13">Amplify social proof by showing real-time user activity feed</text>
+  <!-- M -->
+  <rect x="16" y="320" width="768" height="80" fill="#1F2E4D" rx="4" stroke="#2A3656" stroke-width="1"/>
+  <text x="40" y="348" fill="#F15A22" font-size="16" font-weight="700">M</text>
+  <text x="64" y="344" fill="#FFFFFF" font-size="13" font-weight="700">Modify</text>
+  <text x="64" y="364" fill="#6B7A8E" font-size="11">What could you enlarge, exaggerate, or make more prominent?</text>
+  <text x="64" y="388" fill="#C8CED8" font-size="12">Amplify social proof by showing real-time user activity feed.</text>
 
-  <!-- P — Put to other uses -->
-  <rect x="24" y="412" width="752" height="78" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
-  <line x1="24" y1="490" x2="776" y2="490" stroke="#2A3656" stroke-width="0.5"/>
-  <text x="44" y="446" fill="#F15A22" font-size="24" font-weight="bold">P</text>
-  <text x="72" y="434" fill="#FFFFFF" font-size="14" font-weight="bold">Put to other uses</text>
-  <text x="72" y="452" fill="#7A7F8E" font-size="12">Could this product serve a different market or solve a different problem?</text>
-  <text x="72" y="476" fill="#B8BCC8" font-size="13">Repurpose the analytics dashboard as a standalone benchmarking tool</text>
+  <!-- P -->
+  <rect x="16" y="408" width="768" height="80" fill="#1F2E4D" rx="4" stroke="#2A3656" stroke-width="1"/>
+  <text x="40" y="436" fill="#F15A22" font-size="16" font-weight="700">P</text>
+  <text x="64" y="432" fill="#FFFFFF" font-size="13" font-weight="700">Put to other uses</text>
+  <text x="64" y="452" fill="#6B7A8E" font-size="11">Could this serve a different market or solve a different problem?</text>
+  <text x="64" y="476" fill="#C8CED8" font-size="12">Repurpose the analytics dashboard as a standalone benchmarking tool.</text>
 
-  <!-- E — Eliminate -->
-  <rect x="24" y="496" width="752" height="78" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
-  <line x1="24" y1="574" x2="776" y2="574" stroke="#2A3656" stroke-width="0.5"/>
-  <text x="44" y="530" fill="#F15A22" font-size="24" font-weight="bold">E</text>
-  <text x="72" y="518" fill="#FFFFFF" font-size="14" font-weight="bold">Eliminate</text>
-  <text x="72" y="536" fill="#7A7F8E" font-size="12">What could you remove, simplify, or reduce to its essence?</text>
-  <text x="72" y="560" fill="#B8BCC8" font-size="13">Remove the pricing page entirely and start with a free trial by default</text>
+  <!-- E -->
+  <rect x="16" y="496" width="768" height="80" fill="#1F2E4D" rx="4" stroke="#2A3656" stroke-width="1"/>
+  <text x="40" y="524" fill="#F15A22" font-size="16" font-weight="700">E</text>
+  <text x="64" y="520" fill="#FFFFFF" font-size="13" font-weight="700">Eliminate</text>
+  <text x="64" y="540" fill="#6B7A8E" font-size="11">What could you remove, simplify, or reduce to its essence?</text>
+  <text x="64" y="564" fill="#C8CED8" font-size="12">Remove the pricing page entirely and start with a free trial by default.</text>
 
-  <!-- R — Reverse / Rearrange -->
-  <rect x="24" y="580" width="752" height="78" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
-  <text x="44" y="614" fill="#F15A22" font-size="24" font-weight="bold">R</text>
-  <text x="72" y="602" fill="#FFFFFF" font-size="14" font-weight="bold">Reverse / Rearrange</text>
-  <text x="72" y="620" fill="#7A7F8E" font-size="12">What if you reversed the process or rearranged the order?</text>
-  <text x="72" y="644" fill="#B8BCC8" font-size="13">Let users see results first, then work backward to set up inputs</text>
+  <!-- R -->
+  <rect x="16" y="584" width="768" height="80" fill="#1F2E4D" rx="4" stroke="#2A3656" stroke-width="1"/>
+  <text x="40" y="612" fill="#F15A22" font-size="16" font-weight="700">R</text>
+  <text x="64" y="608" fill="#FFFFFF" font-size="13" font-weight="700">Reverse</text>
+  <text x="64" y="628" fill="#6B7A8E" font-size="11">What if you reversed the process or rearranged the order?</text>
+  <text x="64" y="652" fill="#C8CED8" font-size="12">Let users see results first, then work backward to set up inputs.</text>
 </svg>

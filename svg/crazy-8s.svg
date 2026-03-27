@@ -1,76 +1,72 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="800" height="700" viewBox="0 0 800 700">
   <defs>
-    <style>text { font-family: Arial, sans-serif; }</style>
+    <style>text { font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif; }</style>
   </defs>
 
   <!-- Background -->
-  <rect width="800" height="700" fill="#1B2A4A" rx="8"/>
+  <rect width="800" height="700" fill="#1B2A4A"/>
 
   <!-- Title bar -->
-  <rect x="0" y="0" width="800" height="56" fill="#1F2E4D" rx="8"/>
-  <rect x="0" y="48" width="800" height="8" fill="#1F2E4D"/>
-  <rect x="0" y="0" width="3" height="56" fill="#F15A22"/>
-  <text x="24" y="36" fill="#F15A22" font-size="13" font-weight="bold" letter-spacing="2">THE SPARK</text>
-  <text x="140" y="36" fill="#FFFFFF" font-size="18" font-weight="bold">CRAZY 8s</text>
+  <rect x="0" y="0" width="2" height="40" fill="#F15A22"/>
+  <text x="16" y="26" fill="#F15A22" font-size="11" font-weight="600" letter-spacing="3">SPARK</text>
+  <text x="784" y="26" fill="#FFFFFF" font-size="16" font-weight="700" text-anchor="end">Crazy 8s</text>
+  <line x1="0" y1="40" x2="800" y2="40" stroke="#2A3656" stroke-width="1"/>
 
-  <!-- Grid: 4 columns x 2 rows -->
-  <!-- Row 1 -->
+  <!-- Row 1: 4 cells -->
   <!-- Cell 1 -->
-  <rect x="24" y="80" width="178" height="270" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
-  <text x="36" y="102" fill="#F15A22" font-size="14" font-weight="bold">1</text>
-  <text x="36" y="126" fill="#FFFFFF" font-size="12" font-weight="bold">Video onboarding</text>
-  <rect x="36" y="140" width="154" height="180" fill="#253658" rx="4"/>
-  <text x="113" y="234" fill="#7A7F8E" font-size="11" text-anchor="middle">sketch area</text>
+  <rect x="16" y="56" width="184" height="288" fill="#1F2E4D" rx="4" stroke="#2A3656" stroke-width="1"/>
+  <text x="32" y="80" fill="#F15A22" font-size="14" font-weight="700">1</text>
+  <text x="32" y="104" fill="#FFFFFF" font-size="12" font-weight="700">Video onboarding</text>
+  <rect x="32" y="120" width="152" height="200" fill="#253658" rx="4"/>
+  <text x="108" y="224" fill="#6B7A8E" font-size="11" text-anchor="middle">sketch area</text>
 
   <!-- Cell 2 -->
-  <rect x="214" y="80" width="178" height="270" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
-  <text x="226" y="102" fill="#F15A22" font-size="14" font-weight="bold">2</text>
-  <text x="226" y="126" fill="#FFFFFF" font-size="12" font-weight="bold">AI-guided setup</text>
-  <rect x="226" y="140" width="154" height="180" fill="#253658" rx="4"/>
-  <text x="303" y="234" fill="#7A7F8E" font-size="11" text-anchor="middle">sketch area</text>
+  <rect x="208" y="56" width="184" height="288" fill="#1F2E4D" rx="4" stroke="#2A3656" stroke-width="1"/>
+  <text x="224" y="80" fill="#F15A22" font-size="14" font-weight="700">2</text>
+  <text x="224" y="104" fill="#FFFFFF" font-size="12" font-weight="700">AI-guided setup</text>
+  <rect x="224" y="120" width="152" height="200" fill="#253658" rx="4"/>
+  <text x="300" y="224" fill="#6B7A8E" font-size="11" text-anchor="middle">sketch area</text>
 
   <!-- Cell 3 -->
-  <rect x="404" y="80" width="178" height="270" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
-  <text x="416" y="102" fill="#F15A22" font-size="14" font-weight="bold">3</text>
-  <text x="416" y="126" fill="#FFFFFF" font-size="12" font-weight="bold">Peer mentoring</text>
-  <rect x="416" y="140" width="154" height="180" fill="#253658" rx="4"/>
-  <text x="493" y="234" fill="#7A7F8E" font-size="11" text-anchor="middle">sketch area</text>
+  <rect x="400" y="56" width="184" height="288" fill="#1F2E4D" rx="4" stroke="#2A3656" stroke-width="1"/>
+  <text x="416" y="80" fill="#F15A22" font-size="14" font-weight="700">3</text>
+  <text x="416" y="104" fill="#FFFFFF" font-size="12" font-weight="700">Peer mentoring</text>
+  <rect x="416" y="120" width="152" height="200" fill="#253658" rx="4"/>
+  <text x="492" y="224" fill="#6B7A8E" font-size="11" text-anchor="middle">sketch area</text>
 
   <!-- Cell 4 -->
-  <rect x="594" y="80" width="182" height="270" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
-  <text x="606" y="102" fill="#F15A22" font-size="14" font-weight="bold">4</text>
-  <text x="606" y="126" fill="#FFFFFF" font-size="12" font-weight="bold">Gamified checklist</text>
-  <rect x="606" y="140" width="158" height="180" fill="#253658" rx="4"/>
-  <text x="685" y="234" fill="#7A7F8E" font-size="11" text-anchor="middle">sketch area</text>
+  <rect x="592" y="56" width="192" height="288" fill="#1F2E4D" rx="4" stroke="#2A3656" stroke-width="1"/>
+  <text x="608" y="80" fill="#F15A22" font-size="14" font-weight="700">4</text>
+  <text x="608" y="104" fill="#FFFFFF" font-size="12" font-weight="700">Gamified checklist</text>
+  <rect x="608" y="120" width="160" height="200" fill="#253658" rx="4"/>
+  <text x="688" y="224" fill="#6B7A8E" font-size="11" text-anchor="middle">sketch area</text>
 
-  <!-- Row 2 -->
+  <!-- Row 2: 4 cells -->
   <!-- Cell 5 -->
-  <rect x="24" y="370" width="178" height="270" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
-  <text x="36" y="392" fill="#F15A22" font-size="14" font-weight="bold">5</text>
-  <text x="36" y="416" fill="#FFFFFF" font-size="12" font-weight="bold">Template library</text>
-  <rect x="36" y="430" width="154" height="180" fill="#253658" rx="4"/>
-  <text x="113" y="524" fill="#7A7F8E" font-size="11" text-anchor="middle">sketch area</text>
+  <rect x="16" y="360" width="184" height="288" fill="#1F2E4D" rx="4" stroke="#2A3656" stroke-width="1"/>
+  <text x="32" y="384" fill="#F15A22" font-size="14" font-weight="700">5</text>
+  <text x="32" y="408" fill="#FFFFFF" font-size="12" font-weight="700">Template library</text>
+  <rect x="32" y="424" width="152" height="200" fill="#253658" rx="4"/>
+  <text x="108" y="528" fill="#6B7A8E" font-size="11" text-anchor="middle">sketch area</text>
 
   <!-- Cell 6 — SELECTED -->
-  <rect x="214" y="370" width="178" height="270" fill="#1F2E4D" rx="8" stroke="#F15A22" stroke-width="2.5"/>
-  <text x="226" y="392" fill="#F15A22" font-size="14" font-weight="bold">6</text>
-  <!-- Star icon -->
-  <polygon points="370,382 374,390 383,391 376,398 378,407 370,402 362,407 364,398 357,391 366,390" fill="#F15A22"/>
-  <text x="226" y="416" fill="#FFFFFF" font-size="12" font-weight="bold">Community cohorts</text>
-  <rect x="226" y="430" width="154" height="180" fill="#253658" rx="4"/>
-  <text x="303" y="524" fill="#F15A22" font-size="10" font-weight="bold" text-anchor="middle">SELECTED</text>
+  <rect x="208" y="360" width="184" height="288" fill="#1F2E4D" rx="4" stroke="#F15A22" stroke-width="1.5"/>
+  <text x="224" y="384" fill="#F15A22" font-size="14" font-weight="700">6</text>
+  <text x="224" y="408" fill="#FFFFFF" font-size="12" font-weight="700">Community cohorts</text>
+  <rect x="224" y="424" width="152" height="200" fill="#253658" rx="4"/>
+  <text x="300" y="632" fill="#F15A22" font-size="10" font-weight="600" text-anchor="middle">SELECTED</text>
 
   <!-- Cell 7 -->
-  <rect x="404" y="370" width="178" height="270" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
-  <text x="416" y="392" fill="#F15A22" font-size="14" font-weight="bold">7</text>
-  <text x="416" y="416" fill="#FFFFFF" font-size="12" font-weight="bold">SMS micro-lessons</text>
-  <rect x="416" y="430" width="154" height="180" fill="#253658" rx="4"/>
-  <text x="493" y="524" fill="#7A7F8E" font-size="11" text-anchor="middle">sketch area</text>
+  <rect x="400" y="360" width="184" height="288" fill="#1F2E4D" rx="4" stroke="#2A3656" stroke-width="1"/>
+  <text x="416" y="384" fill="#F15A22" font-size="14" font-weight="700">7</text>
+  <text x="416" y="408" fill="#FFFFFF" font-size="12" font-weight="700">SMS micro-lessons</text>
+  <rect x="416" y="424" width="152" height="200" fill="#253658" rx="4"/>
+  <text x="492" y="528" fill="#6B7A8E" font-size="11" text-anchor="middle">sketch area</text>
 
   <!-- Cell 8 -->
-  <rect x="594" y="370" width="182" height="270" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
-  <text x="606" y="392" fill="#F15A22" font-size="14" font-weight="bold">8</text>
-  <text x="606" y="416" fill="#FFFFFF" font-size="12" font-weight="bold">1-click demo env</text>
-  <rect x="606" y="430" width="158" height="180" fill="#253658" rx="4"/>
-  <text x="685" y="524" fill="#7A7F8E" font-size="11" text-anchor="middle">sketch area</text>
+  <rect x="592" y="360" width="192" height="288" fill="#1F2E4D" rx="4" stroke="#2A3656" stroke-width="1"/>
+  <text x="608" y="384" fill="#F15A22" font-size="14" font-weight="700">8</text>
+  <text x="608" y="408" fill="#FFFFFF" font-size="12" font-weight="700">1-click demo env</text>
+  <rect x="608" y="424" width="160" height="200" fill="#253658" rx="4"/>
+  <text x="688" y="528" fill="#6B7A8E" font-size="11" text-anchor="middle">sketch area</text>
 </svg>

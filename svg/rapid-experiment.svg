@@ -1,61 +1,60 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="800" height="700" viewBox="0 0 800 700">
   <defs>
-    <style>text { font-family: Arial, sans-serif; }</style>
+    <style>text { font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif; }</style>
   </defs>
 
   <!-- Background -->
-  <rect width="800" height="700" fill="#1B2A4A" rx="8"/>
+  <rect width="800" height="700" fill="#1B2A4A"/>
 
   <!-- Title bar -->
-  <rect x="0" y="0" width="800" height="56" fill="#1F2E4D" rx="8"/>
-  <rect x="0" y="48" width="800" height="8" fill="#1F2E4D"/>
-  <rect x="0" y="0" width="3" height="56" fill="#E4E517"/>
-  <text x="24" y="36" fill="#E4E517" font-size="13" font-weight="bold" letter-spacing="2">THE BUILD</text>
-  <text x="130" y="36" fill="#FFFFFF" font-size="18" font-weight="bold">RAPID EXPERIMENT</text>
+  <rect x="0" y="0" width="2" height="40" fill="#E4E517"/>
+  <text x="16" y="26" fill="#E4E517" font-size="11" font-weight="600" letter-spacing="3">BUILD</text>
+  <text x="784" y="26" fill="#FFFFFF" font-size="16" font-weight="700" text-anchor="end">Rapid Experiment</text>
+  <line x1="0" y1="40" x2="800" y2="40" stroke="#2A3656" stroke-width="1"/>
 
   <!-- Hypothesis -->
-  <rect x="24" y="76" width="752" height="80" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
-  <text x="44" y="100" fill="#E4E517" font-size="11" font-weight="bold" letter-spacing="1">HYPOTHESIS</text>
-  <text x="44" y="124" fill="#FFFFFF" font-size="14">We believe <tspan fill="#E4E517">pre-built template projects will increase Day 1 activation</tspan></text>
-  <text x="44" y="144" fill="#FFFFFF" font-size="14">because <tspan fill="#E4E517">users who see immediate value are 3x more likely to return on Day 2</tspan>.</text>
+  <rect x="16" y="56" width="768" height="80" fill="#1F2E4D" rx="4" stroke="#2A3656" stroke-width="1"/>
+  <text x="40" y="80" fill="#E4E517" font-size="11" font-weight="600" letter-spacing="2">HYPOTHESIS</text>
+  <text x="40" y="104" fill="#FFFFFF" font-size="13">We believe <tspan fill="#E4E517">pre-built template projects will increase Day 1 activation</tspan></text>
+  <text x="40" y="124" fill="#FFFFFF" font-size="13">because <tspan fill="#E4E517">users who see immediate value are 3x more likely to return on Day 2</tspan>.</text>
 
   <!-- Test Method -->
-  <rect x="24" y="172" width="752" height="88" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
-  <text x="44" y="196" fill="#E4E517" font-size="11" font-weight="bold" letter-spacing="1">TEST METHOD</text>
-  <text x="44" y="220" fill="#FFFFFF" font-size="13" font-weight="bold">Concierge Test</text>
-  <text x="44" y="242" fill="#B8BCC8" font-size="13">Manually create 3 template projects for the next 20 sign-ups. Track whether they explore the</text>
-  <text x="44" y="258" fill="#B8BCC8" font-size="13">template before building their own project, and measure activation vs. control group.</text>
+  <rect x="16" y="152" width="768" height="88" fill="#1F2E4D" rx="4" stroke="#2A3656" stroke-width="1"/>
+  <text x="40" y="176" fill="#E4E517" font-size="11" font-weight="600" letter-spacing="2">TEST METHOD</text>
+  <text x="40" y="200" fill="#FFFFFF" font-size="13" font-weight="700">Concierge Test</text>
+  <text x="40" y="224" fill="#C8CED8" font-size="12">Manually create 3 template projects for the next 20 sign-ups. Track whether they explore</text>
+  <text x="40" y="240" fill="#C8CED8" font-size="12">the template before building their own, and measure activation vs. control group.</text>
 
   <!-- Success Metric -->
-  <rect x="24" y="276" width="752" height="72" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
-  <text x="44" y="300" fill="#E4E517" font-size="11" font-weight="bold" letter-spacing="1">SUCCESS METRIC</text>
-  <text x="44" y="324" fill="#FFFFFF" font-size="14" font-weight="bold">Day 1 Activation Rate</text>
-  <text x="280" y="324" fill="#7A7F8E" font-size="13">( = completed first meaningful action within 24 hours of sign-up )</text>
+  <rect x="16" y="256" width="768" height="72" fill="#1F2E4D" rx="4" stroke="#2A3656" stroke-width="1"/>
+  <text x="40" y="280" fill="#E4E517" font-size="11" font-weight="600" letter-spacing="2">SUCCESS METRIC</text>
+  <text x="40" y="308" fill="#FFFFFF" font-size="14" font-weight="700">Day 1 Activation Rate</text>
+  <text x="280" y="308" fill="#6B7A8E" font-size="12">Completed first meaningful action within 24 hours of sign-up.</text>
 
-  <!-- Pass / Fail Criteria -->
-  <rect x="24" y="364" width="365" height="100" fill="#E4E517" fill-opacity="0.08" rx="8" stroke="#E4E517" stroke-width="1" stroke-opacity="0.3"/>
-  <text x="44" y="388" fill="#E4E517" font-size="11" font-weight="bold" letter-spacing="1">PASS CRITERIA</text>
-  <text x="44" y="412" fill="#FFFFFF" font-size="16" font-weight="bold">Activation rate >= 40%</text>
-  <text x="44" y="436" fill="#B8BCC8" font-size="12">Current baseline: 22%. Target is near-double.</text>
-  <text x="44" y="452" fill="#B8BCC8" font-size="12">Statistical significance: p &lt; 0.05 with n=20/group</text>
+  <!-- Pass / Fail -->
+  <rect x="16" y="344" width="376" height="104" fill="#1F2E4D" rx="4" stroke="#E4E517" stroke-width="1" stroke-opacity="0.4"/>
+  <text x="40" y="368" fill="#E4E517" font-size="11" font-weight="600" letter-spacing="2">PASS CRITERIA</text>
+  <text x="40" y="400" fill="#FFFFFF" font-size="16" font-weight="700">Activation rate >= 40%</text>
+  <text x="40" y="424" fill="#C8CED8" font-size="11">Current baseline: 22%. Target is near-double.</text>
+  <text x="40" y="440" fill="#C8CED8" font-size="11">Statistical significance: p &lt; 0.05 with n=20/group.</text>
 
-  <rect x="411" y="364" width="365" height="100" fill="#E4E517" fill-opacity="0.04" rx="8" stroke="#E4E517" stroke-width="1" stroke-opacity="0.15"/>
-  <text x="431" y="388" fill="#E4E517" font-size="11" font-weight="bold" letter-spacing="1" opacity="0.6">FAIL CRITERIA</text>
-  <text x="431" y="412" fill="#FFFFFF" font-size="16" font-weight="bold">Activation rate &lt; 30%</text>
-  <text x="431" y="436" fill="#B8BCC8" font-size="12">Less than 8 percentage points above baseline</text>
-  <text x="431" y="452" fill="#B8BCC8" font-size="12">means templates alone aren't sufficient.</text>
+  <rect x="408" y="344" width="376" height="104" fill="#1F2E4D" rx="4" stroke="#2A3656" stroke-width="1"/>
+  <text x="432" y="368" fill="#E4E517" font-size="11" font-weight="600" letter-spacing="2" opacity="0.5">FAIL CRITERIA</text>
+  <text x="432" y="400" fill="#FFFFFF" font-size="16" font-weight="700">Activation rate &lt; 30%</text>
+  <text x="432" y="424" fill="#C8CED8" font-size="11">Less than 8 points above baseline.</text>
+  <text x="432" y="440" fill="#C8CED8" font-size="11">Templates alone aren't sufficient.</text>
 
   <!-- Timeline -->
-  <rect x="24" y="480" width="752" height="64" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
-  <text x="44" y="504" fill="#E4E517" font-size="11" font-weight="bold" letter-spacing="1">TIMELINE</text>
-  <text x="44" y="528" fill="#B8BCC8" font-size="13">Start: Monday Week 1  |  Run for: 2 weeks  |  Review results: Friday Week 2  |  Decision by: Monday Week 3</text>
+  <rect x="16" y="464" width="768" height="64" fill="#1F2E4D" rx="4" stroke="#2A3656" stroke-width="1"/>
+  <text x="40" y="488" fill="#E4E517" font-size="11" font-weight="600" letter-spacing="2">TIMELINE</text>
+  <text x="40" y="512" fill="#C8CED8" font-size="12">Start: Monday Week 1  |  Run: 2 weeks  |  Review: Friday Week 2  |  Decision: Monday Week 3</text>
 
-  <!-- Decision box -->
-  <rect x="24" y="560" width="752" height="100" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
-  <rect x="24" y="560" width="752" height="3" fill="#E4E517"/>
-  <text x="44" y="586" fill="#E4E517" font-size="11" font-weight="bold" letter-spacing="1">DECISION</text>
-  <text x="44" y="614" fill="#E4E517" font-size="13">If pass</text>
-  <text x="92" y="614" fill="#B8BCC8" font-size="13">  Build automated template engine and scale to all new sign-ups</text>
-  <text x="44" y="642" fill="#E4E517" font-size="13" opacity="0.5">If fail</text>
-  <text x="92" y="642" fill="#B8BCC8" font-size="13">  Test interactive walkthrough instead</text>
+  <!-- Decision -->
+  <rect x="16" y="544" width="768" height="120" fill="#1F2E4D" rx="4" stroke="#2A3656" stroke-width="1"/>
+  <rect x="16" y="544" width="768" height="2" fill="#E4E517"/>
+  <text x="40" y="576" fill="#E4E517" font-size="11" font-weight="600" letter-spacing="2">DECISION</text>
+  <text x="40" y="608" fill="#E4E517" font-size="12">If pass:</text>
+  <text x="104" y="608" fill="#C8CED8" font-size="12">Build automated template engine and scale to all new sign-ups.</text>
+  <text x="40" y="640" fill="#E4E517" font-size="12" opacity="0.5">If fail:</text>
+  <text x="104" y="640" fill="#C8CED8" font-size="12">Test interactive walkthrough instead.</text>
 </svg>

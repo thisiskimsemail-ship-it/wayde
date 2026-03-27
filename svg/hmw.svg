@@ -1,68 +1,68 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="800" height="700" viewBox="0 0 800 700">
   <defs>
-    <style>text { font-family: Arial, sans-serif; }</style>
+    <style>text { font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif; }</style>
   </defs>
 
   <!-- Background -->
-  <rect width="800" height="700" fill="#1B2A4A" rx="8"/>
+  <rect width="800" height="700" fill="#1B2A4A"/>
 
   <!-- Title bar -->
-  <rect x="0" y="0" width="800" height="56" fill="#1F2E4D" rx="8"/>
-  <rect x="0" y="48" width="800" height="8" fill="#1F2E4D"/>
-  <rect x="0" y="0" width="3" height="56" fill="#F15A22"/>
-  <text x="24" y="36" fill="#F15A22" font-size="13" font-weight="bold" letter-spacing="2">THE SPARK</text>
-  <text x="140" y="36" fill="#FFFFFF" font-size="18" font-weight="bold">HOW MIGHT WE</text>
+  <rect x="0" y="0" width="2" height="40" fill="#F15A22"/>
+  <text x="16" y="26" fill="#F15A22" font-size="11" font-weight="600" letter-spacing="3">SPARK</text>
+  <text x="784" y="26" fill="#FFFFFF" font-size="16" font-weight="700" text-anchor="end">How Might We</text>
+  <line x1="0" y1="40" x2="800" y2="40" stroke="#2A3656" stroke-width="1"/>
 
   <!-- Problem Statement -->
-  <rect x="24" y="76" width="752" height="64" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
-  <rect x="24" y="76" width="3" height="64" fill="#F15A22"/>
-  <text x="44" y="100" fill="#F15A22" font-size="11" font-weight="bold" letter-spacing="1">PROBLEM STATEMENT</text>
-  <text x="44" y="124" fill="#FFFFFF" font-size="14">New users abandon onboarding before experiencing the core value of the product.</text>
+  <rect x="16" y="56" width="768" height="64" fill="#1F2E4D" rx="4" stroke="#2A3656" stroke-width="1"/>
+  <rect x="16" y="56" width="2" height="64" fill="#F15A22"/>
+  <text x="40" y="80" fill="#F15A22" font-size="11" font-weight="600" letter-spacing="2">PROBLEM STATEMENT</text>
+  <text x="40" y="104" fill="#FFFFFF" font-size="13">New users abandon onboarding before experiencing the core value of the product.</text>
 
-  <!-- HMW Row 1 -->
-  <rect x="24" y="164" width="752" height="56" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
-  <text x="44" y="186" fill="#F15A22" font-size="13" font-weight="bold">1</text>
-  <text x="64" y="186" fill="#F15A22" font-size="13">HMW</text>
-  <text x="108" y="186" fill="#B8BCC8" font-size="13">make the first 5 minutes feel like a quick win instead of a setup chore?</text>
-  <text x="44" y="208" fill="#7A7F8E" font-size="11">Reframe onboarding as immediate value</text>
+  <!-- HMW 1 -->
+  <rect x="16" y="136" width="768" height="64" fill="#1F2E4D" rx="4" stroke="#2A3656" stroke-width="1"/>
+  <text x="40" y="160" fill="#F15A22" font-size="13" font-weight="700">1</text>
+  <text x="64" y="160" fill="#F15A22" font-size="13">HMW</text>
+  <text x="112" y="160" fill="#C8CED8" font-size="13">make the first 5 minutes feel like a quick win instead of a setup chore?</text>
+  <text x="64" y="184" fill="#6B7A8E" font-size="11">Reframe onboarding as immediate value</text>
 
-  <!-- HMW Row 2 -->
-  <rect x="24" y="232" width="752" height="56" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
-  <text x="44" y="254" fill="#F15A22" font-size="13" font-weight="bold">2</text>
-  <text x="64" y="254" fill="#F15A22" font-size="13">HMW</text>
-  <text x="108" y="254" fill="#B8BCC8" font-size="13">show users what success looks like before asking them to build anything?</text>
-  <text x="44" y="276" fill="#7A7F8E" font-size="11">Demo-first approach</text>
+  <!-- HMW 2 -->
+  <rect x="16" y="208" width="768" height="64" fill="#1F2E4D" rx="4" stroke="#2A3656" stroke-width="1"/>
+  <text x="40" y="232" fill="#F15A22" font-size="13" font-weight="700">2</text>
+  <text x="64" y="232" fill="#F15A22" font-size="13">HMW</text>
+  <text x="112" y="232" fill="#C8CED8" font-size="13">show users what success looks like before asking them to build anything?</text>
+  <text x="64" y="256" fill="#6B7A8E" font-size="11">Demo-first approach</text>
 
-  <!-- HMW Row 3 — HIGHLIGHTED -->
-  <rect x="24" y="300" width="752" height="56" fill="#F15A22" fill-opacity="0.15" rx="8" stroke="#F15A22" stroke-width="1.5"/>
-  <text x="44" y="322" fill="#F15A22" font-size="13" font-weight="bold">3</text>
-  <text x="64" y="322" fill="#F15A22" font-size="13">HMW</text>
-  <text x="108" y="322" fill="#FFFFFF" font-size="13" font-weight="bold">let users skip setup entirely and start with a pre-built example project?</text>
-  <text x="44" y="344" fill="#F15A22" font-size="11" font-weight="bold">MOST PROMISING</text>
+  <!-- HMW 3 — HIGHLIGHTED -->
+  <rect x="16" y="280" width="768" height="64" fill="#1F2E4D" rx="4" stroke="#F15A22" stroke-width="1.5"/>
+  <text x="40" y="304" fill="#F15A22" font-size="13" font-weight="700">3</text>
+  <text x="64" y="304" fill="#F15A22" font-size="13">HMW</text>
+  <text x="112" y="304" fill="#FFFFFF" font-size="13" font-weight="700">let users skip setup entirely and start with a pre-built example project?</text>
+  <text x="64" y="328" fill="#F15A22" font-size="11" font-weight="600">MOST PROMISING</text>
 
-  <!-- HMW Row 4 -->
-  <rect x="24" y="368" width="752" height="56" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
-  <text x="44" y="390" fill="#F15A22" font-size="13" font-weight="bold">4</text>
-  <text x="64" y="390" fill="#F15A22" font-size="13">HMW</text>
-  <text x="108" y="390" fill="#B8BCC8" font-size="13">pair new users with a power user for their first session?</text>
-  <text x="44" y="412" fill="#7A7F8E" font-size="11">Community-driven onboarding</text>
+  <!-- HMW 4 -->
+  <rect x="16" y="352" width="768" height="64" fill="#1F2E4D" rx="4" stroke="#2A3656" stroke-width="1"/>
+  <text x="40" y="376" fill="#F15A22" font-size="13" font-weight="700">4</text>
+  <text x="64" y="376" fill="#F15A22" font-size="13">HMW</text>
+  <text x="112" y="376" fill="#C8CED8" font-size="13">pair new users with a power user for their first session?</text>
+  <text x="64" y="400" fill="#6B7A8E" font-size="11">Community-driven onboarding</text>
 
-  <!-- HMW Row 5 -->
-  <rect x="24" y="436" width="752" height="56" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
-  <text x="44" y="458" fill="#F15A22" font-size="13" font-weight="bold">5</text>
-  <text x="64" y="458" fill="#F15A22" font-size="13">HMW</text>
-  <text x="108" y="458" fill="#B8BCC8" font-size="13">reduce the number of steps from sign-up to first meaningful action?</text>
-  <text x="44" y="480" fill="#7A7F8E" font-size="11">Friction reduction</text>
+  <!-- HMW 5 -->
+  <rect x="16" y="424" width="768" height="64" fill="#1F2E4D" rx="4" stroke="#2A3656" stroke-width="1"/>
+  <text x="40" y="448" fill="#F15A22" font-size="13" font-weight="700">5</text>
+  <text x="64" y="448" fill="#F15A22" font-size="13">HMW</text>
+  <text x="112" y="448" fill="#C8CED8" font-size="13">reduce the steps from sign-up to first meaningful action?</text>
+  <text x="64" y="472" fill="#6B7A8E" font-size="11">Friction reduction</text>
 
-  <!-- HMW Row 6 -->
-  <rect x="24" y="504" width="752" height="56" fill="#1F2E4D" rx="8" stroke="#2A3656" stroke-width="1"/>
-  <text x="44" y="526" fill="#F15A22" font-size="13" font-weight="bold">6</text>
-  <text x="64" y="526" fill="#F15A22" font-size="13">HMW</text>
-  <text x="108" y="526" fill="#B8BCC8" font-size="13">celebrate micro-progress to keep momentum through the setup flow?</text>
-  <text x="44" y="548" fill="#7A7F8E" font-size="11">Gamification / progress signals</text>
+  <!-- HMW 6 -->
+  <rect x="16" y="496" width="768" height="64" fill="#1F2E4D" rx="4" stroke="#2A3656" stroke-width="1"/>
+  <text x="40" y="520" fill="#F15A22" font-size="13" font-weight="700">6</text>
+  <text x="64" y="520" fill="#F15A22" font-size="13">HMW</text>
+  <text x="112" y="520" fill="#C8CED8" font-size="13">celebrate micro-progress to keep momentum through the setup flow?</text>
+  <text x="64" y="544" fill="#6B7A8E" font-size="11">Gamification and progress signals</text>
 
   <!-- Selected for Exploration -->
-  <rect x="24" y="588" width="752" height="72" fill="#1F2E4D" rx="8" stroke="#F15A22" stroke-width="1.5"/>
-  <text x="44" y="616" fill="#F15A22" font-size="11" font-weight="bold" letter-spacing="1">SELECTED FOR EXPLORATION</text>
-  <text x="44" y="642" fill="#FFFFFF" font-size="13" font-weight="bold">HMW #3: Pre-built example project that users can explore before creating their own</text>
+  <rect x="16" y="584" width="768" height="80" fill="#1F2E4D" rx="4" stroke="#2A3656" stroke-width="1"/>
+  <rect x="16" y="584" width="768" height="2" fill="#F15A22"/>
+  <text x="40" y="616" fill="#F15A22" font-size="11" font-weight="600" letter-spacing="2">SELECTED FOR EXPLORATION</text>
+  <text x="40" y="644" fill="#FFFFFF" font-size="13" font-weight="700">HMW #3: Pre-built example project that users can explore before creating their own.</text>
 </svg>
