@@ -5271,3 +5271,11 @@ button.lp-tool-pill {
 .post-session-alt { font-size: 0.85rem; color: var(--text-muted); }
 .post-session-alt-link { color: var(--orange); text-decoration: none; font-weight: 500; margin-left: 0.25rem; }
 .post-session-alt-link:hover { color: #fff; }
+
+/* Pill buttons: transparent in dark mode, light grey in light mode */
+html[data-theme="light"] .lp-tool-pill {
+    background: rgba(0,0,0,0.04) !important;
+}
+html[data-theme="light"] .lp-tool-pill:hover {
+    background: rgba(0,0,0,0.08) !important;
+}
