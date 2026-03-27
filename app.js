@@ -227,7 +227,7 @@ const FIVE_WHYS_TAG_MAP = {
     'why5': 'fw-why5', 'why-5': 'fw-why5', 'root-cause': 'fw-why5', 'root': 'fw-why5'
 };
 
-onst EXERCISE_LABELS = {
+const EXERCISE_LABELS = {
     'five-whys': 'Five Whys',
     'hmw': 'How Might We',
     'jtbd': 'Jobs to Be Done',
