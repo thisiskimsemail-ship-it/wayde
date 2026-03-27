@@ -241,21 +241,29 @@
   .sample-row {
     padding: 14px 0;
     border-bottom: 1px solid var(--border);
-    display: flex; justify-content: space-between; align-items: center;
+    display: flex; align-items: center; gap: 12px;
   }
-  .sample-row:last-child { border-bottom: none; }
+  .sample-row:last-of-type { border-bottom: none; }
 
   .sample-rank {
-    font-size: 12px; font-weight: 700; color: var(--cat-color); min-width: 28px;
+    font-size: 13px; font-weight: 700; color: var(--cat-color); flex-shrink: 0; width: 24px;
   }
 
   .sample-feature {
     font-size: 14px; font-weight: 600; color: var(--white); flex: 1;
   }
 
-  .sample-survival {
-    font-size: 13px; color: var(--text-body); text-align: right; min-width: 80px;
+  .sample-score {
+    font-size: 13px; color: var(--text-light); flex-shrink: 0; margin-right: 8px;
   }
+
+  .sample-tier {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase;
+    padding: 2px 8px; border-radius: 100px; flex-shrink: 0;
+  }
+  .tier-must { background: rgba(39,189,190,0.15); color: #27BDBE; }
+  .tier-nice { background: rgba(241,180,34,0.15); color: #F1B422; }
+  .tier-expendable { background: rgba(237,54,54,0.15); color: #ED3636; }
 
   .sample-root {
     margin-top: 20px; padding-top: 20px;
@@ -270,6 +278,20 @@
   .sample-root-text {
     font-family: 'GT Walsheim', 'Space Grotesk', sans-serif;
     font-size: 20px; color: var(--white); line-height: 1.4;
+  }
+
+  .sample-surprise {
+    margin-top: 16px; padding-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+
+  .sample-surprise-label {
+    font-size: 12px; font-weight: 700; color: var(--cat-color); text-transform: uppercase;
+    letter-spacing: 0.8px; margin-bottom: 6px;
+  }
+
+  .sample-surprise-text {
+    font-size: 15px; color: var(--text-body); line-height: 1.6;
   }
 
   /* Foundation / credibility section */
@@ -438,7 +460,7 @@
       <div class="stage-badge">THE TEST</div>
       <h1>The Trade-Off</h1>
       <p class="tool-headline">Force trade-offs to reveal what customers actually value.</p>
-      <p class="tool-intro">Forces you to build competing versions of your product and choose between them as your customer would. Each round requires a sacrifice. Features that survive every trade-off are the core value.</p>
+      <p class="tool-intro">Forces you to build competing versions of your product and choose between them as your customer would. Each round requires a sacrifice. Features that survive every trade-off are the core value. Features that get traded away are nice-to-haves.</p>
     </div>
 
     <div class="quick-facts">
@@ -457,7 +479,7 @@
       </div>
       <div class="qf-row">
         <span class="qf-label">Created by</span>
-        <span class="qf-value">Luce &amp; Tukey / Consumer research</span>
+        <span class="qf-value">Luce &amp; Tukey / Consumer research tradition</span>
       </div>
       <div class="qf-pathways">
         <div class="qf-pathways-label">Used in pathways</div>
@@ -478,8 +500,8 @@
       <!-- WHEN TO USE -->
       <div class="section-block">
         <h2>When to use it</h2>
-        <p>Use The Trade-Off when your feature-heavy product can't prioritise, when you're preparing an MVP launch and need to know what to ship first, or when the team is debating feature cuts and nobody wants to let go.</p>
-        <p>It's particularly effective for <strong>pricing strategy</strong> work — understanding what customers will actually pay for — and before user research, when you need sharper hypotheses about what matters most.</p>
+        <p>Use The Trade-Off when your feature-heavy product can't prioritise, when you're preparing to launch and need an MVP definition, or when you're building a pricing strategy and need to know which features justify the price.</p>
+        <p>It's particularly effective <strong>before user research</strong> (so you know which features to test) and when teams are debating feature cuts with opinions instead of evidence.</p>
       </div>
 
       <!-- HOW IT WORKS IN THE STUDIO -->
@@ -491,22 +513,22 @@
           <div class="step-item">
             <div class="step-number">1</div>
             <div class="step-title">Define the Offer</div>
-            <div class="step-desc">Pete helps you list the 5-7 dimensions of your product or service — features, price points, support levels, delivery speed, and anything else your customer cares about.</div>
+            <div class="step-desc">Break your product into 5&#8211;7 testable dimensions with levels. Include price as one of the dimensions. Pete helps you define what's actually distinct and testable.</div>
           </div>
           <div class="step-item">
             <div class="step-number">2</div>
             <div class="step-title">The Trade-Offs</div>
-            <div class="step-desc">Over 6-8 forced-choice rounds, Pete presents two competing versions of your offer. You must choose one — no "both." Each round forces a sacrifice.</div>
+            <div class="step-desc">6&#8211;8 rounds of forced choices between competing packages. Each round, you choose as your customer would. Pete escalates the pressure &#8212; making each sacrifice harder than the last.</div>
           </div>
           <div class="step-item">
             <div class="step-number">3</div>
             <div class="step-title">The Value Stack</div>
-            <div class="step-desc">Pete ranks your features by survival rate — how often each one was kept when something else had to go. The pattern reveals your customer's true priorities.</div>
+            <div class="step-desc">Rank features by survival rate across all rounds: must-have, nice-to-have, expendable. The data does the arguing.</div>
           </div>
           <div class="step-item">
             <div class="step-number">4</div>
-            <div class="step-title">Minimum Viable Offer</div>
-            <div class="step-desc">Together you define the leanest version of your product that still delivers the core value — the features that won every round, at a price point that matches.</div>
+            <div class="step-title">The Minimum Viable Offer</div>
+            <div class="step-desc">Define the simplest version of your product someone would still pay for. Strip everything that didn't survive the trade-offs.</div>
           </div>
         </div>
       </div>
@@ -514,56 +536,61 @@
       <!-- SAMPLE OUTPUT -->
       <div class="section-block">
         <h2>Sample output</h2>
-        <p>Here's what a Value Stack looks like after 6 trade-off rounds:</p>
+        <p>Here's what a Value Stack looks like after a Trade-Off session:</p>
 
         <div class="sample-output">
-          <div class="sample-label">Example: B2B Project Management Tool</div>
+          <div class="sample-label">Example: SaaS Productivity Platform</div>
 
           <div class="sample-row">
-            <span class="sample-rank">#1</span>
+            <span class="sample-rank">1.</span>
             <span class="sample-feature">Guided onboarding</span>
-            <span class="sample-survival">Won 6/6</span>
+            <span class="sample-score">6/6</span>
+            <span class="sample-tier tier-must">Must-have</span>
           </div>
 
           <div class="sample-row">
-            <span class="sample-rank">#2</span>
-            <span class="sample-feature">Core workflow builder</span>
-            <span class="sample-survival">Won 5/6</span>
+            <span class="sample-rank">2.</span>
+            <span class="sample-feature">Core workflow</span>
+            <span class="sample-score">5/6</span>
+            <span class="sample-tier tier-must">Must-have</span>
           </div>
 
           <div class="sample-row">
-            <span class="sample-rank">#3</span>
+            <span class="sample-rank">3.</span>
             <span class="sample-feature">Team collaboration</span>
-            <span class="sample-survival">Won 5/6</span>
+            <span class="sample-score">4/6</span>
+            <span class="sample-tier tier-must">Must-have</span>
           </div>
 
           <div class="sample-row">
-            <span class="sample-rank">#4</span>
-            <span class="sample-feature">Integrations (Slack, email)</span>
-            <span class="sample-survival">Won 3/6</span>
+            <span class="sample-rank">4.</span>
+            <span class="sample-feature">Custom reporting</span>
+            <span class="sample-score">2/6</span>
+            <span class="sample-tier tier-nice">Nice-to-have</span>
           </div>
 
           <div class="sample-row">
-            <span class="sample-rank">#5</span>
-            <span class="sample-feature">Custom templates</span>
-            <span class="sample-survival">Won 2/6</span>
+            <span class="sample-rank">5.</span>
+            <span class="sample-feature">API integrations</span>
+            <span class="sample-score">2/6</span>
+            <span class="sample-tier tier-nice">Nice-to-have</span>
           </div>
 
           <div class="sample-row">
-            <span class="sample-rank">#6</span>
-            <span class="sample-feature">Advanced reporting</span>
-            <span class="sample-survival">Won 2/6</span>
-          </div>
-
-          <div class="sample-row">
-            <span class="sample-rank">#7</span>
+            <span class="sample-rank">6.</span>
             <span class="sample-feature">Analytics dashboard</span>
-            <span class="sample-survival">Won 1/6</span>
+            <span class="sample-score">1/6</span>
+            <span class="sample-tier tier-expendable">Expendable</span>
+          </div>
+
+          <div class="sample-surprise">
+            <div class="sample-surprise-label">Surprise Insight</div>
+            <div class="sample-surprise-text">Analytics &#8212; positioned as the key differentiator &#8212; lost 5 out of 6 rounds. Customers chose onboarding and collaboration every time it was on the table.</div>
           </div>
 
           <div class="sample-root">
             <div class="sample-root-label">Minimum Viable Offer</div>
-            <div class="sample-root-text">Core workflow builder + guided onboarding + team collaboration at $49/month. Ship integrations in v2. Cut analytics dashboard entirely.</div>
+            <div class="sample-root-text">Core workflow + guided onboarding + team collaboration at $49/month.</div>
           </div>
         </div>
       </div>
@@ -571,21 +598,21 @@
       <!-- WHAT YOU GET -->
       <div class="section-block">
         <h2>What you get</h2>
-        <p>A ranked Value Stack showing which features your customers actually choose when forced to sacrifice, plus a Minimum Viable Offer — the leanest product that still delivers core value.</p>
-        <p>Your downloadable report includes the full trade-off rounds, the Value Stack ranking, Pete's coaching observations on your decision patterns, and relevant Wade articles and programs.</p>
+        <p>A feature value stack ranked by survival rate across all trade-off rounds. A complete trade-off log showing every choice and sacrifice. A surprise insight revealing which features you overvalued. And a Minimum Viable Offer definition &#8212; the simplest product someone would still pay for.</p>
+        <p>Your downloadable report includes the full value stack, trade-off log, Pete's coaching observations, and relevant Wade articles and programs.</p>
       </div>
 
       <!-- FOUNDATION -->
       <div class="section-block">
         <h2>Foundation</h2>
-        <p>Rooted in <strong>conjoint analysis</strong> developed by Luce &amp; Tukey (1964) and extended by Green &amp; Srinivasan (1978). The method underpins willingness-to-pay research across consumer and B2B markets. Used at scale by Sawtooth Software, Procter &amp; Gamble, Apple, and Amazon to design products and set prices.</p>
+        <p>Rooted in conjoint analysis developed by <strong>Luce &amp; Tukey (1964)</strong> and refined by <strong>Green &amp; Srinivasan (1978)</strong>. Widely used in consumer product research and willingness-to-pay studies. Adopted by leading product companies and popularised through IDEO prioritisation frameworks.</p>
         <div class="foundation-logos">
-          <span class="org-badge">Luce &amp; Tukey (1964)</span>
-          <span class="org-badge">Green &amp; Srinivasan (1978)</span>
+          <span class="org-badge">Luce &amp; Tukey</span>
           <span class="org-badge">Sawtooth Software</span>
           <span class="org-badge">P&amp;G</span>
           <span class="org-badge">Apple</span>
           <span class="org-badge">Amazon</span>
+          <span class="org-badge">IDEO</span>
         </div>
       </div>
 
@@ -600,7 +627,7 @@
           <div class="pete-avatar">P</div>
           <div class="pete-label">Pete's note</div>
         </div>
-        <p class="pete-text">"Everyone says every feature is essential. The Trade-Off makes that impossible. By the third round, you'll know which features your customers actually choose — and which ones only you care about."</p>
+        <p class="pete-text">"Everyone says every feature is essential. The Trade-Off makes that impossible. By the third round, you'll know which features your customers actually choose &#8212; and which ones only you care about."</p>
       </div>
 
       <!-- Often paired with -->
@@ -611,15 +638,15 @@
           <div class="related-tool-icon build">L</div>
           <div class="related-tool-text">
             <h4>Lean Canvas</h4>
-            <p>Map your business model after finding core value</p>
+            <p>Map the business model around your Minimum Viable Offer</p>
           </div>
         </a>
 
-        <a href="tool-detail-cold-open.html" class="related-tool">
+        <a href="#" class="related-tool">
           <div class="related-tool-icon test">C</div>
           <div class="related-tool-text">
             <h4>Cold Open</h4>
-            <p>Test your value proposition with real prospects</p>
+            <p>Test the MVO pitch on a real customer before building</p>
           </div>
         </a>
       </div>
@@ -632,7 +659,7 @@
           <div class="related-tool-icon test">P</div>
           <div class="related-tool-text">
             <h4>Pre-Mortem</h4>
-            <p>Imagine failure before it happens to prevent it</p>
+            <p>Imagine failure to find hidden risks before launch</p>
           </div>
         </a>
 
@@ -640,23 +667,23 @@
           <div class="related-tool-icon test">D</div>
           <div class="related-tool-text">
             <h4>Devil's Advocate</h4>
-            <p>Stress-test your idea against tough objections</p>
+            <p>Stress-test your idea from every hostile angle</p>
           </div>
         </a>
 
-        <a href="tool-detail-cold-open.html" class="related-tool">
+        <a href="#" class="related-tool">
           <div class="related-tool-icon test">C</div>
           <div class="related-tool-text">
             <h4>Cold Open</h4>
-            <p>Open a conversation with a stranger about your idea</p>
+            <p>Pitch to a stranger and see what sticks</p>
           </div>
         </a>
 
-        <a href="tool-detail-reality-check.html" class="related-tool">
+        <a href="#" class="related-tool">
           <div class="related-tool-icon test">R</div>
           <div class="related-tool-text">
             <h4>Reality Check</h4>
-            <p>Confront the numbers behind your assumptions</p>
+            <p>Confront assumptions with real-world constraints</p>
           </div>
         </a>
       </div>

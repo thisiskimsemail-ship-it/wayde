@@ -1,0 +1,216 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 700" width="800" height="700">
+  <defs>
+    <style>
+      .bg { fill: #1B2A4A; }
+      .card { fill: #1F2E4D; stroke: #2A3656; stroke-width: 1; rx: 8; }
+      .card-winner { fill: #1F2E4D; stroke: #ED3694; stroke-width: 2; rx: 8; }
+      .card-loser { fill: #1F2E4D; stroke: #2A3656; stroke-width: 1; rx: 8; opacity: 0.5; }
+      .text-title { fill: #FFFFFF; font-family: Arial, sans-serif; font-size: 11px; font-weight: 700; }
+      .text-label { fill: #8899B3; font-family: Arial, sans-serif; font-size: 9px; font-weight: 600; letter-spacing: 0.8px; }
+      .text-body { fill: #B0BDD0; font-family: Arial, sans-serif; font-size: 10px; }
+      .text-small { fill: #8899B3; font-family: Arial, sans-serif; font-size: 9px; }
+      .text-pink { fill: #ED3694; font-family: Arial, sans-serif; font-size: 10px; font-weight: 700; }
+      .text-white { fill: #FFFFFF; font-family: Arial, sans-serif; font-size: 10px; }
+      .text-heading { fill: #FFFFFF; font-family: Arial, sans-serif; font-size: 14px; font-weight: 700; }
+      .text-section { fill: #ED3694; font-family: Arial, sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 1px; }
+      .accent-line { stroke: #ED3694; stroke-width: 2; }
+      .bracket-line { stroke: #2A3656; stroke-width: 1.5; fill: none; }
+      .bracket-line-pink { stroke: #ED3694; stroke-width: 1.5; fill: none; }
+      .tier-must { fill: #1A3A3A; stroke: #27BDBE; stroke-width: 1; rx: 4; }
+      .tier-nice { fill: #3A3520; stroke: #F1B422; stroke-width: 1; rx: 4; }
+      .tier-exp { fill: #3A1A1A; stroke: #ED3636; stroke-width: 1; rx: 4; }
+      .text-teal { fill: #27BDBE; font-family: Arial, sans-serif; font-size: 8px; font-weight: 700; }
+      .text-amber { fill: #F1B422; font-family: Arial, sans-serif; font-size: 8px; font-weight: 700; }
+      .text-red { fill: #ED3636; font-family: Arial, sans-serif; font-size: 8px; font-weight: 700; }
+      .vs-badge { fill: #ED3694; rx: 10; }
+      .text-vs { fill: #FFFFFF; font-family: Arial, sans-serif; font-size: 9px; font-weight: 700; }
+    </style>
+  </defs>
+
+  <!-- Background -->
+  <rect class="bg" width="800" height="700" rx="8"/>
+
+  <!-- Title -->
+  <text class="text-section" x="30" y="30">THE TRADE-OFF</text>
+  <text class="text-heading" x="30" y="50">Tournament Bracket</text>
+  <text class="text-small" x="30" y="66">SaaS Productivity Platform — 7 features, 3 rounds</text>
+
+  <!-- ═══════════ LEFT: FEATURE CARDS ═══════════ -->
+  <text class="text-section" x="30" y="100">FEATURES</text>
+
+  <!-- Feature 1: Onboarding -->
+  <rect class="card" x="20" y="110" width="130" height="34" rx="8"/>
+  <text class="text-title" x="32" y="131">Guided Onboarding</text>
+
+  <!-- Feature 2: Core Workflow -->
+  <rect class="card" x="20" y="152" width="130" height="34" rx="8"/>
+  <text class="text-title" x="32" y="173">Core Workflow</text>
+
+  <!-- Feature 3: Team Collab -->
+  <rect class="card" x="20" y="194" width="130" height="34" rx="8"/>
+  <text class="text-title" x="32" y="215">Team Collaboration</text>
+
+  <!-- Feature 4: Reporting -->
+  <rect class="card" x="20" y="236" width="130" height="34" rx="8"/>
+  <text class="text-title" x="32" y="257">Custom Reporting</text>
+
+  <!-- Feature 5: API -->
+  <rect class="card" x="20" y="278" width="130" height="34" rx="8"/>
+  <text class="text-title" x="32" y="299">API Integrations</text>
+
+  <!-- Feature 6: Analytics -->
+  <rect class="card" x="20" y="320" width="130" height="34" rx="8"/>
+  <text class="text-title" x="32" y="341">Analytics Dashboard</text>
+
+  <!-- Feature 7: White-label -->
+  <rect class="card" x="20" y="362" width="130" height="34" rx="8"/>
+  <text class="text-title" x="32" y="383">White-label</text>
+
+  <!-- ═══════════ CENTRE: TRADE-OFF ROUNDS ═══════════ -->
+
+  <!-- ROUND 1 -->
+  <text class="text-section" x="195" y="100">ROUND 1</text>
+
+  <!-- Package A (winner) -->
+  <rect class="card-winner" x="180" y="110" width="155" height="70" rx="8"/>
+  <text class="text-pink" x="192" y="127">Package A</text>
+  <text class="text-body" x="192" y="141">Onboarding + Core + Team</text>
+  <text class="text-small" x="192" y="154">$49/mo</text>
+  <text class="text-pink" x="302" y="170">WINNER</text>
+
+  <!-- VS badge -->
+  <rect class="vs-badge" x="245" y="184" width="24" height="16" rx="8"/>
+  <text class="text-vs" x="250" y="195">VS</text>
+
+  <!-- Package B (loser) -->
+  <rect class="card-loser" x="180" y="204" width="155" height="70" rx="8"/>
+  <text class="text-body" x="192" y="221">Package B</text>
+  <text class="text-body" x="192" y="235">Analytics + API + Reporting</text>
+  <text class="text-small" x="192" y="248">$39/mo</text>
+
+  <!-- Bracket lines round 1 -->
+  <path class="bracket-line-pink" d="M150,127 L175,127" />
+  <path class="bracket-line-pink" d="M150,169 L175,169" />
+  <path class="bracket-line-pink" d="M150,211 L175,211" />
+  <path class="bracket-line" d="M150,253 L175,253" />
+  <path class="bracket-line" d="M150,295 L175,295" />
+  <path class="bracket-line" d="M150,337 L175,337" />
+
+  <!-- ROUND 2 -->
+  <text class="text-section" x="195" y="300">ROUND 2</text>
+
+  <!-- Package A (winner) -->
+  <rect class="card-winner" x="180" y="310" width="155" height="70" rx="8"/>
+  <text class="text-pink" x="192" y="327">Package A</text>
+  <text class="text-body" x="192" y="341">Core + Onboarding + API</text>
+  <text class="text-small" x="192" y="354">$59/mo</text>
+  <text class="text-pink" x="302" y="370">WINNER</text>
+
+  <!-- VS badge -->
+  <rect class="vs-badge" x="245" y="384" width="24" height="16" rx="8"/>
+  <text class="text-vs" x="250" y="395">VS</text>
+
+  <!-- Package B (loser) -->
+  <rect class="card-loser" x="180" y="404" width="155" height="70" rx="8"/>
+  <text class="text-body" x="192" y="421">Package B</text>
+  <text class="text-body" x="192" y="435">Analytics + Team + White-label</text>
+  <text class="text-small" x="192" y="448">$45/mo</text>
+
+  <!-- ROUND 3 -->
+  <text class="text-section" x="195" y="500">ROUND 3</text>
+
+  <!-- Package A (winner) -->
+  <rect class="card-winner" x="180" y="510" width="155" height="70" rx="8"/>
+  <text class="text-pink" x="192" y="527">Package A</text>
+  <text class="text-body" x="192" y="541">Team + Onboarding + Core</text>
+  <text class="text-small" x="192" y="554">$69/mo</text>
+  <text class="text-pink" x="302" y="570">WINNER</text>
+
+  <!-- VS badge -->
+  <rect class="vs-badge" x="245" y="584" width="24" height="16" rx="8"/>
+  <text class="text-vs" x="250" y="595">VS</text>
+
+  <!-- Package B (loser) -->
+  <rect class="card-loser" x="180" y="604" width="155" height="70" rx="8"/>
+  <text class="text-body" x="192" y="621">Package B</text>
+  <text class="text-body" x="192" y="635">Reporting + Analytics + API</text>
+  <text class="text-small" x="192" y="648">$35/mo</text>
+
+  <!-- ═══════════ RIGHT: VALUE STACK ═══════════ -->
+  <text class="text-section" x="400" y="100">VALUE STACK</text>
+
+  <!-- Rank 1 -->
+  <rect class="card" x="390" y="110" width="210" height="38" rx="8"/>
+  <text class="text-pink" x="402" y="128">1</text>
+  <text class="text-title" x="418" y="128">Guided Onboarding</text>
+  <text class="text-small" x="540" y="128">6/6</text>
+  <rect class="tier-must" x="562" y="118" width="30" height="16" rx="4"/>
+  <text class="text-teal" x="566" y="129">MUST</text>
+
+  <!-- Rank 2 -->
+  <rect class="card" x="390" y="156" width="210" height="38" rx="8"/>
+  <text class="text-pink" x="402" y="174">2</text>
+  <text class="text-title" x="418" y="174">Core Workflow</text>
+  <text class="text-small" x="540" y="174">5/6</text>
+  <rect class="tier-must" x="562" y="164" width="30" height="16" rx="4"/>
+  <text class="text-teal" x="566" y="175">MUST</text>
+
+  <!-- Rank 3 -->
+  <rect class="card" x="390" y="202" width="210" height="38" rx="8"/>
+  <text class="text-pink" x="402" y="220">3</text>
+  <text class="text-title" x="418" y="220">Team Collaboration</text>
+  <text class="text-small" x="540" y="220">4/6</text>
+  <rect class="tier-must" x="562" y="210" width="30" height="16" rx="4"/>
+  <text class="text-teal" x="566" y="221">MUST</text>
+
+  <!-- Rank 4 -->
+  <rect class="card" x="390" y="248" width="210" height="38" rx="8"/>
+  <text class="text-pink" x="402" y="266">4</text>
+  <text class="text-title" x="418" y="266">Custom Reporting</text>
+  <text class="text-small" x="540" y="266">2/6</text>
+  <rect class="tier-nice" x="562" y="256" width="30" height="16" rx="4"/>
+  <text class="text-amber" x="567" y="267">NICE</text>
+
+  <!-- Rank 5 -->
+  <rect class="card" x="390" y="294" width="210" height="38" rx="8"/>
+  <text class="text-pink" x="402" y="312">5</text>
+  <text class="text-title" x="418" y="312">API Integrations</text>
+  <text class="text-small" x="540" y="312">2/6</text>
+  <rect class="tier-nice" x="562" y="302" width="30" height="16" rx="4"/>
+  <text class="text-amber" x="567" y="313">NICE</text>
+
+  <!-- Rank 6 -->
+  <rect class="card" x="390" y="340" width="210" height="38" rx="8"/>
+  <text class="text-pink" x="402" y="358">6</text>
+  <text class="text-title" x="418" y="358">Analytics Dashboard</text>
+  <text class="text-small" x="540" y="358">1/6</text>
+  <rect class="tier-exp" x="562" y="348" width="30" height="16" rx="4"/>
+  <text class="text-red" x="570" y="359">EXP</text>
+
+  <!-- Rank 7 -->
+  <rect class="card" x="390" y="386" width="210" height="38" rx="8"/>
+  <text class="text-pink" x="402" y="404">7</text>
+  <text class="text-title" x="418" y="404">White-label</text>
+  <text class="text-small" x="540" y="404">0/6</text>
+  <rect class="tier-exp" x="562" y="394" width="30" height="16" rx="4"/>
+  <text class="text-red" x="570" y="405">EXP</text>
+
+  <!-- Connector lines from rounds to value stack -->
+  <path class="bracket-line-pink" d="M335,145 Q365,145 365,200 Q365,255 390,255" fill="none"/>
+  <path class="bracket-line-pink" d="M335,345 Q365,345 365,300 Q365,270 390,270" fill="none"/>
+  <path class="bracket-line-pink" d="M335,545 Q365,545 365,400 Q365,340 390,340" fill="none"/>
+
+  <!-- ═══════════ BOTTOM-RIGHT: MVO CARD ═══════════ -->
+  <rect x="390" y="450" width="390" height="120" rx="8" fill="#1F2E4D" stroke="#ED3694" stroke-width="2"/>
+  <line class="accent-line" x1="400" y1="450" x2="400" y2="570"/>
+
+  <text class="text-section" x="416" y="475">MINIMUM VIABLE OFFER</text>
+  <text class="text-heading" x="416" y="498">Core + Onboarding + Team</text>
+  <text x="416" y="518" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="22" font-weight="700">$49<tspan font-size="12" fill="#8899B3">/month</tspan></text>
+
+  <text class="text-body" x="416" y="542">Simplest version someone would still pay for.</text>
+  <text class="text-small" x="416" y="558">3 must-have features. 4 features cut.</text>
+
+  <!-- Bottom label -->
+  <text x="400" y="690" fill="#8899B3" font-family="Arial, sans-serif" font-size="9">The Trade-Off — Wade Institute of Entrepreneurship</text>
+</svg>
