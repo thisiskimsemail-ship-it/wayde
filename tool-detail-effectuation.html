@@ -109,10 +109,48 @@
   .footer-right { font-size: 13px; color: var(--text-light); }
   @media (max-width: 1000px) { .tool-hero-grid, .content-grid { grid-template-columns: 1fr; gap: 32px; } header { padding: 0 32px; } .tool-hero, .content-area, .tool-bottom-cta { padding-left: 32px; padding-right: 32px; } }
   @media (max-width: 600px) { .tool-hero-left h1 { font-size: 40px; } .section-block h2 { font-size: 28px; } .means-grid { grid-template-columns: 1fr; } footer { flex-direction: column; gap: 16px; text-align: center; } .tool-bottom-cta { flex-direction: column; gap: 24px; text-align: center; } }
+
+  /* Light theme */
+  html[data-theme="light"] { --navy-deep: #f8f7f5; --navy: #1E194F; --text-body: #444; --text-light: #888; --border: rgba(0,0,0,0.08); --border-light: rgba(0,0,0,0.15); --card-bg: #fff; --card-hover: #f5f5f5; }
+  html[data-theme="light"] body { background: #f8f7f5; color: #444; }
+  html[data-theme="light"] header { background: #f8f7f5; border-bottom-color: var(--orange); }
+  html[data-theme="light"] .logo { color: var(--orange); }
+  html[data-theme="light"] .nav-pill { color: #1E194F; border-color: rgba(0,0,0,0.15); }
+  html[data-theme="light"] .nav-pill:hover { background: rgba(0,0,0,0.04); }
+  html[data-theme="light"] .nav-pill.active { background: #1E194F; color: #fff; border-color: #1E194F; }
+  html[data-theme="light"] .nav-icon { color: #1E194F; border-color: rgba(0,0,0,0.15); }
+  html[data-theme="light"] .tool-hero { color: #333; }
+  html[data-theme="light"] .tool-hero h1 { color: #1E194F; }
+  html[data-theme="light"] .qf-card { background: #fff; border-color: rgba(0,0,0,0.1); }
+  html[data-theme="light"] .qf-label { color: #888; }
+  html[data-theme="light"] .qf-value { color: #333; }
+  html[data-theme="light"] .content-area { color: #444; }
+  html[data-theme="light"] .content-area h2 { color: #1E194F; }
+  html[data-theme="light"] .sidebar-card { background: #fff; border-color: rgba(0,0,0,0.08); }
+  html[data-theme="light"] .related-tool { background: #f8f7f5; }
+  html[data-theme="light"] .tool-bottom-cta { background: rgba(0,0,0,0.03); }
+  html[data-theme="light"] .breadcrumb { color: #888; }
+  html[data-theme="light"] .stage-badge { background: rgba(0,0,0,0.06); }
+  html[data-theme="light"] .sample-output-card { background: #fff; border-color: rgba(0,0,0,0.1); }
+
 </style>
 </head>
 <body>
-<header><a href="index.html"><img class="logo" src="logo.png" alt="Wade Institute" style="height:50px;width:auto;"></a><nav class="header-nav"><a href="index.html" class="nav-pill">The Studio</a><a href="toolbox.html" class="nav-pill active">Toolbox</a><a href="#" class="nav-icon">Aa</a><a href="#" class="nav-icon">&#x2731;</a><a href="#" class="nav-icon">?</a></nav></header>
+<!-- HEADER -->
+<header>
+  <a href="index.html"><img class="logo" src="logo.png" alt="Wade Institute" style="height:50px;width:auto;"></a>
+  <nav class="header-nav">
+    <a href="index.html" class="nav-pill">The Studio</a>
+    <a href="toolbox.html" class="nav-pill active">Toolbox</a>
+    <a href="sessions.html" class="nav-pill">Sessions</a>
+    <a href="#" class="nav-pill" onclick="document.getElementById('feedbackPanel')?.classList.toggle('hidden'); return false;">Feedback</a>
+  </nav>
+  <div class="header-controls" style="display:flex;gap:8px;align-items:center;">
+    <button class="nav-icon" onclick="document.documentElement.dataset.textSize=({'':'lg','lg':'xl','xl':''}[document.documentElement.dataset.textSize||''])||''" title="Adjust text size">Aa</button>
+    <button class="nav-icon" onclick="document.documentElement.dataset.theme=document.documentElement.dataset.theme==='light'?'':'light'" title="Toggle light/dark mode">&#x2731;</button>
+    <a href="index.html" class="nav-icon" title="Back to The Studio">?</a>
+  </div>
+</header>
 
 <section class="tool-hero">
   <div class="breadcrumb"><a href="index.html">The Studio</a><span>/</span><a href="toolbox.html">Toolbox</a><span>/</span><a href="toolbox.html#build">The Build</a><span>/</span>Effectuation</div>

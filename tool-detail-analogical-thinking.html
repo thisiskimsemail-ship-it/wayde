@@ -12,7 +12,7 @@
     --navy: #1E194F; --navy-deep: #12103a; --orange: #F15A22; --orange-hover: #d14e1b;
     --white: #FFFFFF; --text-body: #b8b5d0; --text-light: #6e6a8a;
     --border: rgba(255,255,255,0.08); --border-light: rgba(255,255,255,0.15); --card-bg: #1a1750; --card-hover: #221d5a;
-    --cat-color: #ED3694; --untangle: #27BDBE; --spark: #F15A22; --test: #ED3694; --build: #E4E517;
+    --cat-color: #F15A22; --untangle: #27BDBE; --spark: #F15A22; --test: #ED3694; --build: #E4E517;
   }
   body { font-family: 'GT Walsheim', 'Space Grotesk', sans-serif; color: var(--text-body); background: var(--navy-deep); -webkit-font-smoothing: antialiased; }
   header { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: var(--navy-deep); border-bottom: 2px solid var(--orange); padding: 0 60px; height: 72px; display: flex; align-items: center; justify-content: space-between; }
@@ -111,16 +111,54 @@
   .footer-right { font-size: 13px; color: var(--text-light); }
   @media (max-width: 1000px) { .tool-hero-grid, .content-grid { grid-template-columns: 1fr; gap: 32px; } header { padding: 0 32px; } .tool-hero, .content-area, .tool-bottom-cta { padding-left: 32px; padding-right: 32px; } }
   @media (max-width: 600px) { .tool-hero-left h1 { font-size: 40px; } .section-block h2 { font-size: 28px; } footer { flex-direction: column; gap: 16px; text-align: center; } .tool-bottom-cta { flex-direction: column; gap: 24px; text-align: center; } }
+
+  /* Light theme */
+  html[data-theme="light"] { --navy-deep: #f8f7f5; --navy: #1E194F; --text-body: #444; --text-light: #888; --border: rgba(0,0,0,0.08); --border-light: rgba(0,0,0,0.15); --card-bg: #fff; --card-hover: #f5f5f5; }
+  html[data-theme="light"] body { background: #f8f7f5; color: #444; }
+  html[data-theme="light"] header { background: #f8f7f5; border-bottom-color: var(--orange); }
+  html[data-theme="light"] .logo { color: var(--orange); }
+  html[data-theme="light"] .nav-pill { color: #1E194F; border-color: rgba(0,0,0,0.15); }
+  html[data-theme="light"] .nav-pill:hover { background: rgba(0,0,0,0.04); }
+  html[data-theme="light"] .nav-pill.active { background: #1E194F; color: #fff; border-color: #1E194F; }
+  html[data-theme="light"] .nav-icon { color: #1E194F; border-color: rgba(0,0,0,0.15); }
+  html[data-theme="light"] .tool-hero { color: #333; }
+  html[data-theme="light"] .tool-hero h1 { color: #1E194F; }
+  html[data-theme="light"] .qf-card { background: #fff; border-color: rgba(0,0,0,0.1); }
+  html[data-theme="light"] .qf-label { color: #888; }
+  html[data-theme="light"] .qf-value { color: #333; }
+  html[data-theme="light"] .content-area { color: #444; }
+  html[data-theme="light"] .content-area h2 { color: #1E194F; }
+  html[data-theme="light"] .sidebar-card { background: #fff; border-color: rgba(0,0,0,0.08); }
+  html[data-theme="light"] .related-tool { background: #f8f7f5; }
+  html[data-theme="light"] .tool-bottom-cta { background: rgba(0,0,0,0.03); }
+  html[data-theme="light"] .breadcrumb { color: #888; }
+  html[data-theme="light"] .stage-badge { background: rgba(0,0,0,0.06); }
+  html[data-theme="light"] .sample-output-card { background: #fff; border-color: rgba(0,0,0,0.1); }
+
 </style>
 </head>
 <body>
-<header><a href="index.html"><img class="logo" src="logo.png" alt="Wade Institute" style="height:50px;width:auto;"></a><nav class="header-nav"><a href="index.html" class="nav-pill">The Studio</a><a href="toolbox.html" class="nav-pill active">Toolbox</a><a href="#" class="nav-icon">Aa</a><a href="#" class="nav-icon">&#x2731;</a><a href="#" class="nav-icon">?</a></nav></header>
+<!-- HEADER -->
+<header>
+  <a href="index.html"><img class="logo" src="logo.png" alt="Wade Institute" style="height:50px;width:auto;"></a>
+  <nav class="header-nav">
+    <a href="index.html" class="nav-pill">The Studio</a>
+    <a href="toolbox.html" class="nav-pill active">Toolbox</a>
+    <a href="sessions.html" class="nav-pill">Sessions</a>
+    <a href="#" class="nav-pill" onclick="document.getElementById('feedbackPanel')?.classList.toggle('hidden'); return false;">Feedback</a>
+  </nav>
+  <div class="header-controls" style="display:flex;gap:8px;align-items:center;">
+    <button class="nav-icon" onclick="document.documentElement.dataset.textSize=({'':'lg','lg':'xl','xl':''}[document.documentElement.dataset.textSize||''])||''" title="Adjust text size">Aa</button>
+    <button class="nav-icon" onclick="document.documentElement.dataset.theme=document.documentElement.dataset.theme==='light'?'':'light'" title="Toggle light/dark mode">&#x2731;</button>
+    <a href="index.html" class="nav-icon" title="Back to The Studio">?</a>
+  </div>
+</header>
 
 <section class="tool-hero">
-  <div class="breadcrumb"><a href="index.html">The Studio</a><span>/</span><a href="toolbox.html">Toolbox</a><span>/</span><a href="toolbox.html#test">The Test</a><span>/</span>Analogical Thinking</div>
+  <div class="breadcrumb"><a href="index.html">The Studio</a><span>/</span><a href="toolbox.html">Toolbox</a><span>/</span><a href="toolbox.html#spark">The Spark</a><span>/</span>Analogical Thinking</div>
   <div class="tool-hero-grid">
     <div class="tool-hero-left">
-      <div class="stage-badge">THE TEST</div>
+      <div class="stage-badge">THE SPARK</div>
       <h1>Analogical Thinking</h1>
       <p class="tool-headline">Borrow solutions from unexpected places.</p>
       <p class="tool-intro">Solving a problem by drawing on how a similar problem has been solved in a completely different domain. Most challenges have been addressed somewhere — in nature, another industry, a different culture or era. Shinkansen nose from kingfisher beak. Velcro from burs. Airbnb's trust model from eBay.</p>
@@ -128,10 +166,10 @@
     <div class="quick-facts">
       <div class="qf-title">Quick Facts</div>
       <div class="qf-row"><span class="qf-label">Duration</span><span class="qf-value">~20 minutes</span></div>
-      <div class="qf-row"><span class="qf-label">Category</span><span class="qf-value">The Test</span></div>
+      <div class="qf-row"><span class="qf-label">Category</span><span class="qf-value">The Spark</span></div>
       <div class="qf-row"><span class="qf-label">Origin</span><span class="qf-value">Classical rhetoric (Aristotle)</span></div>
       <div class="qf-row"><span class="qf-label">Created by</span><span class="qf-value">Aristotle; IDEO (modern)</span></div>
-      <div class="qf-pathways"><div class="qf-pathways-label">Used in pathways</div><div class="pathway-tags"><span class="pathway-tag test">The Test</span></div></div>
+      <div class="qf-pathways"><div class="qf-pathways-label">Used in pathways</div><div class="pathway-tags"><span class="pathway-tag spark">The Spark</span></div></div>
       <a href="index.html?tool=analogical-thinking" class="qf-cta">Try Analogical Thinking &rarr;</a>
     </div>
   </div>
@@ -143,7 +181,7 @@
       <div class="section-block">
         <h2>When to use it</h2>
         <p>Use when conventional approaches are exhausted, when the team keeps generating similar ideas, or when you want a genuinely differentiated solution. Also when a problem feels unique — it usually isn't.</p>
-        <p>Core tool in <strong>The Test</strong> for finding proven patterns.</p>
+        <p>Core tool in <strong>The Spark</strong> for finding proven patterns.</p>
       </div>
       <div class="section-block">
         <h2>How it works in The Studio</h2>
@@ -203,9 +241,9 @@
         <a href="tool-detail-crazy-8s.html" class="related-tool"><div class="related-tool-icon spark">C</div><div class="related-tool-text"><h4>Crazy 8s</h4><p>Generate variations on the analogy</p></div></a>
       </div>
       <div class="sidebar-card">
-        <div class="sidebar-card-label">Also in The Test</div>
-        <a href="tool-detail-pre-mortem.html" class="related-tool"><div class="related-tool-icon test">P</div><div class="related-tool-text"><h4>Pre-Mortem</h4><p>Imagine the project failed. What went wrong?</p></div></a>
-        <a href="tool-detail-devils-advocate.html" class="related-tool"><div class="related-tool-icon test">D</div><div class="related-tool-text"><h4>Devil's Advocate</h4><p>Challenge your assumptions to strengthen your thinking</p></div></a>
+        <div class="sidebar-card-label">Also in The Spark</div>
+        <a href="tool-detail-crazy-8s.html" class="related-tool"><div class="related-tool-icon spark">C</div><div class="related-tool-text"><h4>Crazy 8s</h4><p>Rapidly sketch eight ideas in eight minutes</p></div></a>
+        <a href="tool-detail-scamper.html" class="related-tool"><div class="related-tool-icon spark">S</div><div class="related-tool-text"><h4>SCAMPER</h4><p>Stretch an idea by substituting, combining, adapting and more</p></div></a>
       </div>
     </div>
   </div>

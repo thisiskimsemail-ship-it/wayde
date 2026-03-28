@@ -1390,6 +1390,7 @@ body.in-session .header-nav { display: none; }
     padding: 1.5rem;
     border-top: 3px solid;
     transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
 }
 .lp-process-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
 .lp-cat-untangle { border-top-color: var(--teal); }
@@ -1864,6 +1865,43 @@ body.keyboard-open .help-challenge-row { display: none; }
     display: flex;
     gap: 0.5rem;
     align-items: flex-end;
+}
+
+/* Starter prompt pills — shown above input at session start */
+.starter-prompts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    max-width: 800px;
+    margin: 0 auto 0.75rem;
+    padding: 0 0.25rem;
+}
+.starter-prompt-pill {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 20px;
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+    color: var(--text-dim, rgba(255,255,255,0.6));
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s, color 0.2s;
+    white-space: nowrap;
+    font-family: var(--font);
+}
+.starter-prompt-pill:hover {
+    background: rgba(255,255,255,0.1);
+    border-color: rgba(255,255,255,0.25);
+    color: var(--text, #fff);
+}
+html[data-theme="light"] .starter-prompt-pill {
+    background: rgba(30,25,79,0.04);
+    border-color: rgba(30,25,79,0.12);
+    color: #6B6B7B;
+}
+html[data-theme="light"] .starter-prompt-pill:hover {
+    background: rgba(30,25,79,0.08);
+    border-color: rgba(30,25,79,0.2);
+    color: #1E194F;
 }
 
 .input-btns {
@@ -4096,6 +4134,7 @@ body.board-maximised > .input-area {
     gap: 0.5rem;
     flex: 1;
     min-height: 0;
+    overflow-y: auto;
 }
 
 /* Default board: single column */
@@ -4198,6 +4237,7 @@ body[data-mode] .board-zone .zone-name { color: var(--stage-color); }
     transition: background 0.15s, outline 0.15s;
     display: flex;
     flex-direction: column;
+    flex-shrink: 0;
 }
 
 .board-zone.drag-over {
@@ -4536,6 +4576,7 @@ html[data-theme="light"] .tour-tooltip { background: #fff; border-color: rgba(30
 .feedback-tab:hover { transform: translateY(-1px); box-shadow: 0 4px 16px color-mix(in srgb, var(--stage-color, var(--orange)) 40%, transparent); }
 /* Yellow feedback tab needs navy text for contrast in dark mode */
 html:not([data-theme="light"]) body[data-mode="build"] .feedback-tab { color: #1E194F; }
+.feedback-tab.hidden { display: none !important; }
 
 .feedback-panel {
     position: fixed;
@@ -5073,10 +5114,10 @@ body.light .feedback-input, html[data-theme="light"] .feedback-input { backgroun
     margin-bottom: 0.75rem;
 }
 .ps-email-form {
-    display: flex; gap: 0.5rem;
-    max-width: 440px; margin: 0 auto 0.5rem;
+    display: flex; flex-wrap: wrap; gap: 0.5rem;
+    max-width: 540px; margin: 0 auto 0.5rem;
 }
-.ps-email-input {
+.ps-name-input, .ps-email-input {
     flex: 1;
     background: rgba(255,255,255,0.06);
     border: 1px solid rgba(255,255,255,0.1);
@@ -5088,8 +5129,8 @@ body.light .feedback-input, html[data-theme="light"] .feedback-input { backgroun
     outline: none;
     transition: border-color 0.2s;
 }
-.ps-email-input:focus { border-color: var(--yellow, #E4E517); }
-.ps-email-input::placeholder { color: var(--text-muted, #9E9BC0); }
+.ps-name-input:focus, .ps-email-input:focus { border-color: var(--yellow, #E4E517); }
+.ps-name-input::placeholder, .ps-email-input::placeholder { color: var(--text-muted, #9E9BC0); }
 .ps-download-btn {
     background: var(--yellow, #E4E517);
     color: #1E194F;

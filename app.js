@@ -139,9 +139,9 @@ function updateStageLogo(mode) {
 // === BREADCRUMB DROPDOWN ===
 const STAGE_TOOLS = {
     untangle: ['five-whys', 'empathy-map', 'jtbd', 'socratic', 'iceberg'],
-    spark: ['crazy-8s', 'hmw', 'scamper', 'analogical', 'constraint-flip'],
-    test: ['pre-mortem', 'devils-advocate', 'cold-open', 'reality-check', 'trade-off'],
-    build: ['lean-canvas', 'effectuation', 'rapid-experiment', 'flywheel', 'theory-of-change']
+    spark: ['crazy-8s', 'hmw', 'scamper', 'constraint-flip'],
+    test: ['pre-mortem', 'devils-advocate', 'rapid-experiment', 'cold-open', 'reality-check', 'trade-off'],
+    build: ['lean-canvas', 'effectuation', 'analogical', 'flywheel', 'theory-of-change']
 };
 
 function updateBreadcrumbDropdown(currentMode, currentExercise) {
@@ -255,10 +255,10 @@ const EXERCISE_MODE = {
     'crazy-8s':         'spark',
     'pre-mortem':       'test',
     'devils-advocate':  'test',
-    'analogical':       'spark',
+    'analogical':       'build',
     'lean-canvas':      'build',
     'effectuation':     'build',
-    'rapid-experiment': 'build',
+    'rapid-experiment': 'test',
     'flywheel': 'build',
     'socratic': 'untangle',
     'cold-open': 'test',
@@ -267,6 +267,14 @@ const EXERCISE_MODE = {
     'trade-off': 'test',
     'iceberg': 'untangle',
     'constraint-flip': 'spark'
+};
+
+// Map hyphenated tool-detail page slugs to internal exercise keys
+const TOOL_SLUG_MAP = {
+    'analogical-thinking': 'analogical',
+    'jobs-to-be-done': 'jtbd',
+    'how-might-we': 'hmw',
+    'socratic-questioning': 'socratic'
 };
 
 // Exercise descriptions (mirror of HTML card text)
@@ -572,9 +580,9 @@ const STAGE_DEFAULT = {
 // All exercises grouped by category
 const TOOLS_BY_MODE = {
     untangle: ['five-whys', 'empathy-map', 'jtbd', 'socratic', 'iceberg'],
-    spark:    ['crazy-8s', 'hmw', 'scamper', 'analogical'],
-    test:     ['pre-mortem', 'devils-advocate', 'cold-open'],
-    build:    ['lean-canvas', 'effectuation', 'rapid-experiment', 'flywheel']
+    spark:    ['crazy-8s', 'hmw', 'scamper', 'constraint-flip'],
+    test:     ['pre-mortem', 'devils-advocate', 'rapid-experiment', 'cold-open', 'reality-check', 'trade-off'],
+    build:    ['lean-canvas', 'effectuation', 'analogical', 'flywheel', 'theory-of-change']
 };
 
 // Category prompts — used by homepage cards and ?category= URL param
@@ -994,7 +1002,7 @@ function startExercise(mode, exercise, startMsg = null) {
     routingBack.classList.add('hidden');
 
     // Show tool-specific starter prompts
-    if (!startMsg) renderStarterPrompts(exercise);
+    // Starter prompts removed — users enter their own challenge directly
 
     // Switch board layout based on exercise — custom boards for structured tools
     const customLayouts = ['lean-canvas', 'elevator-pitch', 'pre-mortem', 'effectuation', 'flywheel', 'cold-open', 'iceberg', 'constraint-flip', 'socratic', 'reality-check', 'theory-of-change', 'trade-off', 'five-whys', 'empathy-map', 'jtbd', 'crazy-8s', 'hmw', 'scamper', 'devils-advocate', 'rapid-experiment'];
@@ -1341,8 +1349,10 @@ document.addEventListener('DOMContentLoaded', () => {
             if (e.target.closest('.lp-tool-pill')) return;
             const cat = card.dataset.category;
             if (cat && CATEGORY_PROMPTS[cat]) {
-                enterStudio();
-                setTimeout(() => sendMessage(CATEGORY_PROMPTS[cat]), 3000);
+                startRouting(CATEGORY_PROMPTS[cat]);
+                document.body.classList.add('in-session');
+                document.body.dataset.mode = 'routing';
+                updateStageLogo('routing');
             }
         });
     });
@@ -2803,7 +2813,7 @@ document.getElementById('unlockForm')?.addEventListener('submit', async (e) => {
 
         // Wire download button
         document.getElementById('dlDownloadBtn')?.addEventListener('click', () => {
-            downloadReportWord();
+            downloadReportPdf();
             renderNextExercisePanel();
         });
     }, 6000);
@@ -2815,19 +2825,18 @@ document.getElementById('unlockForm')?.addEventListener('submit', async (e) => {
 });
 
 // Format choice buttons → trigger download, then show next exercise
-// Auto-download Word when format choice appears (PDF removed)
 document.getElementById('formatWordBtn')?.addEventListener('click', () => {
-    downloadReportWord();
+    downloadReportPdf();
     document.getElementById('reportFormatChoice')?.classList.add('hidden');
     renderNextExercisePanel();
 });
 
-// Auto-trigger Word download when format choice is shown
+// Auto-trigger PDF download when format choice is shown
 const _formatObserver = new MutationObserver(() => {
     const formatChoice = document.getElementById('reportFormatChoice');
     if (formatChoice && !formatChoice.classList.contains('hidden')) {
         setTimeout(() => {
-            downloadReportWord();
+            downloadReportPdf();
             formatChoice.classList.add('hidden');
             renderNextExercisePanel();
         }, 1500); // Brief delay so user sees "Your report is on its way"
@@ -2881,16 +2890,22 @@ document.querySelectorAll('.report-actions').forEach(bar => {
     });
 });
 
-// === DOWNLOAD AS WORD (.doc) ===
+// === DOWNLOAD AS PDF (primary) ===
 
-async function downloadReportWord() {
+async function downloadReportPdf() {
     if (!state.reportText) return;
 
     const synopsis = state.reportSynopsis || {};
-    const exName = EXERCISE_LABELS[state.exercise] || state.exercise;
+
+    // Try to capture SVG canvas data if available
+    let svgData = '';
+    try {
+        const svgEl = document.querySelector('.board-svg, #boardSvg, svg.canvas-board');
+        if (svgEl) svgData = new XMLSerializer().serializeToString(svgEl);
+    } catch (e) { /* ignore */ }
 
     try {
-        const resp = await fetch('/api/report/docx', {
+        const resp = await fetch('/api/report/pdf', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -2898,24 +2913,32 @@ async function downloadReportWord() {
                 synopsis: synopsis,
                 exercise: state.exercise || '',
                 mode: state.mode || '',
-                board_cards: state.board?.cards || []
+                board_cards: state.board?.cards || [],
+                svg_data: svgData
             })
         });
 
-        if (!resp.ok) throw new Error('DOCX generation failed');
+        if (!resp.ok) throw new Error('PDF generation failed');
         const blob = await resp.blob();
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         const title = synopsis.title || 'Studio Report';
         const safeName = title.replace(/[^a-zA-Z0-9 _-]/g, '').trim().slice(0, 60);
         a.href = url;
-        a.download = safeName + ' - The Studio.docx';
+        a.download = safeName + ' - The Studio.pdf';
         a.click();
         URL.revokeObjectURL(url);
     } catch (err) {
-        console.error('[Report] DOCX download failed, using fallback:', err);
+        console.error('[Report] PDF download failed, using fallback:', err);
         downloadReportWordFallback();
     }
+}
+
+// === DOWNLOAD AS WORD (.doc) — legacy fallback ===
+
+async function downloadReportWord() {
+    // Redirect to PDF
+    return downloadReportPdf();
 }
 
 function downloadReportWordFallback() {
@@ -3393,14 +3416,17 @@ async function startPostSessionFlow() {
         emailForm?.addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = document.getElementById('psDownloadBtn');
+            const name = document.getElementById('psNameInput')?.value?.trim();
             const email = document.getElementById('psEmailInput')?.value?.trim();
-            if (!email) return;
+            if (!email || !name) return;
 
             btn.disabled = true;
             btn.textContent = 'Sending...';
 
             state.userEmail = email;
+            state.userName = name;
             localStorage.setItem('wade_user_email', email);
+            localStorage.setItem('wade_user_name', name);
 
             // Send lead
             try {
@@ -3408,7 +3434,7 @@ async function startPostSessionFlow() {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        email, name: '', company: '', role: '',
+                        email, name, company: '', role: '',
                         mode: state.mode,
                         exercise: state.exercise,
                         report: state.reportText,
@@ -3437,19 +3463,19 @@ async function startPostSessionFlow() {
             emailCapture.classList.add('hidden');
             formatButtons.classList.remove('hidden');
 
-            // Auto-download Word
-            downloadReportWord();
+            // Auto-download PDF
+            downloadReportPdf();
 
             // After brief delay, transition to Screen 3
             setTimeout(() => transitionToPostDownload(), 2500);
         });
 
         // Wire format buttons
-        document.getElementById('psFormatWord')?.addEventListener('click', () => downloadReportWord());
+        document.getElementById('psFormatPdf')?.addEventListener('click', () => downloadReportPdf());
         document.getElementById('psFormatPptx')?.addEventListener('click', () => downloadReportPptx());
         document.getElementById('psFormatSvg')?.addEventListener('click', () => downloadSessionExport('svg'));
         document.getElementById('psFormatPng')?.addEventListener('click', () => downloadSessionExport('png'));
-        document.getElementById('psFormatPdf')?.addEventListener('click', () => downloadSessionExport('pdf'));
+        document.getElementById('psFormatWord')?.addEventListener('click', () => downloadReportWord());
 
         // Share buttons
         document.getElementById('psShareCopyLink')?.addEventListener('click', async () => {
@@ -3581,8 +3607,7 @@ function transitionToPostDownload() {
 
     if (nudgeHeading) nudgeHeading.textContent = `Your ${exName.toLowerCase()} is strong \u2014 but ${exName.toLowerCase()}s don't build companies. People do.`;
     if (nudgeText) nudgeText.textContent = `The Studio helped you think through ${exName}. Imagine what happens when you work through it with a cohort of peers who'll challenge your assumptions, share their networks, and hold you accountable. That\u2019s what Wade\u2019s programs are built for.`;
-    if (nudgeStatNum) nudgeStatNum.textContent = thinCells || 3;
-    if (nudgeStatLabel) nudgeStatLabel.textContent = `cells on your ${exName.toLowerCase()} need deeper work`;
+    // Nudge stat removed per design spec
 
     // Session action buttons
     document.getElementById('psEditBoard')?.addEventListener('click', () => {
@@ -3593,7 +3618,7 @@ function transitionToPostDownload() {
         if (inputArea) inputArea.style.display = '';
         toggleBoard();
     });
-    document.getElementById('psRedownload')?.addEventListener('click', () => downloadReportWord());
+    document.getElementById('psRedownload')?.addEventListener('click', () => downloadReportPdf());
 
     // Explore More Tools grid — 4 tools not current
     const exploreGrid = document.getElementById('psExploreGrid');
@@ -5015,7 +5040,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Direct tool launch from toolbox page (?tool=lean-canvas)
-    const toolParam = params.get('tool');
+    const toolRaw = params.get('tool');
+    const toolParam = TOOL_SLUG_MAP[toolRaw] || toolRaw;
     if (toolParam && EXERCISE_MODE[toolParam]) {
         const mode = EXERCISE_MODE[toolParam];
         history.replaceState({}, '', '/');
@@ -5028,11 +5054,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const categoryParam = params.get('category');
     if (categoryParam && CATEGORY_PROMPTS[categoryParam]) {
         history.replaceState({}, '', '/');
-        enterStudio();
-        // After Pete's opening message, inject the category context
-        setTimeout(() => {
-            sendMessage(CATEGORY_PROMPTS[categoryParam]);
-        }, 3000);
+        startRouting(CATEGORY_PROMPTS[categoryParam]);
+        document.body.classList.add('in-session');
+        document.body.dataset.mode = 'routing';
+        updateStageLogo('routing');
     }
 });
 
@@ -5193,10 +5218,19 @@ hintObserver.observe(document.body, { childList: true, subtree: true, attributes
     const stars = document.querySelectorAll('.feedback-star');
     let selectedRating = 0;
 
-    if (!tab || !panel) return;
+    if (!panel) return;
 
-    tab.addEventListener('click', () => { panel.classList.remove('hidden'); tab.style.display = 'none'; });
-    closeBtn.addEventListener('click', () => { panel.classList.add('hidden'); tab.style.display = ''; });
+    if (tab) tab.addEventListener('click', () => { panel.classList.remove('hidden'); tab.style.display = 'none'; });
+    if (closeBtn) closeBtn.addEventListener('click', () => { panel.classList.add('hidden'); if (tab) tab.style.display = ''; });
+
+    // Nav bar feedback button
+    const navFeedback = $('#navFeedbackBtn');
+    if (navFeedback) {
+        navFeedback.addEventListener('click', (e) => {
+            e.preventDefault();
+            panel.classList.toggle('hidden');
+        });
+    }
 
     stars.forEach(star => {
         star.addEventListener('click', () => {

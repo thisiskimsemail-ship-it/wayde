@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Sessions — The Studio</title>
+    <link rel="preload" href="fonts/GT-Walsheim-Regular.woff" as="font" type="font/woff" crossorigin>
+    <style>
+        @font-face { font-family: 'GT Walsheim'; src: url('fonts/GT-Walsheim-Regular.woff') format('woff'), url('fonts/GT-Walsheim-Regular.ttf') format('truetype'); font-weight: 400; font-style: normal; font-display: swap; }
+        :root { --bg: #12103a; --bg-light: #1a1750; --text: #f5f5f5; --text-dim: #b8b5d0; --text-muted: #6e6a8a; --orange: #F15A22; --teal: #27BDBE; --pink: #ED3694; --yellow: #E4E517; --font: 'GT Walsheim', 'Space Grotesk', sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; }
+        .header { padding: 1rem 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: space-between; }
+        .logo { height: 50px; width: auto; }
+        .header-nav { display: flex; border: 1px solid rgba(255,255,255,0.12); border-radius: 999px; overflow: hidden; margin-left: auto; margin-right: 1rem; }
+        .header-nav-link { padding: 0.4rem 1.1rem; font-size: 0.8rem; font-weight: 500; color: rgba(255,255,255,0.5); text-decoration: none; transition: all 0.2s; white-space: nowrap; }
+        .header-nav-link:hover { color: #fff; background: rgba(255,255,255,0.05); }
+        .header-nav-link.active { color: #fff; background: rgba(255,255,255,0.08); }
+        .header-controls { display: flex; align-items: center; gap: 0.5rem; }
+        .text-size-btn, .theme-toggle, .tour-help-btn { background: transparent; border: 1px solid rgba(255,255,255,0.12); border-radius: 6px; width: 32px; height: 32px; color: rgba(255,255,255,0.5); font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .text-size-btn:hover, .theme-toggle:hover, .tour-help-btn:hover { border-color: rgba(255,255,255,0.3); color: #fff; }
+
+        .container { max-width: 900px; margin: 0 auto; padding: 2rem; }
+        .back { color: var(--orange); text-decoration: none; font-size: 0.85rem; display: inline-block; margin-bottom: 1.5rem; }
+        .back:hover { text-decoration: underline; }
+        h1 { font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .subtitle { color: var(--text-dim); font-size: 1rem; margin-bottom: 2rem; }
+
+        .empty { text-align: center; padding: 4rem 2rem; color: var(--text-muted); }
+        .empty h2 { font-size: 1.25rem; color: var(--text-dim); margin-bottom: 0.5rem; }
+        .empty p { margin-bottom: 1.5rem; }
+        .empty a { color: var(--orange); text-decoration: none; font-weight: 600; }
+
+        .session-list { display: flex; flex-direction: column; gap: 1rem; }
+        .session-card {
+            background: var(--bg-light);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 10px;
+            padding: 1.25rem 1.5rem;
+            transition: all 0.2s;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        .session-card:hover { border-color: rgba(255,255,255,0.15); transform: translateY(-1px); }
+        .session-card-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem; }
+        .session-badge {
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            padding: 0.2rem 0.6rem;
+            border-radius: 999px;
+        }
+        .badge-untangle { color: var(--teal); border: 1px solid rgba(39,189,190,0.3); }
+        .badge-spark { color: var(--orange); border: 1px solid rgba(241,90,34,0.3); }
+        .badge-test { color: var(--pink); border: 1px solid rgba(237,54,148,0.3); }
+        .badge-build { color: var(--yellow); border: 1px solid rgba(228,229,23,0.3); }
+        .session-tool { font-size: 0.85rem; font-weight: 600; color: var(--text); }
+        .session-date { font-size: 0.75rem; color: var(--text-muted); margin-left: auto; }
+        .session-topic { font-size: 0.9rem; color: var(--text-dim); line-height: 1.5; margin-bottom: 0.5rem; }
+        .session-insight { font-size: 0.85rem; color: var(--text-muted); font-style: italic; }
+        .session-meta { display: flex; gap: 1rem; margin-top: 0.75rem; }
+        .session-meta span { font-size: 0.75rem; color: var(--text-muted); }
+
+        .footer { text-align: center; padding: 2rem; border-top: 2px solid var(--orange); margin-top: 3rem; }
+        .footer a { color: var(--text-dim); text-decoration: none; font-size: 0.8rem; }
+        .footer a:hover { color: var(--text); }
+
+        @media (max-width: 640px) {
+            .container { padding: 1rem; }
+            .session-card-header { flex-wrap: wrap; }
+            .session-date { margin-left: 0; width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <img class="logo" src="logo.png" alt="Wade Institute">
+        <nav class="header-nav" id="headerNav">
+            <a class="header-nav-link" href="index.html">The Studio</a>
+            <a class="header-nav-link" href="toolbox.html">Toolbox</a>
+            <a class="header-nav-link active" href="sessions.html">Sessions</a>
+            <a class="header-nav-link header-feedback-link" href="#" id="headerFeedbackLink">Feedback</a>
+        </nav>
+        <div class="header-controls">
+            <button class="text-size-btn" id="textSizeToggle" title="Adjust text size" aria-label="Adjust text size">Aa</button>
+            <button class="theme-toggle" id="themeToggle" title="Toggle light/dark mode" aria-label="Toggle light/dark mode">☀</button>
+            <button class="tour-help-btn" id="tourHelpBtn" title="Help" aria-label="Help">?</button>
+        </div>
+    </header>
+
+    <div class="container">
+        <a class="back" href="index.html">← The Studio</a>
+        <h1>Your Sessions</h1>
+        <p class="subtitle">Pick up where you left off, or revisit past thinking.</p>
+
+        <div id="sessionList" class="session-list">
+            <div class="empty" id="emptyState">
+                <h2>No sessions yet</h2>
+                <p>Start a session with Pete and your work will appear here.</p>
+                <a href="index.html">Jam with Pete →</a>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <a href="https://wadeinstitute.org.au" target="_blank" rel="noopener">Wade Institute of Entrepreneurship</a> ·
+        <a href="mailto:enquiries@wadeinstitute.org.au">Contact</a> ·
+        <a href="/privacy.html">Privacy</a>
+    </footer>
+
+    <script>
+    const MODE_LABELS = { untangle: 'The Untangle', spark: 'The Spark', test: 'The Test', build: 'The Build' };
+    const EXERCISE_LABELS = {
+        'five-whys': 'Five Whys', 'hmw': 'How Might We', 'jtbd': 'Jobs to Be Done',
+        'scamper': 'SCAMPER', 'crazy-8s': 'Crazy 8s', 'analogical': 'Analogical Thinking',
+        'pre-mortem': 'Pre-Mortem', 'devils-advocate': "Devil's Advocate",
+        'rapid-experiment': 'Rapid Experiment', 'empathy-map': 'Empathy Map',
+        'lean-canvas': 'Lean Canvas', 'effectuation': 'Effectuation'
+    };
+    const EXERCISE_MODE = {
+        'five-whys': 'untangle', 'jtbd': 'untangle', 'empathy-map': 'untangle',
+        'hmw': 'spark', 'scamper': 'spark', 'crazy-8s': 'spark',
+        'pre-mortem': 'test', 'devils-advocate': 'test', 'analogical': 'test',
+        'lean-canvas': 'build', 'effectuation': 'build', 'rapid-experiment': 'build'
+    };
+
+    const deviceId = localStorage.getItem('studio_device_id') || '';
+    if (!deviceId) {
+        document.getElementById('emptyState').style.display = '';
+    } else {
+        fetch('/api/sessions?device_id=' + encodeURIComponent(deviceId))
+            .then(r => r.json())
+            .then(data => {
+                const list = document.getElementById('sessionList');
+                const sessions = data.sessions || [];
+                if (sessions.length === 0) return;
+
+                document.getElementById('emptyState').style.display = 'none';
+                sessions.forEach(s => {
+                    const mode = s.mode || 'untangle';
+                    const exercise = s.exercise || '';
+                    const modeName = MODE_LABELS[mode] || mode;
+                    const toolName = EXERCISE_LABELS[exercise] || exercise || 'Conversation';
+                    const badgeClass = 'badge-' + mode;
+                    const date = s.session_date ? new Date(s.session_date).toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' }) : '';
+                    const topic = s.topic || s.conversation_summary || '';
+                    const insight = s.key_insight || '';
+
+                    const card = document.createElement('a');
+                    card.className = 'session-card';
+                    card.href = 'index.html?tool=' + (exercise || 'suggest');
+                    card.innerHTML = `
+                        <div class="session-card-header">
+                            <span class="session-badge ${badgeClass}">${modeName}</span>
+                            <span class="session-tool">${toolName}</span>
+                            <span class="session-date">${date}</span>
+                        </div>
+                        ${topic ? `<div class="session-topic">${topic}</div>` : ''}
+                        ${insight ? `<div class="session-insight">"${insight}"</div>` : ''}
+                    `;
+                    list.appendChild(card);
+                });
+            })
+            .catch(e => console.error('Failed to load sessions:', e));
+    }
+    </script>
+</body>
+</html>
