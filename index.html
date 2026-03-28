@@ -474,6 +474,151 @@
             <button class="routing-back-btn" id="routingBackBtn">← Back to tools</button>
         </div>
 
+        <!-- === POST-SESSION FLOW (3 screens) === -->
+
+        <!-- Screen 1: Loading -->
+        <div class="ps-screen ps-loading hidden" id="postSessionLoading">
+            <div class="ps-loading-spinner">
+                <svg class="ps-spinner-icon" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+            </div>
+            <h2 class="ps-loading-title">Creating your workshop outputs</h2>
+            <p class="ps-loading-subtitle" id="psLoadingSubtitle">Pete is assembling your report and visual</p>
+            <div class="ps-loading-steps">
+                <div class="ps-step active" id="psStep1"><span class="ps-step-icon">&#9679;</span> Analysing</div>
+                <div class="ps-step" id="psStep2"><span class="ps-step-icon">&#9675;</span> Rendering SVG</div>
+                <div class="ps-step" id="psStep3"><span class="ps-step-icon">&#9675;</span> Writing report</div>
+                <div class="ps-step" id="psStep4"><span class="ps-step-icon">&#9675;</span> Building deck</div>
+            </div>
+            <div class="ps-progress-track">
+                <div class="ps-progress-fill" id="psProgressFill"></div>
+            </div>
+            <div class="ps-wait-divider"><span>WHILE YOU WAIT</span></div>
+            <div class="ps-program-card" id="psProgramCard">
+                <div class="ps-program-header">
+                    <div class="ps-pete-avatar-sm">P</div>
+                    <span class="ps-program-label">Pete <span class="ps-program-label-dim">recommends</span></span>
+                </div>
+                <p class="ps-program-bridge" id="psProgramBridge"></p>
+                <div class="ps-program-inner" id="psProgramInner">
+                    <div class="ps-program-icon">&#9733;</div>
+                    <div class="ps-program-inner-body">
+                        <h4 class="ps-program-name" id="psProgramName"></h4>
+                        <p class="ps-program-desc" id="psProgramDesc"></p>
+                        <div class="ps-program-meta" id="psProgramMeta"></div>
+                    </div>
+                </div>
+                <a class="ps-program-link" id="psProgramLink" href="#" target="_blank" rel="noopener">Explore this program →</a>
+            </div>
+            <p class="ps-dismiss-link" id="psDismissProgram">I'll explore programs later</p>
+        </div>
+
+        <!-- Screen 2: Reveal -->
+        <div class="ps-screen ps-reveal hidden" id="postSessionReveal">
+            <div class="ps-closing-bubble" id="psClosingBubble">
+                <div class="ps-pete-avatar">P</div>
+                <div class="ps-closing-text" id="psClosingText"></div>
+            </div>
+            <div class="ps-reveal-divider"><span>YOUR WORKSHOP OUTPUT</span></div>
+            <h2 class="ps-headline" id="psHeadline"></h2>
+            <p class="ps-byline" id="psByline"></p>
+            <div class="ps-synopsis-card" id="psSynopsisCard">
+                <div class="ps-svg-placeholder" id="psSvgPlaceholder"></div>
+                <p class="ps-synopsis-text" id="psSynopsisText"></p>
+                <div class="ps-reco-section">
+                    <p class="ps-reco-heading">The full report breaks down each cell with specific recommendations:</p>
+                    <ul class="ps-recommendations" id="psRecommendations"></ul>
+                </div>
+                <div class="ps-email-capture" id="psEmailCapture">
+                    <p class="ps-email-label">Enter your email to download your workshop outputs</p>
+                    <form class="ps-email-form" id="psEmailForm">
+                        <input type="email" class="ps-email-input" id="psEmailInput" placeholder="you@company.com" required>
+                        <button type="submit" class="ps-download-btn" id="psDownloadBtn">Download</button>
+                    </form>
+                    <p class="ps-legal">We'll send your outputs to this email too. No spam, ever.</p>
+                </div>
+                <div class="ps-format-buttons hidden" id="psFormatButtons">
+                    <div class="ps-format-row-primary">
+                        <button class="ps-format-btn ps-format-primary" id="psFormatWord">&#128196; Word Report</button>
+                        <button class="ps-format-btn ps-format-primary" id="psFormatPptx">&#128196; PowerPoint Deck</button>
+                        <button class="ps-format-btn ps-format-secondary" id="psFormatSvg">&#128196; SVG</button>
+                        <button class="ps-format-btn ps-format-secondary" id="psFormatPng">&#128196; PNG</button>
+                        <button class="ps-format-btn ps-format-secondary" id="psFormatPdf">&#128196; PDF</button>
+                    </div>
+                    <div class="ps-share-row">
+                        <button class="ps-share-btn" id="psShareCopyLink">&#128196; Copy link</button>
+                        <button class="ps-share-btn" id="psShareLinkedIn">&#128196; Share on LinkedIn</button>
+                        <button class="ps-share-btn" id="psShareEmail">&#128196; Email to team</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Screen 3: Post-Download -->
+        <div class="ps-screen ps-post-download hidden" id="postSessionNext">
+            <div class="ps-confirm-banner">
+                <div class="ps-confirm-icon">&#10003;</div>
+                <div class="ps-confirm-body">
+                    <span class="ps-confirm-title">Your outputs are ready</span>
+                    <span class="ps-confirm-subtitle" id="psConfirmSubtitle">Word report, PowerPoint deck, and SVG sent to your email</span>
+                </div>
+                <a class="ps-confirm-link" id="psViewSession" href="#">View session →</a>
+            </div>
+
+            <div class="ps-next-section">
+                <h3 class="ps-section-heading">PETE RECOMMENDS NEXT</h3>
+                <div class="ps-next-tools" id="psNextTools"></div>
+            </div>
+
+            <div class="ps-session-section">
+                <div class="ps-session-section-header">
+                    <h3 class="ps-section-heading">YOUR SESSION</h3>
+                    <a class="ps-all-sessions-link" href="#">All sessions →</a>
+                </div>
+                <div class="ps-session-card" id="psSessionCard">
+                    <div class="ps-session-thumb" id="psSessionThumb"></div>
+                    <div class="ps-session-info">
+                        <h4 class="ps-session-title" id="psSessionTitle"></h4>
+                        <p class="ps-session-headline" id="psSessionHeadline"></p>
+                        <p class="ps-session-meta" id="psSessionMeta"></p>
+                    </div>
+                    <div class="ps-session-actions">
+                        <button class="ps-session-action-btn" id="psEditBoard">Edit board</button>
+                        <button class="ps-session-action-btn" id="psRedownload">Download</button>
+                        <button class="ps-session-action-btn" id="psShareSession">Share</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ps-nudge-section">
+                <div class="ps-nudge-card" id="psNudgeCard">
+                    <div class="ps-nudge-content">
+                        <p class="ps-nudge-label">BASED ON YOUR SESSION</p>
+                        <h3 class="ps-nudge-heading" id="psNudgeHeading"></h3>
+                        <p class="ps-nudge-text" id="psNudgeText"></p>
+                        <a class="ps-nudge-btn" href="https://wadeinstitute.org.au/programs/" target="_blank" rel="noopener">Explore Wade programs →</a>
+                    </div>
+                    <div class="ps-nudge-stat">
+                        <span class="ps-nudge-stat-number" id="psNudgeStatNumber"></span>
+                        <span class="ps-nudge-stat-label" id="psNudgeStatLabel"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ps-explore-section">
+                <div class="ps-explore-header">
+                    <h3 class="ps-section-heading">EXPLORE MORE TOOLS</h3>
+                    <a class="ps-explore-all-link" href="/toolbox.html">View all 20 →</a>
+                </div>
+                <div class="ps-explore-grid" id="psExploreGrid"></div>
+            </div>
+
+            <div class="ps-final-cta">
+                <button class="ps-new-session-btn" id="psNewSessionBtn">Start a new session →</button>
+            </div>
+        </div>
+
+        <!-- === END POST-SESSION FLOW === -->
+
         </div><!-- /chat-pane -->
 
         <!-- Workshop Board -->
@@ -635,6 +780,6 @@
         <button class="feedback-submit" id="feedbackSubmit">Send feedback</button>
     </div>
 
-    <script src="app.js?v=147"></script>
+    <script src="app.js?v=151"></script>
 </body>
 </html>
