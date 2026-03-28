@@ -62,6 +62,15 @@ body {
     width: auto;
     transition: filter 0.6s ease;
 }
+
+/* Mid-range viewport fix (900-1080px) — hero image was disappearing */
+@media (min-width: 641px) and (max-width: 1080px) {
+    .lp-hero-inner { grid-template-columns: 1fr; gap: 1.5rem; }
+    .lp-hero-visual { order: -1; max-height: 300px; }
+    .lp-hero-img { max-height: 300px; object-fit: cover; }
+    .lp-hero-heading { font-size: 2.75rem; }
+}
+
 @media (max-width: 640px) {
     .logo { height: 48px; }
 }
@@ -4677,3 +4686,39 @@ body.light .feedback-input, html[data-theme="light"] .feedback-input { backgroun
     align-self: flex-end;
 }
 .feature-hint-dismiss:hover { background: rgba(255,255,255,0.3); }
+
+/* Compact text for all custom boards */
+.board-grid-trade-off .zone-name,
+.board-grid-cold-open .zone-name,
+.board-grid-socratic .zone-name,
+.board-grid-reality-check .zone-name,
+.board-grid-toc .zone-name,
+.board-grid-iceberg .zone-name,
+.board-grid-constraint-flip .zone-name,
+.board-grid-flywheel .zone-name { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+
+.board-grid-trade-off .board-card-text,
+.board-grid-cold-open .board-card-text,
+.board-grid-socratic .board-card-text,
+.board-grid-reality-check .board-card-text,
+.board-grid-toc .board-card-text,
+.board-grid-iceberg .board-card-text,
+.board-grid-constraint-flip .board-card-text,
+.board-grid-flywheel .board-card-text { font-size: 0.8rem; line-height: 1.4; }
+
+.board-grid-trade-off .zone-empty,
+.board-grid-trade-off .zone-hint,
+.board-grid-cold-open .zone-empty,
+.board-grid-cold-open .zone-hint,
+.board-grid-socratic .zone-empty,
+.board-grid-socratic .zone-hint,
+.board-grid-reality-check .zone-empty,
+.board-grid-reality-check .zone-hint,
+.board-grid-toc .zone-empty,
+.board-grid-toc .zone-hint,
+.board-grid-iceberg .zone-empty,
+.board-grid-iceberg .zone-hint,
+.board-grid-constraint-flip .zone-empty,
+.board-grid-constraint-flip .zone-hint,
+.board-grid-flywheel .zone-empty,
+.board-grid-flywheel .zone-hint { font-size: 0.7rem; }
