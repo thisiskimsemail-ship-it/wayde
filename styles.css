@@ -5392,3 +5392,92 @@ body.light .feedback-input, html[data-theme="light"] .feedback-input { backgroun
     .ps-email-form { flex-direction: column; }
     .ps-format-row-primary { flex-direction: column; align-items: center; }
 }
+
+
+/* ============================================================
+   UX FIXES — Accessibility, touch targets, mobile, polish
+   ============================================================ */
+
+/* Hide "0" badge on empty board zones */
+.zone-count:empty,
+.zone-count[data-count="0"] { display: none; }
+
+/* Touch targets — minimum 44x44px for all interactive header elements */
+.text-size-btn,
+.theme-toggle,
+.tour-help-btn,
+.save-session-btn {
+    min-width: 44px;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Consolidate button — increase height */
+.board-consolidate-btn {
+    min-height: 36px;
+    padding: 0.4rem 0.75rem;
+}
+
+/* Board add-card button — ensure tappable */
+.board-add-card-btn {
+    min-height: 36px;
+    padding: 0.4rem 0.75rem;
+}
+
+/* Mobile layout fixes */
+@media (max-width: 768px) {
+    /* Prevent board/chat overlap — stack vertically */
+    .workshop-layout.board-active {
+        flex-direction: column;
+    }
+    .workshop-layout.board-active .chat-pane {
+        width: 100%;
+        min-height: 50vh;
+    }
+    .workshop-layout.board-active .board-pane {
+        width: 100%;
+        max-height: 50vh;
+        border-left: none;
+        border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    /* Prevent hero text clipping */
+    .lp-hero-title {
+        font-size: clamp(1.5rem, 5vw, 2.8rem);
+        word-break: break-word;
+    }
+
+    /* Nav bar — ensure visibility */
+    .header-nav {
+        gap: 4px;
+    }
+    .header-nav-link {
+        font-size: 0.7rem;
+        padding: 0.35rem 0.6rem;
+    }
+}
+
+@media (max-width: 480px) {
+    /* Tighter mobile spacing */
+    .header { padding: 0 12px; }
+    .header-controls { gap: 4px; }
+
+    /* Stack board zones single-column on small screens */
+    .board-grid-canvas,
+    .board-grid-trade-off,
+    .board-grid-premortem,
+    .board-grid-effectuation {
+        grid-template-columns: 1fr !important;
+    }
+    .board-grid-canvas .board-zone,
+    .board-grid-trade-off .board-zone {
+        grid-column: 1 !important;
+        grid-row: auto !important;
+    }
+}
+
+/* Z-index fix: tool dropdown above text-size panel */
+.tool-picker-dropdown { z-index: 1010; }
+.text-size-panel { z-index: 1005; }

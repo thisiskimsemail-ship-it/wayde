@@ -4069,7 +4069,7 @@ function switchBoardLayout(mode) {
     zonesContainer.className = 'board-zones ' + layout.gridClass;
     zonesContainer.innerHTML = layout.zones.map(z => `
         <div class="board-zone" data-zone="${z.id}"${z.colour ? ` data-colour="${z.colour}"` : ''}>
-            <div class="zone-header"><span class="zone-name">${z.name}</span><span class="zone-count" data-zone="${z.id}">0</span></div>
+            <div class="zone-header"><span class="zone-name">${z.name}</span><span class="zone-count" data-zone="${z.id}" style="display:none">0</span></div>
             ${z.hint ? `<div class="zone-hint">${z.hint}</div>` : ''}
             <div class="zone-cards" data-zone="${z.id}"></div>
             <div class="zone-empty">${z.empty}</div>
@@ -4260,7 +4260,7 @@ function updateBoardCounts() {
         const count = state.board.cards.filter(c => c.zone === zone).length;
         total += count;
         const countEl = document.querySelector(`.zone-count[data-zone="${zone}"]`);
-        if (countEl) countEl.textContent = count;
+        if (countEl) { countEl.textContent = count; countEl.style.display = count > 0 ? '' : 'none'; }
     });
     const boardCountEl = document.getElementById('boardCount');
     if (boardCountEl) {

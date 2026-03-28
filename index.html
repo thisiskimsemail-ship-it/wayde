@@ -47,7 +47,7 @@
         <!-- JS state refs — not displayed -->
         <span class="js-state" id="sessionMode"></span>
         <span class="js-state" id="sessionExercise"></span>
-        <button class="js-state" id="toolPickerBtn" disabled></button>
+        <button class="js-state" id="toolPickerBtn" disabled aria-label="Select tool"></button>
         <!-- Session breadcrumb with dropdown -->
         <div class="session-breadcrumb" id="sessionBreadcrumb">
             <span class="breadcrumb-stage" id="breadcrumbStage">CLARIFY</span>
@@ -77,7 +77,7 @@
             <button class="save-modal-close" id="saveModalClose">✕</button>
             <h3>Save your session</h3>
             <p>We'll email you a link to pick up exactly where you left off.</p>
-            <input type="email" class="save-modal-email" id="saveModalEmail" placeholder="your@email.com" autocomplete="email">
+            <input type="email" class="save-modal-email" id="saveModalEmail" placeholder="your@email.com" autocomplete="email" aria-label="Email address">
             <button class="save-modal-submit" id="saveModalSubmit">Send link</button>
             <p class="save-modal-status hidden" id="saveModalStatus"></p>
         </div>
@@ -397,7 +397,7 @@
             </p>
         </div>
 
-        <div class="messages" id="messages"></div>
+        <div class="messages" id="messages" role="log" aria-live="polite" aria-label="Conversation with Pete"></div>
 
         <!-- Synopsis card (shown immediately after report generates) -->
         <div class="report-synopsis hidden" id="reportSynopsis">
@@ -420,7 +420,7 @@
             <h3 class="report-unlock-heading">Almost there — tell us where to send your report</h3>
             <form class="lead-form" id="unlockForm">
                 <input type="text" class="lead-input" id="unlockName" placeholder="Name" required>
-                <input type="email" class="lead-input" id="unlockEmail" placeholder="Email" required>
+                <input type="email" class="lead-input" id="unlockEmail" placeholder="Email" required aria-label="Email address">
                 <input type="text" class="lead-input" id="unlockCompany" placeholder="Company / Organisation">
                 <input type="text" class="lead-input" id="unlockRole" placeholder="Role">
                 <button type="submit" class="lead-submit" id="unlockSubmit">Build my report →</button>
@@ -533,7 +533,7 @@
                 <div class="ps-email-capture" id="psEmailCapture">
                     <p class="ps-email-label">Enter your email to download your workshop outputs</p>
                     <form class="ps-email-form" id="psEmailForm">
-                        <input type="email" class="ps-email-input" id="psEmailInput" placeholder="you@company.com" required>
+                        <input type="email" class="ps-email-input" id="psEmailInput" placeholder="you@company.com" required aria-label="Email address">
                         <button type="submit" class="ps-download-btn" id="psDownloadBtn">Download</button>
                     </form>
                     <p class="ps-legal">We'll send your outputs to this email too. No spam, ever.</p>
@@ -664,7 +664,7 @@
             <p class="lead-modal-sub">Enter your details to receive your report. A copy will also be shared with the Wade Institute team.</p>
             <form class="lead-form" id="leadForm">
                 <input type="text" class="lead-input" id="leadName" placeholder="Name" required>
-                <input type="email" class="lead-input" id="leadEmail" placeholder="Email" required>
+                <input type="email" class="lead-input" id="leadEmail" placeholder="Email" required aria-label="Email address">
                 <input type="text" class="lead-input" id="leadCompany" placeholder="Company / Organisation">
                 <input type="text" class="lead-input" id="leadRole" placeholder="Role">
                 <button type="submit" class="lead-submit" id="leadSubmit">Send me the report</button>
@@ -703,7 +703,7 @@
     <!-- Prompt bar — fixed at viewport bottom, always accessible -->
     <footer class="input-area">
         <form class="input-form" id="inputForm">
-            <textarea class="input-field" id="inputField" placeholder="What's on your mind?" rows="1"></textarea>
+            <textarea class="input-field" id="inputField" placeholder="What's on your mind?" rows="1" aria-label="Message Pete"></textarea>
             <input type="file" id="fileInput" class="file-input-hidden" accept="image/*,.pdf,.docx,.doc,.pptx,.xlsx,.csv,.txt,.md,.json" multiple>
             <div class="input-btns">
                 <button class="upload-btn" type="button" id="uploadBtn" title="Upload a file" aria-label="Upload a file">
@@ -780,6 +780,6 @@
         <button class="feedback-submit" id="feedbackSubmit">Send feedback</button>
     </div>
 
-    <script src="app.js?v=151"></script>
+    <script src="app.js?v=152"></script>
 </body>
 </html>
