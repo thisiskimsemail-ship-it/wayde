@@ -3442,7 +3442,12 @@ SVG_ZONE_MAP = {
         'co-v1': 'V1', 'co-v2': 'V2', 'co-v3': 'V3',
     },
     'reality-check': {
+        'rc-claims': 'CLAIM',
+        'rc-evidence': 'EVIDENCE',
+        'rc-supported': 'SUPPORTED',
+        'rc-gap': 'GAP',
         'rc-revised': 'REVISED NARRATIVE',
+        'rc-metrics': 'SIGNAL METRIC',
     },
     'iceberg': {
         'ice-event': 'EVENT',
@@ -3461,7 +3466,13 @@ SVG_ZONE_MAP = {
         'sq-assumed': 'ASSUMED',
         'sq-critical': 'CRITICAL ASSUMPTION',
     },
-    'flywheel': {},
+    'flywheel': {
+        'fw-component-1': 'COMPONENT 1',
+        'fw-component-2': 'COMPONENT 2',
+        'fw-component-3': 'COMPONENT 3',
+        'fw-component-4': 'COMPONENT 4',
+        'fw-bottleneck': 'BOTTLENECK',
+    },
 }
 
 # Map exercise key to SVG template filename
@@ -3977,6 +3988,375 @@ Setbacks or surprises that could be turned into advantages. Bullet points.
 The specific, concrete action for the next 48 hours. One sentence, bold and prominent.
 """ + UNIVERSAL_REPORT_SECTIONS
 
+JTBD_REPORT = """You are producing a Jobs to Be Done session report for The Studio at Wade Institute of Entrepreneurship.
+Write clearly, directly, using markdown. Frame everything as the user's own thinking.
+
+The tool-specific output section (placed after "Questions Worth Sitting With" in the report structure) is:
+
+### Workshop Board
+
+#### The Customer
+Who they mapped — one sentence describing the person in a moment, not a demographic.
+
+#### The Job Story
+Display the completed job story in a blockquote:
+> "When I [situation], I want to [motivation], so I can [outcome]."
+
+#### The Four Forces
+| Force | Finding |
+|---|---|
+| **Push** (frustrations with status quo) | [from session] |
+| **Pull** (attraction to new solution) | [from session] |
+| **Anxiety** (fears about switching) | [from session] |
+| **Habit** (inertia keeping them stuck) | [from session] |
+
+#### The Three Jobs
+- **Functional**: [what they practically need to do]
+- **Emotional**: [how they want to feel]
+- **Social**: [how they want to be perceived]
+
+#### Gap Analysis
+Does the user's product actually solve this job? One paragraph on the fit — or misfit — between the job and the current solution.
+""" + UNIVERSAL_REPORT_SECTIONS
+
+EMPATHY_MAP_REPORT = """You are producing an Empathy Map session report for The Studio at Wade Institute of Entrepreneurship.
+Write clearly, directly, using markdown. Frame everything as the user's own thinking.
+
+The tool-specific output section (placed after "Questions Worth Sitting With" in the report structure) is:
+
+### Workshop Board
+
+#### The Person
+Who they mapped — name and context, one sentence.
+
+#### The Empathy Map
+| Says | Thinks |
+|---|---|
+| [key quotes and statements] | [unspoken thoughts and worries] |
+
+| Does | Feels |
+|---|---|
+| [observable behaviours and actions] | [core emotions driving them] |
+
+#### The Contradiction
+The gap between what this person says/does and what they think/feel — one paragraph explaining the tension and why it matters.
+
+#### The Insight
+The opportunity that lives in that gap — one sentence, bold and prominent.
+""" + UNIVERSAL_REPORT_SECTIONS
+
+SCAMPER_REPORT = """You are producing a SCAMPER session report for The Studio at Wade Institute of Entrepreneurship.
+Write clearly, directly, using markdown. Frame everything as the user's own thinking.
+
+The tool-specific output section (placed after "Questions Worth Sitting With" in the report structure) is:
+
+### Workshop Board
+
+#### The Subject
+What they applied SCAMPER to — one sentence.
+
+#### Ideas by Lens
+For each SCAMPER lens that was explored, show the best idea generated:
+
+| Lens | Idea |
+|---|---|
+| **S — Substitute** | [idea from session] |
+| **C — Combine** | [idea from session] |
+| **A — Adapt** | [idea from session] |
+| **M — Modify** | [idea from session] |
+| **P — Put to other uses** | [idea from session] |
+| **E — Eliminate** | [idea from session] |
+| **R — Reverse** | [idea from session] |
+
+If a lens was not explored, omit it from the table.
+
+#### Top Picks
+The 2-3 ideas the user selected as most promising. For each, one sentence on why it's worth exploring and one sentence on the first assumption to test.
+""" + UNIVERSAL_REPORT_SECTIONS
+
+COLD_OPEN_REPORT = """You are producing a Cold Open session report for The Studio at Wade Institute of Entrepreneurship.
+Write clearly, directly, using markdown. Frame everything as the user's own thinking.
+
+The tool-specific output section (placed after "Questions Worth Sitting With" in the report structure) is:
+
+### Workshop Board
+
+#### The Evolution
+Show how the message improved across attempts:
+
+**Version 1** (first attempt):
+> [what they said]
+*Feedback: [what landed, what didn't]*
+
+**Version 2** (revised):
+> [what they said]
+*Feedback: [improvement and remaining gaps]*
+
+Include Version 3 if it occurred.
+
+#### The Message Hierarchy
+The final three-level architecture:
+- **Level 1 — The Hook**: [the dinner party sentence that earns "tell me more"]
+- **Level 2 — The Follow-Up**: [the problem, the insight, why it matters]
+- **Level 3 — The Detail**: [features, evidence, proof points]
+
+#### What Changed
+One paragraph: what was the core shift from first attempt to final version? Name the pattern — jargon to plain language, features to value, many ideas to one clear hook.
+""" + UNIVERSAL_REPORT_SECTIONS
+
+REALITY_CHECK_REPORT = """You are producing a Reality Check session report for The Studio at Wade Institute of Entrepreneurship.
+Write clearly, directly, using markdown. Frame everything as the user's own thinking.
+
+The tool-specific output section (placed after "Questions Worth Sitting With" in the report structure) is:
+
+### Workshop Board
+
+#### Claims vs Evidence
+| Claim | Evidence | Verdict |
+|---|---|---|
+| [claim from session] | [data provided or "No data"] | Supported / Partial / Unsupported |
+
+Include all claims surfaced during the session.
+
+#### The Gaps
+Bullet-point list of claims that had no evidence or contradicting data. For each, name what data would be needed to verify it.
+
+#### The Honest Picture
+The revised narrative — the version that matches reality. One paragraph in the user's voice.
+
+#### Signal Metrics
+The 3 metrics they should actually track (not vanity metrics):
+1. [metric] — why it matters
+2. [metric] — why it matters
+3. [metric] — why it matters
+""" + UNIVERSAL_REPORT_SECTIONS
+
+TRADE_OFF_REPORT = """You are producing a Trade-Off session report for The Studio at Wade Institute of Entrepreneurship.
+Write clearly, directly, using markdown. Frame everything as the user's own thinking.
+
+The tool-specific output section (placed after "Questions Worth Sitting With" in the report structure) is:
+
+### Workshop Board
+
+#### Features Tested
+List the 5-7 dimensions that were put through trade-off rounds, with their levels.
+
+#### Trade-Off Results
+| Round | Choice | Deciding Factor |
+|---|---|---|
+| Round 1 | [chosen package] | [why] |
+| Round 2 | [chosen package] | [why] |
+...continue for all rounds played.
+
+#### The Value Stack
+- **Must-have**: [features that won 5+ rounds]
+- **Nice-to-have**: [features that won 2-4 rounds]
+- **Expendable**: [features that won 0-1 rounds]
+
+#### The Surprise
+The feature the user was most wrong about — what they expected vs what the trade-offs revealed. One paragraph.
+
+#### Minimum Viable Offer
+The stripped-back version using only features that survived. One sentence describing it + price point.
+""" + UNIVERSAL_REPORT_SECTIONS
+
+RAPID_EXPERIMENT_REPORT = """You are producing a Rapid Experiment session report for The Studio at Wade Institute of Entrepreneurship.
+Write clearly, directly, using markdown. Frame everything as the user's own thinking.
+
+The tool-specific output section (placed after "Questions Worth Sitting With" in the report structure) is:
+
+### Workshop Board
+
+#### The Riskiest Assumption
+The assumption that kills the idea if wrong — one sentence, bold and prominent.
+
+#### Experiment Design
+| Element | Detail |
+|---|---|
+| **Hypothesis** | [what they're testing] |
+| **Method** | [experiment type — concierge, wizard of oz, landing page, fake door, interview, or pre-sell] |
+| **Target** | [who they're testing with and how many] |
+| **Timeline** | [how long the experiment runs] |
+
+#### Success Criteria (defined before running)
+- **Pass**: [result that means keep going — specific number]
+- **Fail**: [result that means pivot or stop — specific number]
+- **Predicted outcome**: [what the user expects to see]
+
+#### If It Fails
+Pivot options discussed during the session. Bullet points — each with one sentence on what changes.
+""" + UNIVERSAL_REPORT_SECTIONS
+
+FLYWHEEL_REPORT = """You are producing a Flywheel session report for The Studio at Wade Institute of Entrepreneurship.
+Write clearly, directly, using markdown. Frame everything as the user's own thinking.
+
+The tool-specific output section (placed after "Questions Worth Sitting With" in the report structure) is:
+
+### Workshop Board
+
+#### The Flywheel
+Display the components as a numbered loop, showing the reinforcing cycle:
+1. [Component A] →
+2. [Component B] →
+3. [Component C] →
+4. [Component D] →
+...back to 1.
+
+#### Connection Strength
+| Connection | Strength | Mechanism |
+|---|---|---|
+| A → B | Strong / Developing / Unproven | [how exactly A causes B] |
+| B → C | Strong / Developing / Unproven | [how exactly B causes C] |
+...continue for all connections.
+
+#### The Bottleneck
+The weakest connection in the loop — one sentence naming it and one sentence on why it matters more than the others.
+
+#### Acceleration Plan
+What it would take to make the bottleneck connection twice as strong in 90 days. One paragraph.
+""" + UNIVERSAL_REPORT_SECTIONS
+
+THEORY_OF_CHANGE_REPORT = """You are producing a Theory of Change session report for The Studio at Wade Institute of Entrepreneurship.
+Write clearly, directly, using markdown. Frame everything as the user's own thinking.
+
+The tool-specific output section (placed after "Questions Worth Sitting With" in the report structure) is:
+
+### Workshop Board
+
+#### The Outcome
+The long-term observable change — one sentence describing what is different and for whom.
+
+#### The Causal Chain
+Display the pathway from activities to outcome, working left to right:
+
+**Activities** → **Preconditions** → **Outcome**
+
+For each precondition, show its sphere:
+- [precondition] — *Within Control*
+- [precondition] — *Within Influence*
+- [precondition] — *Outside Control*
+
+#### The Missing Middle
+Gaps in the causal chain that were exposed during the session — where the user jumped from activities to outcomes without specifying what must happen in between. Bullet points.
+
+#### The Weakest Link
+The connection with the least evidence — one sentence naming it and one sentence on what would happen if it broke.
+
+#### Activities Mapped
+For each precondition within control or influence, the specific activity designed to make it true:
+- [activity] → [precondition it creates]
+""" + UNIVERSAL_REPORT_SECTIONS
+
+ANALOGICAL_REPORT = """You are producing a Mash Up (Analogical Thinking) session report for The Studio at Wade Institute of Entrepreneurship.
+Write clearly, directly, using markdown. Frame everything as the user's own thinking.
+
+The tool-specific output section (placed after "Questions Worth Sitting With" in the report structure) is:
+
+### Workshop Board
+
+#### The Challenge (Abstracted)
+The user's problem distilled to its fundamental form — one sentence. Show both the original framing and the abstracted version.
+
+#### Analogies Explored
+For each domain explored:
+
+**Nature / Biology**
+- Analogy: [what nature does]
+- Application: [how it could apply to their venture]
+
+**Different Industry**
+- Analogy: [what that industry does]
+- Application: [how it could apply to their venture]
+
+**Human Behaviour / Culture**
+- Analogy: [social ritual or cultural practice]
+- Application: [how it could apply to their venture]
+
+Only include domains that were actually explored in the session.
+
+#### The Breakthrough Analogy
+Which analogy gave the most unexpected insight — one paragraph on what it reveals and what assumption it breaks about how the user's industry currently works.
+""" + UNIVERSAL_REPORT_SECTIONS
+
+SOCRATIC_REPORT = """You are producing a Socratic Questioning session report for The Studio at Wade Institute of Entrepreneurship.
+Write clearly, directly, using markdown. Frame everything as the user's own thinking.
+
+The tool-specific output section (placed after "Questions Worth Sitting With" in the report structure) is:
+
+### Workshop Board
+
+#### The Belief Map
+Classify each claim surfaced during the session:
+
+| Belief | Classification | Evidence |
+|---|---|---|
+| [claim] | Verified / Assumed / Inherited | [evidence or source] |
+
+#### The Score
+Summary: "You walked in with N beliefs. X verified, Y assumed, Z inherited." One sentence.
+
+#### The Critical Assumption
+The single assumption that, if wrong, changes everything — one sentence in bold. Followed by one sentence on what would change.
+
+#### The Test
+The simplest way to test the critical assumption in the next two weeks. One specific, concrete action.
+""" + UNIVERSAL_REPORT_SECTIONS
+
+ICEBERG_REPORT = """You are producing an Iceberg session report for The Studio at Wade Institute of Entrepreneurship.
+Write clearly, directly, using markdown. Frame everything as the user's own thinking.
+
+The tool-specific output section (placed after "Questions Worth Sitting With" in the report structure) is:
+
+### Workshop Board
+
+#### The Iceberg
+Display the four levels as a descending structure:
+
+**Event** (surface)
+[the incident they described]
+
+**Patterns** (just below the surface)
+[recurring themes — bullet points]
+
+**Structures** (deep)
+[systemic causes — incentives, processes, power dynamics. Bullet points]
+
+**Mental Models** (deepest)
+[the unspoken beliefs holding the structure in place — bullet points]
+
+#### The Leverage Point
+Where in the iceberg the highest-leverage intervention sits — one sentence naming the level and the specific belief or structure to target.
+
+#### The Shift
+What it would look like to change the mental model — one paragraph on what changes if the belief changes, and how that cascades up through structures, patterns, and events.
+""" + UNIVERSAL_REPORT_SECTIONS
+
+CONSTRAINT_FLIP_REPORT = """You are producing a Constraint Flip session report for The Studio at Wade Institute of Entrepreneurship.
+Write clearly, directly, using markdown. Frame everything as the user's own thinking.
+
+The tool-specific output section (placed after "Questions Worth Sitting With" in the report structure) is:
+
+### Workshop Board
+
+#### The Constraint
+The specific limitation they named — one sentence. Not vague ("limited resources") but concrete ("two-person team, no marketing budget, shipping from regional Australia").
+
+#### The Flip
+How the constraint becomes an advantage:
+- **What it forces**: [forced behaviour — focus, speed, creativity, intimacy]
+- **What it signals**: [to customers, investors, partners]
+- **What it enables**: [what becomes possible only because of the constraint]
+
+#### Constraint-Driven Ideas
+Ideas that only work BECAUSE of the constraint. For each:
+- [idea] — *Uses the constraint because: [explanation]*
+
+Only include ideas that pass the test: would this break if the constraint disappeared?
+
+#### The Moat Idea
+The idea that creates an advantage a well-funded competitor cannot easily copy — bold and prominent. One sentence on what makes it defensible.
+""" + UNIVERSAL_REPORT_SECTIONS
+
 EXERCISE_NAMES = {
     'five-whys': 'Five Whys',
     'hmw': 'How Might We',
@@ -4205,6 +4585,20 @@ def generate_report():
             'devils-advocate': DEVILS_ADVOCATE_REPORT,
             'effectuation': EFFECTUATION_REPORT,
             'lean-canvas': REPORT_PROMPT,
+            'jtbd': JTBD_REPORT,
+            'empathy-map': EMPATHY_MAP_REPORT,
+            'scamper': SCAMPER_REPORT,
+            'cold-open': COLD_OPEN_REPORT,
+            'reality-check': REALITY_CHECK_REPORT,
+            'trade-off': TRADE_OFF_REPORT,
+            'rapid-experiment': RAPID_EXPERIMENT_REPORT,
+            'flywheel': FLYWHEEL_REPORT,
+            'theory-of-change': THEORY_OF_CHANGE_REPORT,
+            'analogical': ANALOGICAL_REPORT,
+            'mash-up': ANALOGICAL_REPORT,
+            'socratic': SOCRATIC_REPORT,
+            'iceberg': ICEBERG_REPORT,
+            'constraint-flip': CONSTRAINT_FLIP_REPORT,
         }
         report_template = TOOL_REPORT_PROMPTS.get(exercise, REPORT_PROMPT)
     system = exercise_context + report_template.replace('{WADE_PROGRAMS_PLACEHOLDER}', programs_block).replace('{EXERCISE_PLACEHOLDER}', exercise_name).replace('{EXERCISE_KEY}', exercise or 'conversation') + parking_lot_block + board_block + WADE_KNOWLEDGE_BLOCK

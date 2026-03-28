@@ -6,757 +6,247 @@
 <link rel="preload" href="fonts/GT-Walsheim-Regular.woff" as="font" type="font/woff" crossorigin>
 <title>The Trade-Off — Wade Innovation Toolbox</title>
 <style>
-  .hidden { display: none !important; }
   @font-face { font-family: "GT Walsheim"; src: url("fonts/GT-Walsheim-Regular.woff") format("woff"), url("fonts/GT-Walsheim-Regular.ttf") format("truetype"); font-weight: 400; font-style: normal; font-display: swap; }
-
   * { margin: 0; padding: 0; box-sizing: border-box; }
-
   :root {
-    --navy: #1E194F;
-    --navy-deep: #12103a;
-    --orange: #F15A22;
-    --orange-hover: #d14e1b;
-    --white: #FFFFFF;
-    --text-body: #b8b5d0;
-    --text-light: #6e6a8a;
-    --border: rgba(255,255,255,0.08);
-    --border-light: rgba(255,255,255,0.15);
-    --card-bg: #1a1750;
-    --card-hover: #221d5a;
-    --cat-color: #ED3694;
-    --untangle: #27BDBE;
-    --spark: #F15A22;
-    --test: #ED3694;
-    --build: #E4E517;
+    --navy: #1E194F; --navy-deep: #12103a; --orange: #F15A22; --orange-hover: #d14e1b;
+    --white: #FFFFFF; --text-body: #b8b5d0; --text-light: #6e6a8a;
+    --border: rgba(255,255,255,0.08); --border-light: rgba(255,255,255,0.15); --card-bg: #1a1750; --card-hover: #221d5a;
+    --cat-color: #ED3694; --untangle: #27BDBE; --spark: #F15A22; --test: #ED3694; --build: #E4E517;
   }
-
-  body {
-    font-family: 'GT Walsheim', 'Space Grotesk', sans-serif;
-    color: var(--text-body);
-    background: var(--navy-deep);
-    -webkit-font-smoothing: antialiased;
-  }
-
-  /* ── HEADER ── */
-  .header { padding: 1rem 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: space-between; }
-  .logo { height: 50px; width: auto; }
-  .header-nav { display: flex; border: 1px solid rgba(255,255,255,0.12); border-radius: 999px; overflow: hidden; margin-left: auto; margin-right: 1rem; }
-  .header-nav-link { padding: 0.4rem 1.1rem; font-size: 0.8rem; font-weight: 500; color: rgba(255,255,255,0.5); text-decoration: none; transition: all 0.2s; white-space: nowrap; }
-  .header-nav-link:hover { color: #fff; background: rgba(255,255,255,0.05); }
-  .header-nav-link.active { color: #fff; background: rgba(255,255,255,0.08); }
-  .header-controls { display: flex; align-items: center; gap: 0.5rem; }
-  .text-size-btn, .theme-toggle, .tour-help-btn { background: transparent; border: 1px solid rgba(255,255,255,0.12); border-radius: 6px; width: 32px; height: 32px; color: rgba(255,255,255,0.5); font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-  .text-size-btn:hover, .theme-toggle:hover, .tour-help-btn:hover { border-color: rgba(255,255,255,0.3); color: #fff; }
-
-  /* ── TOOL HERO ── */
-  .tool-hero {
-    padding: 140px 60px 60px;
-    max-width: 1300px;
-    margin: 0 auto;
-  }
-
-  .breadcrumb {
-    font-size: 14px; color: var(--text-light); margin-bottom: 28px;
-  }
+  body { font-family: 'GT Walsheim', 'Space Grotesk', sans-serif; color: var(--text-body); background: var(--navy-deep); -webkit-font-smoothing: antialiased; }
+  header { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: var(--navy-deep); border-bottom: 2px solid var(--orange); padding: 0 60px; height: 72px; display: flex; align-items: center; justify-content: space-between; }
+  .logo { font-weight: 700; font-size: 15px; line-height: 1.15; color: var(--orange); letter-spacing: 0.4px; text-transform: uppercase; }
+  .header-nav { display: flex; gap: 12px; align-items: center; }
+  .nav-pill { font-size: 14px; font-weight: 500; padding: 8px 20px; border-radius: 100px; border: 1.5px solid rgba(255,255,255,0.25); background: transparent; color: var(--white); cursor: pointer; text-decoration: none; transition: all 0.2s; font-family: 'GT Walsheim', 'Space Grotesk', sans-serif; }
+  .nav-pill:hover { background: rgba(255,255,255,0.1); }
+  .nav-pill.active { background: var(--white); color: var(--navy); border-color: var(--white); }
+  .nav-icon { width: 36px; height: 36px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,0.25); display: flex; align-items: center; justify-content: center; color: var(--white); font-size: 14px; text-decoration: none; }
+  .tool-hero { padding: 140px 60px 60px; max-width: 1300px; margin: 0 auto; }
+  .breadcrumb { font-size: 14px; color: var(--text-light); margin-bottom: 28px; }
   .breadcrumb a { color: var(--cat-color); text-decoration: none; }
   .breadcrumb a:hover { text-decoration: underline; }
   .breadcrumb span { margin: 0 8px; color: var(--border-light); }
-
-  .tool-hero-grid {
-    display: grid;
-    grid-template-columns: 1fr 360px;
-    gap: 60px;
-    align-items: start;
-  }
-
-  .tool-hero-left .stage-badge {
-    display: inline-block;
-    font-size: 11px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase;
-    padding: 5px 14px; border-radius: 100px;
-    background: var(--cat-color); color: var(--white);
-    margin-bottom: 16px;
-  }
-
-  .tool-hero-left h1 {
-    font-family: 'GT Walsheim', 'Space Grotesk', sans-serif;
-    font-size: 56px; font-weight: 400; color: var(--white);
-    line-height: 1.1; margin-bottom: 12px;
-  }
-
-  .tool-headline {
-    font-family: 'GT Walsheim', 'Space Grotesk', sans-serif;
-    font-size: 24px; font-weight: 400; color: var(--cat-color);
-    font-style: italic; margin-bottom: 24px;
-  }
-
-  .tool-intro {
-    font-size: 18px; line-height: 1.7; color: var(--text-body);
-    max-width: 600px;
-  }
-
-  /* Right sidebar — quick facts card */
-  .quick-facts {
-    background: var(--card-bg);
-    border-radius: 16px;
-    border: 1px solid var(--border);
-    padding: 32px;
-  }
-
-  .qf-title {
-    font-size: 13px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
-    color: var(--text-light); margin-bottom: 20px;
-  }
-
-  .qf-row {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 12px 0;
-    border-bottom: 1px solid var(--border);
-  }
+  .tool-hero-grid { display: grid; grid-template-columns: 1fr 360px; gap: 60px; align-items: start; }
+  .tool-hero-left .stage-badge { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; padding: 5px 14px; border-radius: 100px; background: var(--cat-color); color: var(--white); margin-bottom: 16px; }
+  .tool-hero-left h1 { font-family: 'GT Walsheim', 'Space Grotesk', sans-serif; font-size: 56px; font-weight: 400; color: var(--white); line-height: 1.1; margin-bottom: 12px; }
+  .tool-headline { font-family: 'GT Walsheim', 'Space Grotesk', sans-serif; font-size: 24px; font-weight: 400; color: var(--cat-color); font-style: italic; margin-bottom: 24px; }
+  .tool-intro { font-size: 18px; line-height: 1.7; color: var(--text-body); max-width: 600px; }
+  .quick-facts { background: var(--card-bg); border-radius: 16px; border: 1px solid var(--border); padding: 32px; }
+  .qf-title { font-size: 13px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--text-light); margin-bottom: 20px; }
+  .qf-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border); }
   .qf-row:last-of-type { border-bottom: none; }
-
   .qf-label { font-size: 14px; color: var(--text-light); }
   .qf-value { font-size: 14px; font-weight: 600; color: var(--white); }
-
-  .qf-pathways {
-    margin-top: 16px;
-    padding-top: 16px;
-    border-top: 1px solid var(--border);
-  }
-
-  .qf-pathways-label {
-    font-size: 13px; color: var(--text-light); margin-bottom: 10px;
-  }
-
-  .pathway-tags {
-    display: flex; flex-wrap: wrap; gap: 6px;
-  }
-
-  .pathway-tag {
-    font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 100px; border: 1px solid;
-  }
-  .pathway-tag.untangle { border-color: rgba(39,189,190,0.4); color: var(--untangle); }
-  .pathway-tag.spark { border-color: rgba(241,90,34,0.4); color: var(--spark); }
+  .qf-pathways { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); }
+  .qf-pathways-label { font-size: 13px; color: var(--text-light); margin-bottom: 10px; }
+  .pathway-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .pathway-tag { font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 100px; border: 1px solid; }
   .pathway-tag.test { border-color: rgba(237,54,148,0.4); color: var(--test); }
-  .pathway-tag.build { border-color: rgba(228,229,23,0.4); color: var(--build); }
-
-  .qf-cta {
-    display: block; width: 100%; text-align: center;
-    margin-top: 24px; padding: 14px 24px;
-    background: var(--cat-color); color: var(--white);
-    border-radius: 100px; border: none;
-    font-size: 16px; font-weight: 600; font-family: 'GT Walsheim', 'Space Grotesk', sans-serif;
-    cursor: pointer; text-decoration: none; transition: all 0.2s;
-  }
+  .qf-cta { display: block; width: 100%; text-align: center; margin-top: 24px; padding: 14px 24px; background: var(--cat-color); color: var(--white); border-radius: 100px; border: none; font-size: 16px; font-weight: 600; font-family: 'GT Walsheim', 'Space Grotesk', sans-serif; cursor: pointer; text-decoration: none; transition: all 0.2s; }
   .qf-cta:hover { filter: brightness(0.9); }
-
-  /* ── CONTENT SECTIONS ── */
-  .content-area {
-    padding: 0 60px 80px;
-    max-width: 1300px;
-    margin: 0 auto;
-  }
-
-  .content-grid {
-    display: grid;
-    grid-template-columns: 1fr 360px;
-    gap: 60px;
-  }
-
+  .content-area { padding: 0 60px 80px; max-width: 1300px; margin: 0 auto; }
+  .content-grid { display: grid; grid-template-columns: 1fr 360px; gap: 60px; }
   .content-main { max-width: 100%; }
-
-  .section-block {
-    margin-bottom: 56px;
-  }
-
-  .section-block h2 {
-    font-family: 'GT Walsheim', 'Space Grotesk', sans-serif;
-    font-size: 32px; font-weight: 400; color: var(--white);
-    margin-bottom: 20px;
-  }
-
-  .section-block p {
-    font-size: 17px; line-height: 1.75; color: var(--text-body);
-    margin-bottom: 16px;
-  }
-
+  .section-block { margin-bottom: 56px; }
+  .section-block h2 { font-family: 'GT Walsheim', 'Space Grotesk', sans-serif; font-size: 32px; font-weight: 400; color: var(--white); margin-bottom: 20px; }
+  .section-block p { font-size: 17px; line-height: 1.75; color: var(--text-body); margin-bottom: 16px; }
   .section-block p strong { color: var(--white); }
-
-  /* How it works — step timeline */
-  .steps-timeline {
-    position: relative;
-    padding-left: 40px;
-  }
-
-  .steps-timeline::before {
-    content: '';
-    position: absolute;
-    left: 14px; top: 8px; bottom: 8px;
-    width: 2px;
-    background: var(--border);
-  }
-
-  .step-item {
-    position: relative;
-    padding-bottom: 32px;
-  }
+  .steps-timeline { position: relative; padding-left: 40px; }
+  .steps-timeline::before { content: ''; position: absolute; left: 14px; top: 8px; bottom: 8px; width: 2px; background: var(--border); }
+  .step-item { position: relative; padding-bottom: 32px; }
   .step-item:last-child { padding-bottom: 0; }
+  .step-number { position: absolute; left: -40px; top: 0; width: 30px; height: 30px; border-radius: 50%; background: var(--card-bg); border: 2px solid var(--cat-color); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: var(--cat-color); }
+  .step-title { font-size: 17px; font-weight: 600; color: var(--white); margin-bottom: 6px; }
+  .step-desc { font-size: 15px; color: var(--text-body); line-height: 1.6; }
+  .sample-output { background: var(--card-bg); border-radius: 16px; border: 1px solid var(--border); padding: 32px; margin-top: 8px; }
+  .sample-label { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--cat-color); margin-bottom: 20px; }
+  .sample-root { margin-top: 20px; padding-top: 20px; border-top: 2px solid var(--cat-color); }
+  .sample-root-label { font-size: 12px; font-weight: 700; color: var(--cat-color); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px; }
+  .sample-root-text { font-family: 'GT Walsheim', 'Space Grotesk', sans-serif; font-size: 20px; color: var(--white); line-height: 1.4; }
 
-  .step-number {
-    position: absolute;
-    left: -40px; top: 0;
-    width: 30px; height: 30px;
-    border-radius: 50%;
-    background: var(--card-bg);
-    border: 2px solid var(--cat-color);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 13px; font-weight: 700; color: var(--cat-color);
-  }
+  /* Value stack table */
+  .value-table { width: 100%; border-collapse: collapse; margin-bottom: 0; }
+  .value-table th { font-size: 11px; font-weight: 700; color: var(--cat-color); text-transform: uppercase; letter-spacing: 0.8px; text-align: left; padding: 8px 10px; border-bottom: 2px solid var(--border); }
+  .value-table td { font-size: 13px; color: var(--text-body); padding: 12px 10px; border-bottom: 1px solid var(--border); vertical-align: top; line-height: 1.5; }
+  .value-table tr:last-child td { border-bottom: none; }
+  .value-table .feature-name { color: var(--white); font-weight: 500; }
+  .rank-must { color: #34D399; font-weight: 600; }
+  .rank-nice { color: #FBBF24; font-weight: 600; }
+  .rank-cut { color: #F87171; font-weight: 600; }
 
-  .step-title {
-    font-size: 17px; font-weight: 600; color: var(--white);
-    margin-bottom: 6px;
-  }
-
-  .step-desc {
-    font-size: 15px; color: var(--text-body); line-height: 1.6;
-  }
-
-  /* Sample output card */
-  .sample-output {
-    background: var(--card-bg);
-    border-radius: 16px;
-    border: 1px solid var(--border);
-    padding: 32px;
-    margin-top: 8px;
-  }
-
-  .sample-label {
-    font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
-    color: var(--cat-color); margin-bottom: 20px;
-  }
-
-  .sample-row {
-    padding: 14px 0;
-    border-bottom: 1px solid var(--border);
-    display: flex; align-items: center; gap: 12px;
-  }
-  .sample-row:last-of-type { border-bottom: none; }
-
-  .sample-rank {
-    font-size: 13px; font-weight: 700; color: var(--cat-color); flex-shrink: 0; width: 24px;
-  }
-
-  .sample-feature {
-    font-size: 14px; font-weight: 600; color: var(--white); flex: 1;
-  }
-
-  .sample-score {
-    font-size: 13px; color: var(--text-light); flex-shrink: 0; margin-right: 8px;
-  }
-
-  .sample-tier {
-    font-size: 10px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase;
-    padding: 2px 8px; border-radius: 100px; flex-shrink: 0;
-  }
-  .tier-must { background: rgba(39,189,190,0.15); color: #27BDBE; }
-  .tier-nice { background: rgba(241,180,34,0.15); color: #F1B422; }
-  .tier-expendable { background: rgba(237,54,54,0.15); color: #ED3636; }
-
-  .sample-root {
-    margin-top: 20px; padding-top: 20px;
-    border-top: 2px solid var(--cat-color);
-  }
-
-  .sample-root-label {
-    font-size: 12px; font-weight: 700; color: var(--cat-color); text-transform: uppercase;
-    letter-spacing: 0.8px; margin-bottom: 6px;
-  }
-
-  .sample-root-text {
-    font-family: 'GT Walsheim', 'Space Grotesk', sans-serif;
-    font-size: 20px; color: var(--white); line-height: 1.4;
-  }
-
-  .sample-surprise {
-    margin-top: 16px; padding-top: 16px;
-    border-top: 1px solid var(--border);
-  }
-
-  .sample-surprise-label {
-    font-size: 12px; font-weight: 700; color: var(--cat-color); text-transform: uppercase;
-    letter-spacing: 0.8px; margin-bottom: 6px;
-  }
-
-  .sample-surprise-text {
-    font-size: 15px; color: var(--text-body); line-height: 1.6;
-  }
-
-  /* Foundation / credibility section */
-  .foundation-logos {
-    display: flex; flex-wrap: wrap; gap: 16px;
-    margin-top: 16px;
-  }
-
-  .org-badge {
-    font-size: 12px; font-weight: 600; padding: 8px 16px;
-    border-radius: 10px;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid var(--border);
-    color: var(--text-light);
-  }
-
-  /* Sidebar — related tools */
-  .sidebar {
-    display: flex; flex-direction: column; gap: 24px;
-  }
-
-  .sidebar-card {
-    background: var(--card-bg);
-    border-radius: 14px;
-    border: 1px solid var(--border);
-    padding: 24px;
-    transition: all 0.2s;
-  }
+  .foundation-logos { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 16px; }
+  .org-badge { font-size: 12px; font-weight: 600; padding: 8px 16px; border-radius: 10px; background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--text-light); }
+  .sidebar { display: flex; flex-direction: column; gap: 24px; }
+  .sidebar-card { background: var(--card-bg); border-radius: 14px; border: 1px solid var(--border); padding: 24px; transition: all 0.2s; }
   .sidebar-card:hover { border-color: var(--border-light); background: var(--card-hover); }
-
-  .sidebar-card-label {
-    font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
-    color: var(--text-light); margin-bottom: 16px;
-  }
-
-  .related-tool {
-    display: flex; gap: 14px; align-items: flex-start;
-    padding: 12px 0;
-    border-bottom: 1px solid var(--border);
-    text-decoration: none;
-  }
+  .sidebar-card-label { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--text-light); margin-bottom: 16px; }
+  .related-tool { display: flex; gap: 14px; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid var(--border); text-decoration: none; }
   .related-tool:last-child { border-bottom: none; }
-
-  .related-tool-icon {
-    width: 36px; height: 36px; border-radius: 10px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 14px; font-weight: 700; flex-shrink: 0;
-  }
+  .related-tool-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; flex-shrink: 0; }
   .related-tool-icon.untangle { background: rgba(39,189,190,0.15); color: #27BDBE; }
   .related-tool-icon.spark { background: rgba(241,90,34,0.15); color: #F15A22; }
   .related-tool-icon.test { background: rgba(237,54,148,0.15); color: #ED3694; }
   .related-tool-icon.build { background: rgba(228,229,23,0.15); color: #E4E517; }
-
-  .related-tool-text h4 {
-    font-size: 14px; font-weight: 600; color: var(--white); margin-bottom: 2px;
-  }
-  .related-tool-text p {
-    font-size: 13px; color: var(--text-light); line-height: 1.4;
-  }
-
-  /* Pete's coaching note */
-  .pete-note {
-    background: linear-gradient(135deg, rgba(237,54,148,0.08), rgba(237,54,148,0.04));
-    border: 1px solid rgba(237,54,148,0.25);
-    border-radius: 14px;
-    padding: 24px;
-  }
-
-  .pete-avatar-row {
-    display: flex; align-items: center; gap: 10px;
-    margin-bottom: 14px;
-  }
-
-  .pete-avatar {
-    width: 32px; height: 32px; border-radius: 8px;
-    background: var(--navy); display: flex; align-items: center; justify-content: center;
-    color: var(--white); font-weight: 700; font-size: 13px;
-  }
-
+  .related-tool-text h4 { font-size: 14px; font-weight: 600; color: var(--white); margin-bottom: 2px; }
+  .related-tool-text p { font-size: 13px; color: var(--text-light); line-height: 1.4; }
+  .pete-note { background: linear-gradient(135deg, rgba(237,54,148,0.08), rgba(237,54,148,0.04)); border: 1px solid rgba(237,54,148,0.25); border-radius: 14px; padding: 24px; }
+  .pete-avatar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+  .pete-avatar { width: 32px; height: 32px; border-radius: 8px; background: var(--navy); display: flex; align-items: center; justify-content: center; color: var(--white); font-weight: 700; font-size: 13px; }
   .pete-label { font-size: 13px; font-weight: 600; color: var(--white); }
-
-  .pete-text {
-    font-size: 14px; color: var(--text-body); line-height: 1.6; font-style: italic;
-  }
-
-  /* ── BOTTOM CTA BAR ── */
-  .tool-bottom-cta {
-    padding: 60px;
-    max-width: 1300px;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-top: 1px solid var(--border);
-  }
-
-  .tool-bottom-left h3 {
-    font-family: 'GT Walsheim', 'Space Grotesk', sans-serif;
-    font-size: 28px; font-weight: 400; color: var(--white);
-    margin-bottom: 6px;
-  }
+  .pete-text { font-size: 14px; color: var(--text-body); line-height: 1.6; font-style: italic; }
+  .tool-bottom-cta { padding: 60px; max-width: 1300px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border); }
+  .tool-bottom-left h3 { font-family: 'GT Walsheim', 'Space Grotesk', sans-serif; font-size: 28px; font-weight: 400; color: var(--white); margin-bottom: 6px; }
   .tool-bottom-left p { font-size: 15px; color: var(--text-light); }
-
   .tool-bottom-right { display: flex; gap: 16px; align-items: center; }
-
-  .back-link {
-    font-size: 15px; color: var(--text-light); text-decoration: none;
-    transition: color 0.2s;
-  }
+  .back-link { font-size: 15px; color: var(--text-light); text-decoration: none; transition: color 0.2s; }
   .back-link:hover { color: var(--white); }
-
-  /* ── FOOTER ── */
-  footer {
-    padding: 40px 60px; border-top: 2px solid var(--orange);
-    display: flex; justify-content: space-between; align-items: center;
-  }
+  footer { padding: 40px 60px; border-top: 2px solid var(--orange); display: flex; justify-content: space-between; align-items: center; }
   .footer-left { display: flex; align-items: center; gap: 32px; }
   .footer-logo { font-weight: 700; font-size: 13px; line-height: 1.15; color: var(--orange); letter-spacing: 0.4px; text-transform: uppercase; }
   .footer-links { display: flex; gap: 24px; }
   .footer-links a { font-size: 14px; color: var(--text-light); text-decoration: none; }
   .footer-links a:hover { color: var(--white); }
   .footer-right { font-size: 13px; color: var(--text-light); }
+  @media (max-width: 1000px) { .tool-hero-grid, .content-grid { grid-template-columns: 1fr; gap: 32px; } header { padding: 0 32px; } .tool-hero, .content-area, .tool-bottom-cta { padding-left: 32px; padding-right: 32px; } .value-table { font-size: 12px; } }
+  @media (max-width: 600px) { .tool-hero-left h1 { font-size: 40px; } .section-block h2 { font-size: 28px; } footer { flex-direction: column; gap: 16px; text-align: center; } .tool-bottom-cta { flex-direction: column; gap: 24px; text-align: center; } }
 
-  /* ── RESPONSIVE ── */
-  @media (max-width: 1000px) {
-    .tool-hero-grid, .content-grid { grid-template-columns: 1fr; gap: 32px; }
-    .header { padding: 1rem 1rem; }
-    .tool-hero, .content-area, .tool-bottom-cta { padding-left: 32px; padding-right: 32px; }
-  }
-  @media (max-width: 600px) {
-    .tool-hero-left h1 { font-size: 40px; }
-    .section-block h2 { font-size: 28px; }
-    footer { flex-direction: column; gap: 16px; text-align: center; }
-    .tool-bottom-cta { flex-direction: column; gap: 24px; text-align: center; }
-  }
+  /* Light theme */
+  html[data-theme="light"] { --navy-deep: #f8f7f5; --navy: #1E194F; --text-body: #444; --text-light: #888; --border: rgba(0,0,0,0.08); --border-light: rgba(0,0,0,0.15); --card-bg: #fff; --card-hover: #f5f5f5; }
+  html[data-theme="light"] body { background: #f8f7f5; color: #444; }
+  html[data-theme="light"] header { background: #f8f7f5; border-bottom-color: var(--orange); }
+  html[data-theme="light"] .logo { color: var(--orange); }
+  html[data-theme="light"] .nav-pill { color: #1E194F; border-color: rgba(0,0,0,0.15); }
+  html[data-theme="light"] .nav-pill:hover { background: rgba(0,0,0,0.04); }
+  html[data-theme="light"] .nav-pill.active { background: #1E194F; color: #fff; border-color: #1E194F; }
+  html[data-theme="light"] .nav-icon { color: #1E194F; border-color: rgba(0,0,0,0.15); }
+  html[data-theme="light"] .tool-hero { color: #333; }
+  html[data-theme="light"] .tool-hero h1 { color: #1E194F; }
+  html[data-theme="light"] .qf-card { background: #fff; border-color: rgba(0,0,0,0.1); }
+  html[data-theme="light"] .qf-label { color: #888; }
+  html[data-theme="light"] .qf-value { color: #333; }
+  html[data-theme="light"] .content-area { color: #444; }
+  html[data-theme="light"] .content-area h2 { color: #1E194F; }
+  html[data-theme="light"] .sidebar-card { background: #fff; border-color: rgba(0,0,0,0.08); }
+  html[data-theme="light"] .related-tool { background: #f8f7f5; }
+  html[data-theme="light"] .tool-bottom-cta { background: rgba(0,0,0,0.03); }
+  html[data-theme="light"] .breadcrumb { color: #888; }
+  html[data-theme="light"] .stage-badge { background: rgba(0,0,0,0.06); }
+  html[data-theme="light"] .sample-output-card { background: #fff; border-color: rgba(0,0,0,0.1); }
+
 </style>
 </head>
 <body>
-
-<header class="header">
-    <img class="logo" src="logo.png" alt="Wade Institute">
-    <nav class="header-nav" id="headerNav">
-        <a class="header-nav-link" href="index.html">The Studio</a>
-        <a class="header-nav-link active" href="toolbox.html">Toolbox</a>
-        <a class="header-nav-link" href="sessions.html">Sessions</a>
-        <a class="header-nav-link header-feedback-link" href="#" id="headerFeedbackLink">Feedback</a>
-    </nav>
-    <div class="header-controls">
-        <button class="text-size-btn" id="textSizeToggle" title="Adjust text size" aria-label="Adjust text size">Aa</button>
-        <button class="theme-toggle" id="themeToggle" title="Toggle light/dark mode" aria-label="Toggle light/dark mode">&#9728;</button>
-        <button class="tour-help-btn" id="tourHelpBtn" title="Help" aria-label="Help">?</button>
-    </div>
+<!-- HEADER -->
+<header>
+  <a href="index.html"><img class="logo" src="logo.png" alt="Wade Institute" style="height:50px;width:auto;"></a>
+  <nav class="header-nav">
+    <a href="index.html" class="nav-pill">The Studio</a>
+    <a href="toolbox.html" class="nav-pill active">Toolbox</a>
+    <a href="sessions.html" class="nav-pill">Sessions</a>
+    <a href="#" class="nav-pill" onclick="document.getElementById('feedbackPanel')?.classList.toggle('hidden'); return false;">Feedback</a>
+  </nav>
+  <div class="header-controls" style="display:flex;gap:8px;align-items:center;">
+    <button class="nav-icon" onclick="document.documentElement.dataset.textSize=({'':'lg','lg':'xl','xl':''}[document.documentElement.dataset.textSize||''])||''" title="Adjust text size">Aa</button>
+    <button class="nav-icon" onclick="document.documentElement.dataset.theme=document.documentElement.dataset.theme==='light'?'':'light'" title="Toggle light/dark mode">&#x2731;</button>
+    <a href="index.html" class="nav-icon" title="Back to The Studio">?</a>
+  </div>
 </header>
 
-<!-- TOOL HERO -->
 <section class="tool-hero">
-  <div class="breadcrumb">
-    <a href="index.html">The Studio</a>
-    <span>/</span>
-    <a href="toolbox.html">Toolbox</a>
-    <span>/</span>
-    <a href="toolbox.html#test">The Test</a>
-    <span>/</span>
-    The Trade-Off
-  </div>
-
+  <div class="breadcrumb"><a href="index.html">The Studio</a><span>/</span><a href="toolbox.html">Toolbox</a><span>/</span><a href="toolbox.html#test">The Test</a><span>/</span>The Trade-Off</div>
   <div class="tool-hero-grid">
     <div class="tool-hero-left">
       <div class="stage-badge">THE TEST</div>
       <h1>The Trade-Off</h1>
       <p class="tool-headline">Force trade-offs to reveal what customers actually value.</p>
-      <p class="tool-intro">Forces you to build competing versions of your product and choose between them as your customer would. Each round requires a sacrifice. Features that survive every trade-off are the core value. Features that get traded away are nice-to-haves.</p>
+      <p class="tool-intro">Forces you to choose between competing features in head-to-head rounds. Each round presents two bundled packages — you pick one and sacrifice the other. The features that survive every round are your core value. The ones that keep losing? That's what you were wrong about.</p>
     </div>
-
     <div class="quick-facts">
       <div class="qf-title">Quick Facts</div>
-      <div class="qf-row">
-        <span class="qf-label">Duration</span>
-        <span class="qf-value">~25 minutes</span>
-      </div>
-      <div class="qf-row">
-        <span class="qf-label">Category</span>
-        <span class="qf-value">The Test</span>
-      </div>
-      <div class="qf-row">
-        <span class="qf-label">Origin</span>
-        <span class="qf-value">Conjoint analysis (Luce &amp; Tukey, 1964)</span>
-      </div>
-      <div class="qf-row">
-        <span class="qf-label">Created by</span>
-        <span class="qf-value">Luce &amp; Tukey / Consumer research tradition</span>
-      </div>
-      <div class="qf-pathways">
-        <div class="qf-pathways-label">Used in pathways</div>
-        <div class="pathway-tags">
-          <span class="pathway-tag test">The Test</span>
-        </div>
-      </div>
+      <div class="qf-row"><span class="qf-label">Duration</span><span class="qf-value">~25 minutes</span></div>
+      <div class="qf-row"><span class="qf-label">Category</span><span class="qf-value">The Test</span></div>
+      <div class="qf-row"><span class="qf-label">Origin</span><span class="qf-value">Conjoint analysis &amp; pricing research</span></div>
+      <div class="qf-row"><span class="qf-label">Rooted in</span><span class="qf-value">Trade-off analysis / MaxDiff</span></div>
+      <div class="qf-pathways"><div class="qf-pathways-label">Used in pathways</div><div class="pathway-tags"><span class="pathway-tag test">The Test</span></div></div>
       <a href="index.html?tool=trade-off" class="qf-cta">Try The Trade-Off &rarr;</a>
     </div>
   </div>
 </section>
 
-<!-- CONTENT -->
 <section class="content-area">
   <div class="content-grid">
     <div class="content-main">
-
-      <!-- WHEN TO USE -->
       <div class="section-block">
         <h2>When to use it</h2>
-        <p>Use The Trade-Off when your feature-heavy product can't prioritise, when you're preparing to launch and need an MVP definition, or when you're building a pricing strategy and need to know which features justify the price.</p>
-        <p>It's particularly effective <strong>before user research</strong> (so you know which features to test) and when teams are debating feature cuts with opinions instead of evidence.</p>
+        <p>Use The Trade-Off when you have too many features and can't prioritise, when every stakeholder says their feature is essential, or when your roadmap keeps growing but nothing ships.</p>
+        <p>It's particularly effective in <strong>The Test</strong> — when you need to cut through consensus and find out what customers would actually pay for versus what the team thinks matters.</p>
       </div>
-
-      <!-- HOW IT WORKS IN THE STUDIO -->
       <div class="section-block">
         <h2>How it works in The Studio</h2>
         <p>Here's how a session works with Pete:</p>
-
         <div class="steps-timeline">
-          <div class="step-item">
-            <div class="step-number">1</div>
-            <div class="step-title">Define the Offer</div>
-            <div class="step-desc">Break your product into 5&#8211;7 testable dimensions with levels. Include price as one of the dimensions. Pete helps you define what's actually distinct and testable.</div>
-          </div>
-          <div class="step-item">
-            <div class="step-number">2</div>
-            <div class="step-title">The Trade-Offs</div>
-            <div class="step-desc">6&#8211;8 rounds of forced choices between competing packages. Each round, you choose as your customer would. Pete escalates the pressure &#8212; making each sacrifice harder than the last.</div>
-          </div>
-          <div class="step-item">
-            <div class="step-number">3</div>
-            <div class="step-title">The Value Stack</div>
-            <div class="step-desc">Rank features by survival rate across all rounds: must-have, nice-to-have, expendable. The data does the arguing.</div>
-          </div>
-          <div class="step-item">
-            <div class="step-number">4</div>
-            <div class="step-title">The Minimum Viable Offer</div>
-            <div class="step-desc">Define the simplest version of your product someone would still pay for. Strip everything that didn't survive the trade-offs.</div>
-          </div>
+          <div class="step-item"><div class="step-number">1</div><div class="step-title">Define the Offer</div><div class="step-desc">Pete breaks your product into 5-7 testable dimensions — features, pricing options, service levels. Price is always included as a feature.</div></div>
+          <div class="step-item"><div class="step-number">2</div><div class="step-title">The Trade-Offs (6-8 rounds)</div><div class="step-desc">Two competing packages appear side by side. You pick one and explain why. Starts easy, escalates to painful. Pete tracks which features win and lose.</div></div>
+          <div class="step-item"><div class="step-number">3</div><div class="step-title">The Value Stack</div><div class="step-desc">Features ranked by survival rate: must-have, nice-to-have, expendable. Pete surfaces the surprise — the feature you were most wrong about.</div></div>
+          <div class="step-item"><div class="step-number">4</div><div class="step-title">Minimum Viable Offer</div><div class="step-desc">Using only the features that survived, what's the simplest version someone would still pay for? Pete is ruthless about features creeping back in.</div></div>
         </div>
       </div>
-
-      <!-- SAMPLE OUTPUT -->
       <div class="section-block">
         <h2>Sample output</h2>
-        <p>Here's what a Value Stack looks like after a Trade-Off session:</p>
-
+        <p>Here's what a Trade-Off value stack looks like in practice:</p>
         <div class="sample-output">
-          <div class="sample-label">Example: SaaS Productivity Platform</div>
-
-          <div class="sample-row">
-            <span class="sample-rank">1.</span>
-            <span class="sample-feature">Guided onboarding</span>
-            <span class="sample-score">6/6</span>
-            <span class="sample-tier tier-must">Must-have</span>
-          </div>
-
-          <div class="sample-row">
-            <span class="sample-rank">2.</span>
-            <span class="sample-feature">Core workflow</span>
-            <span class="sample-score">5/6</span>
-            <span class="sample-tier tier-must">Must-have</span>
-          </div>
-
-          <div class="sample-row">
-            <span class="sample-rank">3.</span>
-            <span class="sample-feature">Team collaboration</span>
-            <span class="sample-score">4/6</span>
-            <span class="sample-tier tier-must">Must-have</span>
-          </div>
-
-          <div class="sample-row">
-            <span class="sample-rank">4.</span>
-            <span class="sample-feature">Custom reporting</span>
-            <span class="sample-score">2/6</span>
-            <span class="sample-tier tier-nice">Nice-to-have</span>
-          </div>
-
-          <div class="sample-row">
-            <span class="sample-rank">5.</span>
-            <span class="sample-feature">API integrations</span>
-            <span class="sample-score">2/6</span>
-            <span class="sample-tier tier-nice">Nice-to-have</span>
-          </div>
-
-          <div class="sample-row">
-            <span class="sample-rank">6.</span>
-            <span class="sample-feature">Analytics dashboard</span>
-            <span class="sample-score">1/6</span>
-            <span class="sample-tier tier-expendable">Expendable</span>
-          </div>
-
-          <div class="sample-surprise">
-            <div class="sample-surprise-label">Surprise Insight</div>
-            <div class="sample-surprise-text">Analytics &#8212; positioned as the key differentiator &#8212; lost 5 out of 6 rounds. Customers chose onboarding and collaboration every time it was on the table.</div>
-          </div>
-
+          <div class="sample-label">Example: Project Management SaaS</div>
+          <table class="value-table">
+            <thead><tr><th>Feature</th><th>Wins</th><th>Rank</th><th>Surprise</th></tr></thead>
+            <tbody>
+              <tr><td class="feature-name">Real-time collaboration</td><td>6/6</td><td class="rank-must">Must-have</td><td>Expected</td></tr>
+              <tr><td class="feature-name">Mobile app</td><td>5/6</td><td class="rank-must">Must-have</td><td>Higher than expected</td></tr>
+              <tr><td class="feature-name">Price: $19/mo</td><td>5/6</td><td class="rank-must">Must-have</td><td>Price won more than features</td></tr>
+              <tr><td class="feature-name">Integrations (Slack, Jira)</td><td>3/6</td><td class="rank-nice">Nice-to-have</td><td>Team thought this was #1</td></tr>
+              <tr><td class="feature-name">Custom dashboards</td><td>2/6</td><td class="rank-nice">Nice-to-have</td><td>Founder's pet feature</td></tr>
+              <tr><td class="feature-name">AI task suggestions</td><td>1/6</td><td class="rank-cut">Expendable</td><td>Lost almost every round</td></tr>
+              <tr><td class="feature-name">White-label branding</td><td>0/6</td><td class="rank-cut">Expendable</td><td>Never survived a trade-off</td></tr>
+            </tbody>
+          </table>
           <div class="sample-root">
             <div class="sample-root-label">Minimum Viable Offer</div>
-            <div class="sample-root-text">Core workflow + guided onboarding + team collaboration at $49/month.</div>
+            <div class="sample-root-text">Real-time collaboration + mobile app at $19/mo. The team's "differentiator" (AI task suggestions) lost 5 of 6 rounds. The quiet winner was mobile — nobody talked about it, but it kept surviving.</div>
           </div>
         </div>
       </div>
-
-      <!-- WHAT YOU GET -->
       <div class="section-block">
         <h2>What you get</h2>
-        <p>A feature value stack ranked by survival rate across all trade-off rounds. A complete trade-off log showing every choice and sacrifice. A surprise insight revealing which features you overvalued. And a Minimum Viable Offer definition &#8212; the simplest product someone would still pay for.</p>
-        <p>Your downloadable report includes the full value stack, trade-off log, Pete's coaching observations, and relevant Wade articles and programs.</p>
+        <p>A ranked value stack showing which features are must-have versus expendable, side-by-side bundle comparison cards from each round, and a minimum viable offer built only from features that survived the trade-offs.</p>
+        <p>Your downloadable report includes the full trade-off rounds, the value stack, Pete's coaching observations on what you were most wrong about, and relevant Wade articles and programs.</p>
       </div>
-
-      <!-- FOUNDATION -->
       <div class="section-block">
         <h2>Foundation</h2>
-        <p>Rooted in conjoint analysis developed by <strong>Luce &amp; Tukey (1964)</strong> and refined by <strong>Green &amp; Srinivasan (1978)</strong>. Widely used in consumer product research and willingness-to-pay studies. Adopted by leading product companies and popularised through IDEO prioritisation frameworks.</p>
-        <div class="foundation-logos">
-          <span class="org-badge">Luce &amp; Tukey</span>
-          <span class="org-badge">Sawtooth Software</span>
-          <span class="org-badge">P&amp;G</span>
-          <span class="org-badge">Apple</span>
-          <span class="org-badge">Amazon</span>
-          <span class="org-badge">IDEO</span>
-        </div>
+        <p>Rooted in <strong>conjoint analysis</strong> — a market research technique developed in the 1970s to measure how consumers value different attributes of a product. Used extensively in pricing research, product design, and feature prioritisation. Adapted here as a facilitated coaching exercise.</p>
+        <div class="foundation-logos"><span class="org-badge">Conjoint Analysis</span><span class="org-badge">MaxDiff Research</span><span class="org-badge">Harvard Business School</span><span class="org-badge">McKinsey</span><span class="org-badge">Bain</span></div>
       </div>
-
     </div>
-
-    <!-- SIDEBAR -->
     <div class="sidebar">
-
-      <!-- Pete's coaching note -->
-      <div class="pete-note">
-        <div class="pete-avatar-row">
-          <div class="pete-avatar">P</div>
-          <div class="pete-label">Pete's note</div>
-        </div>
-        <p class="pete-text">"Everyone says every feature is essential. The Trade-Off makes that impossible. By the third round, you'll know which features your customers actually choose &#8212; and which ones only you care about."</p>
-      </div>
-
-      <!-- Often paired with -->
+      <div class="pete-note"><div class="pete-avatar-row"><div class="pete-avatar">P</div><div class="pete-label">Pete's note</div></div><p class="pete-text">"Everyone says all their features are essential — until I make them choose. The feature that keeps winning rounds when you're not thinking about it? That's your real value proposition. The one you keep trying to protect? That might be your ego talking."</p></div>
       <div class="sidebar-card">
         <div class="sidebar-card-label">Often paired with</div>
-
-        <a href="tool-detail-lean-canvas.html" class="related-tool">
-          <div class="related-tool-icon build">L</div>
-          <div class="related-tool-text">
-            <h4>Lean Canvas</h4>
-            <p>Map the business model around your Minimum Viable Offer</p>
-          </div>
-        </a>
-
-        <a href="#" class="related-tool">
-          <div class="related-tool-icon test">C</div>
-          <div class="related-tool-text">
-            <h4>Cold Open</h4>
-            <p>Test the MVO pitch on a real customer before building</p>
-          </div>
-        </a>
+        <a href="tool-detail-lean-canvas.html" class="related-tool"><div class="related-tool-icon build">L</div><div class="related-tool-text"><h4>Lean Canvas</h4><p>Map the business model around your core value</p></div></a>
+        <a href="tool-detail-rapid-experiment.html" class="related-tool"><div class="related-tool-icon build">R</div><div class="related-tool-text"><h4>Rapid Experiment</h4><p>Test your minimum viable offer with real customers</p></div></a>
       </div>
-
-      <!-- Also in this category -->
       <div class="sidebar-card">
         <div class="sidebar-card-label">Also in The Test</div>
-
-        <a href="tool-detail-pre-mortem.html" class="related-tool">
-          <div class="related-tool-icon test">P</div>
-          <div class="related-tool-text">
-            <h4>Pre-Mortem</h4>
-            <p>Imagine failure to find hidden risks before launch</p>
-          </div>
-        </a>
-
-        <a href="tool-detail-devils-advocate.html" class="related-tool">
-          <div class="related-tool-icon test">D</div>
-          <div class="related-tool-text">
-            <h4>Devil's Advocate</h4>
-            <p>Stress-test your idea from every hostile angle</p>
-          </div>
-        </a>
-
-        <a href="#" class="related-tool">
-          <div class="related-tool-icon test">C</div>
-          <div class="related-tool-text">
-            <h4>Cold Open</h4>
-            <p>Pitch to a stranger and see what sticks</p>
-          </div>
-        </a>
-
-        <a href="#" class="related-tool">
-          <div class="related-tool-icon test">R</div>
-          <div class="related-tool-text">
-            <h4>Reality Check</h4>
-            <p>Confront assumptions with real-world constraints</p>
-          </div>
-        </a>
+        <a href="tool-detail-pre-mortem.html" class="related-tool"><div class="related-tool-icon test">P</div><div class="related-tool-text"><h4>Pre-Mortem</h4><p>Imagine the project failed — what went wrong?</p></div></a>
+        <a href="tool-detail-devils-advocate.html" class="related-tool"><div class="related-tool-icon test">D</div><div class="related-tool-text"><h4>Devil's Advocate</h4><p>Challenge your assumptions to strengthen your thinking</p></div></a>
       </div>
-
     </div>
   </div>
 </section>
 
-<!-- BOTTOM CTA -->
 <div class="tool-bottom-cta">
-  <div class="tool-bottom-left">
-    <h3>Try The Trade-Off?</h3>
-    <p>Pete will guide you. About 25 minutes, always free.</p>
-  </div>
-  <div class="tool-bottom-right">
-    <a href="toolbox.html" class="back-link">&larr; Back to toolbox</a>
-    <a href="index.html?tool=trade-off" class="qf-cta" style="display:inline-block; width:auto;">Start The Trade-Off &rarr;</a>
-  </div>
+  <div class="tool-bottom-left"><h3>Try The Trade-Off?</h3><p>Pete will guide you. About 25 minutes, always free.</p></div>
+  <div class="tool-bottom-right"><a href="toolbox.html" class="back-link">&larr; Back to toolbox</a><a href="index.html?tool=trade-off" class="qf-cta" style="display:inline-block; width:auto;">Start The Trade-Off &rarr;</a></div>
 </div>
 
-<!-- FOOTER -->
-<footer>
-  <div class="footer-left">
-    <a href="index.html"><img src="wade-icon.png" alt="Wade Institute" style="height:28px;width:auto;"></a>
-    <div class="footer-links">
-      <a href="https://wadeinstitute.org.au">wadeinstitute.org.au</a>
-      <a href="mailto:enquiries@wadeinstitute.org.au">Contact</a>
-      <a href="privacy.html">Privacy</a>
-    </div>
-  </div>
-  <div class="footer-right">&copy; 2026 Wade Institute of Entrepreneurship</div>
-</footer>
-
-
-<script>
-// Text size
-document.getElementById('textSizeToggle')?.addEventListener('click', () => {
-    document.getElementById('textSizePicker')?.classList.toggle('hidden');
-});
-document.querySelectorAll('.text-size-opt').forEach(btn => {
-    btn.addEventListener('click', () => {
-        const size = btn.dataset.size;
-        document.body.classList.remove('text-small', 'text-large');
-        if (size === 'small') document.body.classList.add('text-small');
-        if (size === 'large') document.body.classList.add('text-large');
-        localStorage.setItem('studio_text_size', size);
-        document.querySelectorAll('.text-size-opt').forEach(b => {
-            b.style.background = b.dataset.size === size ? 'rgba(255,255,255,0.08)' : 'transparent';
-            b.style.color = b.dataset.size === size ? '#fff' : '#B8BCC8';
-        });
-        document.getElementById('textSizePicker')?.classList.add('hidden');
-    });
-});
-// Restore saved size
-const savedSize = localStorage.getItem('studio_text_size') || 'medium';
-if (savedSize === 'small') document.body.classList.add('text-small');
-if (savedSize === 'large') document.body.classList.add('text-large');
-
-// Theme toggle
-document.getElementById('themeToggle')?.addEventListener('click', () => {
-    const current = document.documentElement.getAttribute('data-theme') || 'dark';
-    const next = current === 'dark' ? 'light' : 'dark';
-    document.documentElement.setAttribute('data-theme', next);
-    localStorage.setItem('studio_theme', next);
-});
-const savedTheme = localStorage.getItem('studio_theme') || 'dark';
-if (savedTheme === 'light') document.documentElement.setAttribute('data-theme', 'light');
-
-// Close picker on outside click
-document.addEventListener('click', (e) => {
-    if (!e.target.closest('.text-size-control')) document.getElementById('textSizePicker')?.classList.add('hidden');
-});
-</script>
-
+<footer><div class="footer-left"><a href="index.html"><img src="wade-icon.png" alt="Wade Institute" style="height:28px;width:auto;"></a><div class="footer-links"><a href="https://wadeinstitute.org.au">wadeinstitute.org.au</a><a href="mailto:enquiries@wadeinstitute.org.au">Contact</a><a href="privacy.html">Privacy</a></div></div><div class="footer-right">&copy; 2026 Wade Institute of Entrepreneurship</div></footer>
 </body>
 </html>
