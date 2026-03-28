@@ -19,36 +19,36 @@
   <!-- Step 1 -->
   <rect x="24" y="60" width="752" height="72" fill="#1F2E4D" rx="6" stroke="#2A3656" stroke-width="1"/>
   <text x="48" y="82" fill="#27BDBE" font-size="14" font-weight="700">1</text>
+  <text x="72" y="108" fill="#C8CED8" font-size="11" data-zone="fw-problem" opacity="0"></text>
   <text x="72" y="82" fill="#27BDBE" font-size="10" font-weight="600" letter-spacing="2">WHY</text>
-  <text x="72" y="108" fill="#C8CED8" font-size="12">Why are customers cancelling after the first month?</text>
   <line x1="48" y1="132" x2="48" y2="148" stroke="#2A3656" stroke-width="1" stroke-dasharray="4,4"/>
 
   <!-- Step 2 -->
   <rect x="24" y="148" width="752" height="72" fill="#1F2E4D" rx="6" stroke="#2A3656" stroke-width="1"/>
   <text x="48" y="170" fill="#27BDBE" font-size="14" font-weight="700">2</text>
+  <text x="72" y="196" fill="#C8CED8" font-size="11" data-zone="fw-why1" opacity="0"></text>
   <text x="72" y="170" fill="#27BDBE" font-size="10" font-weight="600" letter-spacing="2">WHY</text>
-  <text x="72" y="196" fill="#C8CED8" font-size="12">They don't see value in the product quickly enough.</text>
   <line x1="48" y1="220" x2="48" y2="236" stroke="#2A3656" stroke-width="1" stroke-dasharray="4,4"/>
 
   <!-- Step 3 -->
   <rect x="24" y="236" width="752" height="72" fill="#1F2E4D" rx="6" stroke="#2A3656" stroke-width="1"/>
   <text x="48" y="258" fill="#27BDBE" font-size="14" font-weight="700">3</text>
+  <text x="72" y="284" fill="#C8CED8" font-size="11" data-zone="fw-why2" opacity="0"></text>
   <text x="72" y="258" fill="#27BDBE" font-size="10" font-weight="600" letter-spacing="2">WHY</text>
-  <text x="72" y="284" fill="#C8CED8" font-size="12">Onboarding doesn't connect features to their specific goals.</text>
   <line x1="48" y1="308" x2="48" y2="324" stroke="#2A3656" stroke-width="1" stroke-dasharray="4,4"/>
 
   <!-- Step 4 -->
   <rect x="24" y="324" width="752" height="72" fill="#1F2E4D" rx="6" stroke="#2A3656" stroke-width="1"/>
   <text x="48" y="346" fill="#27BDBE" font-size="14" font-weight="700">4</text>
+  <text x="72" y="372" fill="#C8CED8" font-size="11" data-zone="fw-why3" opacity="0"></text>
   <text x="72" y="346" fill="#27BDBE" font-size="10" font-weight="600" letter-spacing="2">WHY</text>
-  <text x="72" y="372" fill="#C8CED8" font-size="12">We use one-size-fits-all onboarding for every segment.</text>
   <line x1="48" y1="396" x2="48" y2="412" stroke="#2A3656" stroke-width="1" stroke-dasharray="4,4"/>
 
   <!-- Step 5 -->
   <rect x="24" y="412" width="752" height="72" fill="#1F2E4D" rx="6" stroke="#2A3656" stroke-width="1"/>
   <text x="48" y="434" fill="#27BDBE" font-size="14" font-weight="700">5</text>
+  <text x="72" y="460" fill="#C8CED8" font-size="11" data-zone="fw-why4" opacity="0"></text>
   <text x="72" y="434" fill="#27BDBE" font-size="10" font-weight="600" letter-spacing="2">WHY</text>
-  <text x="72" y="460" fill="#C8CED8" font-size="12">We never researched how different segments define success.</text>
 
   <!-- Arrow to root cause -->
   <line x1="400" y1="492" x2="400" y2="528" stroke="#27BDBE" stroke-width="1.5"/>
@@ -58,8 +58,7 @@
   <rect x="24" y="544" width="752" height="96" fill="#1F2E4D" rx="6" stroke="#2A3656" stroke-width="1"/>
   <rect x="24" y="544" width="752" height="2" fill="#27BDBE"/>
   <text x="400" y="572" fill="#27BDBE" font-size="10" font-weight="600" letter-spacing="2" text-anchor="middle">ROOT CAUSE</text>
-  <text x="400" y="600" fill="#FFFFFF" font-size="13" font-weight="700" text-anchor="middle">We lack segment-specific understanding of what "value" means</text>
-  <text x="400" y="620" fill="#FFFFFF" font-size="13" font-weight="700" text-anchor="middle">to each customer type.</text>
+  <text x="400" y="600" fill="#C8CED8" font-size="11" data-zone="fw-why5" opacity="0"></text>
 
   <!-- Footer -->
   <rect x="0" y="672" width="800" height="28" fill="#151E35"/>

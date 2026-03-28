@@ -17,12 +17,11 @@
   <!-- Column Headers -->
   <text x="40" y="84" fill="#FFFFFF" font-size="12" font-weight="700" font-family="Inter, Helvetica Neue, Arial, sans-serif">ORIGINAL CONSTRAINTS</text>
   <text x="440" y="84" fill="#FFFFFF" font-size="12" font-weight="700" font-family="Inter, Helvetica Neue, Arial, sans-serif">FLIPPED CONSTRAINTS</text>
+  <text x="60" y="158" fill="#C8CED8" font-size="11" data-zone="cf-flip" opacity="0"></text>
 
   <!-- Constraint 1 -->
   <rect x="40" y="108" width="340" height="90" rx="6" fill="#1F2E4D" stroke="#2A3656" stroke-width="1"/>
   <text x="60" y="135" fill="#F15A22" font-size="11" font-weight="700" font-family="Inter, Helvetica Neue, Arial, sans-serif">1. CAN'T AFFORD SALES TEAM</text>
-  <text x="60" y="158" fill="#C8CED8" font-size="12" font-family="Inter, Helvetica Neue, Arial, sans-serif">We lack the resources for</text>
-  <text x="60" y="175" fill="#C8CED8" font-size="12" font-family="Inter, Helvetica Neue, Arial, sans-serif">a traditional sales org.</text>
 
   <!-- Arrow 1 -->
   <line x1="390" y1="153" x2="420" y2="153" stroke="#6B7A8E" stroke-width="2"/>
@@ -31,14 +30,10 @@
   <!-- Flipped 1 -->
   <rect x="440" y="108" width="340" height="90" rx="6" fill="#1F2E4D" stroke="#2A3656" stroke-width="1"/>
   <text x="460" y="135" fill="#F15A22" font-size="11" font-weight="700" font-family="Inter, Helvetica Neue, Arial, sans-serif">PRODUCT SELLS ITSELF</text>
-  <text x="460" y="158" fill="#C8CED8" font-size="12" font-family="Inter, Helvetica Neue, Arial, sans-serif">Build product-led growth.</text>
-  <text x="460" y="175" fill="#C8CED8" font-size="12" font-family="Inter, Helvetica Neue, Arial, sans-serif">Users acquire other users.</text>
 
   <!-- Constraint 2 -->
   <rect x="40" y="216" width="340" height="90" rx="6" fill="#1F2E4D" stroke="#2A3656" stroke-width="1"/>
   <text x="60" y="243" fill="#F15A22" font-size="11" font-weight="700" font-family="Inter, Helvetica Neue, Arial, sans-serif">2. PRODUCT TOO COMPLEX</text>
-  <text x="60" y="266" fill="#C8CED8" font-size="12" font-family="Inter, Helvetica Neue, Arial, sans-serif">We can't explain features</text>
-  <text x="60" y="283" fill="#C8CED8" font-size="12" font-family="Inter, Helvetica Neue, Arial, sans-serif">quickly to most people.</text>
 
   <!-- Arrow 2 -->
   <line x1="390" y1="261" x2="420" y2="261" stroke="#6B7A8E" stroke-width="2"/>
@@ -47,14 +42,10 @@
   <!-- Flipped 2 -->
   <rect x="440" y="216" width="340" height="90" rx="6" fill="#1F2E4D" stroke="#2A3656" stroke-width="1"/>
   <text x="460" y="243" fill="#F15A22" font-size="11" font-weight="700" font-family="Inter, Helvetica Neue, Arial, sans-serif">COMPLEXITY IS THE FEATURE</text>
-  <text x="460" y="266" fill="#C8CED8" font-size="12" font-family="Inter, Helvetica Neue, Arial, sans-serif">Position as "the serious tool</text>
-  <text x="460" y="283" fill="#C8CED8" font-size="12" font-family="Inter, Helvetica Neue, Arial, sans-serif">for serious teams."</text>
 
   <!-- Constraint 3 -->
   <rect x="40" y="324" width="340" height="90" rx="6" fill="#1F2E4D" stroke="#2A3656" stroke-width="1"/>
   <text x="60" y="351" fill="#F15A22" font-size="11" font-weight="700" font-family="Inter, Helvetica Neue, Arial, sans-serif">3. NOT ENOUGH CONTENT</text>
-  <text x="60" y="374" fill="#C8CED8" font-size="12" font-family="Inter, Helvetica Neue, Arial, sans-serif">We lack resources for</text>
-  <text x="60" y="391" fill="#C8CED8" font-size="12" font-family="Inter, Helvetica Neue, Arial, sans-serif">marketing content creation.</text>
 
   <!-- Arrow 3 -->
   <line x1="390" y1="369" x2="420" y2="369" stroke="#6B7A8E" stroke-width="2"/>
@@ -63,22 +54,15 @@
   <!-- Flipped 3 -->
   <rect x="440" y="324" width="340" height="90" rx="6" fill="#1F2E4D" stroke="#2A3656" stroke-width="1"/>
   <text x="460" y="351" fill="#F15A22" font-size="11" font-weight="700" font-family="Inter, Helvetica Neue, Arial, sans-serif">USERS MAKE CONTENT</text>
-  <text x="460" y="374" fill="#C8CED8" font-size="12" font-family="Inter, Helvetica Neue, Arial, sans-serif">Launch a community template</text>
-  <text x="460" y="391" fill="#C8CED8" font-size="12" font-family="Inter, Helvetica Neue, Arial, sans-serif">gallery.</text>
 
   <!-- Most Promising Flip Box -->
   <rect x="40" y="442" width="740" height="230" rx="6" fill="#1F2E4D" stroke="#2A3656" stroke-width="1"/>
   <rect x="40" y="442" width="740" height="4" rx="6" fill="#F15A22"/>
 
   <text x="60" y="472" fill="#F15A22" font-size="10" font-weight="600" letter-spacing="2" font-family="Inter, Helvetica Neue, Arial, sans-serif">MOST PROMISING FLIP</text>
+  <text x="60" y="502" fill="#C8CED8" font-size="11" data-zone="cf-moat" opacity="0"></text>
 
-  <text x="60" y="502" fill="#FFFFFF" font-size="13" font-weight="700" font-family="Inter, Helvetica Neue, Arial, sans-serif">"The product sells itself"</text>
 
-  <text x="60" y="527" fill="#C8CED8" font-size="12" font-family="Inter, Helvetica Neue, Arial, sans-serif">Aligns with existing PLG signals. 40% of sign-ups</text>
-  <text x="60" y="547" fill="#C8CED8" font-size="12" font-family="Inter, Helvetica Neue, Arial, sans-serif">already come from word of mouth. This constraint flip</text>
-  <text x="60" y="567" fill="#C8CED8" font-size="12" font-family="Inter, Helvetica Neue, Arial, sans-serif">turns our biggest limitation into our competitive</text>
-  <text x="60" y="587" fill="#C8CED8" font-size="12" font-family="Inter, Helvetica Neue, Arial, sans-serif">advantage. Focus investment on making the product</text>
-  <text x="60" y="607" fill="#C8CED8" font-size="12" font-family="Inter, Helvetica Neue, Arial, sans-serif">remarkable instead of making pitches memorable.</text>
 
   <!-- Footer -->
   <rect x="0" y="672" width="800" height="28" fill="#151E35"/>

@@ -3255,10 +3255,18 @@ html[data-theme="light"] .report-synopsis {
 }
 
 /* Text size classes on body */
+body.text-small { font-size: 14px; }
 body.text-small .msg { font-size: 0.82rem; }
 body.text-small .input-field { font-size: 0.88rem; }
+body.text-large { font-size: 18px; }
 body.text-large .msg { font-size: 1.1rem; }
 body.text-large .input-field { font-size: 1.15rem; }
+body.text-large .lp-hero-title { font-size: 3.2rem; }
+body.text-large .lp-hero-sub { font-size: 1.2rem; }
+body.text-large .lp-hero-body { font-size: 1.05rem; }
+body.text-large p, body.text-large li { font-size: 1.05rem; }
+body.text-small .lp-hero-title { font-size: 2rem; }
+body.text-small p, body.text-small li { font-size: 0.85rem; }
 
 html[data-theme="light"] .text-size-btn { background: #fff; border-color: rgba(0,0,0,0.1); box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
 html[data-theme="light"] .text-size-picker { background: #fff; border-color: rgba(0,0,0,0.1); box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
@@ -4128,9 +4136,8 @@ body.board-maximised > .input-area {
     border-radius: 0;
     background: var(--bg);
 }
-/* Zone colour accents — left border per section */
-/* Zone borders are neutral — stage colour on board header/border only */
-.board-zone { border-left: 3px solid rgba(255,255,255,0.15); }
+/* Zone colour accents — left border uses stage colour */
+body[data-mode] .board-zone { border-left: 3px solid var(--stage-color); }
 
 .board-grid-canvas .zone-name {
     font-size: 0.8rem;
@@ -4140,8 +4147,8 @@ body.board-maximised > .input-area {
     letter-spacing: 0.04em;
 }
 /* Zone name colours match their section */
-/* Zone names are neutral — stage colour is on board header/border only */
-.board-zone .zone-name { color: rgba(255,255,255,0.5); }
+/* Zone names use stage colour */
+body[data-mode] .board-zone .zone-name { color: var(--stage-color); }
 .board-grid-canvas .board-card-text {
     font-size: 0.85rem;
     line-height: 1.45;
@@ -4687,6 +4694,35 @@ body.light .feedback-input, html[data-theme="light"] .feedback-input { backgroun
 }
 .feature-hint-dismiss:hover { background: rgba(255,255,255,0.3); }
 
+/* Trade-Off board: 2-column layout with auto-expanding zones */
+.board-grid-trade-off {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    border: 1px solid var(--stage-color, rgba(255,255,255,0.1));
+    border-radius: 8px;
+    overflow: hidden;
+}
+.board-grid-trade-off .board-zone {
+    min-height: auto;
+    border-radius: 0;
+    background: var(--bg, #12103a);
+    border-left: 3px solid var(--stage-color, #ED3694);
+    padding: 0.6rem;
+    overflow: visible;
+}
+.board-grid-trade-off .board-zone .zone-cards {
+    max-height: none;
+    overflow: visible;
+}
+.board-grid-trade-off .board-zone[data-zone="to-mvo"],
+.board-grid-trade-off .board-zone[data-zone="actions"] {
+    grid-column: 1 / -1;
+}
+@media (max-width: 600px) {
+    .board-grid-trade-off { grid-template-columns: 1fr; }
+}
+
 /* Compact text for all custom boards */
 .board-grid-trade-off .zone-name,
 .board-grid-cold-open .zone-name,
@@ -4733,6 +4769,9 @@ body.light .feedback-input, html[data-theme="light"] .feedback-input { backgroun
     margin: 0 auto;
     padding: 3rem 1.5rem 4rem;
     animation: psFadeUp 0.6s ease-out;
+    grid-column: 1 / -1;
+    width: 100%;
+    overflow-y: auto;
 }
 .ps-screen.hidden { display: none; }
 
@@ -5030,8 +5069,27 @@ body.light .feedback-input, html[data-theme="light"] .feedback-input { backgroun
     font-family: inherit;
     transition: opacity 0.2s;
 }
+.ps-download-btn.ps-download-primary {
+    padding: 0.85rem 2rem;
+    font-size: 1rem;
+    font-weight: 700;
+    border-radius: 12px;
+    letter-spacing: 0.02em;
+}
 .ps-download-btn:hover { opacity: 0.9; }
 .ps-download-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.ps-feedback-link {
+    text-align: right;
+    padding: 1rem 2rem 0.5rem;
+    font-size: 0.7rem;
+}
+.ps-feedback-link a {
+    color: var(--text-muted, #9E9BC0);
+    opacity: 0.6;
+    text-decoration: none;
+    transition: opacity 0.2s;
+}
+.ps-feedback-link a:hover { opacity: 1; text-decoration: underline; }
 .ps-legal {
     font-size: 0.65rem; color: var(--text-muted, #9E9BC0);
     opacity: 0.6;
@@ -5363,3 +5421,92 @@ body.light .feedback-input, html[data-theme="light"] .feedback-input { backgroun
     .ps-email-form { flex-direction: column; }
     .ps-format-row-primary { flex-direction: column; align-items: center; }
 }
+
+
+/* ============================================================
+   UX FIXES — Accessibility, touch targets, mobile, polish
+   ============================================================ */
+
+/* Hide "0" badge on empty board zones */
+.zone-count:empty,
+.zone-count[data-count="0"] { display: none; }
+
+/* Touch targets — minimum 44x44px for all interactive header elements */
+.text-size-btn,
+.theme-toggle,
+.tour-help-btn,
+.save-session-btn {
+    min-width: 44px;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Consolidate button — increase height */
+.board-consolidate-btn {
+    min-height: 36px;
+    padding: 0.4rem 0.75rem;
+}
+
+/* Board add-card button — ensure tappable */
+.board-add-card-btn {
+    min-height: 36px;
+    padding: 0.4rem 0.75rem;
+}
+
+/* Mobile layout fixes */
+@media (max-width: 768px) {
+    /* Prevent board/chat overlap — stack vertically */
+    .workshop-layout.board-active {
+        flex-direction: column;
+    }
+    .workshop-layout.board-active .chat-pane {
+        width: 100%;
+        min-height: 50vh;
+    }
+    .workshop-layout.board-active .board-pane {
+        width: 100%;
+        max-height: 50vh;
+        border-left: none;
+        border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    /* Prevent hero text clipping */
+    .lp-hero-title {
+        font-size: clamp(1.5rem, 5vw, 2.8rem);
+        word-break: break-word;
+    }
+
+    /* Nav bar — ensure visibility */
+    .header-nav {
+        gap: 4px;
+    }
+    .header-nav-link {
+        font-size: 0.7rem;
+        padding: 0.35rem 0.6rem;
+    }
+}
+
+@media (max-width: 480px) {
+    /* Tighter mobile spacing */
+    .header { padding: 0 12px; }
+    .header-controls { gap: 4px; }
+
+    /* Stack board zones single-column on small screens */
+    .board-grid-canvas,
+    .board-grid-trade-off,
+    .board-grid-premortem,
+    .board-grid-effectuation {
+        grid-template-columns: 1fr !important;
+    }
+    .board-grid-canvas .board-zone,
+    .board-grid-trade-off .board-zone {
+        grid-column: 1 !important;
+        grid-row: auto !important;
+    }
+}
+
+/* Z-index fix: tool dropdown above text-size panel */
+.tool-picker-dropdown { z-index: 1010; }
+.text-size-panel { z-index: 1005; }

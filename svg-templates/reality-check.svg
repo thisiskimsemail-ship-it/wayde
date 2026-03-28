@@ -15,6 +15,7 @@
 
   <!-- Table Title -->
   <text x="32" y="75" fill="#ED3694" font-size="11" font-weight="600" letter-spacing="2" font-family="Inter, Helvetica Neue, Arial, sans-serif">ASSUMPTION VALIDATION SCORECARD</text>
+  <text x="48" y="140" fill="#C8CED8" font-size="11" data-zone="rc-revised" opacity="0"></text>
 
   <!-- Table Container -->
   <rect x="32" y="90" width="736" height="340" fill="#1F2E4D" stroke="#2A3656" stroke-width="1" rx="6"/>
@@ -27,52 +28,41 @@
 
   <!-- Row 1: Customers will pay $49/mo -->
   <line x1="32" y1="125" x2="768" y2="125" stroke="#2A3656" stroke-width="0.5"/>
-  <text x="48" y="140" fill="#C8CED8" font-size="11" font-family="Inter, Helvetica Neue, Arial, sans-serif">Customers will pay $49/mo</text>
   <circle cx="395" cy="140" r="4" fill="none" stroke="#6B7A8E" stroke-width="1"/>
-  <text x="420" y="140" fill="#C8CED8" font-size="10" font-family="Inter, Helvetica Neue, Arial, sans-serif">Weak (3 conversations)</text>
   <rect x="570" y="130" width="100" height="20" fill="none" stroke="#ED3694" stroke-width="1" rx="3"/>
   <text x="577" y="141" fill="#ED3694" font-size="9" font-weight="600" font-family="Inter, Helvetica Neue, Arial, sans-serif">UNVALIDATED</text>
 
   <!-- Row 2: SMBs are our best segment -->
   <line x1="32" y1="165" x2="768" y2="165" stroke="#2A3656" stroke-width="0.5"/>
-  <text x="48" y="180" fill="#C8CED8" font-size="11" font-family="Inter, Helvetica Neue, Arial, sans-serif">SMBs are our best segment</text>
   <circle cx="395" cy="180" r="4" fill="#6B7A8E"/>
   <circle cx="405" cy="180" r="4" fill="none" stroke="#6B7A8E" stroke-width="1"/>
-  <text x="420" y="180" fill="#C8CED8" font-size="10" font-family="Inter, Helvetica Neue, Arial, sans-serif">Moderate (landing page data)</text>
   <rect x="570" y="170" width="100" height="20" fill="none" stroke="#ED3694" stroke-width="1" rx="3"/>
   <text x="577" y="181" fill="#ED3694" font-size="9" font-weight="600" font-family="Inter, Helvetica Neue, Arial, sans-serif">PARTIALLY VALIDATED</text>
 
   <!-- Row 3: AI onboarding is key feature -->
   <line x1="32" y1="205" x2="768" y2="205" stroke="#2A3656" stroke-width="0.5"/>
-  <text x="48" y="220" fill="#C8CED8" font-size="11" font-family="Inter, Helvetica Neue, Arial, sans-serif">AI onboarding is the key feature</text>
   <circle cx="395" cy="220" r="4" fill="none" stroke="#6B7A8E" stroke-width="1"/>
-  <text x="420" y="220" fill="#C8CED8" font-size="10" font-family="Inter, Helvetica Neue, Arial, sans-serif">None (gut feeling)</text>
   <rect x="570" y="210" width="100" height="20" fill="none" stroke="#ED3694" stroke-width="1" rx="3"/>
   <text x="577" y="221" fill="#ED3694" font-size="9" font-weight="600" font-family="Inter, Helvetica Neue, Arial, sans-serif">UNVALIDATED</text>
 
   <!-- Row 4: Word of mouth will drive growth -->
   <line x1="32" y1="245" x2="768" y2="245" stroke="#2A3656" stroke-width="0.5"/>
-  <text x="48" y="260" fill="#C8CED8" font-size="11" font-family="Inter, Helvetica Neue, Arial, sans-serif">Word of mouth will drive growth</text>
   <circle cx="395" cy="260" r="4" fill="#6B7A8E"/>
   <circle cx="405" cy="260" r="4" fill="#6B7A8E"/>
   <circle cx="415" cy="260" r="4" fill="#6B7A8E"/>
-  <text x="420" y="260" fill="#C8CED8" font-size="10" font-family="Inter, Helvetica Neue, Arial, sans-serif">Strong (40% of sign-ups)</text>
   <rect x="570" y="250" width="100" height="20" fill="none" stroke="#72D96D" stroke-width="1.5" rx="3"/>
   <text x="577" y="261" fill="#72D96D" font-size="9" font-weight="600" font-family="Inter, Helvetica Neue, Arial, sans-serif">VALIDATED</text>
 
   <!-- Row 5: We can build MVP in 3 months -->
   <line x1="32" y1="285" x2="768" y2="285" stroke="#2A3656" stroke-width="0.5"/>
-  <text x="48" y="300" fill="#C8CED8" font-size="11" font-family="Inter, Helvetica Neue, Arial, sans-serif">We can build MVP in 3 months</text>
   <circle cx="395" cy="300" r="4" fill="#6B7A8E"/>
   <circle cx="405" cy="300" r="4" fill="none" stroke="#6B7A8E" stroke-width="1"/>
-  <text x="420" y="300" fill="#C8CED8" font-size="10" font-family="Inter, Helvetica Neue, Arial, sans-serif">Moderate (similar past project)</text>
   <rect x="570" y="290" width="100" height="20" fill="none" stroke="#ED3694" stroke-width="1" rx="3"/>
   <text x="577" y="301" fill="#ED3694" font-size="9" font-weight="600" font-family="Inter, Helvetica Neue, Arial, sans-serif">PARTIALLY VALIDATED</text>
 
   <!-- Summary row -->
   <line x1="32" y1="325" x2="768" y2="325" stroke="#2A3656" stroke-width="1"/>
   <text x="48" y="345" fill="#ED3694" font-size="11" font-weight="600" font-family="Inter, Helvetica Neue, Arial, sans-serif">Summary: 1 validated, 2 partially validated, 2 unvalidated</text>
-  <text x="48" y="362" fill="#C8CED8" font-size="10" font-family="Inter, Helvetica Neue, Arial, sans-serif">40% of core assumptions have meaningful evidence.</text>
 
   <!-- CRITICAL ACTION box -->
   <rect x="32" y="460" width="736" height="200" fill="#1F2E4D" stroke="#2A3656" stroke-width="1" rx="6"/>
@@ -80,14 +70,9 @@
 
   <text x="48" y="485" fill="#ED3694" font-size="10" font-weight="600" letter-spacing="2" font-family="Inter, Helvetica Neue, Arial, sans-serif">CRITICAL ACTION</text>
 
-  <text x="48" y="510" fill="#FFFFFF" font-size="12" font-weight="600" font-family="Inter, Helvetica Neue, Arial, sans-serif">Assumption #3 carries the highest risk.</text>
 
-  <text x="48" y="535" fill="#C8CED8" font-size="12" font-family="Inter, Helvetica Neue, Arial, sans-serif">It drives the entire product roadmap with zero</text>
-  <text x="48" y="555" fill="#C8CED8" font-size="12" font-family="Inter, Helvetica Neue, Arial, sans-serif">evidence. This is a potential value leak.</text>
 
   <text x="48" y="580" fill="#ED3694" font-size="11" font-weight="600" font-family="Inter, Helvetica Neue, Arial, sans-serif">Immediate next step:</text>
-  <text x="48" y="600" fill="#C8CED8" font-size="12" font-family="Inter, Helvetica Neue, Arial, sans-serif">Run 10 user tests this week to validate or invalidate the feature.</text>
-  <text x="48" y="620" fill="#C8CED8" font-size="12" font-family="Inter, Helvetica Neue, Arial, sans-serif">Owner: Product. Timeline: March 28 - April 4.</text>
 
   <!-- Footer -->
   <rect x="0" y="672" width="800" height="28" fill="#151E35"/>

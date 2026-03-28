@@ -16,30 +16,25 @@
   <!-- SCENARIO box -->
   <rect x="32" y="70" width="736" height="90" fill="#253658" stroke="#ED3694" stroke-width="1.5" rx="6"/>
   <text x="48" y="90" fill="#ED3694" font-size="10" font-weight="600" letter-spacing="2" font-family="Inter, Helvetica Neue, Arial, sans-serif">SCENARIO</text>
-  <text x="48" y="115" fill="#FFFFFF" font-size="12" font-family="Inter, Helvetica Neue, Arial, sans-serif">A competitor just launched your exact product — but free.</text>
-  <text x="48" y="135" fill="#FFFFFF" font-size="12" font-family="Inter, Helvetica Neue, Arial, sans-serif">Your biggest customer just emailed: evaluating the switch. You have 48 hours.</text>
 
   <!-- IMMEDIATE REACTIONS (3 cards in a row) -->
   <!-- Card 1: Panic -->
   <rect x="32" y="190" width="220" height="100" fill="#1F2E4D" stroke="#2A3656" stroke-width="1" rx="6"/>
   <rect x="32" y="190" width="220" height="3" fill="#ED3694" rx="6"/>
   <text x="48" y="210" fill="#ED3694" font-size="10" font-weight="600" letter-spacing="1" font-family="Inter, Helvetica Neue, Arial, sans-serif">REACTION 1</text>
-  <text x="48" y="232" fill="#FFFFFF" font-size="12" font-weight="600" font-family="Inter, Helvetica Neue, Arial, sans-serif">Panic</text>
-  <text x="48" y="253" fill="#C8CED8" font-size="11" font-family="Inter, Helvetica Neue, Arial, sans-serif">Match their pricing immediately.</text>
+  <text x="48" y="232" fill="#C8CED8" font-size="11" data-zone="co-v1" opacity="0"></text>
 
   <!-- Card 2: Defend -->
   <rect x="290" y="190" width="220" height="100" fill="#1F2E4D" stroke="#2A3656" stroke-width="1" rx="6"/>
   <rect x="290" y="190" width="220" height="3" fill="#ED3694" rx="6"/>
   <text x="306" y="210" fill="#ED3694" font-size="10" font-weight="600" letter-spacing="1" font-family="Inter, Helvetica Neue, Arial, sans-serif">REACTION 2</text>
-  <text x="306" y="232" fill="#FFFFFF" font-size="12" font-weight="600" font-family="Inter, Helvetica Neue, Arial, sans-serif">Defend</text>
-  <text x="306" y="253" fill="#C8CED8" font-size="11" font-family="Inter, Helvetica Neue, Arial, sans-serif">List all the reasons we're better.</text>
+  <text x="306" y="232" fill="#C8CED8" font-size="11" data-zone="co-v2" opacity="0"></text>
 
   <!-- Card 3: Ignore -->
   <rect x="548" y="190" width="220" height="100" fill="#1F2E4D" stroke="#2A3656" stroke-width="1" rx="6"/>
   <rect x="548" y="190" width="220" height="3" fill="#ED3694" rx="6"/>
   <text x="564" y="210" fill="#ED3694" font-size="10" font-weight="600" letter-spacing="1" font-family="Inter, Helvetica Neue, Arial, sans-serif">REACTION 3</text>
-  <text x="564" y="232" fill="#FFFFFF" font-size="12" font-weight="600" font-family="Inter, Helvetica Neue, Arial, sans-serif">Ignore</text>
-  <text x="564" y="253" fill="#C8CED8" font-size="11" font-family="Inter, Helvetica Neue, Arial, sans-serif">Assume our product quality speaks.</text>
+  <text x="564" y="232" fill="#C8CED8" font-size="11" data-zone="co-v3" opacity="0"></text>
 
   <!-- PETE'S CHALLENGE (italic text box) -->
   <rect x="32" y="320" width="736" height="60" fill="#253658" stroke="#2A3656" stroke-width="1" rx="6"/>
@@ -49,8 +44,6 @@
   <!-- REFRAME section -->
   <text x="32" y="410" fill="#ED3694" font-size="11" font-weight="600" letter-spacing="2" font-family="Inter, Helvetica Neue, Arial, sans-serif">THE REFRAME</text>
   <rect x="32" y="420" width="736" height="50" fill="#253658" stroke="#2A3656" stroke-width="1" rx="6"/>
-  <text x="48" y="445" fill="#FFFFFF" font-size="12" font-family="Inter, Helvetica Neue, Arial, sans-serif">This is a switching-cost question. What have we built that a free tool</text>
-  <text x="48" y="465" fill="#FFFFFF" font-size="12" font-family="Inter, Helvetica Neue, Arial, sans-serif">can't replace overnight?</text>
 
   <!-- STRATEGIC RESPONSE box -->
   <rect x="32" y="500" width="736" height="170" fill="#1F2E4D" stroke="#2A3656" stroke-width="1" rx="6"/>
@@ -58,12 +51,8 @@
 
   <text x="48" y="525" fill="#ED3694" font-size="10" font-weight="600" letter-spacing="2" font-family="Inter, Helvetica Neue, Arial, sans-serif">STRATEGIC RESPONSE</text>
 
-  <text x="48" y="550" fill="#C8CED8" font-size="12" font-family="Inter, Helvetica Neue, Arial, sans-serif">Don't compete on price. Double down on integrations, data</text>
-  <text x="48" y="570" fill="#C8CED8" font-size="12" font-family="Inter, Helvetica Neue, Arial, sans-serif">history, and workflow lock-in that a new free tool can't replicate</text>
-  <text x="48" y="590" fill="#C8CED8" font-size="12" font-family="Inter, Helvetica Neue, Arial, sans-serif">in 48 hours.</text>
 
   <text x="48" y="620" fill="#ED3694" font-size="11" font-weight="600" font-family="Inter, Helvetica Neue, Arial, sans-serif">Action:</text>
-  <text x="48" y="640" fill="#C8CED8" font-size="12" font-family="Inter, Helvetica Neue, Arial, sans-serif">Call customer today. Emphasize data history and integration scope as defensibility.</text>
 
   <!-- Footer -->
   <rect x="0" y="672" width="800" height="28" fill="#151E35"/>

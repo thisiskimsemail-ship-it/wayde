@@ -40,19 +40,15 @@
 
   <!-- Activity 1 -->
   <rect x="16" y="76" width="124" height="48" rx="6" class="bg-card border-main"/>
-  <text x="26" y="96" class="text-body">Create training programme</text>
 
   <!-- Activity 2 -->
   <rect x="16" y="132" width="124" height="48" rx="6" class="bg-card border-main"/>
-  <text x="26" y="152" class="text-body">Run teacher workshops</text>
 
   <!-- Activity 3 -->
   <rect x="16" y="188" width="124" height="48" rx="6" class="bg-card border-main"/>
-  <text x="26" y="208" class="text-body">Build platform</text>
 
   <!-- Activity 4 -->
   <rect x="16" y="244" width="124" height="48" rx="6" class="bg-card border-main"/>
-  <text x="26" y="264" class="text-body">Recruit pilot schools</text>
 
   <!-- Arrow from ACTIVITIES to PRECONDITIONS WITHIN CONTROL -->
   <path d="M 140 100 L 164 100" fill="none" stroke="#E4E517" stroke-width="2" stroke-linecap="round"/>
@@ -60,15 +56,14 @@
 
   <!-- PRECONDITIONS WITHIN CONTROL section (x: 164-288, y: 64-180) -->
   <text x="164" y="64" class="text-label">PRECONDITIONS</text>
+  <text x="174" y="108" fill="#C8CED8" font-size="11" data-zone="toc-control" opacity="0"></text>
   <text x="164" y="78" class="text-muted">(WITHIN CONTROL)</text>
 
   <!-- Precondition 1 - Within Control -->
   <rect x="164" y="88" width="124" height="48" rx="6" class="bg-card border-emphasis"/>
-  <text x="174" y="108" class="text-body">Teachers trained and confident using platform</text>
 
   <!-- Precondition 2 - Within Control -->
   <rect x="164" y="144" width="124" height="48" rx="6" class="bg-card border-emphasis"/>
-  <text x="174" y="164" class="text-body">Platform adopted by pilot schools</text>
 
   <!-- Arrow to next section -->
   <path d="M 288 130 L 312 130" fill="none" stroke="#E4E517" stroke-width="2" stroke-linecap="round"/>
@@ -76,19 +71,18 @@
 
   <!-- PRECONDITIONS OUTSIDE CONTROL section (x: 312-436, y: 64-180) -->
   <text x="312" y="64" class="text-label">PRECONDITIONS</text>
+  <text x="322" y="108" fill="#C8CED8" font-size="11" data-zone="toc-outside" opacity="0"></text>
   <text x="312" y="78" class="text-muted">(OUTSIDE CONTROL)</text>
 
   <!-- Precondition 1 - Outside Control (faded) -->
   <g opacity="0.4">
     <rect x="312" y="88" width="124" height="48" rx="6" class="bg-card border-emphasis"/>
   </g>
-  <text x="322" y="108" class="text-body" opacity="0.7">Regulatory body updates accreditation requirements</text>
 
   <!-- Precondition 2 - Outside Control (faded) -->
   <g opacity="0.4">
     <rect x="312" y="144" width="124" height="48" rx="6" class="bg-card border-emphasis"/>
   </g>
-  <text x="322" y="164" class="text-body" opacity="0.7">Admin grants time for professional development</text>
 
   <!-- Arrow to OUTCOME -->
   <path d="M 436 130 L 460 130" fill="none" stroke="#E4E517" stroke-width="2" stroke-linecap="round"/>
@@ -96,10 +90,10 @@
 
   <!-- OUTCOME section (x: 460-584, y: 64-180) -->
   <text x="460" y="64" class="text-label">OUTCOME</text>
+  <text x="470" y="115" fill="#C8CED8" font-size="11" data-zone="toc-outcome" opacity="0"></text>
 
   <!-- Outcome card -->
   <rect x="460" y="88" width="124" height="80" rx="6" class="bg-card border-emphasis"/>
-  <text x="470" y="115" class="text-body">Teachers spend 30% less time on admin, 30% more on instruction</text>
   <text x="470" y="160" class="text-muted">5-year target</text>
 
   <!-- LEGEND section (y: 208-260) -->
@@ -107,30 +101,25 @@
 
   <!-- Legend item 1: Activities -->
   <circle cx="24" cy="348" r="5" fill="none" class="border-main"/>
-  <text x="40" y="352" class="text-body">Activities</text>
 
   <!-- Legend item 2: Within Control -->
   <circle cx="200" cy="348" r="5" fill="none" class="border-emphasis"/>
-  <text x="216" y="352" class="text-body">Within Control</text>
 
   <!-- Legend item 3: Outside Control -->
   <circle cx="424" cy="348" r="5" fill="none" class="border-emphasis" opacity="0.4"/>
-  <text x="440" y="352" class="text-body">Outside Control</text>
 
   <!-- Legend item 4: Outcome -->
   <circle cx="650" cy="348" r="5" fill="none" class="border-emphasis" stroke-width="1.5"/>
-  <text x="666" y="352" class="text-body">Outcome</text>
 
   <!-- WEAKEST LINK section (y: 376-440) -->
   <rect x="16" y="376" width="368" height="64" rx="6" class="bg-card" stroke="#E4E517" stroke-width="1" stroke-dasharray="4,4"/>
   <text x="26" y="392" class="text-label">WEAKEST LINK</text>
-  <text x="26" y="416" class="text-body">"Admin grants time for professional development" — outside your control, blocks the entire chain.</text>
+  <text x="26" y="416" fill="#C8CED8" font-size="11" data-zone="toc-weakest" opacity="0"></text>
 
   <!-- TEST section (y: 376-440) -->
   <rect x="416" y="376" width="368" height="64" rx="6" class="bg-card border-main"/>
   <rect x="416" y="376" width="368" height="24" rx="6" fill="#E4E517"/>
   <text x="426" y="392" class="text-category">TEST</text>
-  <text x="426" y="416" class="text-body">Interview 5 school administrators this month to validate willingness to allocate PD time.</text>
 
 
   <!-- Footer -->

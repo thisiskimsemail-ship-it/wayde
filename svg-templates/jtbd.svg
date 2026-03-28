@@ -26,56 +26,41 @@
   <rect x="32" y="64" width="224" height="2" fill="#27BDBE" rx="0"/>
 
   <text x="48" y="84" fill="#27BDBE" font-size="10" font-weight="600" letter-spacing="2">FUNCTIONAL JOB</text>
-  <text x="48" y="110" fill="#FFFFFF" font-size="12" font-weight="700">When I'm scaling a SaaS product, I want to reduce onboarding drop-off</text>
-  <text x="48" y="135" fill="#C8CED8" font-size="11">so I can improve activation rates.</text>
+  <text x="48" y="110" fill="#C8CED8" font-size="11" data-zone="jtbd-functional" opacity="0"></text>
 
   <text x="48" y="157" fill="#6B7A8E" font-size="9" font-weight="600">Current Solutions:</text>
-  <text x="48" y="172" fill="#C8CED8" font-size="11">• Tutorial videos</text>
-  <text x="48" y="187" fill="#C8CED8" font-size="11">• Documentation</text>
-  <text x="48" y="202" fill="#C8CED8" font-size="11">• Webinars (low satisfaction)</text>
 
   <!-- EMOTIONAL JOB Card -->
   <rect x="288" y="64" width="224" height="168" fill="#1F2E4D" stroke="#2A3656" stroke-width="1" rx="6"/>
   <rect x="288" y="64" width="224" height="2" fill="#27BDBE" rx="0"/>
 
   <text x="304" y="84" fill="#27BDBE" font-size="10" font-weight="600" letter-spacing="2">EMOTIONAL JOB</text>
-  <text x="304" y="115" fill="#FFFFFF" font-size="12" font-weight="700">Feel confident I'm not losing users to something fixable.</text>
+  <text x="304" y="115" fill="#C8CED8" font-size="11" data-zone="jtbd-emotional" opacity="0"></text>
 
   <text x="304" y="162" fill="#6B7A8E" font-size="9" font-weight="600">Emotional Stakes:</text>
-  <text x="304" y="177" fill="#C8CED8" font-size="11">• Proof of PMF</text>
-  <text x="304" y="192" fill="#C8CED8" font-size="11">• Competitive standing</text>
-  <text x="304" y="207" fill="#C8CED8" font-size="11">• Executive confidence</text>
 
   <!-- SOCIAL JOB Card -->
   <rect x="544" y="64" width="224" height="168" fill="#1F2E4D" stroke="#2A3656" stroke-width="1" rx="6"/>
   <rect x="544" y="64" width="224" height="2" fill="#27BDBE" rx="0"/>
 
   <text x="560" y="84" fill="#27BDBE" font-size="10" font-weight="600" letter-spacing="2">SOCIAL JOB</text>
-  <text x="560" y="115" fill="#FFFFFF" font-size="12" font-weight="700">Be seen as a product leader who "gets" user experience.</text>
+  <text x="560" y="115" fill="#C8CED8" font-size="11" data-zone="jtbd-social" opacity="0"></text>
 
   <text x="560" y="162" fill="#6B7A8E" font-size="9" font-weight="600">Social Signals:</text>
-  <text x="560" y="177" fill="#C8CED8" font-size="11">• UX credibility</text>
-  <text x="560" y="192" fill="#C8CED8" font-size="11">• Team respect</text>
-  <text x="560" y="207" fill="#C8CED8" font-size="11">• Industry reputation</text>
 
   <!-- SWITCHING TRIGGERS Card -->
   <rect x="32" y="248" width="736" height="120" fill="#1F2E4D" stroke="#2A3656" stroke-width="1" rx="6"/>
   <rect x="32" y="248" width="736" height="2" fill="#27BDBE" rx="0"/>
 
   <text x="48" y="268" fill="#27BDBE" font-size="10" font-weight="600" letter-spacing="2">SWITCHING TRIGGERS</text>
+  <text x="48" y="294" fill="#C8CED8" font-size="11" data-zone="jtbd-hiring" opacity="0"></text>
 
-  <text x="48" y="294" fill="#C8CED8" font-size="11">• Competitor launched smoother onboarding</text>
-  <text x="48" y="312" fill="#C8CED8" font-size="11">• Board asked about activation metrics</text>
-  <text x="48" y="330" fill="#C8CED8" font-size="11">• Lost a key customer citing complexity and poor onboarding experience</text>
-  <text x="48" y="348" fill="#C8CED8" font-size="11">• Metrics showing declining activation trends vs. competitors</text>
 
   <!-- JOB STATEMENT Box -->
   <rect x="32" y="384" width="736" height="104" fill="#1F2E4D" stroke="#27BDBE" stroke-width="1.5" rx="6"/>
   <rect x="32" y="384" width="736" height="2" fill="#27BDBE" rx="0"/>
 
   <text x="48" y="404" fill="#27BDBE" font-size="10" font-weight="600" letter-spacing="2">JOB STATEMENT</text>
-  <text x="48" y="434" fill="#FFFFFF" font-size="13" font-weight="700">Help me turn confused sign-ups into confident users within 5 minutes,</text>
-  <text x="48" y="455" fill="#FFFFFF" font-size="13" font-weight="700">so I can prove product-market fit to my board.</text>
 
 
   <!-- Footer -->

@@ -20,59 +20,51 @@
   <!-- Cell 1: Video onboarding -->
   <rect x="20" y="64" width="178" height="280" rx="6" fill="#1F2E4D" stroke="#2A3656" stroke-width="1"/>
   <text x="30" y="84" fill="#F15A22" font-size="14" font-weight="700" font-family="Inter, Helvetica Neue, Arial, sans-serif">1</text>
-  <text x="30" y="108" fill="#FFFFFF" font-size="13" font-weight="700" font-family="Inter, Helvetica Neue, Arial, sans-serif">Video</text>
-  <text x="30" y="125" fill="#FFFFFF" font-size="13" font-weight="700" font-family="Inter, Helvetica Neue, Arial, sans-serif">onboarding</text>
+  <text x="30" y="108" fill="#C8CED8" font-size="11" data-zone="c8-1" opacity="0"></text>
   <rect x="30" y="140" width="138" height="100" rx="4" fill="#253658"/>
 
   <!-- Cell 2: AI-guided setup -->
   <rect x="206" y="64" width="178" height="280" rx="6" fill="#1F2E4D" stroke="#2A3656" stroke-width="1"/>
   <text x="216" y="84" fill="#F15A22" font-size="14" font-weight="700" font-family="Inter, Helvetica Neue, Arial, sans-serif">2</text>
-  <text x="216" y="108" fill="#FFFFFF" font-size="13" font-weight="700" font-family="Inter, Helvetica Neue, Arial, sans-serif">AI-guided</text>
-  <text x="216" y="125" fill="#FFFFFF" font-size="13" font-weight="700" font-family="Inter, Helvetica Neue, Arial, sans-serif">setup</text>
+  <text x="216" y="108" fill="#C8CED8" font-size="11" data-zone="c8-2" opacity="0"></text>
   <rect x="216" y="140" width="138" height="100" rx="4" fill="#253658"/>
 
   <!-- Cell 3: Peer mentoring -->
   <rect x="392" y="64" width="178" height="280" rx="6" fill="#1F2E4D" stroke="#2A3656" stroke-width="1"/>
   <text x="402" y="84" fill="#F15A22" font-size="14" font-weight="700" font-family="Inter, Helvetica Neue, Arial, sans-serif">3</text>
-  <text x="402" y="108" fill="#FFFFFF" font-size="13" font-weight="700" font-family="Inter, Helvetica Neue, Arial, sans-serif">Peer</text>
-  <text x="402" y="125" fill="#FFFFFF" font-size="13" font-weight="700" font-family="Inter, Helvetica Neue, Arial, sans-serif">mentoring</text>
+  <text x="402" y="108" fill="#C8CED8" font-size="11" data-zone="c8-3" opacity="0"></text>
   <rect x="402" y="140" width="138" height="100" rx="4" fill="#253658"/>
 
   <!-- Cell 4: Gamified checklist -->
   <rect x="578" y="64" width="178" height="280" rx="6" fill="#1F2E4D" stroke="#2A3656" stroke-width="1"/>
   <text x="588" y="84" fill="#F15A22" font-size="14" font-weight="700" font-family="Inter, Helvetica Neue, Arial, sans-serif">4</text>
-  <text x="588" y="108" fill="#FFFFFF" font-size="13" font-weight="700" font-family="Inter, Helvetica Neue, Arial, sans-serif">Gamified</text>
-  <text x="588" y="125" fill="#FFFFFF" font-size="13" font-weight="700" font-family="Inter, Helvetica Neue, Arial, sans-serif">checklist</text>
+  <text x="588" y="108" fill="#C8CED8" font-size="11" data-zone="c8-4" opacity="0"></text>
   <rect x="588" y="140" width="138" height="100" rx="4" fill="#253658"/>
 
   <!-- Row 2 -->
   <!-- Cell 5: Template library -->
   <rect x="20" y="352" width="178" height="280" rx="6" fill="#1F2E4D" stroke="#2A3656" stroke-width="1"/>
   <text x="30" y="372" fill="#F15A22" font-size="14" font-weight="700" font-family="Inter, Helvetica Neue, Arial, sans-serif">5</text>
-  <text x="30" y="396" fill="#FFFFFF" font-size="13" font-weight="700" font-family="Inter, Helvetica Neue, Arial, sans-serif">Template</text>
-  <text x="30" y="413" fill="#FFFFFF" font-size="13" font-weight="700" font-family="Inter, Helvetica Neue, Arial, sans-serif">library</text>
+  <text x="30" y="396" fill="#C8CED8" font-size="11" data-zone="c8-5" opacity="0"></text>
   <rect x="30" y="428" width="138" height="100" rx="4" fill="#253658"/>
 
   <!-- Cell 6: Community cohorts (SELECTED) -->
   <rect x="206" y="352" width="178" height="280" rx="6" fill="#1F2E4D" stroke="#F15A22" stroke-width="1.5"/>
   <text x="216" y="372" fill="#F15A22" font-size="14" font-weight="700" font-family="Inter, Helvetica Neue, Arial, sans-serif">6</text>
-  <text x="216" y="396" fill="#FFFFFF" font-size="13" font-weight="700" font-family="Inter, Helvetica Neue, Arial, sans-serif">Community</text>
-  <text x="216" y="413" fill="#FFFFFF" font-size="13" font-weight="700" font-family="Inter, Helvetica Neue, Arial, sans-serif">cohorts</text>
+  <text x="216" y="396" fill="#C8CED8" font-size="11" data-zone="c8-6" opacity="0"></text>
   <rect x="216" y="428" width="138" height="100" rx="4" fill="#253658"/>
   <text x="216" y="545" fill="#F15A22" font-size="10" font-weight="600" letter-spacing="1" font-family="Inter, Helvetica Neue, Arial, sans-serif">SELECTED</text>
 
   <!-- Cell 7: SMS micro-lessons -->
   <rect x="392" y="352" width="178" height="280" rx="6" fill="#1F2E4D" stroke="#2A3656" stroke-width="1"/>
   <text x="402" y="372" fill="#F15A22" font-size="14" font-weight="700" font-family="Inter, Helvetica Neue, Arial, sans-serif">7</text>
-  <text x="402" y="396" fill="#FFFFFF" font-size="13" font-weight="700" font-family="Inter, Helvetica Neue, Arial, sans-serif">SMS</text>
-  <text x="402" y="413" fill="#FFFFFF" font-size="13" font-weight="700" font-family="Inter, Helvetica Neue, Arial, sans-serif">micro-lessons</text>
+  <text x="402" y="396" fill="#C8CED8" font-size="11" data-zone="c8-7" opacity="0"></text>
   <rect x="402" y="428" width="138" height="100" rx="4" fill="#253658"/>
 
   <!-- Cell 8: 1-click demo env -->
   <rect x="578" y="352" width="178" height="280" rx="6" fill="#1F2E4D" stroke="#2A3656" stroke-width="1"/>
   <text x="588" y="372" fill="#F15A22" font-size="14" font-weight="700" font-family="Inter, Helvetica Neue, Arial, sans-serif">8</text>
-  <text x="588" y="396" fill="#FFFFFF" font-size="13" font-weight="700" font-family="Inter, Helvetica Neue, Arial, sans-serif">1-click</text>
-  <text x="588" y="413" fill="#FFFFFF" font-size="13" font-weight="700" font-family="Inter, Helvetica Neue, Arial, sans-serif">demo env</text>
+  <text x="588" y="396" fill="#C8CED8" font-size="11" data-zone="c8-8" opacity="0"></text>
   <rect x="588" y="428" width="138" height="100" rx="4" fill="#253658"/>
 
   <!-- Footer -->

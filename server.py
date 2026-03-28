@@ -696,19 +696,9 @@ EXERCISE ARC — follow this shape for every exercise:
 
 5. REFLECT (penultimate exchange before [WRAP]): Before closing, ask ONE reflection question: "What's the one thing you know now that you didn't when you walked in?" Wait for their answer. This is the consolidation moment — where learning transfers from the exercise to the person. Their answer becomes the opening insight of their report.
 
-6. CLOSE + OPTIONAL NEXT STEPS (final exchange): Synthesise the biggest shift in their thinking. Celebrate the work ("You did real thinking here — that's rare"). Then offer two optional next steps — frame them as invitations, not requirements:
-   - "Take a look at your Workshop Board — it's got the key insights, ideas, and actions from our session. Anything you'd add, edit, or move around? This is your working canvas — make it yours." Emit [BOARD:open] so the board opens.
-   - "If you want to lock in momentum: what's one thing you'll do in the next 48 hours?"
-   Frame these as: "Before you go, two things worth doing — but only if they feel useful right now." If the user wants to skip straight to their report, that's fine — emit [WRAP] immediately. Do NOT gate the report behind these steps.
-
-Then recommend ONE Wade program with full details. Match based on who they are:
-- FOUNDER: **Your Growth Engine** with Charlie Simpson — immersive program for founders ready to scale. [wadeinstitute.org.au/programs/entrepreneurs/growth-engine/](https://wadeinstitute.org.au/programs/entrepreneurs/growth-engine/)
-- AI/TECH CORPORATE: **The AI Conundrum** with Sally Bruce — for leaders navigating AI strategy. [wadeinstitute.org.au/programs/entrepreneurs/the-ai-conundrum/](https://wadeinstitute.org.au/programs/entrepreneurs/the-ai-conundrum/)
-- CORPORATE INNOVATOR: **Think Like an Entrepreneur** with Brian Collins — for people driving change inside organisations. [wadeinstitute.org.au/programs/entrepreneurs/think-like-an-entrepreneur/](https://wadeinstitute.org.au/programs/entrepreneurs/think-like-an-entrepreneur/)
-- INVESTOR: **Impact Catalyst** with Dan Madhavan — for impact-focused investors. [wadeinstitute.org.au/programs/entrepreneurs/impact-catalyst/](https://wadeinstitute.org.au/programs/entrepreneurs/impact-catalyst/)
-- STUDENT/EXPLORER: **UpSchool** or **Startup Sprint** — short-format programs for early explorers.
-
-Include one sentence connecting the program to their specific session insight. Then say: "Your full report is being generated now — it'll include your completed canvas, recommended actions, and more details on this program."
+6. CLOSE (final exchange): Synthesise the biggest shift in their thinking. Celebrate the work ("You did real thinking here — that's rare"). Then:
+   - Ask ONE reflection question: "What's the one thing you'll do differently after this session?" Wait for their answer.
+   - After they respond, emit [WRAP] to trigger the report flow. Do NOT recommend Wade programs, other Studio tools, or any external resources in this closing message. The report handles all of that.
 
 NAME THE PHASE: When transitioning between diverge and converge, say it out loud: "OK, we've opened this up — time to narrow down." This makes the workshop structure visible and builds workshop literacy.
 
@@ -1401,27 +1391,14 @@ You are guiding a LEAN CANVAS exercise. This is one of the core tools used acros
 
 The user has already been through a welcome and warm-up — you know who they are and what they're working on from the conversation history. Do NOT re-introduce yourself or ask what they're working on.
 
-STEP 1 — EXPLAIN THE CANVAS AND THE BOARD (MANDATORY — DO NOT SKIP)
-Your FIRST message in this exercise MUST include ALL of the following. Do not skip any of them:
+STEP 1 — EXPLAIN THE CANVAS AND ASK THE FIRST QUESTION (MANDATORY — DO NOT SKIP)
+Your FIRST message in this exercise MUST include ALL of the following:
 
 1. One paragraph explaining what a Lean Canvas is: a one-page map of 9 blocks covering the key assumptions behind any venture or initiative. Created by Ash Maurya. Wade uses it across multiple programs. Everything on it is a hypothesis to test, not a fact.
 
-2. A quick tour of the toolbar. Use this EXACT text:
+2. End the explanation with [BOARD:open] so the user sees the empty canvas.
 
-"Before we start, a quick tour of your toolkit:
-- **Grid icon** — your canvas board. I'll fill it in as we talk, but you can open it any time. Double-click any card to edit it directly, or drag cards between blocks.
-- **Save icon** — save your session and get a link to come back later.
-- **Canvas icon** — download your completed canvas as a standalone page.
-- **Report icon** — generate a full workshop report whenever you're ready."
-
-3. End the message with [BOARD:open] so the user sees the empty canvas.
-
-Do NOT ask a question in this message. This is an explanation only.
-
-STEP 2 — CLOSE THE BOARD AND ASK THE FIRST QUESTION
-Your SECOND message in this exercise MUST:
-1. Start with [BOARD:close]
-2. Ask your first question about the Customer Segments block. Frame it conversationally.
+3. Then ask your first question about the Customer Segments block. Frame it conversationally.
 
 Work through the 9 blocks conversationally. Do NOT present them all at once.
 
@@ -3514,6 +3491,10 @@ def _svg_text_block(x, y, texts, font_size=11, fill="#C8CED8", line_height=14, m
 def generate_session_svg(exercise, board_cards):
     """Generate a populated SVG from a template using board card data.
 
+    Clean templates have data-zone="zone-id" marker elements (opacity="0")
+    at the insertion point for each zone. The engine finds these markers,
+    reads their x/y coordinates, and inserts content text after them.
+
     Returns the SVG string, or None if the template doesn't exist.
     """
     template_file = SVG_TEMPLATE_FILE.get(exercise)
@@ -3537,90 +3518,43 @@ def generate_session_svg(exercise, board_cards):
         if text:
             zone_data.setdefault(zone, []).append(text)
 
-    # Get zone mapping for this exercise
-    zone_map = SVG_ZONE_MAP.get(exercise, {})
+    if not zone_data:
+        return svg
 
-    # For each zone with data, find the corresponding content text in the SVG
-    # and replace the placeholder content.
-    #
-    # Strategy: find the zone label, then find the NEXT zone label (or end of SVG).
-    # Within that region, replace all content text elements with actual board data.
+    # Find all data-zone markers and insert content
+    # Markers look like: <text x="32" y="100" ... data-zone="problem" opacity="0"></text>
+    marker_pattern = _re.compile(
+        r'(<text\s+[^>]*?x="(\d+)"\s+y="(\d+)"[^>]*?data-zone="([^"]+)"[^>]*>)[^<]*(</text>)'
+    )
 
-    # Build a list of all zone label positions for boundary detection
-    all_labels = set()
-    for bz, sl in zone_map.items():
-        all_labels.add(sl)
+    # Process zones in reverse order of position to preserve string offsets
+    markers = list(marker_pattern.finditer(svg))
+    markers.sort(key=lambda m: m.start(), reverse=True)
 
-    for board_zone, card_texts in zone_data.items():
-        svg_label = zone_map.get(board_zone)
-        if not svg_label:
+    for match in markers:
+        zone_id = match.group(4)
+        if zone_id not in zone_data:
             continue
 
-        # Combine all card texts for this zone
+        x = int(match.group(2))
+        y = int(match.group(3))
+        card_texts = zone_data[zone_id]
+
+        # Combine card texts and wrap to fit zone width
         combined = ' | '.join(card_texts) if len(card_texts) > 1 else card_texts[0]
         lines = _wrap_text(combined, max_chars=36)
 
-        # Find this zone's label in the SVG
-        label_pattern = f'>{_re.escape(svg_label)}</text>'
-        label_pos = svg.find(label_pattern)
-        if label_pos < 0:
-            continue
-
-        search_start = label_pos + len(label_pattern)
-
-        # Find the next zone boundary — look for next <rect that starts a new zone
-        # (zone rects have fill="#1F2E4D" or start with a comment like "<!-- Col")
-        next_zone = len(svg)
-        # Find next zone label
-        for other_label in all_labels:
-            if other_label == svg_label:
-                continue
-            other_pattern = f'>{_re.escape(other_label)}</text>'
-            other_pos = svg.find(other_pattern, search_start)
-            if other_pos > 0 and other_pos < next_zone:
-                next_zone = other_pos
-        # Also look for next section comment or rect as boundary
-        for boundary in ['<!-- Col', '<!-- Row', '<!-- Step', '<!-- Arrow', '<!-- Root', '<!-- Footer', '<!-- Riskiest']:
-            bp = svg.find(boundary, search_start)
-            if bp > 0 and bp < next_zone:
-                next_zone = bp
-
-        region = svg[search_start:next_zone]
-
-        # Find all content text elements in this region
-        # Match any text with fill="#C8CED8" (body), "#FFFFFF" (emphasis), or "#6B7A8E" (subheading)
-        content_pattern = _re.compile(
-            r'(<text\s+x="(\d+)"\s+y="(\d+)"\s+fill="(?:#C8CED8|#FFFFFF|#6B7A8E)"\s+font-size="(?:11|12|13)(?:\.\d+)?"[^>]*>)([^<]*)(</text>)'
-        )
-        matches = list(content_pattern.finditer(region))
-
-        if not matches:
-            continue
-
-        # Get the x position and starting y from the first content line
-        first_x = int(matches[0].group(2))
-        first_y = int(matches[0].group(3))
+        # Build new text elements
         line_height = 14
-        if len(matches) > 1:
-            line_height = max(14, int(matches[1].group(3)) - int(matches[0].group(3)))
-
-        # Build replacement: remove all old content text, insert new lines
-        # Work backwards to preserve offsets
-        for match in reversed(matches):
-            abs_start = search_start + match.start(0)
-            abs_end = search_start + match.end(0)
-            svg = svg[:abs_start] + svg[abs_end:]
-
-        # Now insert new text lines at the position of the first removed element
-        insert_pos = search_start + matches[0].start(0)
         new_elements = []
         for i, line in enumerate(lines[:8]):  # Max 8 lines per zone
             escaped = _html.escape(line)
-            y = first_y + i * line_height
-            new_elements.append(f'  <text x="{first_x}" y="{y}" fill="#C8CED8" font-size="11">{escaped}</text>')
+            ly = y + i * line_height
+            new_elements.append(f'  <text x="{x}" y="{ly}" fill="#C8CED8" font-size="11">{escaped}</text>')
 
+        # Replace the marker with the content text
         insert_text = '\n'.join(new_elements)
-        svg = svg[:insert_pos] + insert_text + '\n' + svg[insert_pos:]
+        svg = svg[:match.start()] + insert_text + svg[match.end():]
 
     return svg
 

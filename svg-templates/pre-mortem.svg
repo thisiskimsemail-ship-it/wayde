@@ -26,56 +26,38 @@
   <rect x="32" y="110" width="240" height="140" fill="#1F2E4D" stroke="#2A3656" stroke-width="1" rx="6"/>
   <rect x="32" y="110" width="240" height="3" fill="#ED3694" rx="6"/>
   <text x="48" y="130" fill="#ED3694" font-size="10" font-weight="600" letter-spacing="2" font-family="Inter, Helvetica Neue, Arial, sans-serif">MARKET RISK</text>
-  <text x="48" y="152" fill="#C8CED8" font-size="11" font-family="Inter, Helvetica Neue, Arial, sans-serif">Target market too small to sustain growth.</text>
-  <text x="48" y="172" fill="#C8CED8" font-size="11" font-family="Inter, Helvetica Neue, Arial, sans-serif">Customer needs shifted post-launch.</text>
-  <text x="48" y="192" fill="#C8CED8" font-size="11" font-family="Inter, Helvetica Neue, Arial, sans-serif">Regulatory changes blocked distribution.</text>
-  <text x="48" y="242" fill="#6B7A8E" font-size="9" font-family="Inter, Helvetica Neue, Arial, sans-serif">Likelihood: High</text>
+  <text x="48" y="152" fill="#C8CED8" font-size="11" data-zone="risk-market" opacity="0"></text>
 
   <!-- Card 1.2: Product Risk -->
   <rect x="280" y="110" width="240" height="140" fill="#1F2E4D" stroke="#2A3656" stroke-width="1" rx="6"/>
   <rect x="280" y="110" width="240" height="3" fill="#ED3694" rx="6"/>
   <text x="296" y="130" fill="#ED3694" font-size="10" font-weight="600" letter-spacing="2" font-family="Inter, Helvetica Neue, Arial, sans-serif">PRODUCT RISK</text>
-  <text x="296" y="152" fill="#C8CED8" font-size="11" font-family="Inter, Helvetica Neue, Arial, sans-serif">Core feature didn't solve real pain.</text>
-  <text x="296" y="172" fill="#C8CED8" font-size="11" font-family="Inter, Helvetica Neue, Arial, sans-serif">Technical debt slowed iteration speed.</text>
-  <text x="296" y="192" fill="#C8CED8" font-size="11" font-family="Inter, Helvetica Neue, Arial, sans-serif">UX too complex for non-technical users.</text>
-  <text x="296" y="242" fill="#6B7A8E" font-size="9" font-family="Inter, Helvetica Neue, Arial, sans-serif">Likelihood: High</text>
+  <text x="296" y="152" fill="#C8CED8" font-size="11" data-zone="risk-product" opacity="0"></text>
 
   <!-- Card 1.3: Team Risk -->
   <rect x="528" y="110" width="240" height="140" fill="#1F2E4D" stroke="#2A3656" stroke-width="1" rx="6"/>
   <rect x="528" y="110" width="240" height="3" fill="#ED3694" rx="6"/>
   <text x="544" y="130" fill="#ED3694" font-size="10" font-weight="600" letter-spacing="2" font-family="Inter, Helvetica Neue, Arial, sans-serif">TEAM RISK</text>
-  <text x="544" y="152" fill="#C8CED8" font-size="11" font-family="Inter, Helvetica Neue, Arial, sans-serif">Co-founder disagreement on direction.</text>
-  <text x="544" y="172" fill="#C8CED8" font-size="11" font-family="Inter, Helvetica Neue, Arial, sans-serif">Key engineer left before V2 launch.</text>
-  <text x="544" y="192" fill="#C8CED8" font-size="11" font-family="Inter, Helvetica Neue, Arial, sans-serif">Founder burnout from wearing all hats.</text>
-  <text x="544" y="242" fill="#6B7A8E" font-size="9" font-family="Inter, Helvetica Neue, Arial, sans-serif">Likelihood: Medium</text>
+  <text x="544" y="152" fill="#C8CED8" font-size="11" data-zone="risk-team" opacity="0"></text>
 
   <!-- Row 2 -->
   <!-- Card 2.1: Financial Risk -->
   <rect x="32" y="270" width="240" height="140" fill="#1F2E4D" stroke="#2A3656" stroke-width="1" rx="6"/>
   <rect x="32" y="270" width="240" height="3" fill="#ED3694" rx="6"/>
   <text x="48" y="290" fill="#ED3694" font-size="10" font-weight="600" letter-spacing="2" font-family="Inter, Helvetica Neue, Arial, sans-serif">FINANCIAL RISK</text>
-  <text x="48" y="312" fill="#C8CED8" font-size="11" font-family="Inter, Helvetica Neue, Arial, sans-serif">Runway ran out before revenue kicked in.</text>
-  <text x="48" y="332" fill="#C8CED8" font-size="11" font-family="Inter, Helvetica Neue, Arial, sans-serif">CAC was 3x higher than projected.</text>
-  <text x="48" y="352" fill="#C8CED8" font-size="11" font-family="Inter, Helvetica Neue, Arial, sans-serif">Failed to close Series A in time.</text>
-  <text x="48" y="402" fill="#6B7A8E" font-size="9" font-family="Inter, Helvetica Neue, Arial, sans-serif">Likelihood: Critical</text>
+  <text x="48" y="312" fill="#C8CED8" font-size="11" data-zone="risk-financial" opacity="0"></text>
 
   <!-- Card 2.2: Competition Risk -->
   <rect x="280" y="270" width="240" height="140" fill="#1F2E4D" stroke="#2A3656" stroke-width="1" rx="6"/>
   <rect x="280" y="270" width="240" height="3" fill="#ED3694" rx="6"/>
   <text x="296" y="290" fill="#ED3694" font-size="10" font-weight="600" letter-spacing="2" font-family="Inter, Helvetica Neue, Arial, sans-serif">COMPETITION RISK</text>
-  <text x="296" y="312" fill="#C8CED8" font-size="11" font-family="Inter, Helvetica Neue, Arial, sans-serif">Incumbent launched similar feature set.</text>
-  <text x="296" y="332" fill="#C8CED8" font-size="11" font-family="Inter, Helvetica Neue, Arial, sans-serif">Better-funded competitor copied model.</text>
-  <text x="296" y="352" fill="#C8CED8" font-size="11" font-family="Inter, Helvetica Neue, Arial, sans-serif">Open-source alternative emerged.</text>
-  <text x="296" y="402" fill="#6B7A8E" font-size="9" font-family="Inter, Helvetica Neue, Arial, sans-serif">Likelihood: Medium</text>
+  <text x="296" y="312" fill="#C8CED8" font-size="11" data-zone="risk-competition" opacity="0"></text>
 
   <!-- Card 2.3: Timing Risk -->
   <rect x="528" y="270" width="240" height="140" fill="#1F2E4D" stroke="#2A3656" stroke-width="1" rx="6"/>
   <rect x="528" y="270" width="240" height="3" fill="#ED3694" rx="6"/>
   <text x="544" y="290" fill="#ED3694" font-size="10" font-weight="600" letter-spacing="2" font-family="Inter, Helvetica Neue, Arial, sans-serif">TIMING RISK</text>
-  <text x="544" y="312" fill="#C8CED8" font-size="11" font-family="Inter, Helvetica Neue, Arial, sans-serif">Market wasn't ready for solution.</text>
-  <text x="544" y="332" fill="#C8CED8" font-size="11" font-family="Inter, Helvetica Neue, Arial, sans-serif">Launched during economic downturn.</text>
-  <text x="544" y="352" fill="#C8CED8" font-size="11" font-family="Inter, Helvetica Neue, Arial, sans-serif">Development took 6 months too long.</text>
-  <text x="544" y="402" fill="#6B7A8E" font-size="9" font-family="Inter, Helvetica Neue, Arial, sans-serif">Likelihood: Medium</text>
+  <text x="544" y="312" fill="#C8CED8" font-size="11" data-zone="risk-timing" opacity="0"></text>
 
   <!-- TOP 3 MITIGATIONS box -->
   <rect x="32" y="440" width="736" height="230" fill="#1F2E4D" stroke="#2A3656" stroke-width="1" rx="6"/>
@@ -83,6 +65,7 @@
 
   <!-- Title -->
   <text x="48" y="465" fill="#ED3694" font-size="10" font-weight="600" letter-spacing="2" font-family="Inter, Helvetica Neue, Arial, sans-serif">TOP 3 MITIGATIONS</text>
+  <text x="48" y="526" fill="#C8CED8" font-size="11" data-zone="risk-mitigations" opacity="0"></text>
 
   <!-- Table headers -->
   <line x1="48" y1="480" x2="768" y2="480" stroke="#2A3656" stroke-width="1"/>
@@ -93,24 +76,12 @@
 
   <!-- Row 1 -->
   <line x1="48" y1="510" x2="768" y2="510" stroke="#2A3656" stroke-width="0.5"/>
-  <text x="48" y="526" fill="#C8CED8" font-size="11" font-family="Inter, Helvetica Neue, Arial, sans-serif">Runway runs out</text>
-  <text x="220" y="526" fill="#C8CED8" font-size="11" font-family="Inter, Helvetica Neue, Arial, sans-serif">High</text>
-  <text x="370" y="526" fill="#C8CED8" font-size="11" font-family="Inter, Helvetica Neue, Arial, sans-serif">Critical</text>
-  <text x="500" y="526" fill="#C8CED8" font-size="10" font-family="Inter, Helvetica Neue, Arial, sans-serif">Cut burn rate 30%, secure bridge round.</text>
 
   <!-- Row 2 -->
   <line x1="48" y1="540" x2="768" y2="540" stroke="#2A3656" stroke-width="0.5"/>
-  <text x="48" y="556" fill="#C8CED8" font-size="11" font-family="Inter, Helvetica Neue, Arial, sans-serif">Product-market misfit</text>
-  <text x="220" y="556" fill="#C8CED8" font-size="11" font-family="Inter, Helvetica Neue, Arial, sans-serif">Medium</text>
-  <text x="370" y="556" fill="#C8CED8" font-size="11" font-family="Inter, Helvetica Neue, Arial, sans-serif">Critical</text>
-  <text x="500" y="556" fill="#C8CED8" font-size="10" font-family="Inter, Helvetica Neue, Arial, sans-serif">Run 20 discovery interviews this month.</text>
 
   <!-- Row 3 -->
   <line x1="48" y1="570" x2="768" y2="570" stroke="#2A3656" stroke-width="0.5"/>
-  <text x="48" y="586" fill="#C8CED8" font-size="11" font-family="Inter, Helvetica Neue, Arial, sans-serif">Key person leaves</text>
-  <text x="220" y="586" fill="#C8CED8" font-size="11" font-family="Inter, Helvetica Neue, Arial, sans-serif">Medium</text>
-  <text x="370" y="586" fill="#C8CED8" font-size="11" font-family="Inter, Helvetica Neue, Arial, sans-serif">High</text>
-  <text x="500" y="586" fill="#C8CED8" font-size="10" font-family="Inter, Helvetica Neue, Arial, sans-serif">Document everything, vest equity monthly.</text>
 
   <!-- Footer -->
   <rect x="0" y="672" width="800" height="28" fill="#151E35"/>

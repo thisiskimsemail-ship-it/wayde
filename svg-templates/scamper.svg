@@ -19,49 +19,49 @@
   <rect x="40" y="64" width="50" height="75" rx="6" fill="#F15A22"/>
   <text x="55" y="110" fill="#FFFFFF" font-size="20" font-weight="700" text-anchor="middle" font-family="Inter, Helvetica Neue, Arial, sans-serif">S</text>
   <text x="110" y="87" fill="#F15A22" font-size="11" font-weight="700" letter-spacing="1" font-family="Inter, Helvetica Neue, Arial, sans-serif">SUBSTITUTE</text>
-  <text x="110" y="110" fill="#FFFFFF" font-size="12" font-family="Inter, Helvetica Neue, Arial, sans-serif">What if onboarding was a conversation, not a tutorial?</text>
+  <text x="110" y="110" fill="#C8CED8" font-size="11" data-zone="sc-s" opacity="0"></text>
 
   <!-- SCAMPER Row 2: C - COMBINE -->
   <rect x="40" y="151" width="720" height="75" rx="6" fill="#1F2E4D" stroke="#2A3656" stroke-width="1"/>
   <rect x="40" y="151" width="50" height="75" rx="6" fill="#F15A22"/>
   <text x="55" y="197" fill="#FFFFFF" font-size="20" font-weight="700" text-anchor="middle" font-family="Inter, Helvetica Neue, Arial, sans-serif">C</text>
   <text x="110" y="174" fill="#F15A22" font-size="11" font-weight="700" letter-spacing="1" font-family="Inter, Helvetica Neue, Arial, sans-serif">COMBINE</text>
-  <text x="110" y="197" fill="#FFFFFF" font-size="12" font-family="Inter, Helvetica Neue, Arial, sans-serif">Merge onboarding with the first real task — learn by doing.</text>
+  <text x="110" y="197" fill="#C8CED8" font-size="11" data-zone="sc-c" opacity="0"></text>
 
   <!-- SCAMPER Row 3: A - ADAPT -->
   <rect x="40" y="238" width="720" height="75" rx="6" fill="#1F2E4D" stroke="#2A3656" stroke-width="1"/>
   <rect x="40" y="238" width="50" height="75" rx="6" fill="#F15A22"/>
   <text x="55" y="284" fill="#FFFFFF" font-size="20" font-weight="700" text-anchor="middle" font-family="Inter, Helvetica Neue, Arial, sans-serif">A</text>
   <text x="110" y="261" fill="#F15A22" font-size="11" font-weight="700" letter-spacing="1" font-family="Inter, Helvetica Neue, Arial, sans-serif">ADAPT</text>
-  <text x="110" y="284" fill="#FFFFFF" font-size="12" font-family="Inter, Helvetica Neue, Arial, sans-serif">Borrow Duolingo's streak mechanic to reward daily engagement.</text>
+  <text x="110" y="284" fill="#C8CED8" font-size="11" data-zone="sc-a" opacity="0"></text>
 
   <!-- SCAMPER Row 4: M - MODIFY -->
   <rect x="40" y="325" width="720" height="75" rx="6" fill="#1F2E4D" stroke="#2A3656" stroke-width="1"/>
   <rect x="40" y="325" width="50" height="75" rx="6" fill="#F15A22"/>
   <text x="55" y="371" fill="#FFFFFF" font-size="20" font-weight="700" text-anchor="middle" font-family="Inter, Helvetica Neue, Arial, sans-serif">M</text>
   <text x="110" y="348" fill="#F15A22" font-size="11" font-weight="700" letter-spacing="1" font-family="Inter, Helvetica Neue, Arial, sans-serif">MODIFY</text>
-  <text x="110" y="371" fill="#FFFFFF" font-size="12" font-family="Inter, Helvetica Neue, Arial, sans-serif">Make the interface radically simpler for the first week.</text>
+  <text x="110" y="371" fill="#C8CED8" font-size="11" data-zone="sc-m" opacity="0"></text>
 
   <!-- SCAMPER Row 5: P - PUT TO OTHER USE -->
   <rect x="40" y="412" width="720" height="75" rx="6" fill="#1F2E4D" stroke="#2A3656" stroke-width="1"/>
   <rect x="40" y="412" width="50" height="75" rx="6" fill="#F15A22"/>
   <text x="55" y="458" fill="#FFFFFF" font-size="20" font-weight="700" text-anchor="middle" font-family="Inter, Helvetica Neue, Arial, sans-serif">P</text>
   <text x="110" y="435" fill="#F15A22" font-size="11" font-weight="700" letter-spacing="1" font-family="Inter, Helvetica Neue, Arial, sans-serif">PUT TO OTHER USE</text>
-  <text x="110" y="458" fill="#FFFFFF" font-size="12" font-family="Inter, Helvetica Neue, Arial, sans-serif">Use onboarding data to personalise the entire product.</text>
+  <text x="110" y="458" fill="#C8CED8" font-size="11" data-zone="sc-p" opacity="0"></text>
 
   <!-- SCAMPER Row 6: E - ELIMINATE -->
   <rect x="40" y="499" width="720" height="75" rx="6" fill="#1F2E4D" stroke="#2A3656" stroke-width="1"/>
   <rect x="40" y="499" width="50" height="75" rx="6" fill="#F15A22"/>
   <text x="55" y="545" fill="#FFFFFF" font-size="20" font-weight="700" text-anchor="middle" font-family="Inter, Helvetica Neue, Arial, sans-serif">E</text>
   <text x="110" y="522" fill="#F15A22" font-size="11" font-weight="700" letter-spacing="1" font-family="Inter, Helvetica Neue, Arial, sans-serif">ELIMINATE</text>
-  <text x="110" y="545" fill="#FFFFFF" font-size="12" font-family="Inter, Helvetica Neue, Arial, sans-serif">Remove the dashboard entirely until day 5.</text>
+  <text x="110" y="545" fill="#C8CED8" font-size="11" data-zone="sc-e" opacity="0"></text>
 
   <!-- SCAMPER Row 7: R - REVERSE -->
   <rect x="40" y="586" width="720" height="75" rx="6" fill="#1F2E4D" stroke="#2A3656" stroke-width="1"/>
   <rect x="40" y="586" width="50" height="75" rx="6" fill="#F15A22"/>
   <text x="55" y="632" fill="#FFFFFF" font-size="20" font-weight="700" text-anchor="middle" font-family="Inter, Helvetica Neue, Arial, sans-serif">R</text>
   <text x="110" y="609" fill="#F15A22" font-size="11" font-weight="700" letter-spacing="1" font-family="Inter, Helvetica Neue, Arial, sans-serif">REVERSE</text>
-  <text x="110" y="632" fill="#FFFFFF" font-size="12" font-family="Inter, Helvetica Neue, Arial, sans-serif">Let users set their own goals first, then show features that match.</text>
+  <text x="110" y="632" fill="#C8CED8" font-size="11" data-zone="sc-r" opacity="0"></text>
 
   <!-- Footer -->
   <rect x="0" y="672" width="800" height="28" fill="#151E35"/>

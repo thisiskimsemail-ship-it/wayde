@@ -15,40 +15,28 @@
 
   <!-- Decision Statement -->
   <text x="32" y="75" fill="#ED3694" font-size="11" font-weight="600" letter-spacing="2" font-family="Inter, Helvetica Neue, Arial, sans-serif">DECISION</text>
-  <text x="32" y="95" fill="#FFFFFF" font-size="13" font-weight="600" font-family="Inter, Helvetica Neue, Arial, sans-serif">Where to invest the next quarter's engineering capacity?</text>
+  <text x="32" y="95" fill="#C8CED8" font-size="11" data-zone="to-features" opacity="0"></text>
 
   <!-- 4 Option Cards -->
   <!-- Card 1: AI Onboarding -->
   <rect x="32" y="115" width="170" height="110" fill="#1F2E4D" stroke="#2A3656" stroke-width="1" rx="6"/>
   <rect x="32" y="115" width="170" height="3" fill="#ED3694" rx="6"/>
   <text x="48" y="135" fill="#ED3694" font-size="10" font-weight="600" letter-spacing="1" font-family="Inter, Helvetica Neue, Arial, sans-serif">OPTION 1</text>
-  <text x="48" y="153" fill="#FFFFFF" font-size="11" font-weight="600" font-family="Inter, Helvetica Neue, Arial, sans-serif">AI Onboarding</text>
-  <text x="48" y="172" fill="#C8CED8" font-size="10" font-family="Inter, Helvetica Neue, Arial, sans-serif">Impact: High</text>
-  <text x="48" y="190" fill="#C8CED8" font-size="10" font-family="Inter, Helvetica Neue, Arial, sans-serif">Effort: High | Risk: High</text>
 
   <!-- Card 2: Self-serve Analytics -->
   <rect x="222" y="115" width="170" height="110" fill="#1F2E4D" stroke="#2A3656" stroke-width="1" rx="6"/>
   <rect x="222" y="115" width="170" height="3" fill="#ED3694" rx="6"/>
   <text x="238" y="135" fill="#ED3694" font-size="10" font-weight="600" letter-spacing="1" font-family="Inter, Helvetica Neue, Arial, sans-serif">OPTION 2</text>
-  <text x="238" y="153" fill="#FFFFFF" font-size="11" font-weight="600" font-family="Inter, Helvetica Neue, Arial, sans-serif">Self-serve Analytics</text>
-  <text x="238" y="172" fill="#C8CED8" font-size="10" font-family="Inter, Helvetica Neue, Arial, sans-serif">Impact: Medium</text>
-  <text x="238" y="190" fill="#C8CED8" font-size="10" font-family="Inter, Helvetica Neue, Arial, sans-serif">Effort: Medium | Risk: Low</text>
 
   <!-- Card 3: API for Integrations -->
   <rect x="412" y="115" width="170" height="110" fill="#253658" stroke="#ED3694" stroke-width="1.5" rx="6"/>
   <rect x="412" y="115" width="170" height="3" fill="#ED3694" rx="6"/>
   <text x="428" y="135" fill="#ED3694" font-size="10" font-weight="600" letter-spacing="1" font-family="Inter, Helvetica Neue, Arial, sans-serif">OPTION 3 (WINNER)</text>
-  <text x="428" y="153" fill="#FFFFFF" font-size="11" font-weight="600" font-family="Inter, Helvetica Neue, Arial, sans-serif">API for Integrations</text>
-  <text x="428" y="172" fill="#C8CED8" font-size="10" font-family="Inter, Helvetica Neue, Arial, sans-serif">Impact: High</text>
-  <text x="428" y="190" fill="#C8CED8" font-size="10" font-family="Inter, Helvetica Neue, Arial, sans-serif">Effort: Medium | Risk: Medium</text>
 
   <!-- Card 4: Mobile App -->
   <rect x="602" y="115" width="170" height="110" fill="#1F2E4D" stroke="#2A3656" stroke-width="1" rx="6"/>
   <rect x="602" y="115" width="170" height="3" fill="#ED3694" rx="6"/>
   <text x="618" y="135" fill="#ED3694" font-size="10" font-weight="600" letter-spacing="1" font-family="Inter, Helvetica Neue, Arial, sans-serif">OPTION 4</text>
-  <text x="618" y="153" fill="#FFFFFF" font-size="11" font-weight="600" font-family="Inter, Helvetica Neue, Arial, sans-serif">Mobile App</text>
-  <text x="618" y="172" fill="#C8CED8" font-size="10" font-family="Inter, Helvetica Neue, Arial, sans-serif">Impact: Low</text>
-  <text x="618" y="190" fill="#C8CED8" font-size="10" font-family="Inter, Helvetica Neue, Arial, sans-serif">Effort: High | Risk: Medium</text>
 
   <!-- 2x2 Matrix -->
   <!-- Matrix frame -->
@@ -91,11 +79,9 @@
   <rect x="32" y="495" width="736" height="3" fill="#ED3694" rx="6"/>
 
   <text x="48" y="520" fill="#ED3694" font-size="10" font-weight="600" letter-spacing="2" font-family="Inter, Helvetica Neue, Arial, sans-serif">DECISION</text>
+  <text x="48" y="545" fill="#C8CED8" font-size="11" data-zone="to-mvo" opacity="0"></text>
 
-  <text x="48" y="545" fill="#FFFFFF" font-size="12" font-weight="600" font-family="Inter, Helvetica Neue, Arial, sans-serif">API for Integrations wins the trade-off analysis.</text>
 
-  <text x="48" y="570" fill="#C8CED8" font-size="12" font-family="Inter, Helvetica Neue, Arial, sans-serif">High impact, medium effort, and unlocks partnership revenue.</text>
-  <text x="48" y="590" fill="#C8CED8" font-size="12" font-family="Inter, Helvetica Neue, Arial, sans-serif">AI onboarding deferred pending assumption validation.</text>
 
   <text x="48" y="620" fill="#ED3694" font-size="11" font-weight="600" font-family="Inter, Helvetica Neue, Arial, sans-serif">Owner: Engineering Lead | Timeline: Q2 2026 | Budget: $40K</text>
 
