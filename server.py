@@ -3541,7 +3541,16 @@ def generate_session_svg(exercise, board_cards):
     zone_map = SVG_ZONE_MAP.get(exercise, {})
 
     # For each zone with data, find the corresponding content text in the SVG
-    # and replace the placeholder content
+    # and replace the placeholder content.
+    #
+    # Strategy: find the zone label, then find the NEXT zone label (or end of SVG).
+    # Within that region, replace all content text elements with actual board data.
+
+    # Build a list of all zone label positions for boundary detection
+    all_labels = set()
+    for bz, sl in zone_map.items():
+        all_labels.add(sl)
+
     for board_zone, card_texts in zone_data.items():
         svg_label = zone_map.get(board_zone)
         if not svg_label:
@@ -3549,48 +3558,69 @@ def generate_session_svg(exercise, board_cards):
 
         # Combine all card texts for this zone
         combined = ' | '.join(card_texts) if len(card_texts) > 1 else card_texts[0]
+        lines = _wrap_text(combined, max_chars=36)
 
-        # Wrap into lines
-        lines = _wrap_text(combined, max_chars=38)
-
-        # Strategy: find the SVG zone label text element, then replace
-        # the next N content text elements (fill="#C8CED8") after it
-        # with our actual data.
-        #
-        # We look for: <text ... fill="#C8CED8" ...>placeholder</text>
-        # that appear after the zone label, and replace their content.
-        pattern = f'>{_re.escape(svg_label)}</text>'
-        label_pos = svg.find(pattern)
+        # Find this zone's label in the SVG
+        label_pattern = f'>{_re.escape(svg_label)}</text>'
+        label_pos = svg.find(label_pattern)
         if label_pos < 0:
             continue
 
-        # Find the next rect or comment that starts a new zone (rough boundary)
-        search_start = label_pos + len(pattern)
+        search_start = label_pos + len(label_pattern)
 
-        # Find all content text elements in this zone region
-        # Look for the next ~500 chars for content text elements
-        region_end = search_start + 800
-        region = svg[search_start:region_end]
+        # Find the next zone boundary — look for next <rect that starts a new zone
+        # (zone rects have fill="#1F2E4D" or start with a comment like "<!-- Col")
+        next_zone = len(svg)
+        # Find next zone label
+        for other_label in all_labels:
+            if other_label == svg_label:
+                continue
+            other_pattern = f'>{_re.escape(other_label)}</text>'
+            other_pos = svg.find(other_pattern, search_start)
+            if other_pos > 0 and other_pos < next_zone:
+                next_zone = other_pos
+        # Also look for next section comment or rect as boundary
+        for boundary in ['<!-- Col', '<!-- Row', '<!-- Step', '<!-- Arrow', '<!-- Root', '<!-- Footer', '<!-- Riskiest']:
+            bp = svg.find(boundary, search_start)
+            if bp > 0 and bp < next_zone:
+                next_zone = bp
 
-        # Find all content text elements
+        region = svg[search_start:next_zone]
+
+        # Find all content text elements in this region
+        # Match any text with fill="#C8CED8" (body), "#FFFFFF" (emphasis), or "#6B7A8E" (subheading)
         content_pattern = _re.compile(
-            r'(<text\s+x="(\d+)"\s+y="(\d+)"\s+fill="#C8CED8"\s+font-size="\d+"[^>]*>)([^<]*)(</text>)'
+            r'(<text\s+x="(\d+)"\s+y="(\d+)"\s+fill="(?:#C8CED8|#FFFFFF|#6B7A8E)"\s+font-size="(?:11|12|13)(?:\.\d+)?"[^>]*>)([^<]*)(</text>)'
         )
         matches = list(content_pattern.finditer(region))
 
-        if matches:
-            # Replace content text elements with our data
-            # Work backwards to preserve offsets
-            for i, match in enumerate(reversed(matches)):
-                idx = len(matches) - 1 - i
-                if idx < len(lines):
-                    new_text = _html.escape(lines[idx])
-                else:
-                    new_text = ''  # Clear extra placeholder lines
+        if not matches:
+            continue
 
-                abs_start = search_start + match.start(4)
-                abs_end = search_start + match.end(4)
-                svg = svg[:abs_start] + new_text + svg[abs_end:]
+        # Get the x position and starting y from the first content line
+        first_x = int(matches[0].group(2))
+        first_y = int(matches[0].group(3))
+        line_height = 14
+        if len(matches) > 1:
+            line_height = max(14, int(matches[1].group(3)) - int(matches[0].group(3)))
+
+        # Build replacement: remove all old content text, insert new lines
+        # Work backwards to preserve offsets
+        for match in reversed(matches):
+            abs_start = search_start + match.start(0)
+            abs_end = search_start + match.end(0)
+            svg = svg[:abs_start] + svg[abs_end:]
+
+        # Now insert new text lines at the position of the first removed element
+        insert_pos = search_start + matches[0].start(0)
+        new_elements = []
+        for i, line in enumerate(lines[:8]):  # Max 8 lines per zone
+            escaped = _html.escape(line)
+            y = first_y + i * line_height
+            new_elements.append(f'  <text x="{first_x}" y="{y}" fill="#C8CED8" font-size="11">{escaped}</text>')
+
+        insert_text = '\n'.join(new_elements)
+        svg = svg[:insert_pos] + insert_text + '\n' + svg[insert_pos:]
 
     return svg
 
@@ -3665,107 +3695,127 @@ def session_pdf():
 
 # === REPORT GENERATION ===
 
-CONVERSATION_REPORT_PROMPT = """You are producing a coaching session summary for a conversation at The Studio, Wade Institute of Entrepreneurship.
-
-This was a freeform conversation — the user talked with Pete (their innovation coach) without using a structured tool exercise. Your job is to distil the conversation into a valuable, actionable summary they can take with them.
-
-VOICE & TONE
-Write as Pete — warm, direct, opinionated. Use "you" and "your." First person coaching voice.
-Never use corporate language, buzzwords, or hedging. Be specific and useful.
-
-# Studio Coaching Session Summary
-
-### The Challenge
-One paragraph capturing what the user came to discuss. Use their words where possible. Name the core tension or question.
-
-### What Emerged
-The 2-3 most important insights from the conversation. These are not summaries of what was said — they are the reframes, patterns, and observations that shifted the user's thinking. Each should be a bold statement followed by 1-2 sentences of context.
-
-### The Key Question
-The single most important question the conversation surfaced — the one that, if answered, would unlock the most progress. Frame it as a question the user should sit with.
-
-### What Pete Would Recommend
-3-5 specific, actionable next steps. Each starts with a verb. Include timelines where appropriate ("this week," "before your next session"). At least one should be something the user can do today.
-
-If a structured tool would help as a next step, recommend it specifically:
-"Run a **[Tool Name]** session in The Studio to [specific outcome]. It takes about [time]."
-
-### From the Wade Community
-If the conversation touched on topics covered by Wade community articles, include 2-3 relevant links with one-sentence framing. Only include if genuinely relevant — do not force.
-
----
-Generated by The Studio · Wade Institute of Entrepreneurship · wadeinstitute.org.au
-
-{WADE_PROGRAMS_PLACEHOLDER}"""
-
-REPORT_PROMPT = """You are producing a workshop output for a session at Wade Studio, Wade Institute of Entrepreneurship.
+# === UNIVERSAL REPORT SECTIONS (appended to every tool-specific report) ===
+# Based on Report Structure Specification (28 March 2026)
+# The report has two zones: the user's work (Sections 1-8) and the Wade CTA (Section 9).
+# Wade content appears ONLY in Section 9. Everything before it belongs to the user.
+UNIVERSAL_REPORT_SECTIONS = """
 
 VOICE & TONE
-Write like a sharp peer reviewer, not a life coach. Second person ("you") but direct and analytical. The Wade brand voice is: bold, curious, ambitious, action-oriented.
-- Never hedge: no "might want to consider," "could be worth exploring." Instead: "Do this." "Test this." "The next question is."
-- Never flatter: no "That's a much bigger opportunity," "Your instinct makes sense." Present findings, don't validate.
-- Frame every insight as something the user surfaced — not advice from you. "You identified..." "Your thinking pointed to..." "Based on what you uncovered..."
-- Never pitch. When referencing Wade programs, Waders, or community content, present them as evidence or useful connections — never as recommendations to "explore" or "consider." The reader should feel like they're discovering a resource, not being directed to one.
+Write like a sharp peer reviewer, not a life coach. Second person ("you") but direct and analytical. Bold, curious, ambitious, action-oriented.
+- Never hedge. Instead: "Do this." "Test this." "The next question is."
+- Never flatter. Present findings, don't validate.
+- Frame every insight as something the user surfaced. "You identified..." "Your thinking pointed to..."
+- Never pitch. Never reference Wade programs, Waders, community members, or Studio tools in Sections 1-8. All Wade content belongs in Section 9 only.
 
-STEP 1 — IDENTIFY THE AUDIENCE CLUSTER
-Read the conversation. Identify the cluster:
-- INVESTOR: deploying/evaluating capital, portfolio, thesis, fund/family office
-- FOUNDER: building a venture, customers, product, market, traction
-- CORPORATE INNOVATOR: driving change inside an org, stakeholders, business case, internal politics
-- EDUCATOR: teacher, school leader, curriculum designer
+AUDIENCE CLUSTER — Read the conversation, identify INVESTOR / FOUNDER / CORPORATE INNOVATOR / EDUCATOR, and apply the matching lens:
+- INVESTOR: analytical, conviction-focused. Language: deploy, thesis, diligence, risk-adjusted.
+- FOUNDER: market-facing, build-oriented. Language: customers, test, validate, traction.
+- CORPORATE INNOVATOR: strategic, org-aware. Language: stakeholders, pilot, alignment, sponsor.
+- EDUCATOR: practical, classroom-ready. Language: students, curriculum, embed, implement.
 
-STEP 2 — APPLY THE CLUSTER LENS THROUGHOUT
-INVESTOR — analytical, conviction-focused. Language: deploy, thesis, diligence, risk-adjusted, conviction.
-FOUNDER — market-facing, build-oriented. Language: customers, test, validate, traction, assumption.
-CORPORATE INNOVATOR — strategic, org-aware. Language: stakeholders, pilot, alignment, sponsor, business case.
-EDUCATOR — practical, classroom-ready. Language: students, curriculum, embed, implement, staff buy-in.
+CRITICAL CONTENT RULES:
+- Sections 1-8 contain ZERO references to Wade people, Wade programs, Wade community members, or Studio tool names.
+- No "Pattern Someone Else Found" subsections anywhere in the report body.
+- No Wader names appear in sections 1-8.
+- No Studio tool names appear as recommendations in sections 1-8.
+- Recommended Actions: 3-5 maximum. Every action must be traceable to a specific session moment. No generic advice. No actions reference The Studio, Wade people, or Wade programs.
 
 REPORT STRUCTURE — use these exact section names and order:
 
-# {EXERCISE_PLACEHOLDER} — Workshop Output
+# Innovation Coaching Session Summary
 
----
+### Synopsis
+Three-part synopsis: (1) what emerged — name the core tension or finding in plain language specific to this person, (2) the reframe — the shift in thinking, (3) what's in the report — 3-4 bullet points previewing key findings. The subject is the idea, not the experience. Never reference the AI, the tool, or "your session." Never say "Pete identified" or "this session surfaced." Let the insight speak for itself.
 
-### Your Challenge
-2-3 sentences. What they brought. No softening.
+### The Challenge
+One paragraph restating the user's challenge in their own terms. This should feel like the user wrote it — grounded, specific, using their language. Not a Pete interpretation. No softening.
 
-### What Happened
-2-3 sentences. The arc: where it started, where it turned, where it landed.
-
-### Questions Worth Sitting With
-Exactly 3 questions. Each from a DIFFERENT category. Make them uncomfortable, not obvious. These create the emotional opening — the reader should feel "I don't have a good answer for that."
-Categories: ASSUMPTION, STAKEHOLDER, REVERSAL, TIMELINE, COST, IDENTITY, SYSTEM.
-
-### The Reframe
-This is the most important section of the report. It's the "aha" — the thing they came in NOT seeing that the exercise surfaced. Because the questions just unsettled them, this hits differently — it fills the gap rather than summarising what they already read.
-
-If the user answered a reflection question, open with their exact words in a blockquote. Then write 2-3 sentences that go FURTHER than what they said — connect the dots they haven't connected yet. Name the real problem underneath the stated problem. Identify the assumption they're building on that hasn't been tested. Point to the gap between what they think is true and what the evidence suggests.
-
-If no reflection answer exists, write the reframe yourself: "You came in thinking [X]. But what emerged is [Y]. The real question isn't [what they asked] — it's [what they should be asking]."
-
-This should be the paragraph they screenshot and send to their co-founder.
-
-End with a single gap line: "This session scratched the surface of [specific theme from session]. The pattern underneath it takes longer to see." This is honest, creates productive dissatisfaction, and does NOT prescribe a solution or mention a program.
+### What Emerged
+This is the most valuable section of the report. It contains the core insight — the reframe that came out of the session. 1-2 paragraphs of original analysis that names the tension, identifies the shift, and explains why it matters. This should be specific, analytical, written from the user's perspective. NOT a session summary — an INSIGHT.
 
 ### Key Moments
-3 highlights. These now serve as evidence for The Reframe, not a preview of it.
-
-**Moment 1: [Bold insight title]** (3-5 words naming the pattern)
-One sentence of sharp analytical commentary connecting what they said to something bigger. Their exact words in a blockquote.
-
-**Moment 2: The Pattern Someone Else Found**
-This is a WADER STORY. Match a Wader from the WADE_KNOWLEDGE_BLOCK whose experience parallels the user's specific tension. Write it as:
-"[Wader name] faced exactly this tension — [specific parallel from their Wade experience]. What they found was [specific outcome that maps to what the user is grappling with]. They figured this out during [Program Name], working alongside [peer description that matches user's cluster]."
-RULES: This is NOT a testimonial or a pitch. It's a story that validates the tension surfaced in the session. The program name is mentioned but not pitched. The peer description signals "people like you do this." If no strong Wader match exists, replace with a third session insight instead.
-
-**Moment 3: [Bold insight title]**
-One sentence of sharp analytical commentary. Their exact words in a blockquote.
+2-3 pivotal moments from the conversation. Each one has:
+- A bold heading (3-5 words naming the pattern)
+- A direct quote from the user (in quotation marks, as a blockquote)
+- 1-2 sentences of interpretation explaining why this moment matters — sharp analytical commentary connecting what they said to something bigger
 
 QUALITY BAR for commentary:
 - Bad: "This captures the core transformation you facilitate." (restating)
 - Bad: "This is an important insight." (empty)
 - Good: "This is an identity statement, not a deliverable request — it means your product needs to shift how they see themselves, not just what they produce."
-- Good: "You said 'no one else is doing this' — but that's a warning sign, not a competitive advantage. If no one else is doing it, either the market doesn't exist yet or you haven't found the competitors."
+- Good: "You said 'no one else is doing this' — but that's a warning sign, not a competitive advantage."
+
+### Questions Worth Sitting With
+2-4 provocative questions tagged by category. These are questions the user should take away and think about — they don't need answers in the report.
+Format: **[CATEGORY]** — [Question]
+Categories: ASSUMPTION, STAKEHOLDER, REVERSAL, TIMELINE, COST, IDENTITY, SYSTEM.
+
+[THE TOOL-SPECIFIC OUTPUT SECTION GOES HERE — see the tool-specific instructions above this block. For tools with a canvas output (Lean Canvas, Empathy Map), render as a table. For other tools, render the board cards as a categorised list under the heading "### Workshop Board".]
+
+### Recommended Actions
+3-5 specific, time-bound actions the user should take in their world. Maximum five. Every action must be grounded in something specific that emerged during the session — if you can't point to the moment in the conversation that generated the action, it doesn't belong.
+
+Format:
+1. **[Bold action title]** — [What to do, why it matters, what it will reveal]. *Do this by [specific timeframe].*
+2-5. [Same format]
+
+QUALITY BAR: Would a Tina Seelig-level thinker be impressed by these actions? If any action could apply to any random startup, delete it and write something specific to THIS person. If any action is "talk to customers" or "do market research" without specifying WHO and WHAT to ask, it's not good enough.
+
+Action 1 should align with any 48-hour commitment the user made during the session.
+
+### The Reframe
+Closing synthesis. 2-3 sentences that restate the core shift in thinking and point forward. This should feel like the final insight — the one thing the user takes away if they read nothing else.
+
+If the user answered a reflection question, open with their exact words in a blockquote. Then write 2-3 sentences that go FURTHER — connect dots they haven't connected. Name the real problem underneath the stated problem.
+
+End with: "This session scratched the surface of [specific theme from session]. The pattern underneath it takes longer to see."
+
+---
+
+### Go Further with Wade
+
+This section is visually separated from the user's work. It is the ONLY place in the report where Wade appears. Keep it brief and helpful — a postscript, not a sales pitch.
+
+**Suggested Reading**
+One article from the WADE_KNOWLEDGE_BLOCK that is relevant to the session's theme. Not a generic link — a specific article with a one-line explanation of why it's relevant to what this person worked on. If no relevant article exists, omit this subsection.
+
+**Recommended Programs**
+One Wade program recommendation, contextual to the session. One sentence connecting the session to the program, the program name, and a link.
+- For corporate users (CORPORATE INNOVATOR cluster): recommend Think Like an Entrepreneur or Bespoke Programs.
+- For founders: recommend Master of Entrepreneurship, Growth Engine, or the relevant program.
+- For investors: recommend VC Catalyst, VC Fundamentals, or Impact Catalyst.
+- For educators: recommend UpSchool Complete or Introduction.
+
+**Contact the Wade Team**
+A simple, warm invitation: "If you want to go deeper on what came up today, the Wade team can point you in the right direction. [Get in touch](https://wadeinstitute.org.au/contact)."
+
+---
+*Generated by The Studio · Wade Institute of Entrepreneurship · [wadeinstitute.org.au](https://wadeinstitute.org.au)*
+
+{WADE_PROGRAMS_PLACEHOLDER}"""
+
+
+CONVERSATION_REPORT_PROMPT = """You are producing a coaching session summary for a conversation at The Studio, Wade Institute of Entrepreneurship.
+
+This was a freeform conversation — the user talked with their innovation coach without using a structured tool exercise. Your job is to distil the conversation into a valuable, actionable summary they can take with them.
+
+The tool-specific output section for a freeform conversation (placed after "Questions Worth Sitting With" in the report structure) is:
+
+### Workshop Board
+Since this was a freeform conversation (no structured tool), render the key themes and insights as a categorised list:
+
+#### Themes Explored
+Bullet-point list of the main topics discussed, each with a one-sentence summary.
+
+#### Key Decisions
+Any decisions or commitments that emerged during the conversation. If none, omit this subsection.
+
+{WADE_PROGRAMS_PLACEHOLDER}""" + UNIVERSAL_REPORT_SECTIONS
+
+REPORT_PROMPT = """You are producing a workshop output for a session at The Studio, Wade Institute of Entrepreneurship.
+
+This is the LEAN CANVAS tool-specific report. The tool output section for this exercise is:
 
 ### Your Lean Canvas
 Render the completed Lean Canvas as a markdown table. Fill every block with specific content from the conversation. If a block wasn't discussed, write "To explore." Mark weak/untested content with "(hypothesis — needs testing)."
@@ -3782,44 +3832,22 @@ Render the completed Lean Canvas as a markdown table. Fill every block with spec
 |---|---|
 | [from session] | [from session] |
 
-NOTE: Only include this section for Lean Canvas exercises. For other tools, replace with a tool-specific output section (e.g. "The Root Cause Chain" for Five Whys, "Your Pitch" for Elevator Pitch).
+Place this section after "Questions Worth Sitting With" and before "Recommended Actions" in the report structure defined below.
 
-### Your Commitment
-If the user made a 48-hour commitment at the end of the session, state it here: "You committed to: [their exact words]." Bold it. This is their self-contract — frame it as a challenge, not a worksheet item. If no commitment was made, omit this section.
-
-### What to Do Next
-Exactly 5 actions. These should feel like the best advice they've ever received — the kind of thing a world-class mentor would say after listening carefully to everything they shared.
-
-RULES FOR BRILLIANT ACTIONS:
-- Never generic. Every action must reference something SPECIFIC from their conversation — a name they mentioned, a number they cited, a fear they revealed, a blind spot you noticed.
-- Each action has a SURPRISING element — an unexpected angle, a counterintuitive move, a connection they didn't make.
-- Each action is completeable — you know exactly what "done" looks like.
-- Sequence them from immediate to strategic.
-- Action #3 or #4 should be a WADE COMMUNITY TOUCHPOINT: a concrete, useful action that connects them to a Wader or community member. Not "explore our programs" — a genuine conversation with a specific person who's navigated a similar challenge. Format: "Have a 15-minute conversation with [matched Wader] about how they navigated [specific challenge from session]. Ask them about [specific question]." This is genuinely useful advice that also creates a warm introduction to the Wade community.
-
-Format:
-1. **[Bold action title]** — [One sentence: what to do, why it's surprising, and what it will reveal]. *Do this by [specific timeframe].*
-2. **[Bold action title]** — [Same format]. *Do this by [specific timeframe].*
-3. **[Bold action title]** — [Same format]. *Do this by [specific timeframe].*
-4. **[Bold action title]** — [Same format]. *Do this by [specific timeframe].*
-5. **[Bold action title]** — [Same format]. *Do this by [specific timeframe].*
-
-QUALITY BAR — ask yourself: would a Tina Seelig-level thinker be impressed by these actions? If any action could apply to any random startup, delete it and write something specific to THIS person. If any action is "talk to customers" or "do market research" without specifying WHO and WHAT to ask, it's not good enough.
-
-Action 1 should align with their 48-hour commitment if they made one.
-
-{WADE_PROGRAMS_PLACEHOLDER}"""
+{WADE_PROGRAMS_PLACEHOLDER}""" + UNIVERSAL_REPORT_SECTIONS
 
 PITCH_REPORT_PROMPT = """You are producing a pitch builder session summary for The Studio at Wade Institute of Entrepreneurship.
 
-Write it concisely and directly. Use markdown. Never pitch Wade programs — present evidence and connections.
+Write it concisely and directly. Use markdown. This is a 5-minute tool — the report should match that energy.
 
-# Elevator Pitch Report
+The tool-specific output section (placed after "Questions Worth Sitting With" in the report structure) is:
 
-### Your Pitch
+### Workshop Board
+
+#### Your Pitch
 Display the final assembled pitch sentence in a blockquote, large and prominent.
 
-### The Five Components
+#### The Five Components
 Break out each component with the user's specific answer:
 1. **Target Customer**: [their answer]
 2. **Problem/Need**: [their answer]
@@ -3827,129 +3855,21 @@ Break out each component with the user's specific answer:
 4. **Key Benefit**: [their answer]
 5. **Differentiator**: [their answer — what makes them different from alternatives]
 
-### Strength Check
-Pete's brief assessment: which components are sharp and specific, and which might need more work. Be honest but constructive. 2-3 sentences max.
+#### Strength Check
+Brief assessment: which components are sharp and specific, and which might need more work. Be honest but constructive. 2-3 sentences max. No Wade references.
 
-Weave in a single Wade reference as evidence, not a pitch: "A pitch like this got pressure-tested in [Program Name] by [Wader from WADE_KNOWLEDGE_BLOCK] — they refined it across [number] iterations with [peer description that matches user's cluster]." Only include if a strong Wader match exists; otherwise omit the line entirely.
-
-### Recommended Next Step
-"Ready to pressure-test the assumptions behind this pitch? Try the **Lean Canvas** in Wade Studio — it maps the full business model and carries your pitch components forward."
-
-Keep it short. This is a 5-minute tool — the report should match that energy.
-
-{WADE_PROGRAMS_PLACEHOLDER}"""
-
-# === UNIVERSAL REPORT SECTIONS (appended to every tool-specific report) ===
-UNIVERSAL_REPORT_SECTIONS = """
-
-VOICE & TONE
-Write like a sharp peer reviewer, not a life coach. Second person ("you") but direct and analytical. Bold, curious, ambitious, action-oriented.
-- Never hedge. Instead: "Do this." "Test this." "The next question is."
-- Never flatter. Present findings, don't validate.
-- Frame every insight as something the user surfaced. "You identified..." "Your thinking pointed to..."
-- Never pitch. When referencing Wade programs, Waders, or community content, present them as evidence or useful connections — never as recommendations to "explore" or "consider."
-
-AUDIENCE CLUSTER — Read the conversation, identify INVESTOR / FOUNDER / CORPORATE INNOVATOR / EDUCATOR, and apply the matching lens:
-- INVESTOR: analytical, conviction-focused. Language: deploy, thesis, diligence, risk-adjusted.
-- FOUNDER: market-facing, build-oriented. Language: customers, test, validate, traction.
-- CORPORATE INNOVATOR: strategic, org-aware. Language: stakeholders, pilot, alignment, sponsor.
-- EDUCATOR: practical, classroom-ready. Language: students, curriculum, embed, implement.
-
-### Your Challenge
-2-3 sentences. What they brought. No softening.
-
-### What Happened
-2-3 sentences. The arc: where it started, where it turned, where it landed.
-
-### Questions Worth Sitting With
-Exactly 3 questions. Each from a DIFFERENT category. Make them uncomfortable, not obvious. These create the emotional opening — the reader should feel "I don't have a good answer for that."
-Categories: ASSUMPTION, STAKEHOLDER, REVERSAL, TIMELINE, COST, IDENTITY, SYSTEM.
-
-### The Reframe
-This is the most important section. The "aha" — the thing they came in NOT seeing that the exercise surfaced. Because the questions just unsettled them, this hits differently.
-
-If the user answered a reflection question, open with their exact words in a blockquote. Then write 2-3 sentences that go FURTHER — connect dots they haven't connected. Name the real problem underneath the stated problem. Identify the untested assumption. Point to the gap between what they think is true and what the evidence suggests.
-
-If no reflection answer exists, write the reframe: "You came in thinking [X]. But what emerged is [Y]. The real question isn't [what they asked] — it's [what they should be asking]."
-
-End with a gap line: "This session scratched the surface of [specific theme from session]. The pattern underneath it takes longer to see."
-
-### Key Moments
-3 highlights. These serve as evidence for The Reframe, not a preview of it.
-
-**Moment 1: [Bold insight title]** (3-5 words naming the pattern)
-One sentence of sharp analytical commentary connecting what they said to something bigger. Their exact words in a blockquote.
-
-**Moment 2: The Pattern Someone Else Found**
-A WADER STORY. Match a Wader from the WADE_KNOWLEDGE_BLOCK whose experience parallels the user's specific tension:
-"[Wader name] faced exactly this tension — [specific parallel from their Wade experience]. What they found was [specific outcome that maps to what the user is grappling with]. They figured this out during [Program Name], working alongside [peer description that matches user's cluster]."
-RULES: NOT a testimonial or pitch. A story that validates the tension. The program name is mentioned but not pitched. If no strong match, replace with a third session insight.
-
-**Moment 3: [Bold insight title]**
-One sentence of sharp analytical commentary. Their exact words in a blockquote.
-
-### Your Commitment
-If the user made a 48-hour commitment, state it: "You committed to: [their exact words]." Bold it. If no commitment was made, omit this section.
-
-### What to Do Next
-Exactly 5 actions. These should feel like the best advice they've ever received.
-
-RULES:
-- Never generic. Every action must reference something SPECIFIC from their conversation.
-- Each action has a SURPRISING element — an unexpected angle, a counterintuitive move, a connection they didn't make.
-- Each action is completeable — you know exactly what "done" looks like.
-- Sequence from immediate to strategic.
-- Action #3 or #4: a WADE COMMUNITY TOUCHPOINT — a concrete action connecting them to a Wader or community member. Not "explore our programs" — a genuine conversation with a specific person. Format: "Have a 15-minute conversation with [matched Wader] about how they navigated [specific challenge]. Ask them about [specific question]."
-
-Format:
-1. **[Bold action title]** — [What to do, why it's surprising, what it will reveal]. *Do this by [specific timeframe].*
-2-5. [Same format]
-
-Action 1 should align with their 48-hour commitment if they made one.
-
-### People Who've Been Here
-One paragraph. Reference the Wader from Key Moments Moment 2. "[Name] started where you are — [specific parallel]. They went through [Program Name] with [cohort description]. If you want to go deeper: [single link to program page]."
-RULES: This is NOT a recommendation. It's a warm callback to a story already told. The link is a door, not a push.
-
-### From the Wade Community
-2-3 Wade community articles matched to session themes. Each with:
-- Article title as a markdown link
-- One sentence framing it as "others thinking about this" — not "recommended reading"
-Match by: topic first, then stage, then user context. Diversity of angle — one alumni story, one opinion piece, one practical how-to.
-
-### Go Deeper with Wade Institute
-
-This section has three parts. Keep each brief — max 2 items per category. If it feels like an ad, cut it.
-
-**Programs**
-Match ONE Wade program to what the user worked on. Use the WADE_KNOWLEDGE_BLOCK to find the best fit.
-Format: "**[Program Name]** — [one sentence connecting it to their specific challenge]. [Link to program page]."
-For corporate users (CORPORATE INNOVATOR cluster): use "Bring This to Your Team" framing and recommend Think Like an Entrepreneur or Bespoke Programs.
-For founders: recommend Master of Entrepreneurship, Growth Engine, or the relevant program.
-For investors: recommend VC Catalyst, VC Fundamentals, or Impact Catalyst.
-For educators: recommend UpSchool Complete or Introduction.
-
-**Events**
-If a relevant upcoming Wade event exists in the WADE_KNOWLEDGE_BLOCK, mention it in one line.
-Format: "[Event name] — [date]. [One sentence on relevance]."
-If no relevant event, omit this subsection entirely. Do not fabricate events.
-
-**Resources**
-List 1-2 of the most actionable articles from "From the Wade Community" above with direct links. Do not repeat the full list.
-
----
-*Generated by The Studio · Wade Institute of Entrepreneurship · [wadeinstitute.org.au](https://wadeinstitute.org.au)*
-
-{WADE_PROGRAMS_PLACEHOLDER}"""
+{WADE_PROGRAMS_PLACEHOLDER}""" + UNIVERSAL_REPORT_SECTIONS
 
 # === TOOL-SPECIFIC REPORT PROMPTS (Section A — Core Output) ===
 
 FIVE_WHYS_REPORT = """You are producing a Five Whys session report for The Studio at Wade Institute of Entrepreneurship.
 Write clearly, directly, using markdown. Frame everything as the user's own thinking.
 
-# Five Whys Report
+The tool-specific output section (placed after "Questions Worth Sitting With" in the report structure) is:
 
-### The Root Cause Chain
+### Workshop Board
+
+#### The Root Cause Chain
 Display the problem chain as a numbered cascade from the original problem to the root cause:
 
 1. **Original problem**: [what they started with]
@@ -3959,8 +3879,8 @@ Display the problem chain as a numbered cascade from the original problem to the
 5. **Why?** [fourth answer]
 6. **Root cause**: [what they uncovered] — highlight this in bold
 
-### Reframed Problem Statement
-Pete's reframed version of the problem based on the root cause — one sentence. Frame as: "The real problem isn't [original framing]. It's [root cause framing]."
+#### Reframed Problem Statement
+The reframed version of the problem based on the root cause — one sentence. Frame as: "The real problem isn't [original framing]. It's [root cause framing]."
 """ + UNIVERSAL_REPORT_SECTIONS
 
 CRAZY_8S_REPORT = """You are producing a Crazy 8s session report for The Studio at Wade Institute of Entrepreneurship.
@@ -3970,9 +3890,11 @@ CRITICAL: Only include ideas that the user actually described during the exercis
 
 If WORKSHOP_BOARD_CARDS are provided below, use them as the authoritative list of ideas — they were reviewed and edited by the user.
 
-# Crazy 8s Report
+The tool-specific output section (placed after "Questions Worth Sitting With" in the report structure) is:
 
-### Your Ideas
+### Workshop Board
+
+#### Your Ideas
 List all ideas the user actually generated. Mark the user's top picks with bold:
 
 1. [idea]
@@ -3980,47 +3902,51 @@ List all ideas the user actually generated. Mark the user's top picks with bold:
 3. **[top pick]**
 ...etc.
 
-### Patterns Pete Noticed
+#### Patterns
 One paragraph: what patterns emerged across the ideas? Were most ideas about automation? Customer experience? Cost reduction? Name the pattern — it reveals where the user's instincts point.
 
-### Top Pick Analysis
+#### Top Pick Analysis
 For each of the user's top 2-3 picks, one sentence on what makes it promising and one sentence on the biggest assumption to test.
 """ + UNIVERSAL_REPORT_SECTIONS
 
 HMW_REPORT = """You are producing a How Might We session report for The Studio at Wade Institute of Entrepreneurship.
 Write clearly, directly, using markdown. Frame everything as the user's own thinking.
 
-# How Might We Report
+The tool-specific output section (placed after "Questions Worth Sitting With" in the report structure) is:
 
-### Original Problem
+### Workshop Board
+
+#### Original Problem
 The problem statement they started with — one sentence.
 
-### Your HMW Statements
+#### Your HMW Statements
 List all HMW statements generated (5-8). Bold the ones the user selected for deeper exploration:
 
 - How might we [statement]?
 - **How might we [selected statement]?**
 - ...
 
-### Solutions Explored
+#### Solutions Explored
 For each selected HMW statement:
 **HMW: [statement]**
 - Solution 1: [description]
 - Solution 2: [description]
 
-### Recommended Direction
-Pete's recommendation: which solution direction has the most potential, and why. One paragraph.
+#### Recommended Direction
+Which solution direction has the most potential, and why. One paragraph.
 """ + UNIVERSAL_REPORT_SECTIONS
 
 PREMORTEM_REPORT = """You are producing a Pre-Mortem session report for The Studio at Wade Institute of Entrepreneurship.
 Write clearly, directly, using markdown. Frame everything as the user's own thinking.
 
-# Pre-Mortem Report
+The tool-specific output section (placed after "Questions Worth Sitting With" in the report structure) is:
 
-### The Idea Being Tested
+### Workshop Board
+
+#### The Idea Being Tested
 One sentence describing what was stress-tested.
 
-### Failure Scenarios
+#### Failure Scenarios
 Group all failure reasons by category. For each, show the risk and its severity:
 
 **Market Risk**
@@ -4032,26 +3958,26 @@ Group all failure reasons by category. For each, show the risk and its severity:
 **Team Risk** / **Financial Risk** / **Competition Risk** / **Timing Risk**
 (same format for each that was discussed)
 
-### The Biggest Risk
-Prominently highlight the single most dangerous failure mode: the one that is both most likely AND most fatal. One sentence explaining why this is the one to watch.
+#### The Biggest Risk
+The single most dangerous failure mode: both most likely AND most fatal. One sentence explaining why this is the one to watch.
 
-### Mitigations
+#### Mitigations
 For the top 2-3 risks, concrete actions to reduce each one. Frame as: "To reduce [risk]: [specific action by specific date]."
 """ + UNIVERSAL_REPORT_SECTIONS
 
 DEVILS_ADVOCATE_REPORT = """You are producing a Devil's Advocate session report for The Studio at Wade Institute of Entrepreneurship.
 Write clearly, directly, using markdown. Frame everything as the user's own thinking.
 
-# Devil's Advocate Report
+The tool-specific output section (placed after "Questions Worth Sitting With" in the report structure) is:
 
-### The Idea
+### Workshop Board
+
+#### The Idea
 One sentence summary of what was defended.
 
-### Challenge & Defence
+#### Challenge & Defence
 
-For each dimension Pete challenged, show a table row:
-
-| Dimension | Pete's Challenge | Your Defence | Strength |
+| Dimension | Challenge | Your Defence | Strength |
 |---|---|---|---|
 | Problem Validity | [challenge] | [defence] | Strong / Needs work / Weak |
 | Customer Clarity | [challenge] | [defence] | Strong / Needs work / Weak |
@@ -4059,32 +3985,34 @@ For each dimension Pete challenged, show a table row:
 | Competitive Landscape | [challenge] | [defence] | Strong / Needs work / Weak |
 | Execution Risk | [challenge] | [defence] | Strong / Needs work / Weak |
 
-### Biggest Gap
+#### Biggest Gap
 The weakest dimension — one sentence on what it is and one sentence on how to close it.
 """ + UNIVERSAL_REPORT_SECTIONS
 
 EFFECTUATION_REPORT = """You are producing an Effectuation session report for The Studio at Wade Institute of Entrepreneurship.
 Write clearly, directly, using markdown. Frame everything as the user's own thinking.
 
-# Effectuation Report
+The tool-specific output section (placed after "Questions Worth Sitting With" in the report structure) is:
 
-### Your Means Inventory (Bird in Hand)
+### Workshop Board
+
+#### Your Means Inventory (Bird in Hand)
 What you already have — listed as bullet points:
 - **Who you are**: [identity, skills, abilities]
 - **What you know**: [expertise, experience]
 - **Who you know**: [network, contacts]
 
-### Affordable Loss
+#### Affordable Loss
 What you can afford to risk — time, money, reputation. One sentence.
 
-### Crazy Quilt (Your Allies)
+#### Crazy Quilt (Your Allies)
 3-5 people who could join or help, and what each would contribute:
 - [Person/type] — [what they bring]
 
-### Lemonade (Surprises to Leverage)
+#### Lemonade (Surprises to Leverage)
 Setbacks or surprises that could be turned into advantages. Bullet points.
 
-### First Move
+#### First Move
 The specific, concrete action for the next 48 hours. One sentence, bold and prominent.
 """ + UNIVERSAL_REPORT_SECTIONS
 

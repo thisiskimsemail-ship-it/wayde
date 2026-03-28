@@ -3261,6 +3261,16 @@ async function startPostSessionFlow() {
         })
     }).then(r => r.ok ? r.json() : Promise.reject('Report failed'));
 
+    const revealFallback = {
+        headline: `Your ${exName} session uncovered something worth exploring.`,
+        synopsis: 'Your session produced actionable insights. Review the full report for the complete breakdown.',
+        recommendations: [
+            { exercise: 'pre-mortem', reason: 'Stress-test what you built before committing.' },
+            { exercise: 'lean-canvas', reason: 'Map the business model behind your idea.' },
+            { exercise: 'five-whys', reason: 'Dig deeper into any assumptions that surfaced.' }
+        ]
+    };
+
     const revealPromise = fetch('/api/session/reveal', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -3270,7 +3280,7 @@ async function startPostSessionFlow() {
             messages: reportMessages,
             board_cards: state.board.cards
         })
-    }).then(r => r.ok ? r.json() : Promise.reject('Reveal failed'));
+    }).then(r => r.ok ? r.json() : revealFallback).catch(() => revealFallback);
 
     // SVG generation (non-blocking — ok if it fails)
     const svgPromise = fetch('/api/session/svg', {
@@ -3283,7 +3293,10 @@ async function startPostSessionFlow() {
     }).then(r => r.ok ? r.json() : null).catch(() => null);
 
     try {
+        console.log('[PostSession] Waiting for report + reveal...');
         const [reportData, revealData] = await Promise.all([reportPromise, revealPromise]);
+        console.log('[PostSession] Report received:', !!reportData?.report);
+        console.log('[PostSession] Reveal received:', !!revealData?.headline);
         clearInterval(stepInterval);
 
         // Mark all steps done
@@ -3325,10 +3338,6 @@ async function startPostSessionFlow() {
             }
         });
 
-        // Populate closing message
-        const closingText = document.getElementById('psClosingText');
-        if (closingText) closingText.innerHTML = (revealData.closing_message || '').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-
         // Populate headline with yellow emphasis
         const headline = document.getElementById('psHeadline');
         if (headline) {
@@ -3359,15 +3368,7 @@ async function startPostSessionFlow() {
         const synopsisText = document.getElementById('psSynopsisText');
         if (synopsisText) synopsisText.innerHTML = (revealData.synopsis || '').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
 
-        // Recommendations list
-        const recoList = document.getElementById('psRecommendations');
-        if (recoList && revealData.recommendations) {
-            recoList.innerHTML = revealData.recommendations
-                .map(r => `<li><strong>${EXERCISE_LABELS[r.exercise] || r.exercise}</strong> \u2014 ${r.reason}</li>`)
-                .join('');
-        }
-
-        // Store recommendations for Screen 3
+        // Store recommendations for Screen 3 (not shown on wrap screen)
         state._revealRecommendations = revealData.recommendations || [];
 
         // Wire email form
@@ -3469,7 +3470,7 @@ async function startPostSessionFlow() {
 
     } catch (err) {
         clearInterval(stepInterval);
-        console.error('[PostSession] Flow failed:', err);
+        console.error('[PostSession] Flow failed:', err, err?.stack || '');
         // Fallback: restore chat pane and use old flow
         loadingScreen.classList.add('hidden');
         if (chatPane) chatPane.style.display = '';
@@ -4069,7 +4070,7 @@ function switchBoardLayout(mode) {
     zonesContainer.className = 'board-zones ' + layout.gridClass;
     zonesContainer.innerHTML = layout.zones.map(z => `
         <div class="board-zone" data-zone="${z.id}"${z.colour ? ` data-colour="${z.colour}"` : ''}>
-            <div class="zone-header"><span class="zone-name">${z.name}</span><span class="zone-count" data-zone="${z.id}">0</span></div>
+            <div class="zone-header"><span class="zone-name">${z.name}</span><span class="zone-count" data-zone="${z.id}" style="display:none">0</span></div>
             ${z.hint ? `<div class="zone-hint">${z.hint}</div>` : ''}
             <div class="zone-cards" data-zone="${z.id}"></div>
             <div class="zone-empty">${z.empty}</div>
@@ -4260,7 +4261,7 @@ function updateBoardCounts() {
         const count = state.board.cards.filter(c => c.zone === zone).length;
         total += count;
         const countEl = document.querySelector(`.zone-count[data-zone="${zone}"]`);
-        if (countEl) countEl.textContent = count;
+        if (countEl) { countEl.textContent = count; countEl.style.display = count > 0 ? '' : 'none'; }
     });
     const boardCountEl = document.getElementById('boardCount');
     if (boardCountEl) {
@@ -4728,6 +4729,9 @@ moveInputToWelcome();
 
 function renderMarkdown(text) {
     let html = text
+        // Fix broken Unicode escapes from AI output
+        .replace(/\\u([\da-fA-F]{4})/g, (_, hex) => String.fromCharCode(parseInt(hex, 16)))
+        .replace(/\\x([\da-fA-F]{2})/g, (_, hex) => String.fromCharCode(parseInt(hex, 16)))
         // Escape HTML
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
@@ -5040,6 +5044,16 @@ const tourSkip = document.getElementById('tourSkip');
 
 function startTour() {
     if (!tourOverlay) return;
+    // If no session is active, tour has no visible targets — go to toolbox instead
+    const hasVisibleSteps = TOUR_STEPS.some(s => {
+        if (s.el === '#tourHelpBtn') return false; // Don't count the help button itself
+        const el = document.querySelector(s.el);
+        return el && el.offsetParent !== null;
+    });
+    if (!hasVisibleSteps) {
+        window.location.href = 'toolbox.html';
+        return;
+    }
     tourStep = 0;
     tourOverlay.classList.remove('hidden');
     showTourStep();
