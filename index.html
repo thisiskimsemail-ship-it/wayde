@@ -518,33 +518,35 @@
         <div class="ps-screen ps-reveal hidden" id="postSessionReveal">
             <div class="ps-reveal-divider"><span>YOUR WORKSHOP OUTPUT</span></div>
             <h2 class="ps-headline" id="psHeadline"></h2>
-            <p class="ps-byline" id="psByline"></p>
             <div class="ps-synopsis-card" id="psSynopsisCard">
                 <p class="ps-synopsis-text" id="psSynopsisText"></p>
-                <div class="ps-svg-placeholder" id="psSvgPlaceholder"></div>
+                <!-- Primary CTA: Download Report -->
                 <div class="ps-email-capture" id="psEmailCapture">
-                    <p class="ps-email-label">Enter your email to download your workshop outputs</p>
                     <form class="ps-email-form" id="psEmailForm">
                         <input type="email" class="ps-email-input" id="psEmailInput" placeholder="you@company.com" required aria-label="Email address">
-                        <button type="submit" class="ps-download-btn" id="psDownloadBtn">Download</button>
+                        <button type="submit" class="ps-download-btn ps-download-primary" id="psDownloadBtn">Download Your Report</button>
                     </form>
                     <p class="ps-legal">We'll send your outputs to this email too. No spam, ever.</p>
                 </div>
                 <div class="ps-format-buttons hidden" id="psFormatButtons">
                     <div class="ps-format-row-primary">
-                        <button class="ps-format-btn ps-format-primary" id="psFormatWord">&#128196; Word Report</button>
-                        <button class="ps-format-btn ps-format-primary" id="psFormatPptx">&#128196; PowerPoint Deck</button>
-                        <button class="ps-format-btn ps-format-secondary" id="psFormatSvg">&#128196; SVG</button>
-                        <button class="ps-format-btn ps-format-secondary" id="psFormatPng">&#128196; PNG</button>
-                        <button class="ps-format-btn ps-format-secondary" id="psFormatPdf">&#128196; PDF</button>
+                        <button class="ps-format-btn ps-format-primary" id="psFormatWord">Word Report</button>
+                        <button class="ps-format-btn ps-format-primary" id="psFormatPptx">PowerPoint Deck</button>
+                        <button class="ps-format-btn ps-format-secondary" id="psFormatSvg">SVG</button>
+                        <button class="ps-format-btn ps-format-secondary" id="psFormatPng">PNG</button>
+                        <button class="ps-format-btn ps-format-secondary" id="psFormatPdf">PDF</button>
                     </div>
                     <div class="ps-share-row">
-                        <button class="ps-share-btn" id="psShareCopyLink">&#128196; Copy link</button>
-                        <button class="ps-share-btn" id="psShareLinkedIn">&#128196; Share on LinkedIn</button>
-                        <button class="ps-share-btn" id="psShareEmail">&#128196; Email to team</button>
+                        <button class="ps-share-btn" id="psShareCopyLink">Copy link</button>
+                        <button class="ps-share-btn" id="psShareLinkedIn">Share on LinkedIn</button>
+                        <button class="ps-share-btn" id="psShareEmail">Email to team</button>
                     </div>
                 </div>
+                <!-- SVG canvas below download CTA -->
+                <div class="ps-svg-placeholder" id="psSvgPlaceholder"></div>
             </div>
+            <!-- Feedback: secondary text link, bottom-right -->
+            <p class="ps-feedback-link"><a href="mailto:enquiries@wadeinstitute.org.au?subject=Studio%20Feedback" id="psFeedbackLink">Send feedback</a></p>
         </div>
 
         <!-- Screen 3: Post-Download -->
@@ -772,6 +774,6 @@
         <button class="feedback-submit" id="feedbackSubmit">Send feedback</button>
     </div>
 
-    <script src="app.js?v=159"></script>
+    <script src="app.js?v=160"></script>
 </body>
 </html>

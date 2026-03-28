@@ -3360,9 +3360,7 @@ async function startPostSessionFlow() {
             }
         }
 
-        // Byline
-        const byline = document.getElementById('psByline');
-        if (byline) byline.textContent = `Pete's take \u00B7 ${exName} \u00B7 ${sessionDuration} min session`;
+        // Byline removed per spec — no "Pete's take", no session duration
 
         // Synopsis text
         const synopsisText = document.getElementById('psSynopsisText');

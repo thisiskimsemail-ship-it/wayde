@@ -5069,8 +5069,27 @@ body.light .feedback-input, html[data-theme="light"] .feedback-input { backgroun
     font-family: inherit;
     transition: opacity 0.2s;
 }
+.ps-download-btn.ps-download-primary {
+    padding: 0.85rem 2rem;
+    font-size: 1rem;
+    font-weight: 700;
+    border-radius: 12px;
+    letter-spacing: 0.02em;
+}
 .ps-download-btn:hover { opacity: 0.9; }
 .ps-download-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.ps-feedback-link {
+    text-align: right;
+    padding: 1rem 2rem 0.5rem;
+    font-size: 0.7rem;
+}
+.ps-feedback-link a {
+    color: var(--text-muted, #9E9BC0);
+    opacity: 0.6;
+    text-decoration: none;
+    transition: opacity 0.2s;
+}
+.ps-feedback-link a:hover { opacity: 1; text-decoration: underline; }
 .ps-legal {
     font-size: 0.65rem; color: var(--text-muted, #9E9BC0);
     opacity: 0.6;

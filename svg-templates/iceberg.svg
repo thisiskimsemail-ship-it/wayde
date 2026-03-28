@@ -26,47 +26,39 @@
   <rect x="200" y="64" width="400" height="2" fill="#27BDBE" rx="0"/>
 
   <text x="216" y="84" fill="#27BDBE" font-size="10" font-weight="600" letter-spacing="2">LAYER 1: EVENTS</text>
-  <text x="216" y="110" fill="#6B7A8E" font-size="9">What is happening right now?</text>
-  <text x="216" y="130" fill="#FFFFFF" font-size="13" font-weight="700">Customer churn spiked to 8% this quarter.</text>
+  <text x="216" y="110" fill="#C8CED8" font-size="11" data-zone="ice-event" opacity="0"></text>
 
   <!-- Waterline (above layer 2) -->
   <line x1="80" y1="152" x2="720" y2="152" stroke="#2A3656" stroke-width="1" stroke-dasharray="4,4"/>
-  <text x="400" y="170" fill="#6B7A8E" font-size="9" text-anchor="middle">WATERLINE — Visible symptoms end here</text>
 
   <!-- Layer 2: PATTERNS -->
   <polygon points="160,176 640,176 600,256 200,256" fill="#1F2E4D" stroke="#2A3656" stroke-width="1"/>
   <rect x="160" y="176" width="480" height="2" fill="#27BDBE" rx="0"/>
 
   <text x="176" y="196" fill="#27BDBE" font-size="10" font-weight="600" letter-spacing="2">LAYER 2: PATTERNS</text>
-  <text x="176" y="216" fill="#6B7A8E" font-size="9">What is the trend over time?</text>
-  <text x="176" y="236" fill="#FFFFFF" font-size="12" font-weight="700">Churn has increased each quarter since removing the free tier.</text>
+  <text x="176" y="216" fill="#C8CED8" font-size="11" data-zone="ice-patterns" opacity="0"></text>
 
   <!-- Layer 3: STRUCTURES -->
   <polygon points="120,276 680,276 600,356 200,356" fill="#1F2E4D" stroke="#2A3656" stroke-width="1"/>
   <rect x="120" y="276" width="560" height="2" fill="#27BDBE" rx="0"/>
 
   <text x="136" y="296" fill="#27BDBE" font-size="10" font-weight="600" letter-spacing="2">LAYER 3: STRUCTURES</text>
-  <text x="136" y="316" fill="#6B7A8E" font-size="9">What systems caused this pattern?</text>
-  <text x="136" y="336" fill="#FFFFFF" font-size="12" font-weight="700">Pricing model creates a cliff — users jump from free to $49/mo with no middle ground.</text>
+  <text x="136" y="316" fill="#C8CED8" font-size="11" data-zone="ice-structures" opacity="0"></text>
 
   <!-- Layer 4: MENTAL MODELS (Bottom) -->
   <polygon points="80,376 720,376 620,460 180,460" fill="#1F2E4D" stroke="#2A3656" stroke-width="1"/>
   <rect x="80" y="376" width="640" height="2" fill="#27BDBE" rx="0"/>
 
   <text x="96" y="396" fill="#27BDBE" font-size="10" font-weight="600" letter-spacing="2">LAYER 4: MENTAL MODELS</text>
-  <text x="96" y="416" fill="#6B7A8E" font-size="9">What beliefs drive these structures?</text>
-  <text x="96" y="436" fill="#FFFFFF" font-size="11" font-weight="700">Leadership assumption: "If the product is good enough, people will pay."</text>
-  <text x="96" y="452" fill="#C8CED8" font-size="11">This ignores the trust-building role the free tier played.</text>
+  <text x="96" y="416" fill="#C8CED8" font-size="11" data-zone="ice-mental" opacity="0"></text>
 
   <!-- LEVERAGE POINT Box -->
   <rect x="32" y="488" width="736" height="112" fill="#1F2E4D" stroke="#27BDBE" stroke-width="1.5" rx="6"/>
   <rect x="32" y="488" width="736" height="2" fill="#27BDBE" rx="0"/>
 
   <text x="48" y="508" fill="#27BDBE" font-size="10" font-weight="600" letter-spacing="2">LEVERAGE POINT</text>
+  <text x="48" y="534" fill="#C8CED8" font-size="11" data-zone="ice-leverage" opacity="0"></text>
 
-  <text x="48" y="534" fill="#FFFFFF" font-size="12" font-weight="700">Where to intervene for maximum impact:</text>
-  <text x="48" y="556" fill="#C8CED8" font-size="12">Reintroduce a limited free tier or add a $9 starter plan to rebuild the trust bridge</text>
-  <text x="48" y="574" fill="#C8CED8" font-size="12">between trial and paid. This addresses the mental model causing the pricing cliff.</text>
 
 
   <!-- Footer -->

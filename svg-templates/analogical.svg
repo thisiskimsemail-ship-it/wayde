@@ -17,21 +17,12 @@
   <!-- Source Domain Box -->
   <rect x="40" y="64" width="320" height="160" rx="6" fill="#1F2E4D" stroke="#2A3656" stroke-width="1"/>
   <text x="60" y="84" fill="#F15A22" font-size="10" font-weight="600" letter-spacing="2" font-family="Inter, Helvetica Neue, Arial, sans-serif">SOURCE DOMAIN</text>
-  <text x="60" y="108" fill="#FFFFFF" font-size="13" font-weight="700" font-family="Inter, Helvetica Neue, Arial, sans-serif">Emergency Room Triage</text>
 
-  <text x="60" y="133" fill="#C8CED8" font-size="11" font-family="Inter, Helvetica Neue, Arial, sans-serif">• Patients assessed in &lt;60 seconds</text>
-  <text x="60" y="151" fill="#C8CED8" font-size="11" font-family="Inter, Helvetica Neue, Arial, sans-serif">• Severity determines path</text>
-  <text x="60" y="169" fill="#C8CED8" font-size="11" font-family="Inter, Helvetica Neue, Arial, sans-serif">• Nurses route; doctors treat</text>
-  <text x="60" y="187" fill="#C8CED8" font-size="11" font-family="Inter, Helvetica Neue, Arial, sans-serif">• Info gathered progressively</text>
 
   <!-- Target Domain Box -->
   <rect x="440" y="64" width="320" height="160" rx="6" fill="#1F2E4D" stroke="#2A3656" stroke-width="1"/>
   <text x="460" y="84" fill="#F15A22" font-size="10" font-weight="600" letter-spacing="2" font-family="Inter, Helvetica Neue, Arial, sans-serif">TARGET DOMAIN</text>
-  <text x="460" y="108" fill="#FFFFFF" font-size="13" font-weight="700" font-family="Inter, Helvetica Neue, Arial, sans-serif">SaaS Onboarding</text>
 
-  <text x="460" y="133" fill="#C8CED8" font-size="11" font-family="Inter, Helvetica Neue, Arial, sans-serif">Current approach:</text>
-  <text x="460" y="151" fill="#C8CED8" font-size="11" font-family="Inter, Helvetica Neue, Arial, sans-serif">All users get the same</text>
-  <text x="460" y="169" fill="#C8CED8" font-size="11" font-family="Inter, Helvetica Neue, Arial, sans-serif">linear flow</text>
 
   <!-- Mapped Insights Section -->
   <text x="40" y="250" fill="#FFFFFF" font-size="12" font-weight="700" font-family="Inter, Helvetica Neue, Arial, sans-serif">MAPPED INSIGHTS</text>
@@ -39,39 +30,27 @@
   <!-- Mapping 1 -->
   <line x1="360" y1="280" x2="440" y2="280" stroke="#F15A22" stroke-width="1.5" stroke-dasharray="5,3"/>
   <polygon points="440,280 430,275 430,285" fill="#F15A22"/>
-  <text x="60" y="285" fill="#FFFFFF" font-size="11" font-family="Inter, Helvetica Neue, Arial, sans-serif">Assess user intent in &lt;60 sec</text>
-  <text x="640" y="285" fill="#6B7A8E" font-size="10" text-anchor="end" font-family="Inter, Helvetica Neue, Arial, sans-serif">← Patients assessed in &lt;60s</text>
 
   <!-- Mapping 2 -->
   <line x1="360" y1="318" x2="440" y2="318" stroke="#F15A22" stroke-width="1.5" stroke-dasharray="5,3"/>
   <polygon points="440,318 430,313 430,323" fill="#F15A22"/>
-  <text x="60" y="323" fill="#FFFFFF" font-size="11" font-family="Inter, Helvetica Neue, Arial, sans-serif">Route by goal, not sign-up</text>
-  <text x="640" y="323" fill="#6B7A8E" font-size="10" text-anchor="end" font-family="Inter, Helvetica Neue, Arial, sans-serif">← Severity determines path</text>
 
   <!-- Mapping 3 -->
   <line x1="360" y1="356" x2="440" y2="356" stroke="#F15A22" stroke-width="1.5" stroke-dasharray="5,3"/>
   <polygon points="440,356 430,351 430,361" fill="#F15A22"/>
-  <text x="60" y="361" fill="#FFFFFF" font-size="11" font-family="Inter, Helvetica Neue, Arial, sans-serif">AI handles routing; humans</text>
-  <text x="60" y="376" fill="#FFFFFF" font-size="11" font-family="Inter, Helvetica Neue, Arial, sans-serif">handle complex cases</text>
-  <text x="640" y="368" fill="#6B7A8E" font-size="10" text-anchor="end" font-family="Inter, Helvetica Neue, Arial, sans-serif">← Nurses route; doctors treat</text>
 
   <!-- Mapping 4 -->
   <line x1="360" y1="406" x2="440" y2="406" stroke="#F15A22" stroke-width="1.5" stroke-dasharray="5,3"/>
   <polygon points="440,406 430,401 430,411" fill="#F15A22"/>
-  <text x="60" y="411" fill="#FFFFFF" font-size="11" font-family="Inter, Helvetica Neue, Arial, sans-serif">Gather info progressively</text>
-  <text x="640" y="411" fill="#6B7A8E" font-size="10" text-anchor="end" font-family="Inter, Helvetica Neue, Arial, sans-serif">← Info gathered progressively</text>
 
   <!-- Breakthrough Insight Box -->
   <rect x="40" y="450" width="720" height="220" rx="6" fill="#1F2E4D" stroke="#2A3656" stroke-width="1"/>
   <rect x="40" y="450" width="720" height="4" rx="6" fill="#F15A22"/>
 
   <text x="60" y="480" fill="#F15A22" font-size="10" font-weight="600" letter-spacing="2" font-family="Inter, Helvetica Neue, Arial, sans-serif">BREAKTHROUGH INSIGHT</text>
+  <text x="60" y="510" fill="#C8CED8" font-size="11" data-zone="insights" opacity="0"></text>
 
-  <text x="60" y="510" fill="#FFFFFF" font-size="13" font-weight="700" font-family="Inter, Helvetica Neue, Arial, sans-serif">Onboarding should triage, not teach.</text>
 
-  <text x="60" y="535" fill="#C8CED8" font-size="12" font-family="Inter, Helvetica Neue, Arial, sans-serif">Assess the user's job-to-be-done immediately,</text>
-  <text x="60" y="555" fill="#C8CED8" font-size="12" font-family="Inter, Helvetica Neue, Arial, sans-serif">then route them to the shortest path to their</text>
-  <text x="60" y="575" fill="#C8CED8" font-size="12" font-family="Inter, Helvetica Neue, Arial, sans-serif">first win.</text>
 
   <!-- Footer -->
   <rect x="0" y="672" width="800" height="28" fill="#151E35"/>

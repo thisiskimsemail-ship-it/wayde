@@ -26,44 +26,28 @@
   <rect x="32" y="64" width="336" height="2" fill="#27BDBE" rx="0"/>
 
   <text x="48" y="84" fill="#27BDBE" font-size="10" font-weight="600" letter-spacing="2">SAYS</text>
-  <text x="48" y="110" fill="#FFFFFF" font-size="12" font-weight="700">What does the user say?</text>
-  <text x="48" y="130" fill="#C8CED8" font-size="11">"We need to move faster."</text>
-  <text x="48" y="147" fill="#C8CED8" font-size="11">"I don't have time for another tool."</text>
-  <text x="48" y="164" fill="#C8CED8" font-size="11">"Just show me what works."</text>
-  <text x="48" y="181" fill="#C8CED8" font-size="11">"Where are the metrics?"</text>
+  <text x="48" y="110" fill="#C8CED8" font-size="11" data-zone="em-says" opacity="0"></text>
 
   <!-- THINKS (top-right) Card -->
   <rect x="432" y="64" width="336" height="160" fill="#1F2E4D" stroke="#2A3656" stroke-width="1" rx="6"/>
   <rect x="432" y="64" width="336" height="2" fill="#27BDBE" rx="0"/>
 
   <text x="448" y="84" fill="#27BDBE" font-size="10" font-weight="600" letter-spacing="2">THINKS</text>
-  <text x="448" y="110" fill="#FFFFFF" font-size="12" font-weight="700">What does the user think?</text>
-  <text x="448" y="130" fill="#C8CED8" font-size="11">"Am I making the right call?"</text>
-  <text x="448" y="147" fill="#C8CED8" font-size="11">"Board wants metrics I can't produce yet."</text>
-  <text x="448" y="164" fill="#C8CED8" font-size="11">"What if this doesn't scale?"</text>
-  <text x="448" y="181" fill="#C8CED8" font-size="11">"Are we on the right path?"</text>
+  <text x="448" y="110" fill="#C8CED8" font-size="11" data-zone="em-thinks" opacity="0"></text>
 
   <!-- DOES (bottom-left) Card -->
   <rect x="32" y="240" width="336" height="160" fill="#1F2E4D" stroke="#2A3656" stroke-width="1" rx="6"/>
   <rect x="32" y="240" width="336" height="2" fill="#27BDBE" rx="0"/>
 
   <text x="48" y="260" fill="#27BDBE" font-size="10" font-weight="600" letter-spacing="2">DOES</text>
-  <text x="48" y="286" fill="#FFFFFF" font-size="12" font-weight="700">What does the user do?</text>
-  <text x="48" y="306" fill="#C8CED8" font-size="11">"Checks competitor updates daily."</text>
-  <text x="48" y="323" fill="#C8CED8" font-size="11">"Runs standups but skips retros."</text>
-  <text x="48" y="340" fill="#C8CED8" font-size="11">"Builds spreadsheets instead of using tools."</text>
-  <text x="48" y="357" fill="#C8CED8" font-size="11">"Reads product blogs for ideas."</text>
+  <text x="48" y="286" fill="#C8CED8" font-size="11" data-zone="em-does" opacity="0"></text>
 
   <!-- FEELS (bottom-right) Card -->
   <rect x="432" y="240" width="336" height="160" fill="#1F2E4D" stroke="#2A3656" stroke-width="1" rx="6"/>
   <rect x="432" y="240" width="336" height="2" fill="#27BDBE" rx="0"/>
 
   <text x="448" y="260" fill="#27BDBE" font-size="10" font-weight="600" letter-spacing="2">FEELS</text>
-  <text x="448" y="286" fill="#FFFFFF" font-size="12" font-weight="700">What does the user feel?</text>
-  <text x="448" y="306" fill="#C8CED8" font-size="11">"Overwhelmed by decisions."</text>
-  <text x="448" y="323" fill="#C8CED8" font-size="11">"Excited about the vision."</text>
-  <text x="448" y="340" fill="#C8CED8" font-size="11">"Anxious about runway."</text>
-  <text x="448" y="357" fill="#C8CED8" font-size="11">"Stressed about execution."</text>
+  <text x="448" y="286" fill="#C8CED8" font-size="11" data-zone="em-feels" opacity="0"></text>
 
   <!-- Center circle persona -->
   <circle cx="400" cy="228" r="48" fill="#1B2A4A" stroke="#27BDBE" stroke-width="1.5"/>
@@ -76,9 +60,7 @@
   <rect x="32" y="416" width="736" height="2" fill="#27BDBE" rx="0"/>
 
   <text x="48" y="436" fill="#27BDBE" font-size="10" font-weight="600" letter-spacing="2">KEY INSIGHT</text>
-  <text x="48" y="463" fill="#FFFFFF" font-size="12" font-weight="700">Gap between "move fast" (says) and decision paralysis (thinks/feels)</text>
-  <text x="48" y="481" fill="#C8CED8" font-size="12">=</text>
-  <text x="48" y="499" fill="#FFFFFF" font-size="12" font-weight="700">Opportunity for structured decision tools that reduce cognitive load.</text>
+  <text x="48" y="463" fill="#C8CED8" font-size="11" data-zone="insights" opacity="0"></text>
 
 
   <!-- Footer -->
