@@ -3332,11 +3332,25 @@ async function startPostSessionFlow() {
 
         // Inject SVG visual (may still be loading — insert when ready)
         const svgPlaceholder = document.getElementById('psSvgPlaceholder');
+        const canvasExpand = document.getElementById('psCanvasExpand');
+        const canvasWrapper = document.getElementById('psCanvasWrapper');
         svgPromise.then(svgData => {
             if (svgData && svgData.svg && svgPlaceholder) {
                 svgPlaceholder.innerHTML = svgData.svg;
+                // Show expand button
+                if (canvasExpand) canvasExpand.style.display = 'inline-block';
+            } else {
+                // No SVG — hide canvas section
+                if (canvasWrapper) canvasWrapper.style.display = 'none';
             }
         });
+        // Canvas expand/collapse
+        if (canvasExpand) {
+            canvasExpand.addEventListener('click', () => {
+                const isExpanded = canvasWrapper.classList.toggle('ps-canvas-expanded');
+                canvasExpand.textContent = isExpanded ? 'Collapse canvas' : 'See your full canvas';
+            });
+        }
 
         // Populate headline with yellow emphasis
         const headline = document.getElementById('psHeadline');
@@ -3360,7 +3374,9 @@ async function startPostSessionFlow() {
             }
         }
 
-        // Byline removed per spec — no "Pete's take", no session duration
+        // Context line: tool name only (no "Pete's take", no session duration)
+        const contextLine = document.getElementById('psContextLine');
+        if (contextLine) contextLine.textContent = exName;
 
         // Synopsis text
         const synopsisText = document.getElementById('psSynopsisText');

@@ -4980,10 +4980,13 @@ body.light .feedback-input, html[data-theme="light"] .feedback-input { backgroun
     margin-bottom: 2rem;
     animation: psFadeUp 0.7s ease-out 0.2s both;
 }
-.ps-byline::before {
-    content: '\25CF'; color: var(--teal, #27BDBE);
-    margin-right: 0.5rem; font-size: 0.5rem;
-    vertical-align: middle;
+.ps-context-line {
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--text-muted, #9E9BC0);
+    letter-spacing: 0.05em;
+    margin-bottom: 1.5rem;
+    animation: psFadeUp 0.7s ease-out 0.2s both;
 }
 
 .ps-synopsis-card {
@@ -4993,22 +4996,48 @@ body.light .feedback-input, html[data-theme="light"] .feedback-input { backgroun
     overflow: hidden;
     max-width: 760px;
     margin: 0 auto 2rem;
+    padding: 2rem 2.5rem;
     animation: psFadeUp 0.8s ease-out 0.3s both;
+}
+.ps-canvas-wrapper {
+    max-width: 760px;
+    margin: 0 auto 1rem;
+    text-align: center;
 }
 .ps-svg-placeholder {
     width: 100%;
     background: #1B2A4A;
-    border-top: 4px solid var(--yellow, #E4E517);
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.08);
     min-height: 200px;
+    max-height: 320px;
+    overflow: hidden;
     display: flex; align-items: center; justify-content: center;
     color: var(--text-muted, #9E9BC0);
     font-size: 0.8rem;
+    transition: max-height 0.4s ease;
+}
+.ps-canvas-expanded .ps-svg-placeholder {
+    max-height: none;
+    overflow: visible;
 }
 .ps-svg-placeholder svg, .ps-svg-placeholder img {
     width: 100%; height: auto; display: block;
 }
+.ps-canvas-expand {
+    background: none;
+    border: none;
+    color: var(--teal, #27BDBE);
+    font-size: 0.75rem;
+    cursor: pointer;
+    padding: 0.5rem 0;
+    font-family: inherit;
+    display: none;
+    transition: opacity 0.2s;
+}
+.ps-canvas-expand:hover { opacity: 0.8; text-decoration: underline; }
 .ps-synopsis-text {
-    padding: 1.5rem 2rem 0;
+    padding: 0;
     font-size: 0.9rem; line-height: 1.7;
     color: var(--text-dim, #D0CEE6);
 }
@@ -5034,8 +5063,10 @@ body.light .feedback-input, html[data-theme="light"] .feedback-input { backgroun
 }
 
 .ps-email-capture {
-    padding: 1.5rem 2rem 1.5rem;
+    padding: 1.5rem 2rem;
     text-align: center;
+    max-width: 760px;
+    margin: 0 auto;
 }
 .ps-email-label {
     font-size: 0.85rem; color: var(--text-muted, #9E9BC0);
@@ -5070,6 +5101,8 @@ body.light .feedback-input, html[data-theme="light"] .feedback-input { backgroun
     transition: opacity 0.2s;
 }
 .ps-download-btn.ps-download-primary {
+    background: var(--orange, #F15A22);
+    color: #FFFFFF;
     padding: 0.85rem 2rem;
     font-size: 1rem;
     font-weight: 700;
