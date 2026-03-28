@@ -3261,6 +3261,17 @@ async function startPostSessionFlow() {
         })
     }).then(r => r.ok ? r.json() : Promise.reject('Report failed'));
 
+    const revealFallback = {
+        headline: `Your ${exName} session uncovered something worth exploring.`,
+        closing_message: 'Good session. You did real work here. The report captures what matters most.',
+        synopsis: 'Your session produced actionable insights. Review the full report for the complete breakdown.',
+        recommendations: [
+            { exercise: 'pre-mortem', reason: 'Stress-test what you built before committing.' },
+            { exercise: 'lean-canvas', reason: 'Map the business model behind your idea.' },
+            { exercise: 'five-whys', reason: 'Dig deeper into any assumptions that surfaced.' }
+        ]
+    };
+
     const revealPromise = fetch('/api/session/reveal', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -3270,7 +3281,7 @@ async function startPostSessionFlow() {
             messages: reportMessages,
             board_cards: state.board.cards
         })
-    }).then(r => r.ok ? r.json() : Promise.reject('Reveal failed'));
+    }).then(r => r.ok ? r.json() : revealFallback).catch(() => revealFallback);
 
     // SVG generation (non-blocking — ok if it fails)
     const svgPromise = fetch('/api/session/svg', {
@@ -3283,7 +3294,10 @@ async function startPostSessionFlow() {
     }).then(r => r.ok ? r.json() : null).catch(() => null);
 
     try {
+        console.log('[PostSession] Waiting for report + reveal...');
         const [reportData, revealData] = await Promise.all([reportPromise, revealPromise]);
+        console.log('[PostSession] Report received:', !!reportData?.report);
+        console.log('[PostSession] Reveal received:', !!revealData?.headline);
         clearInterval(stepInterval);
 
         // Mark all steps done
@@ -3469,7 +3483,7 @@ async function startPostSessionFlow() {
 
     } catch (err) {
         clearInterval(stepInterval);
-        console.error('[PostSession] Flow failed:', err);
+        console.error('[PostSession] Flow failed:', err, err?.stack || '');
         // Fallback: restore chat pane and use old flow
         loadingScreen.classList.add('hidden');
         if (chatPane) chatPane.style.display = '';
