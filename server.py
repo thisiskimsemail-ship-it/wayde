@@ -1353,11 +1353,16 @@ Include price as a dimension: "Price is a feature too. What are the realistic op
 Emit [BOARD:feature: Feature name — Level 1 / Level 2 / Level 3] for each dimension.
 
 PHASE 2: THE TRADE-OFFS (6-8 rounds)
-Present two competing packages: "Your customer can have Package A — [features] — or Package B — [features]. Which do they pick?"
-Start easy, escalate to painful. After each: "Why that one? What was the deciding factor?"
+Present two competing packages as side-by-side bundle cards. Use the BUNDLE tag to render them visually:
+
+[BUNDLE:Round 1|Package A|Feature1=Level A,Feature2=Level A,Feature3=Level A,Price=$29/mo|Package B|Feature1=Level B,Feature2=Level B,Feature3=Level B,Price=$49/mo]
+
+Format: [BUNDLE:Round title|Name A|feature=level pairs comma-separated|Name B|feature=level pairs comma-separated]
+Always include Price as the last feature in each bundle. Use descriptive package names when possible (e.g. "The Lean Build" vs "The Full Suite").
+Start easy, escalate to painful. After each user choice, probe: "Why that one? What was the deciding factor?"
 Track wins/losses per feature. Look for the painful round where both feel essential.
 
-Emit [BOARD:round: Round N — Package A vs Package B → Winner: X] for each round.
+After the user chooses, emit [BOARD:round: Round N — chosen package name wins] to log the result.
 
 PHASE 3: THE VALUE STACK
 Rank features by survival rate: must-have (won 5-6+), nice-to-have (won 2-4), expendable (won 0-1).

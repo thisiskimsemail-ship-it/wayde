@@ -10,11 +10,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link rel="preload" href="fonts/GT-Walsheim-Regular.woff" as="font" type="font/woff" crossorigin>
     <link rel="preload" href="banner.webp" as="image" type="image/webp">
-    <link rel="stylesheet" href="styles.css?v=153">
+    <link rel="stylesheet" href="styles.css?v=157">
 </head>
 <body>
 
 <div class="app-shell">
+
+    <!-- Skip to main content (accessibility) -->
+    <a class="skip-nav" href="#chatArea">Skip to content</a>
 
     <header class="header">
         <img class="logo" src="logo.png" alt="Wade Institute" title="Back to home">
@@ -24,9 +27,28 @@
             <a class="header-nav-link" href="sessions.html">Sessions</a>
             <a class="header-nav-link" href="#" id="navFeedbackBtn">Feedback</a>
         </nav>
+        <!-- Hamburger menu for mobile -->
+        <button class="hamburger" id="hamburgerBtn" aria-label="Open menu" aria-expanded="false">
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+        </button>
+        <div class="mobile-menu hidden" id="mobileMenu">
+            <a class="mobile-menu-link active" href="#">The Studio</a>
+            <a class="mobile-menu-link" href="toolbox.html">Toolbox</a>
+            <a class="mobile-menu-link" href="sessions.html">Sessions</a>
+            <a class="mobile-menu-link" href="#" id="mobileNavFeedbackBtn">Feedback</a>
+            <div class="mobile-menu-divider"></div>
+            <div class="mobile-menu-controls">
+                <button class="mobile-menu-control" id="mobileTextSize" aria-label="Adjust text size">Aa Text size</button>
+                <button class="mobile-menu-control" id="mobileThemeToggle" aria-label="Toggle theme">Theme</button>
+                <button class="mobile-menu-control" id="mobileTourBtn" aria-label="Take a tour">Tour</button>
+                <button class="mobile-menu-control" id="mobileHelpBtn" aria-label="Help">Help</button>
+            </div>
+        </div>
         <div class="header-controls">
             <div class="text-size-control" id="textSizeControl">
-                <button class="text-size-btn" id="textSizeToggle" title="Adjust text size">Aa</button>
+                <button class="text-size-btn" id="textSizeToggle" title="Adjust text size" aria-label="Adjust text size">Aa</button>
                 <div class="text-size-picker hidden" id="textSizePicker">
                     <button class="text-size-option" data-size="small">A<span class="text-size-label">Small</span></button>
                     <button class="text-size-option active" data-size="medium">A<span class="text-size-label">Medium</span></button>
@@ -36,8 +58,15 @@
             <button class="theme-toggle" id="themeToggle" title="Toggle light/dark mode" aria-label="Toggle light/dark mode">
                 <span class="theme-icon">☀</span>
             </button>
-            <button class="tour-help-btn" id="tourHelpBtn" title="Take a tour">?</button>
-            <button class="header-save-btn hidden" id="saveSessionBtn" title="Save session">
+            <div class="help-menu-wrap" id="helpMenuWrap">
+                <button class="help-menu-btn" id="helpMenuBtn" title="Help" aria-label="Help" aria-expanded="false">Help</button>
+                <div class="help-menu-dropdown hidden" id="helpMenuDropdown" role="menu">
+                    <button class="help-menu-item" id="helpTakeTour" role="menuitem">Take the tour</button>
+                    <button class="help-menu-item" id="helpHowItWorks" role="menuitem">How The Studio works</button>
+                    <a class="help-menu-item" href="https://wadeinstitute.org.au/contact" target="_blank" rel="noopener" role="menuitem">Contact Wade Institute</a>
+                </div>
+            </div>
+            <button class="header-save-btn hidden" id="saveSessionBtn" title="Save session" aria-label="Save session">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
             </button>
         </div>
@@ -53,7 +82,7 @@
         <div class="session-breadcrumb" id="sessionBreadcrumb">
             <span class="breadcrumb-stage" id="breadcrumbStage">CLARIFY</span>
             <span class="breadcrumb-arrow">→</span>
-            <button class="breadcrumb-tool" id="breadcrumbTool">Five Whys <svg class="breadcrumb-chevron" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg></button>
+            <button class="breadcrumb-tool" id="breadcrumbTool">Five Whys <svg class="breadcrumb-chevron" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg><span class="breadcrumb-tooltip">Switch to a different tool mid-session</span></button>
             <div class="breadcrumb-dropdown hidden" id="breadcrumbDropdown">
                 <div class="breadcrumb-dropdown-inner" id="breadcrumbDropdownInner"></div>
                 <a class="breadcrumb-toolbox-link" href="toolbox.html" target="_blank" rel="noopener">Explore all tools →</a>
@@ -65,15 +94,16 @@
         </div>
         <span class="phase-indicator" id="phaseIndicator"></span>
         <div class="progress-indicator hidden" id="progressIndicator"></div>
-        <button class="board-toggle" id="boardToggle" title="Workshop Board">
+        <button class="board-toggle" id="boardToggle" title="Workshop Board" aria-label="Open Workshop Board">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+            <span class="board-label">Board</span>
             <span class="board-count hidden" id="boardCount">0</span>
         </button>
-        <button class="session-close" id="sessionClose" title="Back to menu">✕</button>
+        <button class="session-close" id="sessionClose" title="Back to menu" aria-label="Close session">✕</button>
     </div>
 
     <!-- Save Session Modal -->
-    <div class="save-modal-overlay hidden" id="saveModalOverlay">
+    <div class="save-modal-overlay hidden" id="saveModalOverlay" aria-hidden="true">
         <div class="save-modal">
             <button class="save-modal-close" id="saveModalClose">✕</button>
             <h3>Save your session</h3>
@@ -85,7 +115,7 @@
     </div>
 
     <!-- Parking Lot slide-out panel -->
-    <div class="parking-lot-panel hidden" id="parkingLotPanel">
+    <div class="parking-lot-panel hidden" id="parkingLotPanel" aria-hidden="true">
         <div class="parking-lot-header">
             <h3>Parking Lot</h3>
             <button class="parking-lot-close" id="parkingLotClose">✕</button>
@@ -221,8 +251,8 @@
                     <div class="lp-features-grid">
                         <div class="lp-feature-card">
                             <span class="lp-feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></span>
-                            <strong>12 structured tools</strong>
-                            <p class="lp-feature-desc">Not open-ended chat — real innovation frameworks with proven methodology. Five Whys, Lean Canvas, Pre-Mortem, and 9 more.</p>
+                            <strong>20 structured tools</strong>
+                            <p class="lp-feature-desc">Not open-ended chat — real innovation frameworks with proven methodology. Five Whys, Lean Canvas, Pre-Mortem, Mash Up, and more.</p>
                         </div>
                         <div class="lp-feature-card">
                             <span class="lp-feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg></span>
@@ -736,19 +766,23 @@
     </footer>
 
     <!-- Tour overlay -->
-    <div class="tour-overlay hidden" id="tourOverlay">
+    <div class="tour-overlay hidden" id="tourOverlay" aria-hidden="true">
         <div class="tour-spotlight" id="tourSpotlight"></div>
-        <div class="tour-tooltip" id="tourTooltip">
+        <div class="tour-tooltip" id="tourTooltip" role="dialog" aria-label="Tour step">
+            <span class="tour-step-count" id="tourStepCount"></span>
+            <h4 class="tour-title" id="tourTitle"></h4>
             <p class="tour-text" id="tourText"></p>
+            <div class="tour-dots" id="tourDots"></div>
             <div class="tour-nav">
-                <span class="tour-step-count" id="tourStepCount"></span>
+                <button class="tour-skip" id="tourSkip">Skip tour</button>
                 <div class="tour-btns">
-                    <button class="tour-skip" id="tourSkip">Skip</button>
+                    <button class="tour-prev hidden" id="tourPrev">← Back</button>
                     <button class="tour-next" id="tourNext">Next →</button>
                 </div>
             </div>
         </div>
     </div>
+
 
     <!-- Feedback widget -->
     <!-- Feedback tab moved to nav bar -->
@@ -773,6 +807,6 @@
         <button class="feedback-submit" id="feedbackSubmit">Send feedback</button>
     </div>
 
-    <script src="app.js?v=170"></script>
+    <script src="app.js?v=173"></script>
 </body>
 </html>

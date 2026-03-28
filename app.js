@@ -744,6 +744,19 @@ function renderSessionActions() {
     actionsDiv.appendChild(challengeBtn);
     messagesEl.appendChild(actionsDiv);
     scrollToBottom();
+
+    // Tone toggle nudge — first session only
+    if (!localStorage.getItem('studio_tone_toggle_seen')) {
+        localStorage.setItem('studio_tone_toggle_seen', '1');
+        const tip = document.createElement('div');
+        tip.className = 'feature-hint';
+        tip.innerHTML = '<span class="feature-hint-text">Want Pete to push back harder? Switch to "Challenge me" for a tougher conversation.</span><button class="feature-hint-dismiss">Got it</button>';
+        tip.style.cssText = 'position:relative;margin:0.4rem 0;display:inline-block;';
+        actionsDiv.after(tip);
+        const dismiss = () => tip.remove();
+        tip.querySelector('.feature-hint-dismiss').addEventListener('click', dismiss);
+        setTimeout(dismiss, 6000);
+    }
 }
 
 // === STAGE PROGRESS ===
@@ -1016,8 +1029,9 @@ function startExercise(mode, exercise, startMsg = null) {
     $('#reportLinkedInBtn')?.classList.add('hidden');
     routingBack.classList.add('hidden');
 
-    // Show tool-specific starter prompts
-    // Starter prompts removed — users enter their own challenge directly
+    // Show What to Expect card + tool-specific starter prompts
+    showExpectCard(exercise);
+    renderStarterPrompts(exercise);
 
     // Switch board layout based on exercise — custom boards for structured tools
     const customLayouts = ['lean-canvas', 'elevator-pitch', 'pre-mortem', 'effectuation', 'flywheel', 'cold-open', 'iceberg', 'constraint-flip', 'socratic', 'reality-check', 'theory-of-change', 'trade-off', 'five-whys', 'empathy-map', 'jtbd', 'crazy-8s', 'hmw', 'scamper', 'devils-advocate', 'rapid-experiment'];
@@ -1333,8 +1347,8 @@ function enterStudio() {
     streamResponse().then(() => {
         // Show input after Pete's first message arrives
         if (inputArea) inputArea.style.display = '';
-        // Auto-start tour for first-time users
-        // Tour disabled on auto-start — users can click ? to start it
+        // Show routing prompt pills for generic entry
+        renderRoutingPrompts();
     });
 }
 
@@ -2143,6 +2157,13 @@ async function streamResponse() {
             fullText = fullText.replace(/\n?\[BOARD:[a-z0-9_-]+:\s*[^\]]+\]/g, '').trim();
             if (agentDiv) agentDiv.innerHTML = renderMarkdown(fullText);
         }
+
+        // Parse [BUNDLE:...] tags for Trade-Off visual comparison cards
+        const bundleRegex = /\[BUNDLE:([^\]]+)\]/g;
+        for (const bm of fullText.matchAll(bundleRegex)) {
+            renderBundleCards(bm[1].trim(), messagesEl);
+        }
+        fullText = fullText.replace(/\n?\[BUNDLE:[^\]]+\]/g, '').trim();
 
         if (agentDiv) agentDiv.innerHTML = renderMarkdown(fullText);
 
@@ -4169,6 +4190,82 @@ function switchBoardLayout(mode) {
     showCanvasToggle(); // Show/hide SVG canvas toggle based on tool
 }
 
+// === TRADE-OFF BUNDLE CARDS ===
+// Renders side-by-side comparison cards for Trade-Off rounds
+// Format: Round title|Name A|feat1=val1,feat2=val2,Price=$X|Name B|feat1=val1,feat2=val2,Price=$X
+function renderBundleCards(bundleStr, container) {
+    const parts = bundleStr.split('|').map(s => s.trim());
+    if (parts.length < 5) return; // Need: title, nameA, featuresA, nameB, featuresB
+    const [roundTitle, nameA, featStrA, nameB, featStrB] = parts;
+
+    const parseFeatures = (str) => str.split(',').map(f => {
+        const [key, val] = f.split('=').map(s => s.trim());
+        return { key, val: val || key };
+    });
+
+    const featuresA = parseFeatures(featStrA);
+    const featuresB = parseFeatures(featStrB);
+
+    const wrapper = document.createElement('div');
+    wrapper.className = 'bundle-round';
+
+    const title = document.createElement('div');
+    title.className = 'bundle-round-title';
+    title.textContent = roundTitle;
+    wrapper.appendChild(title);
+
+    const cardRow = document.createElement('div');
+    cardRow.className = 'bundle-card-row';
+
+    function buildCard(name, features, side) {
+        const card = document.createElement('div');
+        card.className = 'bundle-card';
+        card.dataset.side = side;
+
+        const header = document.createElement('div');
+        header.className = 'bundle-card-header';
+        header.textContent = name;
+        card.appendChild(header);
+
+        const body = document.createElement('div');
+        body.className = 'bundle-card-body';
+        features.forEach((f, i) => {
+            const isPrice = f.key.toLowerCase().startsWith('price');
+            const row = document.createElement('div');
+            row.className = 'bundle-feature-row' + (isPrice ? ' bundle-price-row' : '') + (i % 2 === 1 ? ' bundle-row-alt' : '');
+            row.innerHTML = `<span class="bundle-feature-name">${f.key}</span><span class="bundle-feature-val">${f.val}</span>`;
+            body.appendChild(row);
+        });
+        card.appendChild(body);
+
+        // Click to choose
+        card.addEventListener('click', () => {
+            if (card.classList.contains('bundle-chosen') || card.classList.contains('bundle-rejected')) return;
+            card.classList.add('bundle-chosen');
+            const other = cardRow.querySelector(`.bundle-card:not([data-side="${side}"])`);
+            if (other) other.classList.add('bundle-rejected');
+            // Send the choice as a message
+            sendMessage(`I'd choose ${name}.`);
+        });
+
+        return card;
+    }
+
+    const cardA = buildCard(nameA, featuresA, 'a');
+    const vs = document.createElement('div');
+    vs.className = 'bundle-vs';
+    vs.textContent = 'vs';
+    const cardB = buildCard(nameB, featuresB, 'b');
+
+    cardRow.appendChild(cardA);
+    cardRow.appendChild(vs);
+    cardRow.appendChild(cardB);
+    wrapper.appendChild(cardRow);
+
+    container.appendChild(wrapper);
+    scrollToBottom();
+}
+
 function addBoardCard(text, zone, stage, source) {
     // Deduplicate: skip if a very similar card already exists (any zone)
     const normalise = s => s.toLowerCase().replace(/[^a-z0-9\s]/g, '').trim();
@@ -4206,6 +4303,11 @@ function addBoardCard(text, zone, stage, source) {
     // Auto-open board on first card addition
     if (isFirst && !state.board.visible) {
         toggleBoard();
+    }
+
+    // Board nudge — one-time inline message on first card
+    if (isFirst && typeof showBoardNudge === 'function') {
+        showBoardNudge();
     }
 
     return card;
@@ -4970,16 +5072,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Save session — open email modal
     if (saveBtn) saveBtn.addEventListener('click', () => {
-        if (overlay) overlay.classList.remove('hidden');
+        if (overlay) { overlay.classList.remove('hidden'); overlay.setAttribute('aria-hidden', 'false'); }
         if (emailInput) emailInput.focus();
     });
 
     // Close modal
-    if (closeModal) closeModal.addEventListener('click', () => {
-        if (overlay) overlay.classList.add('hidden');
-    });
+    function closeSaveModal() {
+        if (overlay) { overlay.classList.add('hidden'); overlay.setAttribute('aria-hidden', 'true'); }
+    }
+    if (closeModal) closeModal.addEventListener('click', closeSaveModal);
     if (overlay) overlay.addEventListener('click', (e) => {
-        if (e.target === overlay) overlay.classList.add('hidden');
+        if (e.target === overlay) closeSaveModal();
     });
 
     // Submit save
@@ -5102,101 +5205,327 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// === GUIDED TOUR ===
-const TOUR_STEPS = [
-    { el: '#sessionBreadcrumb', text: 'This shows which stage and tool you\'re using. Click the tool name to switch to a different one.', pos: 'below' },
-    { el: '#boardToggle', text: 'Open the Workshop Board to see your ideas, insights, and actions building up as you work.', pos: 'below' },
-    { el: '#inputField', text: 'Type your responses here. Pete will guide you through the exercise one question at a time.', pos: 'above' },
-    { el: '.help-challenge-row', text: '"Help me" gives you a nudge. "Challenge me" pushes you harder. Use them any time.', pos: 'above' },
-    { el: '#privacyLink', text: 'Your data stays yours. Read our privacy policy to see exactly how your session information is handled.', pos: 'above' },
-    { el: '#saveSessionBtn', text: 'Save your session any time. We\'ll email you a link to pick up exactly where you left off.', pos: 'below' },
-    { el: '#tourHelpBtn', text: 'You can replay this tour any time by clicking here. Now let\'s get to work.', pos: 'below' }
+// === GUIDED TOUR (10-step homepage tour) ===
+const HOMEPAGE_TOUR_STEPS = [
+    { el: '.lp-hero-lead', title: 'What The Studio Is', text: 'The Studio is an AI-powered innovation workshop. It\'s not a chatbot \u2014 it\'s a structured thinking partner that guides you through real frameworks used by founders, researchers, and teams.', pos: 'below' },
+    { el: '#enterStudioBtn', title: 'How to Start', text: 'This is the quickest way in. No sign-up, no account, no cost. Just bring a challenge you\'re working on and Pete \u2014 your AI facilitator \u2014 will guide you through it.', pos: 'right' },
+    { el: '.lp-cta-caption', title: 'What to Expect', text: 'A typical session takes 15\u201330 minutes. You\'ll work through a structured framework and leave with a downloadable report of everything you explored.', pos: 'below' },
+    { el: '.lp-process-grid', title: 'Choose Your Challenge', text: 'Not sure where to start? Pick the challenge that sounds like yours. Each pathway leads to specific tools designed for that stage of your thinking.', pos: 'above' },
+    { el: 'a.header-nav-link[href="toolbox.html"]', title: '20 Structured Tools', text: 'Behind each pathway are real innovation frameworks \u2014 Five Whys, Lean Canvas, Pre-Mortem, and 17 more. Browse them all in the Toolbox, or let Pete recommend one.', pos: 'below' },
+    { el: '.lp-board-showcase', title: 'Your Ideas, Organised', text: 'As you talk with Pete, your insights get captured on a visual workshop board \u2014 structured cards for the framework you\'re using. It\'s not just a chat log. It\'s a working canvas.', pos: 'above' },
+    { el: '.lp-report-preview', title: 'What You Walk Away With', text: 'At the end of every session, you get a structured report: what you explored, what emerged, recommended next steps, and further reading. It\'s yours to keep and share.', pos: 'above' },
+    { el: '.lp-audience', title: 'Built for You', text: 'Whether you\'re a student exploring ideas, a founder stress-testing a plan, a researcher thinking about commercialisation, or a team running innovation sprints \u2014 Pete adapts to where you are.', pos: 'above' },
+    { el: 'a.header-nav-link[href="sessions.html"]', title: 'Pick Up Where You Left Off', text: 'Your work saves automatically. Come back anytime and your sessions will be waiting. You can also get a link to access them from any device.', pos: 'below' },
+    { el: '.text-size-control', title: 'Make It Yours', text: 'Adjust text size or switch between light and dark mode anytime. These controls are always available in the top bar.', pos: 'below' }
+];
+
+// In-session tour (shown when Help > Take the tour during a session)
+const SESSION_TOUR_STEPS = [
+    { el: '#sessionBreadcrumb', title: 'Your Current Tool', text: 'This shows which stage and tool you\'re using. Click the tool name to switch to a different one mid-session.', pos: 'below' },
+    { el: '#boardToggle', title: 'Workshop Board', text: 'Open the Workshop Board to see your ideas, insights, and actions building up as you work.', pos: 'below' },
+    { el: '#inputField', title: 'Talk to Pete', text: 'Type your responses here. Pete will guide you through the exercise one question at a time.', pos: 'above' },
+    { el: '#saveSessionBtn', title: 'Save Your Work', text: 'Save your session any time. We\'ll email you a link to pick up exactly where you left off.', pos: 'below' },
+    { el: '#helpMenuBtn', title: 'Get Help', text: 'Open the Help menu for shortcuts, tool info, or to replay this tour. Now let\'s get to work.', pos: 'below' }
 ];
 
 let tourStep = 0;
+let activeTourSteps = HOMEPAGE_TOUR_STEPS;
 const tourOverlay = document.getElementById('tourOverlay');
 const tourSpotlight = document.getElementById('tourSpotlight');
 const tourTooltip = document.getElementById('tourTooltip');
+const tourTitle = document.getElementById('tourTitle');
 const tourText = document.getElementById('tourText');
 const tourStepCount = document.getElementById('tourStepCount');
+const tourDots = document.getElementById('tourDots');
 const tourNext = document.getElementById('tourNext');
+const tourPrev = document.getElementById('tourPrev');
 const tourSkip = document.getElementById('tourSkip');
 
-function startTour() {
+function startTour(steps) {
     if (!tourOverlay) return;
-    // If no session is active, tour has no visible targets — go to toolbox instead
-    const hasVisibleSteps = TOUR_STEPS.some(s => {
-        if (s.el === '#tourHelpBtn') return false; // Don't count the help button itself
+    // Close any open menus
+    document.getElementById('helpMenuDropdown')?.classList.add('hidden');
+    document.getElementById('helpMenuBtn')?.setAttribute('aria-expanded', 'false');
+    activeTourSteps = steps || HOMEPAGE_TOUR_STEPS;
+
+    // Determine which steps have visible targets
+    const visibleSteps = activeTourSteps.filter(s => {
         const el = document.querySelector(s.el);
         return el && el.offsetParent !== null;
     });
-    if (!hasVisibleSteps) {
-        window.location.href = 'toolbox.html';
+    if (visibleSteps.length === 0) {
+        // If on homepage with no visible steps (shouldn't happen), fall back to session tour
+        if (steps !== SESSION_TOUR_STEPS) {
+            startTour(SESSION_TOUR_STEPS);
+        }
         return;
     }
     tourStep = 0;
     tourOverlay.classList.remove('hidden');
+    tourOverlay.setAttribute('aria-hidden', 'false');
     showTourStep();
 }
 
-function showTourStep() {
-    // Filter to only visible steps
-    const visibleSteps = TOUR_STEPS.filter(s => {
+function getVisibleSteps() {
+    return activeTourSteps.filter(s => {
         const el = document.querySelector(s.el);
         return el && el.offsetParent !== null;
     });
+}
+
+function showTourStep() {
+    const visibleSteps = getVisibleSteps();
     if (tourStep >= visibleSteps.length) { endTour(); return; }
+    if (tourStep < 0) tourStep = 0;
     const step = visibleSteps[tourStep];
     const target = document.querySelector(step.el);
     if (!target) { endTour(); return; }
-    const rect = target.getBoundingClientRect();
-    const pad = 6;
-    tourSpotlight.style.top = (rect.top - pad) + 'px';
-    tourSpotlight.style.left = (rect.left - pad) + 'px';
-    tourSpotlight.style.width = (rect.width + pad * 2) + 'px';
-    tourSpotlight.style.height = (rect.height + pad * 2) + 'px';
 
-    tourText.textContent = step.text;
-    const visibleCount = TOUR_STEPS.filter(s => { const el = document.querySelector(s.el); return el && el.offsetParent !== null; }).length;
-    tourStepCount.textContent = (tourStep + 1) + ' of ' + visibleCount;
-    tourNext.textContent = tourStep === visibleCount - 1 ? 'Done' : 'Next →';
+    // Scroll target into view if needed
+    target.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
-    // Position tooltip
-    const ttWidth = 300;
-    let ttLeft = rect.left + rect.width / 2 - ttWidth / 2;
-    ttLeft = Math.max(12, Math.min(ttLeft, window.innerWidth - ttWidth - 12));
-    tourTooltip.style.width = ttWidth + 'px';
-    tourTooltip.style.left = ttLeft + 'px';
-    if (step.pos === 'above') {
-        tourTooltip.style.top = 'auto';
-        tourTooltip.style.bottom = (window.innerHeight - rect.top + 12) + 'px';
-    } else {
-        tourTooltip.style.top = (rect.bottom + 12) + 'px';
-        tourTooltip.style.bottom = 'auto';
-    }
+    setTimeout(() => {
+        const rect = target.getBoundingClientRect();
+        const pad = 8;
+        tourSpotlight.style.top = (rect.top - pad) + 'px';
+        tourSpotlight.style.left = (rect.left - pad) + 'px';
+        tourSpotlight.style.width = (rect.width + pad * 2) + 'px';
+        tourSpotlight.style.height = (rect.height + pad * 2) + 'px';
+
+        // Update content
+        tourStepCount.textContent = (tourStep + 1) + ' of ' + visibleSteps.length;
+        tourTitle.textContent = step.title;
+        tourText.textContent = step.text;
+        tourTooltip.setAttribute('aria-label', 'Tour step ' + (tourStep + 1) + ' of ' + visibleSteps.length + ': ' + step.title);
+
+        // Progress dots
+        tourDots.innerHTML = '';
+        for (let i = 0; i < visibleSteps.length; i++) {
+            const dot = document.createElement('span');
+            dot.className = 'tour-dot' + (i <= tourStep ? ' filled' : '');
+            tourDots.appendChild(dot);
+        }
+
+        // Button states
+        const isLast = tourStep === visibleSteps.length - 1;
+        tourNext.textContent = isLast ? 'Start exploring \u2192' : 'Next \u2192';
+        if (tourPrev) {
+            tourPrev.classList.toggle('hidden', tourStep === 0);
+        }
+
+        // Position tooltip
+        const ttWidth = 340;
+        let ttLeft, ttTop;
+
+        if (step.pos === 'right') {
+            ttLeft = Math.min(rect.right + 16, window.innerWidth - ttWidth - 16);
+            ttTop = rect.top + rect.height / 2 - 60;
+            tourTooltip.style.top = Math.max(16, ttTop) + 'px';
+            tourTooltip.style.bottom = 'auto';
+        } else if (step.pos === 'above') {
+            ttLeft = rect.left + rect.width / 2 - ttWidth / 2;
+            tourTooltip.style.top = 'auto';
+            tourTooltip.style.bottom = (window.innerHeight - rect.top + 16) + 'px';
+        } else {
+            // below (default)
+            ttLeft = rect.left + rect.width / 2 - ttWidth / 2;
+            tourTooltip.style.top = (rect.bottom + 16) + 'px';
+            tourTooltip.style.bottom = 'auto';
+        }
+        ttLeft = Math.max(16, Math.min(ttLeft, window.innerWidth - ttWidth - 16));
+        tourTooltip.style.width = ttWidth + 'px';
+        tourTooltip.style.left = ttLeft + 'px';
+
+        // Focus the next button for keyboard users
+        tourNext.focus();
+    }, 350); // Wait for scroll
 }
 
-function endTour() {
+function endTour(showToast = true) {
     tourOverlay.classList.add('hidden');
+    tourOverlay.setAttribute('aria-hidden', 'true');
+    localStorage.setItem('studio_tour_completed', '1');
+    // Also set legacy key for compat
     localStorage.setItem('wade_tour_seen', '1');
+    if (showToast) {
+        const toast = document.createElement('div');
+        toast.className = 'tour-toast';
+        toast.textContent = 'You can retake the tour anytime from the Help menu.';
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 4000);
+    }
 }
 
 if (tourNext) tourNext.addEventListener('click', () => { tourStep++; showTourStep(); });
-if (tourSkip) tourSkip.addEventListener('click', endTour);
+if (tourPrev) tourPrev.addEventListener('click', () => { tourStep--; showTourStep(); });
+if (tourSkip) tourSkip.addEventListener('click', () => endTour());
 
-// Help button — replay tour
-const tourHelpBtn = document.getElementById('tourHelpBtn');
-if (tourHelpBtn) tourHelpBtn.addEventListener('click', startTour);
+// Keyboard: Escape dismisses tour/modals, arrow keys navigate tour
+document.addEventListener('keydown', (e) => {
+    if (tourOverlay && !tourOverlay.classList.contains('hidden')) {
+        if (e.key === 'Escape') { endTour(); }
+        else if (e.key === 'ArrowRight') { tourStep++; showTourStep(); }
+        else if (e.key === 'ArrowLeft' && tourStep > 0) { tourStep--; showTourStep(); }
+    }
+});
 
-// Auto-start tour on first session entry (called from enterStudio)
+// Clicking overlay (not tooltip) does nothing — intentional per spec
+
+// Auto-trigger tour on first homepage visit
+document.addEventListener('DOMContentLoaded', () => {
+    if (!localStorage.getItem('studio_tour_completed') && !localStorage.getItem('wade_tour_seen')) {
+        const welcome = document.getElementById('welcome');
+        if (welcome && !welcome.classList.contains('hidden')) {
+            // First visit to homepage — start tour after a brief delay
+            setTimeout(() => {
+                const welcome2 = document.getElementById('welcome');
+                if (welcome2 && !welcome2.classList.contains('hidden')) {
+                    startTour(HOMEPAGE_TOUR_STEPS);
+                }
+            }, 1500);
+        }
+    }
+});
+
+// Legacy compat
 let inSession = false;
 function maybeStartTour() {
     inSession = true;
-    if (!localStorage.getItem('wade_tour_seen')) {
-        setTimeout(() => {
-            if (inSession) startTour();
-        }, 2000);
+}
+
+// === HELP MENU ===
+(function() {
+    const btn = document.getElementById('helpMenuBtn');
+    const dropdown = document.getElementById('helpMenuDropdown');
+    if (!btn || !dropdown) return;
+
+    btn.addEventListener('click', () => {
+        const isOpen = !dropdown.classList.contains('hidden');
+        dropdown.classList.toggle('hidden');
+        btn.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
+    });
+
+    // Close on outside click
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('#helpMenuWrap')) {
+            dropdown.classList.add('hidden');
+            btn.setAttribute('aria-expanded', 'false');
+        }
+    });
+
+    // Take the tour
+    document.getElementById('helpTakeTour')?.addEventListener('click', () => {
+        dropdown.classList.add('hidden');
+        btn.setAttribute('aria-expanded', 'false');
+        // If in session, use session tour; otherwise homepage tour
+        if (document.body.classList.contains('in-session')) {
+            startTour(SESSION_TOUR_STEPS);
+        } else {
+            startTour(HOMEPAGE_TOUR_STEPS);
+        }
+    });
+
+    // How it works — scroll to features section
+    document.getElementById('helpHowItWorks')?.addEventListener('click', () => {
+        dropdown.classList.add('hidden');
+        const features = document.querySelector('.lp-features');
+        if (features) features.scrollIntoView({ behavior: 'smooth' });
+        else window.open('https://wadeinstitute.org.au', '_blank');
+    });
+
+})();
+
+// === WHAT TO EXPECT CARD ===
+const TOOL_DESCRIPTIONS = {
+    'five-whys': { desc: 'Pete will guide you through a root cause analysis. You\'ll dig beneath the surface of a problem to find what\'s really driving it.', output: 'A structured board showing your problem breakdown, plus a report with insights and recommended next steps.' },
+    'empathy-map': { desc: 'Pete will help you map what your customer or stakeholder thinks, feels, says, and does \u2014 to uncover hidden needs.', output: 'A completed empathy map and a report with key customer insights.' },
+    'jtbd': { desc: 'Pete will help you discover the real job your customer is hiring your product to do.', output: 'A jobs-to-be-done analysis board and report with reframed value propositions.' },
+    'socratic': { desc: 'Pete will challenge your assumptions with systematic questioning to uncover deeper truths.', output: 'A structured questioning board and report with key reframes.' },
+    'iceberg': { desc: 'Pete will help you see the structures and mental models driving surface-level events.', output: 'An iceberg model board and report with systemic insights.' },
+    'crazy-8s': { desc: 'Pete will push you to generate eight distinct ideas in rapid succession \u2014 quantity over quality.', output: 'A board of ranked ideas and a report with the most promising concepts.' },
+    'hmw': { desc: 'Pete will help you reframe problems as opportunities using "How Might We" questions.', output: 'A set of reframed opportunity questions and a report with recommended next steps.' },
+    'scamper': { desc: 'Pete will walk you through seven creative lenses to transform an existing idea or product.', output: 'A SCAMPER board and report with innovation directions.' },
+    'mash-up': { desc: 'Pete will help you combine ideas from unrelated domains to spark novel solutions.', output: 'A collision board and report with remixed concepts.' },
+    'constraint-flip': { desc: 'Pete will help you turn your biggest limitations into competitive advantages.', output: 'A constraints board and report with flipped strategies.' },
+    'pre-mortem': { desc: 'Pete will help you imagine your plan has already failed and work backwards to find the risks.', output: 'A risk board and report with prioritised failure modes and mitigations.' },
+    'devils-advocate': { desc: 'Pete will systematically challenge your plan, poking holes and stress-testing every assumption.', output: 'A challenge board and report with strengthened arguments.' },
+    'cold-open': { desc: 'Pete will help you craft a compelling way to explain what you do to someone who\'s never heard of it.', output: 'A pitch framework board and a report with your refined narrative.' },
+    'reality-check': { desc: 'Pete will hold up a mirror to your claims and help you see where narrative and evidence diverge.', output: 'A reality check board and report with honest assessments.' },
+    'trade-off': { desc: 'Pete will force you to choose between your own features. Each round requires a sacrifice. The features that survive every trade-off are your core value.', output: 'A feature value stack, side-by-side bundle comparison cards, and a Minimum Viable Offer.' },
+    'lean-canvas': { desc: 'Pete will guide you through mapping your business model on a single page.', output: 'A completed Lean Canvas board and report with model analysis.' },
+    'effectuation': { desc: 'Pete will help you start from what you have \u2014 your skills, connections, and resources \u2014 and build from there.', output: 'An effectuation board and report with your first moves.' },
+    'rapid-experiment': { desc: 'Pete will help you design a quick, cheap experiment to test your riskiest assumption.', output: 'An experiment design board and report with your test plan.' },
+    'flywheel': { desc: 'Pete will help you find the reinforcing loops that make your growth compound.', output: 'A flywheel board and report with growth loop analysis.' },
+    'theory-of-change': { desc: 'Pete will help you draw the causal chain from your activities to the impact you hope to create.', output: 'A theory of change board and report with your impact pathway.' }
+};
+
+function showExpectCard(exercise) {
+    document.querySelector('.session-expect-card')?.remove();
+    const info = TOOL_DESCRIPTIONS[exercise];
+    if (!info) return;
+    const label = EXERCISE_LABELS[exercise] || exercise;
+    const time = EXERCISE_TIMES[exercise] || '20 min';
+
+    const card = document.createElement('div');
+    card.className = 'session-expect-card';
+    card.innerHTML = `<div class="session-expect-title">${label} \u2014 ~${time}</div><p class="session-expect-desc">${info.desc}</p>`;
+
+    const messagesEl = document.getElementById('messages');
+    if (messagesEl) messagesEl.prepend(card);
+
+    // Auto-remove after first user message
+    const form = document.getElementById('inputForm');
+    if (form) {
+        form.addEventListener('submit', () => card.remove(), { once: true });
     }
+}
+
+// === GENERIC ROUTING PROMPT PILLS ===
+const ROUTING_PROMPTS = [
+    { text: 'I have a problem I can\'t get to the bottom of', category: 'untangle' },
+    { text: 'I need fresh ideas for something I\'m working on', category: 'spark' },
+    { text: 'I have a plan and I want to stress-test it', category: 'test' }
+];
+
+function renderRoutingPrompts() {
+    const existing = document.getElementById('starterPrompts');
+    if (existing) existing.remove();
+    const container = document.createElement('div');
+    container.id = 'starterPrompts';
+    container.className = 'starter-prompts';
+    ROUTING_PROMPTS.forEach(p => {
+        const btn = document.createElement('button');
+        btn.className = 'starter-prompt-pill';
+        btn.textContent = p.text;
+        btn.addEventListener('click', () => {
+            container.remove();
+            sendMessage(p.text);
+        });
+        container.appendChild(btn);
+    });
+    const inputForm = document.getElementById('inputForm');
+    if (inputForm) inputForm.parentNode.insertBefore(container, inputForm);
+    // Auto-remove after first user message
+    inputForm?.addEventListener('submit', () => container.remove(), { once: true });
+}
+
+// === BOARD NUDGE ===
+let boardNudgeShown = false;
+function showBoardNudge() {
+    if (boardNudgeShown) return;
+    boardNudgeShown = true;
+    const messagesEl = document.getElementById('messages');
+    if (!messagesEl) return;
+    const nudge = document.createElement('div');
+    nudge.className = 'board-nudge-msg';
+    nudge.innerHTML = '\u2728 I\'ve started building your <a id="boardNudgeLink">workshop board</a>. You can open it anytime to see your thinking take shape.';
+    messagesEl.appendChild(nudge);
+    nudge.querySelector('#boardNudgeLink')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        const boardToggle = document.getElementById('boardToggle');
+        if (boardToggle) boardToggle.click();
+    });
+    scrollToBottom();
 }
 
 // === QUICK-FIRE BUTTON INJECTION (backup for missed OPTIONS) ===
@@ -5248,6 +5577,129 @@ const hintObserver = new MutationObserver(() => {
     });
 });
 hintObserver.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['class'] });
+
+// === MOBILE RESPONSIVE — hide desktop controls, show hamburger ===
+document.addEventListener('DOMContentLoaded', function() {
+    const mq = window.matchMedia('(max-width: 640px)');
+    function handleMobile(e) {
+        const controls = document.querySelector('.header-controls');
+        const nav = document.querySelector('.header-nav');
+        const hamburger = document.getElementById('hamburgerBtn');
+        if (e.matches) {
+            if (controls) controls.style.display = 'none';
+            if (nav) nav.style.display = 'none';
+            if (hamburger) hamburger.style.display = 'flex';
+        } else {
+            if (controls) controls.style.display = '';
+            if (nav) nav.style.display = '';
+            if (hamburger) hamburger.style.display = '';
+        }
+    }
+    mq.addEventListener('change', handleMobile);
+    handleMobile(mq);
+});
+
+// === HAMBURGER MENU (mobile) ===
+(function() {
+    const hamburger = document.getElementById('hamburgerBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    if (!hamburger || !mobileMenu) return;
+
+    hamburger.addEventListener('click', () => {
+        const isOpen = !mobileMenu.classList.contains('hidden');
+        if (isOpen) {
+            mobileMenu.classList.add('hidden');
+            hamburger.classList.remove('open');
+            hamburger.setAttribute('aria-expanded', 'false');
+        } else {
+            mobileMenu.classList.remove('hidden');
+            hamburger.classList.add('open');
+            hamburger.setAttribute('aria-expanded', 'true');
+        }
+    });
+
+    // Mobile feedback button
+    const mobileFeedback = document.getElementById('mobileNavFeedbackBtn');
+    if (mobileFeedback) {
+        mobileFeedback.addEventListener('click', (e) => {
+            e.preventDefault();
+            mobileMenu.classList.add('hidden');
+            hamburger.classList.remove('open');
+            hamburger.setAttribute('aria-expanded', 'false');
+            const panel = document.getElementById('feedbackPanel');
+            if (panel) panel.classList.toggle('hidden');
+        });
+    }
+
+    // Mobile theme toggle
+    const mobileTheme = document.getElementById('mobileThemeToggle');
+    if (mobileTheme) {
+        mobileTheme.addEventListener('click', () => {
+            const themeBtn = document.getElementById('themeToggle');
+            if (themeBtn) themeBtn.click();
+        });
+    }
+
+    // Mobile tour button
+    const mobileTour = document.getElementById('mobileTourBtn');
+    if (mobileTour) {
+        mobileTour.addEventListener('click', () => {
+            mobileMenu.classList.add('hidden');
+            hamburger.classList.remove('open');
+            hamburger.setAttribute('aria-expanded', 'false');
+            if (document.body.classList.contains('in-session')) {
+                startTour(SESSION_TOUR_STEPS);
+            } else {
+                startTour(HOMEPAGE_TOUR_STEPS);
+            }
+        });
+    }
+
+    // Mobile help button — open help menu dropdown
+    const mobileHelp = document.getElementById('mobileHelpBtn');
+    if (mobileHelp) {
+        mobileHelp.addEventListener('click', () => {
+            mobileMenu.classList.add('hidden');
+            hamburger.classList.remove('open');
+            hamburger.setAttribute('aria-expanded', 'false');
+            const helpDropdown = document.getElementById('helpMenuDropdown');
+            const helpBtn = document.getElementById('helpMenuBtn');
+            if (helpDropdown) {
+                helpDropdown.classList.toggle('hidden');
+                if (helpBtn) helpBtn.setAttribute('aria-expanded', helpDropdown.classList.contains('hidden') ? 'false' : 'true');
+            }
+        });
+    }
+
+    // Mobile text size — cycle through sizes
+    const mobileText = document.getElementById('mobileTextSize');
+    if (mobileText) {
+        mobileText.addEventListener('click', () => {
+            const sizes = ['small', 'medium', 'large'];
+            const current = localStorage.getItem('studio_text_size') || 'medium';
+            const next = sizes[(sizes.indexOf(current) + 1) % sizes.length];
+            document.body.classList.remove('text-small', 'text-large');
+            if (next === 'small') document.body.classList.add('text-small');
+            if (next === 'large') document.body.classList.add('text-large');
+            localStorage.setItem('studio_text_size', next);
+            mobileText.textContent = 'Aa ' + next.charAt(0).toUpperCase() + next.slice(1);
+        });
+    }
+
+    // Close menu on link click
+    mobileMenu.querySelectorAll('.mobile-menu-link').forEach(link => {
+        if (link.getAttribute('href') !== '#') return;
+        // The Studio link — close menu
+        if (link.classList.contains('active')) {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                mobileMenu.classList.add('hidden');
+                hamburger.classList.remove('open');
+                hamburger.setAttribute('aria-expanded', 'false');
+            });
+        }
+    });
+})();
 
 // === FEEDBACK WIDGET ===
 (function() {
