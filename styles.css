@@ -3255,10 +3255,18 @@ html[data-theme="light"] .report-synopsis {
 }
 
 /* Text size classes on body */
+body.text-small { font-size: 14px; }
 body.text-small .msg { font-size: 0.82rem; }
 body.text-small .input-field { font-size: 0.88rem; }
+body.text-large { font-size: 18px; }
 body.text-large .msg { font-size: 1.1rem; }
 body.text-large .input-field { font-size: 1.15rem; }
+body.text-large .lp-hero-title { font-size: 3.2rem; }
+body.text-large .lp-hero-sub { font-size: 1.2rem; }
+body.text-large .lp-hero-body { font-size: 1.05rem; }
+body.text-large p, body.text-large li { font-size: 1.05rem; }
+body.text-small .lp-hero-title { font-size: 2rem; }
+body.text-small p, body.text-small li { font-size: 0.85rem; }
 
 html[data-theme="light"] .text-size-btn { background: #fff; border-color: rgba(0,0,0,0.1); box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
 html[data-theme="light"] .text-size-picker { background: #fff; border-color: rgba(0,0,0,0.1); box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
