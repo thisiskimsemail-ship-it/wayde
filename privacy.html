@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy — Wade Studio</title>
+    <link rel="stylesheet" href="styles.css?v=93">
+    <style>
+        .privacy-page {
+            max-width: 680px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem 4rem;
+            color: var(--text);
+            line-height: 1.7;
+        }
+        .privacy-page h1 {
+            font-size: 2rem;
+            color: var(--text);
+            margin-bottom: 0.25rem;
+        }
+        .privacy-page .subtitle {
+            color: var(--orange);
+            font-size: 1rem;
+            margin-bottom: 2.5rem;
+        }
+        .privacy-page h2 {
+            font-size: 1.25rem;
+            color: var(--text);
+            margin: 2.5rem 0 0.75rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+        .privacy-page p {
+            color: var(--text-dim);
+            margin: 0.75rem 0;
+            font-size: 0.95rem;
+        }
+        .privacy-page ul {
+            color: var(--text-dim);
+            padding-left: 1.25rem;
+            margin: 0.75rem 0;
+        }
+        .privacy-page li {
+            margin: 0.4rem 0;
+            font-size: 0.95rem;
+        }
+        .privacy-page a {
+            color: var(--orange);
+            text-decoration: underline;
+            text-decoration-color: rgba(241,90,34,0.3);
+        }
+        .privacy-page a:hover {
+            text-decoration-color: var(--orange);
+        }
+        .privacy-page .external-link {
+            color: var(--text);
+            text-decoration: underline;
+        }
+        .privacy-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        .privacy-header img {
+            height: 48px;
+        }
+        .privacy-header a {
+            color: var(--orange);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        .privacy-footer {
+            max-width: 680px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.08);
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+        .privacy-footer a { color: var(--text-dim); }
+    </style>
+</head>
+<body>
+    <div class="privacy-header">
+        <a href="/"><img src="logo.png" alt="Wade Institute of Entrepreneurship"></a>
+        <a href="/">← Back to The Studio</a>
+    </div>
+
+    <div class="privacy-page">
+        <h1>Privacy and Data</h1>
+        <p class="subtitle">How Wade Studio handles your information.</p>
+
+        <h2>What we collect</h2>
+        <p>When you use Wade Studio, we collect:</p>
+        <ul>
+            <li><strong>Your conversation</strong> — the messages you exchange with Pete during a session. This is used to generate your workshop output and is not shared with anyone outside Wade Institute.</li>
+            <li><strong>Your email address</strong> — only if you choose to save your session, receive a report, or request a magic link. We never collect your email without your explicit action.</li>
+            <li><strong>Your name and organisation</strong> — only if you provide them in the lead capture form at the end of a session.</li>
+        </ul>
+
+        <h2>What we do not collect</h2>
+        <ul>
+            <li>We do not use cookies for tracking or advertising.</li>
+            <li>We do not collect browser fingerprints, IP addresses for profiling, or device identifiers.</li>
+            <li>We do not sell or share your data with third parties for marketing purposes.</li>
+        </ul>
+
+        <h2>How your data is used</h2>
+        <ul>
+            <li><strong>Session content</strong> is sent to Anthropic's Claude API to generate responses and reports. Anthropic does not use API inputs or outputs to train its models. See <a class="external-link" href="https://www.anthropic.com/policies/privacy" target="_blank" rel="noopener">Anthropic's privacy policy</a>.</li>
+            <li><strong>Email addresses</strong> are used to send your session report, magic link for session recovery, and occasional follow-up communication from Wade Institute. Emails are sent via Resend and BCC'd to Wade Institute's CRM (HubSpot) for relationship management.</li>
+            <li><strong>Lead information</strong> (name, email, organisation, role) may be used by Wade Institute to recommend relevant programs or resources. You can opt out at any time by contacting us.</li>
+        </ul>
+
+        <h2>Data storage and retention</h2>
+        <ul>
+            <li>Session data is stored temporarily on our servers for the duration of your session and for magic link recovery. Sessions are not permanently archived.</li>
+            <li>Reports generated during your session are stored only if you create a shareable link. Shared reports may be accessed by anyone with the link.</li>
+            <li>Lead capture data is stored in Wade Institute's systems and managed according to Ormond College's privacy policy.</li>
+        </ul>
+
+        <h2>AI-generated content</h2>
+        <p>Wade Studio uses artificial intelligence to facilitate exercises and generate reports. All outputs are generated based on what you share during the session. AI-generated content may contain errors or omissions. It is provided for educational and developmental purposes only and should not be treated as professional advice.</p>
+
+        <h2>Your rights</h2>
+        <p>You can:</p>
+        <ul>
+            <li>Request a copy of any data we hold about you.</li>
+            <li>Request deletion of your data at any time.</li>
+            <li>Opt out of follow-up communications.</li>
+        </ul>
+        <p>Contact us at <a href="mailto:enquiries@wadeinstitute.org.au">enquiries@wadeinstitute.org.au</a> for any privacy-related requests.</p>
+
+        <h2>Governing policy</h2>
+        <p>Wade Institute of Entrepreneurship operates under Ormond College, University of Melbourne. All data handling is governed by the <a class="external-link" href="https://cdn.ormond.unimelb.edu.au/documents/COL001-Privacy-Policy.pdf" target="_blank" rel="noopener">Ormond College Privacy Policy</a>.</p>
+    </div>
+
+    <div class="privacy-footer">
+        Wade Institute of Entrepreneurship · Ormond College, University of Melbourne · <a href="mailto:enquiries@wadeinstitute.org.au">enquiries@wadeinstitute.org.au</a> · +61 3 9344 1100
+    </div>
+
+    <!-- Feedback widget -->
+    <button class="feedback-tab" id="feedbackTab">Feedback</button>
+    <div class="feedback-panel hidden" id="feedbackPanel">
+        <div class="feedback-header">
+            <span>How was your experience?</span>
+            <button class="feedback-close" id="feedbackClose">&times;</button>
+        </div>
+        <p class="feedback-beta">The Studio is in beta. Help us make it amazing by sharing your experience.</p>
+        <div class="feedback-rating" id="feedbackRating">
+            <button class="feedback-star" data-rating="1">1</button>
+            <button class="feedback-star" data-rating="2">2</button>
+            <button class="feedback-star" data-rating="3">3</button>
+            <button class="feedback-star" data-rating="4">4</button>
+            <button class="feedback-star" data-rating="5">5</button>
+        </div>
+        <div class="feedback-rating-labels">
+            <span>Not great</span>
+            <span>Loved it</span>
+        </div>
+        <textarea class="feedback-input" id="feedbackInput" placeholder="Tell us more... what worked, what didn't, what you'd change." rows="3"></textarea>
+        <button class="feedback-submit" id="feedbackSubmit">Send feedback</button>
+    </div>
+
+    <script>
+    (function() {
+        var tab = document.getElementById('feedbackTab');
+        var panel = document.getElementById('feedbackPanel');
+        var closeBtn = document.getElementById('feedbackClose');
+        var submitBtn = document.getElementById('feedbackSubmit');
+        var input = document.getElementById('feedbackInput');
+        var stars = document.querySelectorAll('.feedback-star');
+        var selectedRating = 0;
+        if (!tab || !panel) return;
+        tab.addEventListener('click', function() { panel.classList.remove('hidden'); tab.style.display = 'none'; });
+        closeBtn.addEventListener('click', function() { panel.classList.add('hidden'); tab.style.display = ''; });
+        stars.forEach(function(star) {
+            star.addEventListener('click', function() {
+                selectedRating = parseInt(star.dataset.rating);
+                stars.forEach(function(s) { s.classList.toggle('active', parseInt(s.dataset.rating) <= selectedRating); });
+            });
+        });
+        submitBtn.addEventListener('click', function() {
+            var text = input.value.trim();
+            if (!selectedRating && !text) return;
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Sending...';
+            fetch('/api/feedback', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ rating: selectedRating, text: text, page: window.location.pathname, tool: null, stage: null, exchanges: 0, timestamp: new Date().toISOString() })
+            }).then(function() {
+                submitBtn.textContent = 'Thanks!';
+                input.value = '';
+                selectedRating = 0;
+                stars.forEach(function(s) { s.classList.remove('active'); });
+                setTimeout(function() { panel.classList.add('hidden'); tab.style.display = ''; submitBtn.textContent = 'Send feedback'; submitBtn.disabled = false; }, 1500);
+            }).catch(function() { submitBtn.textContent = 'Failed — try again'; submitBtn.disabled = false; });
+        });
+    })();
+    </script>
+</body>
+</html>

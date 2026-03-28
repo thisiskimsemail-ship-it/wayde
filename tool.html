@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tool — Wade Studio</title>
+    <link rel="stylesheet" href="styles.css?v=93">
+    <style>
+        .tool-page {
+            max-width: 680px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem 4rem;
+            color: var(--text);
+            line-height: 1.7;
+        }
+        .tool-page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        .tool-page-header img { height: 48px; }
+        .tool-page-header a { color: var(--orange); text-decoration: none; font-size: 0.9rem; }
+
+        .tool-badge-row {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+        .tool-stage-badge {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .tool-stage-badge.stage-reframe { background: rgba(241,90,34,0.15); color: var(--orange); }
+        .tool-stage-badge.stage-ideate { background: rgba(237,54,148,0.15); color: var(--pink); }
+        .tool-stage-badge.stage-debate { background: rgba(39,189,190,0.15); color: var(--teal); }
+        .tool-stage-badge.stage-framework { background: rgba(228,229,23,0.15); color: var(--yellow); }
+        .tool-time-badge {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .tool-page h1 {
+            font-size: 2rem;
+            margin: 0.25rem 0 0.5rem;
+        }
+        .tool-page .tool-tagline {
+            font-size: 1.05rem;
+            color: var(--text-dim);
+            margin-bottom: 2rem;
+        }
+
+        .tool-page h2 {
+            font-size: 1.15rem;
+            color: var(--text);
+            margin: 2rem 0 0.5rem;
+            padding-bottom: 0.4rem;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+        .tool-page p, .tool-page li {
+            color: var(--text-dim);
+            font-size: 0.95rem;
+            margin: 0.5rem 0;
+        }
+        .tool-page ul {
+            padding-left: 1.25rem;
+            margin: 0.5rem 0;
+        }
+        .tool-page li { margin: 0.3rem 0; }
+
+        .tool-origin {
+            font-style: italic;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .tool-example {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 8px;
+            padding: 1rem 1.25rem;
+            margin: 0.75rem 0;
+        }
+        .tool-example-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin-bottom: 0.4rem;
+        }
+        .tool-example p { margin: 0.25rem 0; }
+
+        .tool-cta-row {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 2.5rem;
+        }
+        .tool-cta-btn {
+            display: inline-block;
+            padding: 0.75rem 2rem;
+            background: var(--orange);
+            color: #fff;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: opacity 0.2s;
+        }
+        .tool-cta-btn:hover { opacity: 0.9; }
+        .tool-cta-secondary {
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 0.85rem;
+        }
+        .tool-cta-secondary:hover { color: var(--text); text-decoration: underline; }
+
+        .tool-page-footer {
+            max-width: 680px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.08);
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+        .tool-page-footer a { color: var(--text-dim); }
+
+        /* Light theme */
+        html[data-theme="light"] .tool-example { background: rgba(0,0,0,0.02); border-color: rgba(0,0,0,0.08); }
+    </style>
+</head>
+<body>
+    <div class="tool-page-header">
+        <a href="/"><img src="logo.png" alt="Wade Institute of Entrepreneurship"></a>
+        <a href="toolbox.html">&larr; All tools</a>
+    </div>
+
+    <div class="tool-page" id="toolPage">
+        <!-- Populated by JS -->
+    </div>
+
+    <div class="tool-page-footer">
+        Wade Institute of Entrepreneurship &middot; Ormond College, University of Melbourne &middot;
+        <a href="mailto:enquiries@wadeinstitute.org.au">enquiries@wadeinstitute.org.au</a> &middot;
+        <a href="/privacy.html">Privacy</a>
+    </div>
+
+    <!-- Feedback widget -->
+    <button class="feedback-tab" id="feedbackTab">Feedback</button>
+    <div class="feedback-panel hidden" id="feedbackPanel">
+        <div class="feedback-header">
+            <span>How was your experience?</span>
+            <button class="feedback-close" id="feedbackClose">&times;</button>
+        </div>
+        <p class="feedback-beta">The Studio is in beta. Help us make it amazing by sharing your experience.</p>
+        <div class="feedback-rating" id="feedbackRating">
+            <button class="feedback-star" data-rating="1">1</button>
+            <button class="feedback-star" data-rating="2">2</button>
+            <button class="feedback-star" data-rating="3">3</button>
+            <button class="feedback-star" data-rating="4">4</button>
+            <button class="feedback-star" data-rating="5">5</button>
+        </div>
+        <div class="feedback-rating-labels">
+            <span>Not great</span>
+            <span>Loved it</span>
+        </div>
+        <textarea class="feedback-input" id="feedbackInput" placeholder="Tell us more... what worked, what didn't, what you'd change." rows="3"></textarea>
+        <button class="feedback-submit" id="feedbackSubmit">Send feedback</button>
+    </div>
+    <script>
+    (function() {
+        var tab = document.getElementById('feedbackTab');
+        var panel = document.getElementById('feedbackPanel');
+        var closeBtn = document.getElementById('feedbackClose');
+        var submitBtn = document.getElementById('feedbackSubmit');
+        var input = document.getElementById('feedbackInput');
+        var stars = document.querySelectorAll('.feedback-star');
+        var selectedRating = 0;
+        if (!tab || !panel) return;
+        tab.addEventListener('click', function() { panel.classList.remove('hidden'); tab.style.display = 'none'; });
+        closeBtn.addEventListener('click', function() { panel.classList.add('hidden'); tab.style.display = ''; });
+        stars.forEach(function(star) {
+            star.addEventListener('click', function() {
+                selectedRating = parseInt(star.dataset.rating);
+                stars.forEach(function(s) { s.classList.toggle('active', parseInt(s.dataset.rating) <= selectedRating); });
+            });
+        });
+        submitBtn.addEventListener('click', function() {
+            var text = input.value.trim();
+            if (!selectedRating && !text) return;
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Sending...';
+            fetch('/api/feedback', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ rating: selectedRating, text: text, page: window.location.pathname + window.location.search, tool: null, stage: null, exchanges: 0, timestamp: new Date().toISOString() })
+            }).then(function() {
+                submitBtn.textContent = 'Thanks!';
+                input.value = '';
+                selectedRating = 0;
+                stars.forEach(function(s) { s.classList.remove('active'); });
+                setTimeout(function() { panel.classList.add('hidden'); tab.style.display = ''; submitBtn.textContent = 'Send feedback'; submitBtn.disabled = false; }, 1500);
+            }).catch(function() { submitBtn.textContent = 'Failed — try again'; submitBtn.disabled = false; });
+        });
+    })();
+    </script>
+
+<script>
+(function() {
+    const TOOLS = {
+        'elevator-pitch': {
+            name: 'Elevator Pitch Builder',
+            stage: 'Clarify', stageKey: 'reframe',
+            time: '5–10 min', type: 'Quick',
+            tagline: 'Articulate your idea in a single clear sentence.',
+            origin: 'Based on the classic investor pitch framework, adapted for any context.',
+            description: 'The Elevator Pitch Builder walks you through a structured framework to distill your idea into one compelling sentence. You\'ll define your target customer, the problem you solve, your solution, the key benefit, and what makes you different.',
+            whatYouGet: [
+                'A one-sentence pitch you can use in meetings, applications, and conversations',
+                'Clarity on who your customer is and what problem you\'re solving',
+                'A differentiator that sets you apart'
+            ],
+            bestFor: [
+                'Founders preparing for investor conversations',
+                'Corporate innovators pitching new initiatives internally',
+                'Anyone who struggles to explain what they do concisely'
+            ],
+            example: '"For university students who can\'t find flexible part-time work, WorkFlex is a platform that matches them with short gigs based on their class schedule, so they earn money without missing lectures. Unlike job boards, we auto-filter by availability."'
+        },
+        'five-whys': {
+            name: 'Five Whys',
+            stage: 'Clarify', stageKey: 'reframe',
+            time: '15 min', type: 'Deep',
+            tagline: 'Uncover the root cause behind a problem.',
+            origin: 'Developed by Sakichi Toyoda for the Toyota Production System in the 1930s.',
+            description: 'The Five Whys is a root cause analysis technique. You start with a problem and ask "why?" five times, each answer forming the basis of the next question. It moves you past surface symptoms to the underlying cause — which is often very different from what you first assumed.',
+            whatYouGet: [
+                'A root cause statement you can act on',
+                'Clarity on which layer of the problem to tackle',
+                'Insight cards tracking each "why" on your Workshop Board'
+            ],
+            bestFor: [
+                'Teams stuck in a cycle of fixing the same problem',
+                'Leaders who suspect a deeper issue underneath recurring friction',
+                'Anyone about to invest time solving something — and wants to make sure it\'s the right thing'
+            ],
+            example: '"Our customers keep churning → Why? Onboarding is confusing → Why? The setup wizard assumes prior knowledge → Why? We designed it for power users → Why? Our early adopters were all technical → Why? We never validated with mainstream users." Root cause: product designed for a non-representative user segment.'
+        },
+        'jtbd': {
+            name: 'Jobs to Be Done',
+            stage: 'Clarify', stageKey: 'reframe',
+            time: '20 min', type: 'Deep',
+            tagline: 'Understand what your customer is really trying to achieve.',
+            origin: 'Pioneered by Clayton Christensen at Harvard Business School.',
+            description: 'Jobs to Be Done reframes your thinking from "what does my product do?" to "what is the customer hiring it to do?" You\'ll map the functional, emotional, and social jobs your customer needs done, then identify which job matters most.',
+            whatYouGet: [
+                'A clear "job statement" describing what your customer needs',
+                'Understanding of the emotional and social dimensions beyond function',
+                'A prioritised job to design or improve your solution around'
+            ],
+            bestFor: [
+                'Product teams deciding what to build next',
+                'Founders who need to validate product-market fit',
+                'Anyone designing a service and unsure what the user really values'
+            ],
+            example: '"When I\'m a new manager starting my first leadership role, I want to quickly build credibility with my team, so I feel confident and they feel supported." The job isn\'t "find a management course" — it\'s "earn trust fast."'
+        },
+        'empathy-map': {
+            name: 'Empathy Map',
+            stage: 'Clarify', stageKey: 'reframe',
+            time: '20 min', type: 'Deep',
+            tagline: 'Step into your user\'s world to reveal hidden insights.',
+            origin: 'Created by Dave Gray at XPLANE, widely used in design thinking.',
+            description: 'The Empathy Map builds a picture of a specific person — what they think, feel, say, and do. The power is in the gaps: where what someone says doesn\'t match what they do, or where what they think creates tension with what they feel.',
+            whatYouGet: [
+                'A rich profile of your user\'s inner world',
+                'Contradictions and tensions that reveal unmet needs',
+                'Insights that inform better product, service, or communication design'
+            ],
+            bestFor: [
+                'Designers and researchers building user personas',
+                'Leaders trying to understand a resistant stakeholder',
+                'Teams that talk about "the user" in abstract terms and need to get specific'
+            ],
+            example: '"She says she\'s fine with the new process, but she keeps finding workarounds. She thinks the old way was better. She feels unheard." The gap between says and does is where the real insight lives.'
+        },
+        'hmw': {
+            name: 'How Might We',
+            stage: 'Ideate', stageKey: 'ideate',
+            time: '20 min', type: 'Deep',
+            tagline: 'Turn problems into opportunity-framing questions.',
+            origin: 'Popularised by Stanford d.school and IDEO as part of design thinking.',
+            description: 'How Might We takes a problem or insight and reframes it as an actionable question. "How might we..." is deliberately optimistic ("might" implies possibility) and inclusive ("we" implies collaboration). You\'ll generate multiple framings, pick the strongest, then brainstorm solutions.',
+            whatYouGet: [
+                'A set of opportunity-framing questions from different angles',
+                'A prioritised HMW statement to guide ideation',
+                'Initial solution ideas sparked by the reframing'
+            ],
+            bestFor: [
+                'Teams who\'ve identified a problem but don\'t know where to start',
+                'Workshop facilitators looking for a structured brainstorming opener',
+                'Anyone stuck in problem-mode who needs to shift to solution-mode'
+            ],
+            example: 'Problem: "New employees take 3 months to become productive." → HMW: "How might we make a new hire\'s first week feel like their third month?"'
+        },
+        'scamper': {
+            name: 'SCAMPER',
+            stage: 'Ideate', stageKey: 'ideate',
+            time: '20 min', type: 'Deep',
+            tagline: 'Stretch an idea by substituting, combining, adapting and more.',
+            origin: 'Developed by Bob Eberle, building on Alex Osborn\'s brainstorming checklist.',
+            description: 'SCAMPER runs your idea through seven creative lenses: Substitute, Combine, Adapt, Modify, Put to other uses, Eliminate, Reverse. Each lens forces you to think about your idea differently, producing variations you\'d never reach through freeform brainstorming.',
+            whatYouGet: [
+                'Multiple variations of your original idea',
+                'Unexpected combinations and adaptations',
+                'A stronger concept that\'s been stretched and pressure-tested'
+            ],
+            bestFor: [
+                'Innovators who have one good idea but want to explore alternatives',
+                'Product teams doing feature ideation',
+                'Anyone who feels creatively stuck on a single approach'
+            ],
+            example: '"What if we eliminated the onboarding wizard entirely and let users learn by doing?" (Eliminate) "What if we combined the setup flow with the first real task?" (Combine)'
+        },
+        'crazy-8s': {
+            name: 'Crazy 8s',
+            stage: 'Ideate', stageKey: 'ideate',
+            time: '15 min', type: 'Quick',
+            tagline: 'Rapidly sketch eight ideas in eight minutes to unlock creativity.',
+            origin: 'From Google Ventures\' Design Sprint methodology.',
+            description: 'Crazy 8s is a rapid ideation exercise. You generate eight distinct ideas quickly, forcing yourself past the obvious first idea into genuinely creative territory. The constraint of speed and quantity is the point — it breaks the pattern of overthinking.',
+            whatYouGet: [
+                'Eight distinct ideas on your Workshop Board',
+                'AI-synthesised themes across your ideas',
+                'A shortlist of the strongest concepts to develop further'
+            ],
+            bestFor: [
+                'Teams stuck on a single solution and needing alternatives',
+                'Solo founders who want to break out of tunnel vision',
+                'Anyone who tends to over-think and under-generate'
+            ],
+            example: 'Challenge: "How do we get more people to our events?" → Ideas range from "free pizza" to "live-stream with audience voting" to "partner with a competitor" to "make it invite-only."'
+        },
+        'pre-mortem': {
+            name: 'Pre-Mortem',
+            stage: 'Validate', stageKey: 'debate',
+            time: '20 min', type: 'Quick',
+            tagline: 'Imagine the project failed. What went wrong?',
+            origin: 'Created by psychologist Gary Klein, based on prospective hindsight research.',
+            description: 'A Pre-Mortem flips the typical risk assessment. Instead of asking "what could go wrong?", you start from "it has gone wrong" and work backwards. This unlocks concerns that optimism bias normally suppresses. People are much better at explaining failure than predicting it.',
+            whatYouGet: [
+                'A ranked list of failure risks you hadn\'t considered',
+                'Preventive actions for the top risks',
+                'Confidence that you\'ve stress-tested the plan before committing'
+            ],
+            bestFor: [
+                'Teams about to launch a new product, program, or initiative',
+                'Leaders who want to surface concerns their team is reluctant to voice',
+                'Anyone who\'s been told their plan is "great" and suspects it\'s too good to be true'
+            ],
+            example: '"It\'s 6 months from now and the program has failed. What happened? → We assumed the sponsor would stay engaged. → We didn\'t account for the budget cycle. → The pilot team burned out because we didn\'t reduce their day job."'
+        },
+        'devils-advocate': {
+            name: "Devil's Advocate",
+            stage: 'Validate', stageKey: 'debate',
+            time: '25 min', type: 'Deep',
+            tagline: 'Challenge your assumptions to strengthen your thinking.',
+            origin: 'Rooted in the Catholic Church\'s canonisation process — a formal role to argue against sainthood.',
+            description: 'Pete takes the opposing position and actively argues against your idea across five dimensions: assumptions, market, execution, finances, and alternatives. It\'s the toughest challenge in the toolbox — like a sceptical investor Q&A, but in a safe environment where the goal is learning, not winning.',
+            whatYouGet: [
+                'A clear picture of which arguments hold up and which don\'t',
+                'Strengthened responses to the hardest questions you\'ll face',
+                'Blind spots and assumptions you didn\'t know you had'
+            ],
+            bestFor: [
+                'Founders preparing for investor pitches or board meetings',
+                'Anyone who\'s been working on an idea alone and needs a critical perspective',
+                'Teams that tend to agree too quickly and need structured dissent'
+            ],
+            example: '"You say your target market is huge — but your actual addressable segment is tiny. You\'re conflating interest with willingness to pay. Show me who\'s already paying for something similar."'
+        },
+        'rapid-experiment': {
+            name: 'Rapid Experiment',
+            stage: 'Validate', stageKey: 'debate',
+            time: '15 min', type: 'Quick',
+            tagline: 'Design a quick test to learn before you build.',
+            origin: 'Drawn from Lean Startup methodology and scientific method.',
+            description: 'Rapid Experiment helps you design a quick, cheap test to validate your riskiest assumption before investing in a full build. You\'ll identify what you need to learn, design the smallest possible experiment, define what success looks like, and plan your next move based on the result.',
+            whatYouGet: [
+                'A testable hypothesis with clear success criteria',
+                'An experiment design you can run in days, not months',
+                'A decision framework: what to do if it works and if it doesn\'t'
+            ],
+            bestFor: [
+                'Teams arguing about whether an idea will work — run the test instead',
+                'Founders with limited resources who can\'t afford to build the wrong thing',
+                'Anyone who says "we should just try it" but hasn\'t defined what "trying it" means'
+            ],
+            example: 'Assumption: "Corporates will pay for this workshop." → Experiment: "Email 20 L&D managers with a one-page brief and ask for a 15-minute call. If 5+ reply, the demand signal is real."'
+        },
+        'lean-canvas': {
+            name: 'Lean Canvas',
+            stage: 'Develop', stageKey: 'framework',
+            time: '20 min', type: 'Deep',
+            tagline: 'Outline your venture model on a single page.',
+            origin: 'Created by Ash Maurya, adapting Alexander Osterwalder\'s Business Model Canvas for startups.',
+            description: 'The Lean Canvas maps your entire venture model on one page across 9 blocks: Problem, Customer Segments, Unique Value Proposition, Solution, Channels, Revenue Streams, Cost Structure, Key Metrics, and Unfair Advantage. Pete guides you through each block, challenging weak spots.',
+            whatYouGet: [
+                'A complete one-page business model',
+                'Clarity on which blocks are strong and which need work',
+                'A shareable artifact you can use in pitch decks and planning docs'
+            ],
+            bestFor: [
+                'Founders building a startup or new venture',
+                'Corporate innovators designing a new product line or service',
+                'Anyone who needs to communicate a business model clearly and concisely'
+            ],
+            example: 'Problem: "Small businesses can\'t afford marketing agencies." → Solution: "AI-generated ad copy calibrated to their brand voice." → Unfair Advantage: "Proprietary dataset of 50,000 small business campaigns."'
+        },
+        'effectuation': {
+            name: 'Effectuation',
+            stage: 'Develop', stageKey: 'framework',
+            time: '20 min', type: 'Quick',
+            tagline: 'Build using the resources and relationships you already have.',
+            origin: 'Developed by Professor Saras Sarasvathy through research on expert entrepreneurs.',
+            description: 'Effectuation flips traditional planning. Instead of starting with a goal and figuring out what you need, you start with what you have — your skills, your network, your resources — and discover what\'s possible from there. It\'s how expert entrepreneurs actually build ventures.',
+            whatYouGet: [
+                'An inventory of your means: who you are, what you know, who you know',
+                'Actionable next steps based on what\'s available right now',
+                'A commitment-based plan that doesn\'t require prediction'
+            ],
+            bestFor: [
+                'Early-stage founders who don\'t have a fixed idea yet',
+                'Career changers exploring entrepreneurial options',
+                'Anyone feeling stuck because they think they need more before they can start'
+            ],
+            example: '"I\'m a former teacher with a network of school principals and experience in curriculum design." → "What if you built a micro-consultancy helping schools design innovation programs? You already have the credibility and the contacts."'
+        },
+        'analogical': {
+            name: 'Analogical Thinking',
+            stage: 'Develop', stageKey: 'framework',
+            time: '15 min', type: 'Quick',
+            tagline: 'Borrow solutions from unexpected places.',
+            origin: 'Used across innovation research, from biomimicry to cross-industry transfer.',
+            description: 'Analogical Thinking takes a challenge from your domain and finds structural parallels in completely different fields. When you see how another industry solved a similar problem, you can adapt that solution — often producing ideas far more creative than incremental improvement would.',
+            whatYouGet: [
+                'Cross-domain analogies that reframe your challenge',
+                'Adapted solutions borrowed from unexpected industries',
+                'A fresh perspective that breaks you out of domain-specific thinking'
+            ],
+            bestFor: [
+                'Teams that feel trapped in "the way we\'ve always done it"',
+                'Innovators looking for non-obvious competitive advantages',
+                'Anyone who wants to think more creatively about a familiar problem'
+            ],
+            example: '"How do we reduce handoff delays between teams?" → Analogy: Formula 1 pit stops. "They rehearse, use parallel work, and every person has one job. What if we applied that to our sprint handoffs?"'
+        }
+    };
+
+    const params = new URLSearchParams(window.location.search);
+    const toolKey = params.get('tool');
+    const tool = TOOLS[toolKey];
+    const page = document.getElementById('toolPage');
+
+    if (!tool) {
+        page.innerHTML = '<h1>Tool not found</h1><p>This tool doesn\'t exist. <a href="toolbox.html">Browse all tools →</a></p>';
+        return;
+    }
+
+    document.title = tool.name + ' — Wade Studio';
+
+    page.innerHTML = `
+        <div class="tool-badge-row">
+            <span class="tool-stage-badge stage-${tool.stageKey}">${tool.stage}</span>
+            <span class="tool-time-badge">${tool.time} · ${tool.type}</span>
+        </div>
+        <h1>${tool.name}</h1>
+        <p class="tool-tagline">${tool.tagline}</p>
+        <p class="tool-origin">${tool.origin}</p>
+
+        <h2>How it works</h2>
+        <p>${tool.description}</p>
+
+        <h2>What you'll get</h2>
+        <ul>${tool.whatYouGet.map(item => '<li>' + item + '</li>').join('')}</ul>
+
+        <h2>Best for</h2>
+        <ul>${tool.bestFor.map(item => '<li>' + item + '</li>').join('')}</ul>
+
+        <div class="tool-example">
+            <div class="tool-example-label">Example</div>
+            <p>${tool.example}</p>
+        </div>
+
+        <div class="tool-cta-row">
+            <a class="tool-cta-btn" href="index.html?tool=${toolKey}">Try ${tool.name} →</a>
+            <a class="tool-cta-secondary" href="toolbox.html">Browse all tools</a>
+        </div>
+    `;
+})();
+</script>
+</body>
+</html>

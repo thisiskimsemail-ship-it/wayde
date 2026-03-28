@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preload" href="fonts/GT-Walsheim-Regular.woff" as="font" type="font/woff" crossorigin>
+<title>Rapid Experiment — Wade Innovation Toolbox</title>
+<style>
+  @font-face { font-family: "GT Walsheim"; src: url("fonts/GT-Walsheim-Regular.woff") format("woff"), url("fonts/GT-Walsheim-Regular.ttf") format("truetype"); font-weight: 400; font-style: normal; font-display: swap; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --navy: #1E194F; --navy-deep: #12103a; --orange: #F15A22; --orange-hover: #d14e1b;
+    --white: #FFFFFF; --text-body: #b8b5d0; --text-light: #6e6a8a;
+    --border: rgba(255,255,255,0.08); --border-light: rgba(255,255,255,0.15); --card-bg: #1a1750; --card-hover: #221d5a;
+    --cat-color: #E4E517; --untangle: #27BDBE; --spark: #F15A22; --test: #ED3694; --build: #E4E517;
+  }
+  body { font-family: 'GT Walsheim', 'Space Grotesk', sans-serif; color: var(--text-body); background: var(--navy-deep); -webkit-font-smoothing: antialiased; }
+  header { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: var(--navy-deep); border-bottom: 2px solid var(--orange); padding: 0 60px; height: 72px; display: flex; align-items: center; justify-content: space-between; }
+  .logo { font-weight: 700; font-size: 15px; line-height: 1.15; color: var(--orange); letter-spacing: 0.4px; text-transform: uppercase; }
+  .header-nav { display: flex; gap: 12px; align-items: center; }
+  .nav-pill { font-size: 14px; font-weight: 500; padding: 8px 20px; border-radius: 100px; border: 1.5px solid rgba(255,255,255,0.25); background: transparent; color: var(--white); cursor: pointer; text-decoration: none; transition: all 0.2s; font-family: 'GT Walsheim', 'Space Grotesk', sans-serif; }
+  .nav-pill:hover { background: rgba(255,255,255,0.1); }
+  .nav-pill.active { background: var(--white); color: var(--navy); border-color: var(--white); }
+  .nav-icon { width: 36px; height: 36px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,0.25); display: flex; align-items: center; justify-content: center; color: var(--white); font-size: 14px; text-decoration: none; }
+  .tool-hero { padding: 140px 60px 60px; max-width: 1300px; margin: 0 auto; }
+  .breadcrumb { font-size: 14px; color: var(--text-light); margin-bottom: 28px; }
+  .breadcrumb a { color: var(--cat-color); text-decoration: none; }
+  .breadcrumb a:hover { text-decoration: underline; }
+  .breadcrumb span { margin: 0 8px; color: var(--border-light); }
+  .tool-hero-grid { display: grid; grid-template-columns: 1fr 360px; gap: 60px; align-items: start; }
+  .tool-hero-left .stage-badge { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; padding: 5px 14px; border-radius: 100px; background: var(--cat-color); color: var(--white); margin-bottom: 16px; }
+  .tool-hero-left h1 { font-family: 'GT Walsheim', 'Space Grotesk', sans-serif; font-size: 56px; font-weight: 400; color: var(--white); line-height: 1.1; margin-bottom: 12px; }
+  .tool-headline { font-family: 'GT Walsheim', 'Space Grotesk', sans-serif; font-size: 24px; font-weight: 400; color: var(--cat-color); font-style: italic; margin-bottom: 24px; }
+  .tool-intro { font-size: 18px; line-height: 1.7; color: var(--text-body); max-width: 600px; }
+  .quick-facts { background: var(--card-bg); border-radius: 16px; border: 1px solid var(--border); padding: 32px; }
+  .qf-title { font-size: 13px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--text-light); margin-bottom: 20px; }
+  .qf-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border); }
+  .qf-row:last-of-type { border-bottom: none; }
+  .qf-label { font-size: 14px; color: var(--text-light); }
+  .qf-value { font-size: 14px; font-weight: 600; color: var(--white); }
+  .qf-pathways { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); }
+  .qf-pathways-label { font-size: 13px; color: var(--text-light); margin-bottom: 10px; }
+  .pathway-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .pathway-tag { font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 100px; border: 1px solid; }
+  .pathway-tag.build { border-color: rgba(228,229,23,0.4); color: var(--build); }
+  .qf-cta { display: block; width: 100%; text-align: center; margin-top: 24px; padding: 14px 24px; background: var(--cat-color); color: var(--white); border-radius: 100px; border: none; font-size: 16px; font-weight: 600; font-family: 'GT Walsheim', 'Space Grotesk', sans-serif; cursor: pointer; text-decoration: none; transition: all 0.2s; }
+  .qf-cta:hover { filter: brightness(0.9); }
+  .content-area { padding: 0 60px 80px; max-width: 1300px; margin: 0 auto; }
+  .content-grid { display: grid; grid-template-columns: 1fr 360px; gap: 60px; }
+  .content-main { max-width: 100%; }
+  .section-block { margin-bottom: 56px; }
+  .section-block h2 { font-family: 'GT Walsheim', 'Space Grotesk', sans-serif; font-size: 32px; font-weight: 400; color: var(--white); margin-bottom: 20px; }
+  .section-block p { font-size: 17px; line-height: 1.75; color: var(--text-body); margin-bottom: 16px; }
+  .section-block p strong { color: var(--white); }
+  .steps-timeline { position: relative; padding-left: 40px; }
+  .steps-timeline::before { content: ''; position: absolute; left: 14px; top: 8px; bottom: 8px; width: 2px; background: var(--border); }
+  .step-item { position: relative; padding-bottom: 32px; }
+  .step-item:last-child { padding-bottom: 0; }
+  .step-number { position: absolute; left: -40px; top: 0; width: 30px; height: 30px; border-radius: 50%; background: var(--card-bg); border: 2px solid var(--cat-color); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: var(--cat-color); }
+  .step-title { font-size: 17px; font-weight: 600; color: var(--white); margin-bottom: 6px; }
+  .step-desc { font-size: 15px; color: var(--text-body); line-height: 1.6; }
+  .sample-output { background: var(--card-bg); border-radius: 16px; border: 1px solid var(--border); padding: 32px; margin-top: 8px; }
+  .sample-label { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--cat-color); margin-bottom: 20px; }
+  .sample-root { margin-top: 20px; padding-top: 20px; border-top: 2px solid var(--cat-color); }
+  .sample-root-label { font-size: 12px; font-weight: 700; color: var(--cat-color); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px; }
+  .sample-root-text { font-family: 'GT Walsheim', 'Space Grotesk', sans-serif; font-size: 20px; color: var(--white); line-height: 1.4; }
+
+  /* Experiment design card */
+  .experiment-row { padding: 14px 0; border-bottom: 1px solid var(--border); }
+  .experiment-row:last-of-type { border-bottom: none; }
+  .experiment-label { font-size: 12px; font-weight: 700; color: var(--cat-color); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 4px; }
+  .experiment-text { font-size: 14px; color: var(--white); line-height: 1.5; }
+  .experiment-criteria { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px; }
+  .criteria-card { padding: 14px; border-radius: 10px; border: 1px solid var(--border); }
+  .criteria-card.pass { background: rgba(228,229,23,0.06); border-color: rgba(228,229,23,0.2); }
+  .criteria-card.fail { background: rgba(248,113,113,0.06); border-color: rgba(248,113,113,0.2); }
+  .criteria-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 4px; }
+  .criteria-card.pass .criteria-label { color: #E4E517; }
+  .criteria-card.fail .criteria-label { color: #F87171; }
+  .criteria-text { font-size: 13px; color: var(--text-body); line-height: 1.4; }
+
+  .foundation-logos { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 16px; }
+  .org-badge { font-size: 12px; font-weight: 600; padding: 8px 16px; border-radius: 10px; background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--text-light); }
+  .sidebar { display: flex; flex-direction: column; gap: 24px; }
+  .sidebar-card { background: var(--card-bg); border-radius: 14px; border: 1px solid var(--border); padding: 24px; transition: all 0.2s; }
+  .sidebar-card:hover { border-color: var(--border-light); background: var(--card-hover); }
+  .sidebar-card-label { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--text-light); margin-bottom: 16px; }
+  .related-tool { display: flex; gap: 14px; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid var(--border); text-decoration: none; }
+  .related-tool:last-child { border-bottom: none; }
+  .related-tool-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; flex-shrink: 0; }
+  .related-tool-icon.untangle { background: rgba(39,189,190,0.15); color: #27BDBE; }
+  .related-tool-icon.spark { background: rgba(241,90,34,0.15); color: #F15A22; }
+  .related-tool-icon.test { background: rgba(237,54,148,0.15); color: #ED3694; }
+  .related-tool-icon.build { background: rgba(228,229,23,0.15); color: #E4E517; }
+  .related-tool-text h4 { font-size: 14px; font-weight: 600; color: var(--white); margin-bottom: 2px; }
+  .related-tool-text p { font-size: 13px; color: var(--text-light); line-height: 1.4; }
+  .pete-note { background: linear-gradient(135deg, rgba(228,229,23,0.08), rgba(228,229,23,0.04)); border: 1px solid rgba(228,229,23,0.25); border-radius: 14px; padding: 24px; }
+  .pete-avatar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+  .pete-avatar { width: 32px; height: 32px; border-radius: 8px; background: var(--navy); display: flex; align-items: center; justify-content: center; color: var(--white); font-weight: 700; font-size: 13px; }
+  .pete-label { font-size: 13px; font-weight: 600; color: var(--white); }
+  .pete-text { font-size: 14px; color: var(--text-body); line-height: 1.6; font-style: italic; }
+  .tool-bottom-cta { padding: 60px; max-width: 1300px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border); }
+  .tool-bottom-left h3 { font-family: 'GT Walsheim', 'Space Grotesk', sans-serif; font-size: 28px; font-weight: 400; color: var(--white); margin-bottom: 6px; }
+  .tool-bottom-left p { font-size: 15px; color: var(--text-light); }
+  .tool-bottom-right { display: flex; gap: 16px; align-items: center; }
+  .back-link { font-size: 15px; color: var(--text-light); text-decoration: none; transition: color 0.2s; }
+  .back-link:hover { color: var(--white); }
+  footer { padding: 40px 60px; border-top: 2px solid var(--orange); display: flex; justify-content: space-between; align-items: center; }
+  .footer-left { display: flex; align-items: center; gap: 32px; }
+  .footer-logo { font-weight: 700; font-size: 13px; line-height: 1.15; color: var(--orange); letter-spacing: 0.4px; text-transform: uppercase; }
+  .footer-links { display: flex; gap: 24px; }
+  .footer-links a { font-size: 14px; color: var(--text-light); text-decoration: none; }
+  .footer-links a:hover { color: var(--white); }
+  .footer-right { font-size: 13px; color: var(--text-light); }
+  @media (max-width: 1000px) { .tool-hero-grid, .content-grid { grid-template-columns: 1fr; gap: 32px; } header { padding: 0 32px; } .tool-hero, .content-area, .tool-bottom-cta { padding-left: 32px; padding-right: 32px; } }
+  @media (max-width: 600px) { .tool-hero-left h1 { font-size: 40px; } .section-block h2 { font-size: 28px; } .experiment-criteria { grid-template-columns: 1fr; } footer { flex-direction: column; gap: 16px; text-align: center; } .tool-bottom-cta { flex-direction: column; gap: 24px; text-align: center; } }
+</style>
+</head>
+<body>
+<header><a href="index.html"><img class="logo" src="logo.png" alt="Wade Institute" style="height:50px;width:auto;"></a><nav class="header-nav"><a href="index.html" class="nav-pill">The Studio</a><a href="toolbox.html" class="nav-pill active">Toolbox</a><a href="#" class="nav-icon">Aa</a><a href="#" class="nav-icon">&#x2731;</a><a href="#" class="nav-icon">?</a></nav></header>
+
+<section class="tool-hero">
+  <div class="breadcrumb"><a href="index.html">The Studio</a><span>/</span><a href="toolbox.html">Toolbox</a><span>/</span><a href="toolbox.html#build">The Build</a><span>/</span>Rapid Experiment</div>
+  <div class="tool-hero-grid">
+    <div class="tool-hero-left">
+      <div class="stage-badge">THE BUILD</div>
+      <h1>Rapid Experiment</h1>
+      <p class="tool-headline">Design a quick test to learn before you build.</p>
+      <p class="tool-intro">Fastest, cheapest test that could disprove the riskiest assumption. Build-Measure-Learn loop: identify the hypothesis that, if wrong, kills the idea — then design the minimum test. Goal is not proof but a decision: keep going, pivot, or stop.</p>
+    </div>
+    <div class="quick-facts">
+      <div class="qf-title">Quick Facts</div>
+      <div class="qf-row"><span class="qf-label">Duration</span><span class="qf-value">~20 minutes</span></div>
+      <div class="qf-row"><span class="qf-label">Category</span><span class="qf-value">The Build</span></div>
+      <div class="qf-row"><span class="qf-label">Origin</span><span class="qf-value">Lean Startup, 2011</span></div>
+      <div class="qf-row"><span class="qf-label">Created by</span><span class="qf-value">Eric Ries</span></div>
+      <div class="qf-pathways"><div class="qf-pathways-label">Used in pathways</div><div class="pathway-tags"><span class="pathway-tag build">The Build</span></div></div>
+      <a href="index.html?tool=rapid-experiment" class="qf-cta">Try Rapid Experiment &rarr;</a>
+    </div>
+  </div>
+</section>
+
+<section class="content-area">
+  <div class="content-grid">
+    <div class="content-main">
+      <div class="section-block"><h2>When to use it</h2><p>Use when you have a promising idea and want to validate before investing, when about to build on an untested assumption, or when the team is debating something that could simply be tested in days.</p><p>Core tool in <strong>The Build</strong> when you need evidence, not opinions.</p></div>
+      <div class="section-block"><h2>How it works in The Studio</h2><p>Here's how a session works with Pete:</p>
+        <div class="steps-timeline">
+          <div class="step-item"><div class="step-number">1</div><div class="step-title">State the idea or assumption</div><div class="step-desc">What do you believe is true?</div></div>
+          <div class="step-item"><div class="step-number">2</div><div class="step-title">Identify the riskiest assumption</div><div class="step-desc">What would kill this if you're wrong?</div></div>
+          <div class="step-item"><div class="step-number">3</div><div class="step-title">Design the minimum test</div><div class="step-desc">What's the cheapest way to learn?</div></div>
+          <div class="step-item"><div class="step-number">4</div><div class="step-title">Define the success metric</div><div class="step-desc">What number would convince you?</div></div>
+          <div class="step-item"><div class="step-number">5</div><div class="step-title">Set pass/fail criteria</div><div class="step-desc">What's good enough? What means stop?</div></div>
+          <div class="step-item"><div class="step-number">6</div><div class="step-title">Plan the timeline</div><div class="step-desc">Can you run this by Friday?</div></div>
+          <div class="step-item"><div class="step-number">7</div><div class="step-title">Coaching summary</div><div class="step-desc">Pete highlights what you're avoiding testing.</div></div>
+        </div>
+      </div>
+      <div class="section-block"><h2>Sample output</h2><p>Here's what a Rapid Experiment design looks like in practice:</p>
+        <div class="sample-output">
+          <div class="sample-label">Example: Monthly Insight Briefing</div>
+          <div class="experiment-row"><div class="experiment-label">Hypothesis</div><div class="experiment-text">"Mid-level managers at enterprise clients would pay $200/month for a curated industry insight briefing."</div></div>
+          <div class="experiment-row"><div class="experiment-label">Test Method</div><div class="experiment-text">Email 50 target contacts offering a free 4-week trial, then ask for credit card at week 4.</div></div>
+          <div class="experiment-row"><div class="experiment-label">Success Metric</div><div class="experiment-text">&gt;15% convert from free trial to paid ($200/month).</div></div>
+          <div class="experiment-row"><div class="experiment-label">Timeline</div><div class="experiment-text">5 weeks total (1 week setup + 4 week trial).</div></div>
+          <div class="experiment-criteria">
+            <div class="criteria-card pass"><div class="criteria-label">Pass</div><div class="criteria-text">8+ paying subscribers from 50 contacts (16%). Build it properly.</div></div>
+            <div class="criteria-card fail"><div class="criteria-label">Fail</div><div class="criteria-text">&lt;4 paying subscribers (&lt;8%). The problem isn't urgent enough to pay for — pivot or stop.</div></div>
+          </div>
+          <div class="sample-root">
+            <div class="sample-root-label">Decision Criteria</div>
+            <div class="sample-root-text">If 8+ people pay, build it properly. If 4–7 pay, investigate what's missing. If fewer than 4, the problem isn't urgent enough to pay for — pivot or stop.</div>
+          </div>
+        </div>
+      </div>
+      <div class="section-block"><h2>What you get</h2><p>Clear experiment design: hypothesis, minimum viable test method, metric, and decision criteria (what counts as pass or fail). Designed to run in days, not months.</p></div>
+      <div class="section-block"><h2>Foundation</h2><p>Developed by <strong>Eric Ries</strong> in "The Lean Startup" (2011), building on Steve Blank's Customer Development methodology. Used by Y Combinator, Dropbox, Zappos, Airbnb, GE, P&amp;G, and Microsoft innovation labs.</p>
+        <div class="foundation-logos"><span class="org-badge">Y Combinator</span><span class="org-badge">Dropbox</span><span class="org-badge">Airbnb</span><span class="org-badge">GE</span><span class="org-badge">P&amp;G</span><span class="org-badge">Microsoft</span></div>
+      </div>
+    </div>
+    <div class="sidebar">
+      <div class="pete-note"><div class="pete-avatar-row"><div class="pete-avatar">P</div><div class="pete-label">Pete's note</div></div><p class="pete-text">"If your experiment takes longer than a week, it's too big. I'll help you find the version you can run by Friday."</p></div>
+      <div class="sidebar-card"><div class="sidebar-card-label">Often paired with</div>
+        <a href="tool-detail-pre-mortem.html" class="related-tool"><div class="related-tool-icon test">P</div><div class="related-tool-text"><h4>Pre-Mortem</h4><p>Identify risks before designing the test</p></div></a>
+        <a href="tool-detail-lean-canvas.html" class="related-tool"><div class="related-tool-icon build">L</div><div class="related-tool-text"><h4>Lean Canvas</h4><p>Map the full model around your validated assumption</p></div></a>
+      </div>
+      <div class="sidebar-card"><div class="sidebar-card-label">Also in The Build</div>
+        <a href="tool-detail-lean-canvas.html" class="related-tool"><div class="related-tool-icon build">L</div><div class="related-tool-text"><h4>Lean Canvas</h4><p>Outline your venture model on a single page</p></div></a>
+        <a href="tool-detail-effectuation.html" class="related-tool"><div class="related-tool-icon build">E</div><div class="related-tool-text"><h4>Effectuation</h4><p>Build using the resources you already have</p></div></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="tool-bottom-cta">
+  <div class="tool-bottom-left"><h3>Try Rapid Experiment?</h3><p>Pete will guide you. About 20 minutes, always free.</p></div>
+  <div class="tool-bottom-right"><a href="toolbox.html" class="back-link">&larr; Back to toolbox</a><a href="index.html?tool=rapid-experiment" class="qf-cta" style="display:inline-block; width:auto;">Start Rapid Experiment &rarr;</a></div>
+</div>
+
+<footer><div class="footer-left"><a href="index.html"><img src="wade-icon.png" alt="Wade Institute" style="height:28px;width:auto;"></a><div class="footer-links"><a href="https://wadeinstitute.org.au">wadeinstitute.org.au</a><a href="mailto:enquiries@wadeinstitute.org.au">Contact</a><a href="privacy.html">Privacy</a></div></div><div class="footer-right">&copy; 2026 Wade Institute of Entrepreneurship</div></footer>
+</body>
+</html>
