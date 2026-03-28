@@ -5040,6 +5040,15 @@ const tourSkip = document.getElementById('tourSkip');
 
 function startTour() {
     if (!tourOverlay) return;
+    // If no session is active, tour has no visible targets — go to toolbox instead
+    const hasVisibleSteps = TOUR_STEPS.some(s => {
+        const el = document.querySelector(s.el);
+        return el && el.offsetParent !== null;
+    });
+    if (!hasVisibleSteps) {
+        window.location.href = 'toolbox.html';
+        return;
+    }
     tourStep = 0;
     tourOverlay.classList.remove('hidden');
     showTourStep();
