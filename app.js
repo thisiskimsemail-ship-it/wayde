@@ -3263,7 +3263,6 @@ async function startPostSessionFlow() {
 
     const revealFallback = {
         headline: `Your ${exName} session uncovered something worth exploring.`,
-        closing_message: 'Good session. You did real work here. The report captures what matters most.',
         synopsis: 'Your session produced actionable insights. Review the full report for the complete breakdown.',
         recommendations: [
             { exercise: 'pre-mortem', reason: 'Stress-test what you built before committing.' },
@@ -3339,10 +3338,6 @@ async function startPostSessionFlow() {
             }
         });
 
-        // Populate closing message
-        const closingText = document.getElementById('psClosingText');
-        if (closingText) closingText.innerHTML = (revealData.closing_message || '').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-
         // Populate headline with yellow emphasis
         const headline = document.getElementById('psHeadline');
         if (headline) {
@@ -3373,15 +3368,7 @@ async function startPostSessionFlow() {
         const synopsisText = document.getElementById('psSynopsisText');
         if (synopsisText) synopsisText.innerHTML = (revealData.synopsis || '').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
 
-        // Recommendations list
-        const recoList = document.getElementById('psRecommendations');
-        if (recoList && revealData.recommendations) {
-            recoList.innerHTML = revealData.recommendations
-                .map(r => `<li><strong>${EXERCISE_LABELS[r.exercise] || r.exercise}</strong> \u2014 ${r.reason}</li>`)
-                .join('');
-        }
-
-        // Store recommendations for Screen 3
+        // Store recommendations for Screen 3 (not shown on wrap screen)
         state._revealRecommendations = revealData.recommendations || [];
 
         // Wire email form
