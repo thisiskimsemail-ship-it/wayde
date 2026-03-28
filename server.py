@@ -960,10 +960,7 @@ Be rigorous but respectful. You're a sparring partner, not an enemy. The goal is
 
     "test:cold-open": STUDIO_IDENTITY + """
 
-You are running a COLD OPEN exercise.
-
-YOUR FIRST MESSAGE MUST BE:
-"Explain what you do. You've got 30 seconds and I know nothing about your industry. Go." — testing whether the user's message can survive first contact with someone who has no context and no reason to care.
+You are running a COLD OPEN exercise — testing whether the user's message can survive first contact with someone who has no context and no reason to care.
 
 Inspired by TV cold opens (Breaking Bad, The West Wing), George Lakoff's framing theory, Chip & Dan Heath's "Made to Stick", and Steve Krug's "Don't Make Me Think." Used in Y Combinator Demo Day prep, TED talk coaching, and sales enablement.
 
@@ -1018,10 +1015,7 @@ Be honest but warm. You're testing the message, not the person. The goal is a me
 
     "test:reality-check": STUDIO_IDENTITY + """
 
-You are running a REALITY CHECK exercise.
-
-YOUR FIRST MESSAGE MUST BE:
-"Tell me how things are going. Not the investor version — the version you'd tell a trusted friend over coffee. How's the business? How's the project? What's working?" — confronting the gap between the user's narrative and their actual evidence.
+You are running a REALITY CHECK exercise — confronting the gap between the user's narrative and their actual evidence.
 
 Inspired by Andy Grove's "Only the Paranoid Survive" (1996), Ray Dalio's "Principles" (2017) and Bridgewater's radical transparency culture, Ben Horowitz's "The Hard Thing About Hard Things" (2014), and the scientific method tradition.
 
@@ -1357,10 +1351,7 @@ Keep it feeling like a descent — each phase should feel like going deeper. Be 
 
     "test:trade-off": STUDIO_IDENTITY + """
 
-You are running THE TRADE-OFF exercise.
-
-YOUR FIRST MESSAGE MUST BE:
-"Forget the pitch for a moment. I want to understand every lever you could pull. What are the features, the pricing options, the service levels, the access tiers — all the things a customer might value about what you're building? List them all." — forcing trade-offs between features to reveal what customers actually value.
+You are running THE TRADE-OFF exercise — forcing trade-offs between features to reveal what customers actually value.
 
 THE FACILITATION ARC — four phases:
 
@@ -3345,6 +3336,333 @@ INVESTOR-RELEVANT PEOPLE:
 """
 
 
+# === SVG TEMPLATE ENGINE ===
+
+import re as _re
+import os as _os
+import html as _html
+
+SVG_TEMPLATE_DIR = _os.path.join(_os.path.dirname(__file__), 'svg-templates')
+
+# Map board zone IDs → SVG zone label text (used to find the right section in the SVG)
+SVG_ZONE_MAP = {
+    'lean-canvas': {
+        'problem': 'PROBLEM',
+        'solution': 'SOLUTION',
+        'metrics': 'KEY METRICS',
+        'uvp': 'UNIQUE VALUE PROP',
+        'unfair': 'UNFAIR ADVANTAGE',
+        'channels': 'CHANNELS',
+        'segments': 'SEGMENTS',
+        'costs': 'COST STRUCTURE',
+        'revenue': 'REVENUE STREAMS',
+    },
+    'five-whys': {
+        'fw-problem': '1',
+        'fw-why1': '2',
+        'fw-why2': '3',
+        'fw-why3': '4',
+        'fw-why4': '5',
+        'fw-why5': 'ROOT CAUSE',
+    },
+    'empathy-map': {
+        'em-says': 'SAYS',
+        'em-thinks': 'THINKS',
+        'em-does': 'DOES',
+        'em-feels': 'FEELS',
+        'insights': 'KEY INSIGHT',
+    },
+    'jtbd': {
+        'jtbd-functional': 'FUNCTIONAL JOB',
+        'jtbd-emotional': 'EMOTIONAL JOB',
+        'jtbd-social': 'SOCIAL JOB',
+        'jtbd-hiring': 'CURRENT SOLUTIONS',
+    },
+    'crazy-8s': {
+        'c8-1': '1', 'c8-2': '2', 'c8-3': '3', 'c8-4': '4',
+        'c8-5': '5', 'c8-6': '6', 'c8-7': '7', 'c8-8': '8',
+    },
+    'hmw': {
+        'hmw-problem': 'PROBLEM STATEMENT',
+        'hmw-q1': 'HMW', 'hmw-q2': 'HMW', 'hmw-q3': 'HMW',
+        'hmw-q4': 'HMW', 'hmw-q5': 'HMW',
+        'hmw-best': 'SELECTED FOR EXPLORATION',
+    },
+    'scamper': {
+        'sc-s': 'S', 'sc-c': 'C', 'sc-a': 'A', 'sc-m': 'M',
+        'sc-p': 'P', 'sc-e': 'E', 'sc-r': 'R',
+    },
+    'pre-mortem': {
+        'risk-market': 'MARKET RISK',
+        'risk-product': 'PRODUCT RISK',
+        'risk-team': 'TEAM RISK',
+        'risk-financial': 'FINANCIAL RISK',
+        'risk-competition': 'COMPETITION RISK',
+        'risk-timing': 'TIMING RISK',
+        'risk-mitigations': 'TOP 3 MITIGATIONS',
+    },
+    'devils-advocate': {
+        'da-idea': 'THE IDEA',
+        'da-for': 'OBJECTION',
+        'da-against': 'OBJECTION',
+        'da-rebuttals': 'REBUTTAL',
+        'da-verdict': 'VERDICT',
+    },
+    'effectuation': {
+        'eff-means': 'WHO I AM',
+        'eff-loss': 'AFFORDABLE LOSS',
+        'eff-quilt': 'CRAZY QUILT',
+        'eff-lemonade': 'LEMONADE',
+        'eff-action': 'FIRST MOVE',
+    },
+    'analogical': {
+        'insights': 'APPLICATION',
+    },
+    'rapid-experiment': {
+        're-hypothesis': 'HYPOTHESIS',
+        're-method': 'TEST METHOD',
+        're-metric': 'SUCCESS METRIC',
+        're-pass': 'PASS CRITERIA',
+        're-fail': 'FAIL CRITERIA',
+    },
+    'theory-of-change': {
+        'toc-outcome': 'OUTCOME',
+        'toc-control': 'Within Control',
+        'toc-outside': 'Outside Control',
+        'toc-weakest': 'WEAKEST LINK',
+    },
+    'trade-off': {
+        'to-features': 'FEATURES',
+        'to-mvo': 'MINIMUM VIABLE OFFER',
+    },
+    'cold-open': {
+        'co-v1': 'V1', 'co-v2': 'V2', 'co-v3': 'V3',
+    },
+    'reality-check': {
+        'rc-revised': 'REVISED NARRATIVE',
+    },
+    'iceberg': {
+        'ice-event': 'EVENT',
+        'ice-patterns': 'PATTERNS',
+        'ice-structures': 'STRUCTURES',
+        'ice-mental': 'MENTAL MODELS',
+        'ice-leverage': 'LEVERAGE POINT',
+    },
+    'constraint-flip': {
+        'cf-constraint': 'THE LIMITATION',
+        'cf-flip': 'REFRAMED AS ADVANTAGE',
+        'cf-moat': 'THE MOAT IDEA',
+    },
+    'socratic': {
+        'sq-verified': 'VERIFIED',
+        'sq-assumed': 'ASSUMED',
+        'sq-critical': 'CRITICAL ASSUMPTION',
+    },
+    'flywheel': {},
+}
+
+# Map exercise key to SVG template filename
+SVG_TEMPLATE_FILE = {
+    'lean-canvas': 'lean-canvas.svg',
+    'five-whys': 'five-whys.svg',
+    'empathy-map': 'empathy-map.svg',
+    'jtbd': 'jtbd.svg',
+    'crazy-8s': 'crazy-8s.svg',
+    'hmw': 'hmw.svg',
+    'scamper': 'scamper.svg',
+    'pre-mortem': 'pre-mortem.svg',
+    'devils-advocate': 'devils-advocate.svg',
+    'effectuation': 'effectuation.svg',
+    'analogical': 'analogical.svg',
+    'rapid-experiment': 'rapid-experiment.svg',
+    'theory-of-change': 'theory-of-change.svg',
+    'trade-off': 'trade-off.svg',
+    'cold-open': 'cold-open.svg',
+    'reality-check': 'reality-check.svg',
+    'iceberg': 'iceberg.svg',
+    'constraint-flip': 'constraint-flip.svg',
+    'socratic': 'socratic-questioning.svg',
+    'flywheel': 'flywheel.svg',
+}
+
+
+def _wrap_text(text, max_chars=40):
+    """Split text into lines of max_chars characters, breaking at word boundaries."""
+    words = text.split()
+    lines = []
+    current = ''
+    for word in words:
+        if current and len(current) + 1 + len(word) > max_chars:
+            lines.append(current)
+            current = word
+        else:
+            current = current + ' ' + word if current else word
+    if current:
+        lines.append(current)
+    return lines
+
+
+def _svg_text_block(x, y, texts, font_size=11, fill="#C8CED8", line_height=14, max_lines=6):
+    """Generate SVG text elements for a list of text strings."""
+    result = []
+    for i, text in enumerate(texts[:max_lines]):
+        escaped = _html.escape(text)
+        result.append(f'  <text x="{x}" y="{y + i * line_height}" fill="{fill}" font-size="{font_size}">{escaped}</text>')
+    return '\n'.join(result)
+
+
+def generate_session_svg(exercise, board_cards):
+    """Generate a populated SVG from a template using board card data.
+
+    Returns the SVG string, or None if the template doesn't exist.
+    """
+    template_file = SVG_TEMPLATE_FILE.get(exercise)
+    if not template_file:
+        return None
+
+    template_path = _os.path.join(SVG_TEMPLATE_DIR, template_file)
+    if not _os.path.exists(template_path):
+        print(f"[SVG] Template not found: {template_path}")
+        return None
+
+    # Read template
+    with open(template_path, 'r', encoding='utf-8') as f:
+        svg = f.read()
+
+    # Group board cards by zone
+    zone_data = {}
+    for card in board_cards:
+        zone = card.get('zone', 'general')
+        text = card.get('text', '')
+        if text:
+            zone_data.setdefault(zone, []).append(text)
+
+    # Get zone mapping for this exercise
+    zone_map = SVG_ZONE_MAP.get(exercise, {})
+
+    # For each zone with data, find the corresponding content text in the SVG
+    # and replace the placeholder content
+    for board_zone, card_texts in zone_data.items():
+        svg_label = zone_map.get(board_zone)
+        if not svg_label:
+            continue
+
+        # Combine all card texts for this zone
+        combined = ' | '.join(card_texts) if len(card_texts) > 1 else card_texts[0]
+
+        # Wrap into lines
+        lines = _wrap_text(combined, max_chars=38)
+
+        # Strategy: find the SVG zone label text element, then replace
+        # the next N content text elements (fill="#C8CED8") after it
+        # with our actual data.
+        #
+        # We look for: <text ... fill="#C8CED8" ...>placeholder</text>
+        # that appear after the zone label, and replace their content.
+        pattern = f'>{_re.escape(svg_label)}</text>'
+        label_pos = svg.find(pattern)
+        if label_pos < 0:
+            continue
+
+        # Find the next rect or comment that starts a new zone (rough boundary)
+        search_start = label_pos + len(pattern)
+
+        # Find all content text elements in this zone region
+        # Look for the next ~500 chars for content text elements
+        region_end = search_start + 800
+        region = svg[search_start:region_end]
+
+        # Find all content text elements
+        content_pattern = _re.compile(
+            r'(<text\s+x="(\d+)"\s+y="(\d+)"\s+fill="#C8CED8"\s+font-size="\d+"[^>]*>)([^<]*)(</text>)'
+        )
+        matches = list(content_pattern.finditer(region))
+
+        if matches:
+            # Replace content text elements with our data
+            # Work backwards to preserve offsets
+            for i, match in enumerate(reversed(matches)):
+                idx = len(matches) - 1 - i
+                if idx < len(lines):
+                    new_text = _html.escape(lines[idx])
+                else:
+                    new_text = ''  # Clear extra placeholder lines
+
+                abs_start = search_start + match.start(4)
+                abs_end = search_start + match.end(4)
+                svg = svg[:abs_start] + new_text + svg[abs_end:]
+
+    return svg
+
+
+@app.route('/api/session/svg', methods=['POST'])
+def session_svg():
+    """Generate SVG visual from board card data."""
+    data = request.json
+    exercise = data.get('exercise', '')
+    board_cards = data.get('board_cards', [])
+
+    svg_string = generate_session_svg(exercise, board_cards)
+    if svg_string is None:
+        return jsonify({'error': 'No SVG template for this exercise'}), 404
+
+    return jsonify({'svg': svg_string})
+
+
+@app.route('/api/session/png', methods=['POST'])
+def session_png():
+    """Generate PNG image from board card data (SVG→PNG via CairoSVG)."""
+    data = request.json
+    exercise = data.get('exercise', '')
+    board_cards = data.get('board_cards', [])
+
+    svg_string = generate_session_svg(exercise, board_cards)
+    if svg_string is None:
+        return jsonify({'error': 'No SVG template for this exercise'}), 404
+
+    try:
+        import cairosvg
+        png_bytes = cairosvg.svg2png(bytestring=svg_string.encode('utf-8'), output_width=1600)
+        exercise_name = EXERCISE_NAMES.get(exercise, exercise)
+        response = make_response(png_bytes)
+        response.headers['Content-Type'] = 'image/png'
+        safe_name = ''.join(c for c in exercise_name if c.isalnum() or c in ' -_').strip()[:60]
+        response.headers['Content-Disposition'] = f'attachment; filename="{safe_name} - The Studio.png"'
+        return response
+    except ImportError:
+        return jsonify({'error': 'CairoSVG not installed — PNG export unavailable'}), 500
+    except Exception as e:
+        print(f"[PNG] ERROR: {str(e)}")
+        return jsonify({'error': f'PNG generation failed: {str(e)}'}), 500
+
+
+@app.route('/api/session/pdf', methods=['POST'])
+def session_pdf():
+    """Generate PDF from board card data (SVG→PDF via CairoSVG)."""
+    data = request.json
+    exercise = data.get('exercise', '')
+    board_cards = data.get('board_cards', [])
+
+    svg_string = generate_session_svg(exercise, board_cards)
+    if svg_string is None:
+        return jsonify({'error': 'No SVG template for this exercise'}), 404
+
+    try:
+        import cairosvg
+        pdf_bytes = cairosvg.svg2pdf(bytestring=svg_string.encode('utf-8'))
+        exercise_name = EXERCISE_NAMES.get(exercise, exercise)
+        response = make_response(pdf_bytes)
+        response.headers['Content-Type'] = 'application/pdf'
+        safe_name = ''.join(c for c in exercise_name if c.isalnum() or c in ' -_').strip()[:60]
+        response.headers['Content-Disposition'] = f'attachment; filename="{safe_name} - The Studio.pdf"'
+        return response
+    except ImportError:
+        return jsonify({'error': 'CairoSVG not installed — PDF export unavailable'}), 500
+    except Exception as e:
+        print(f"[PDF] ERROR: {str(e)}")
+        return jsonify({'error': f'PDF generation failed: {str(e)}'}), 500
+
+
 # === REPORT GENERATION ===
 
 CONVERSATION_REPORT_PROMPT = """You are producing a coaching session summary for a conversation at The Studio, Wade Institute of Entrepreneurship.
@@ -4069,7 +4387,7 @@ Return EXACTLY this JSON format (no markdown, no code blocks):
         return jsonify({'error': str(e)}), 500
 
 
-# === SESSION REVEAL (post-session headline + synopsis + recommendations) ===
+# === SESSION REVEAL (Pete's headline, closing message, recommendations) ===
 
 SESSION_REVEAL_PROMPT = """You are Pete, the AI coach at The Studio (Wade Institute of Entrepreneurship).
 You have just finished guiding a user through a structured innovation exercise. Now generate a concise, hard-hitting session reveal.
@@ -4148,7 +4466,6 @@ def session_reveal():
                 reveal_text += block.text
 
         import json as _json
-        # Handle potential markdown code blocks
         clean = reveal_text.strip()
         if clean.startswith('```'):
             clean = clean.split('\n', 1)[1].rsplit('```', 1)[0].strip()
@@ -4157,7 +4474,6 @@ def session_reveal():
         return jsonify(result)
     except Exception as e:
         print(f"[REVEAL] ERROR: {str(e)}")
-        # Fallback
         return jsonify({
             'headline': f'Your {exercise_name} session uncovered something worth exploring.',
             'closing_message': 'Good session. You did real work here. The report captures what matters most.',
@@ -4752,14 +5068,15 @@ def _notify_wade(lead):
         pass
 
     # ── 2. Email the user a copy of their report ──────────────────────────
+    user_name = lead.get('name', '').split()[0] if lead.get('name') else 'there'
     user_html = f"""<!DOCTYPE html><html><head><meta charset="UTF-8"></head>
 <body style="font-family:Arial,sans-serif;max-width:680px;margin:0 auto;padding:20px;color:#1a1a2e;">
   <div style="background:#F15A22;padding:18px 24px;border-radius:6px 6px 0 0;">
-    <h2 style="margin:0;color:#fff;font-size:17px;">Studio Workshop Summary</h2>
+    <h2 style="margin:0;color:#fff;font-size:17px;">Your Workshop Outputs</h2>
     <p style="margin:3px 0 0;color:rgba(255,255,255,0.85);font-size:12px;">{lead['mode']} &middot; {lead['exercise']}</p>
   </div>
   <div style="border:1px solid #e0e0e0;border-top:none;border-radius:0 0 6px 6px;padding:22px;">
-    <p style="font-size:14px;color:#444;margin:0 0 18px;">Hi {lead['name'].split()[0]}, here's a copy of your Wade Studio workshop session report to refer back to.</p>
+    <p style="font-size:14px;color:#444;margin:0 0 18px;">Hi {user_name}, here's your Wade Studio workshop session. Your Word report, PowerPoint deck, and SVG visual were downloaded during your session &mdash; this email has your full report for reference.</p>
     <div style="font-family:Georgia,serif;font-size:13.5px;line-height:1.7;color:#222;">{report_html}</div>
     <div style="margin-top:28px;padding:16px 18px;border:1.5px solid #F15A22;border-radius:5px;background:#fdf9f7;">
       <p style="font-size:8.5px;font-weight:bold;letter-spacing:0.12em;text-transform:uppercase;color:#F15A22;margin:0 0 6px;">Ready to go deeper?</p>
@@ -5604,3 +5921,219 @@ def generate_branded_docx():
     except Exception as e:
         print(f"[DOCX] ERROR: {str(e)}")
         return jsonify({'error': f'DOCX generation failed: {str(e)}'}), 500
+
+
+# === POWERPOINT DECK GENERATION ===
+
+@app.route('/api/report/pptx', methods=['POST'])
+def generate_branded_pptx():
+    """Generate a branded PowerPoint deck with dark Wade theme."""
+    data = request.json
+    report = data.get('report', '')
+    synopsis = data.get('synopsis', {})
+    exercise = data.get('exercise', '')
+    mode = data.get('mode', '')
+    board_cards = data.get('board_cards', [])
+    headline = data.get('headline', synopsis.get('title', ''))
+
+    if not report:
+        return jsonify({'error': 'No report content'}), 400
+
+    exercise_name = EXERCISE_NAMES.get(exercise, exercise)
+    mode_name = MODE_NAMES.get(mode, mode)
+    today = datetime.now().strftime('%d %B %Y')
+
+    # Category accent colours
+    accent_map = {
+        'untangle': 'teal', 'reframe': 'teal',
+        'spark': 'orange', 'ideate': 'orange',
+        'test': 'pink', 'debate': 'pink',
+        'build': 'yellow', 'framework': 'yellow',
+    }
+    colour_map = {
+        'teal': (39, 189, 190),
+        'orange': (241, 90, 34),
+        'pink': (237, 54, 148),
+        'yellow': (228, 229, 23),
+    }
+    accent_name = accent_map.get(mode, 'yellow')
+    accent_rgb = colour_map.get(accent_name, (228, 229, 23))
+
+    try:
+        from pptx import Presentation
+        from pptx.util import Inches, Pt, Emu
+        from pptx.dml.color import RGBColor
+        from pptx.enum.text import PP_ALIGN, MSO_ANCHOR
+        import io
+
+        prs = Presentation()
+        prs.slide_width = Inches(13.333)  # 16:9
+        prs.slide_height = Inches(7.5)
+
+        NAVY = RGBColor(0x1B, 0x2A, 0x4A)
+        DARK_NAVY = RGBColor(0x12, 0x10, 0x3A)
+        WHITE = RGBColor(0xFF, 0xFF, 0xFF)
+        MUTED = RGBColor(0x9E, 0x9B, 0xC0)
+        DIM = RGBColor(0xD0, 0xCE, 0xE6)
+        ACCENT = RGBColor(*accent_rgb)
+
+        def set_slide_bg(slide, colour=DARK_NAVY):
+            bg = slide.background
+            fill = bg.fill
+            fill.solid()
+            fill.fore_color.rgb = colour
+
+        def add_text_box(slide, left, top, width, height, text, font_size=18, colour=WHITE, bold=False, alignment=PP_ALIGN.LEFT):
+            txBox = slide.shapes.add_textbox(Inches(left), Inches(top), Inches(width), Inches(height))
+            tf = txBox.text_frame
+            tf.word_wrap = True
+            p = tf.paragraphs[0]
+            p.text = text
+            p.font.size = Pt(font_size)
+            p.font.color.rgb = colour
+            p.font.bold = bold
+            p.font.name = 'Arial'
+            p.alignment = alignment
+            return txBox
+
+        # --- Slide 1: Title ---
+        slide1 = prs.slides.add_slide(prs.slide_layouts[6])  # Blank layout
+        set_slide_bg(slide1)
+
+        # Accent bar at top
+        from pptx.util import Emu
+        shape = slide1.shapes.add_shape(
+            1, Inches(0), Inches(0), prs.slide_width, Inches(0.06)
+        )
+        shape.fill.solid()
+        shape.fill.fore_color.rgb = ACCENT
+        shape.line.fill.background()
+
+        # Wade wordmark text
+        add_text_box(slide1, 0.8, 0.5, 4, 0.8, 'WADE\nINSTITUTE', font_size=20, colour=ACCENT, bold=True)
+
+        # Tool name
+        add_text_box(slide1, 0.8, 2.2, 11, 0.6, exercise_name, font_size=14, colour=MUTED)
+
+        # Headline
+        if headline:
+            add_text_box(slide1, 0.8, 2.9, 11, 2, headline, font_size=36, colour=WHITE, bold=True)
+
+        # Date and meta
+        add_text_box(slide1, 0.8, 6.2, 5, 0.5, f"Pete's take \u00B7 {today}", font_size=11, colour=MUTED)
+
+        # Wade footer
+        add_text_box(slide1, 0.8, 6.7, 11, 0.4, 'Wade Institute of Entrepreneurship \u00B7 wadeinstitute.org.au', font_size=9, colour=MUTED)
+
+        # --- Slide 2: SVG Visual (as description — actual SVG→PNG requires CairoSVG at runtime) ---
+        # Try to generate SVG and convert to PNG
+        svg_slide_added = False
+        try:
+            import cairosvg
+            svg_string = generate_session_svg(exercise, board_cards)
+            if svg_string:
+                png_bytes = cairosvg.svg2png(bytestring=svg_string.encode('utf-8'), output_width=1600)
+                slide2 = prs.slides.add_slide(prs.slide_layouts[6])
+                set_slide_bg(slide2)
+                img_stream = io.BytesIO(png_bytes)
+                # Centre the image
+                img_width = Inches(11)
+                img_left = (prs.slide_width - img_width) // 2
+                slide2.shapes.add_picture(img_stream, img_left, Inches(0.5), img_width)
+                svg_slide_added = True
+        except Exception as svg_err:
+            print(f"[PPTX] SVG→PNG failed (CairoSVG may not be installed): {svg_err}")
+
+        if not svg_slide_added:
+            # Fallback: text description slide
+            slide2 = prs.slides.add_slide(prs.slide_layouts[6])
+            set_slide_bg(slide2)
+            add_text_box(slide2, 0.8, 0.5, 11, 0.6, 'YOUR WORKSHOP OUTPUT', font_size=12, colour=ACCENT, bold=True)
+            add_text_box(slide2, 0.8, 1.2, 11, 0.6, exercise_name, font_size=28, colour=WHITE, bold=True)
+            if synopsis.get('hook'):
+                add_text_box(slide2, 0.8, 2.2, 10, 2, synopsis['hook'], font_size=16, colour=DIM)
+
+        # --- Slides 3-N: Per board zone ---
+        if board_cards:
+            grouped = {}
+            for card in board_cards:
+                zone = card.get('zone', 'general')
+                text = card.get('text', '')
+                if text:
+                    grouped.setdefault(zone, []).append(text)
+
+            for zone, items in grouped.items():
+                slide = prs.slides.add_slide(prs.slide_layouts[6])
+                set_slide_bg(slide)
+
+                # Accent bar
+                shape = slide.shapes.add_shape(
+                    1, Inches(0), Inches(0), prs.slide_width, Inches(0.06)
+                )
+                shape.fill.solid()
+                shape.fill.fore_color.rgb = ACCENT
+                shape.line.fill.background()
+
+                # Zone name
+                zone_label = zone.replace('-', ' ').replace('_', ' ').title()
+                add_text_box(slide, 0.8, 0.5, 10, 0.6, zone_label, font_size=14, colour=ACCENT, bold=True)
+
+                # Card content as bullets
+                txBox = slide.shapes.add_textbox(Inches(0.8), Inches(1.4), Inches(10), Inches(5))
+                tf = txBox.text_frame
+                tf.word_wrap = True
+                for i, item in enumerate(items[:8]):  # Max 8 items per slide
+                    p = tf.paragraphs[0] if i == 0 else tf.add_paragraph()
+                    p.text = item
+                    p.font.size = Pt(16)
+                    p.font.color.rgb = DIM
+                    p.font.name = 'Arial'
+                    p.space_after = Pt(12)
+                    p.level = 0
+
+        # --- Synopsis slide ---
+        if synopsis.get('title') or synopsis.get('hook'):
+            slide_syn = prs.slides.add_slide(prs.slide_layouts[6])
+            set_slide_bg(slide_syn)
+            add_text_box(slide_syn, 0.8, 0.5, 10, 0.5, 'KEY INSIGHTS', font_size=12, colour=ACCENT, bold=True)
+            if synopsis.get('title'):
+                add_text_box(slide_syn, 0.8, 1.2, 10, 1, synopsis['title'], font_size=28, colour=WHITE, bold=True)
+            if synopsis.get('hook'):
+                add_text_box(slide_syn, 0.8, 2.5, 10, 1.5, synopsis['hook'], font_size=16, colour=DIM)
+            if synopsis.get('bullets'):
+                txBox = slide_syn.shapes.add_textbox(Inches(0.8), Inches(4.2), Inches(10), Inches(2.5))
+                tf = txBox.text_frame
+                tf.word_wrap = True
+                for i, bullet in enumerate(synopsis['bullets']):
+                    p = tf.paragraphs[0] if i == 0 else tf.add_paragraph()
+                    p.text = f"\u2192 {bullet}"
+                    p.font.size = Pt(14)
+                    p.font.color.rgb = DIM
+                    p.font.name = 'Arial'
+                    p.space_after = Pt(8)
+
+        # --- Final slide: Wade programs CTA ---
+        slide_final = prs.slides.add_slide(prs.slide_layouts[6])
+        set_slide_bg(slide_final)
+        add_text_box(slide_final, 0.8, 1.5, 11, 0.5, 'GO DEEPER WITH WADE', font_size=12, colour=ACCENT, bold=True)
+        add_text_box(slide_final, 0.8, 2.3, 11, 1.5, 'This session was powered by Wade Institute\'s innovation methodology.\nWade offers programs for founders, innovation leaders, and teams\nwho want to go deeper.', font_size=20, colour=WHITE)
+        add_text_box(slide_final, 0.8, 4.5, 11, 0.5, 'wadeinstitute.org.au/programs', font_size=14, colour=ACCENT)
+        add_text_box(slide_final, 0.8, 6.5, 11, 0.4, 'Wade Institute of Entrepreneurship \u00B7 enquiries@wadeinstitute.org.au', font_size=9, colour=MUTED)
+
+        # Save to buffer
+        buffer = io.BytesIO()
+        prs.save(buffer)
+        buffer.seek(0)
+
+        response = make_response(buffer.read())
+        response.headers['Content-Type'] = 'application/vnd.openxmlformats-officedocument.presentationml.presentation'
+        safe_title = ''.join(c for c in exercise_name if c.isalnum() or c in ' -_').strip()[:60]
+        response.headers['Content-Disposition'] = f'attachment; filename="{safe_title} - The Studio.pptx"'
+        print(f"[PPTX] Generated branded deck for {exercise_name}")
+        return response
+
+    except Exception as e:
+        print(f"[PPTX] ERROR: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({'error': f'PPTX generation failed: {str(e)}'}), 500

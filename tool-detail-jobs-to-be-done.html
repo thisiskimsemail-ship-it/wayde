@@ -166,24 +166,19 @@
 </head>
 <body>
 
-<header>
-  <a href="index.html"><img class="logo" src="logo.png" alt="Wade Institute" style="height:50px;width:auto;"></a>
-  <nav class="header-nav">
-    <a href="index.html" class="nav-pill">The Studio</a>
-    <a href="toolbox.html" class="nav-pill active">Toolbox</a>
-  </nav>
-  <div class="header-controls" style="display:flex;align-items:center;gap:0.5rem;margin-left:auto;">
-    <div class="text-size-control" style="position:relative;">
-      <button id="textSizeToggle" title="Adjust text size" style="background:transparent;border:1px solid rgba(255,255,255,0.12);border-radius:6px;width:32px;height:32px;color:var(--text-body,#B8BCC8);font-size:0.85rem;cursor:pointer;" aria-label="Adjust text size">Aa</button>
-      <div id="textSizePicker" class="hidden" style="position:absolute;top:100%;right:0;margin-top:4px;background:#1F2E4D;border:1px solid rgba(255,255,255,0.12);border-radius:8px;padding:4px;z-index:999;display:flex;gap:2px;">
-        <button class="text-size-opt" data-size="small" style="background:transparent;border:none;color:#B8BCC8;padding:6px 10px;border-radius:6px;cursor:pointer;font-size:0.7rem;">A</button>
-        <button class="text-size-opt active" data-size="medium" style="background:rgba(255,255,255,0.08);border:none;color:#fff;padding:6px 10px;border-radius:6px;cursor:pointer;font-size:0.85rem;">A</button>
-        <button class="text-size-opt" data-size="large" style="background:transparent;border:none;color:#B8BCC8;padding:6px 10px;border-radius:6px;cursor:pointer;font-size:1.1rem;">A</button>
-      </div>
+<header class="header">
+    <img class="logo" src="logo.png" alt="Wade Institute">
+    <nav class="header-nav" id="headerNav">
+        <a class="header-nav-link" href="index.html">The Studio</a>
+        <a class="header-nav-link active" href="toolbox.html">Toolbox</a>
+        <a class="header-nav-link" href="sessions.html">Sessions</a>
+        <a class="header-nav-link header-feedback-link" href="#" id="headerFeedbackLink">Feedback</a>
+    </nav>
+    <div class="header-controls">
+        <button class="text-size-btn" id="textSizeToggle" title="Adjust text size" aria-label="Adjust text size">Aa</button>
+        <button class="theme-toggle" id="themeToggle" title="Toggle light/dark mode" aria-label="Toggle light/dark mode">&#9728;</button>
+        <button class="tour-help-btn" id="tourHelpBtn" title="Help" aria-label="Help">?</button>
     </div>
-    <button id="themeToggle" title="Toggle light/dark mode" style="background:transparent;border:1px solid rgba(255,255,255,0.12);border-radius:6px;width:32px;height:32px;color:var(--text-body,#B8BCC8);font-size:0.85rem;cursor:pointer;" aria-label="Toggle light/dark mode">&#x2731;</button>
-    <a href="index.html" title="Back to The Studio" style="background:transparent;border:1px solid rgba(255,255,255,0.12);border-radius:6px;width:32px;height:32px;color:var(--text-body,#B8BCC8);font-size:0.85rem;cursor:pointer;display:flex;align-items:center;justify-content:center;text-decoration:none;" aria-label="Help">?</a>
-  </div>
 </header>
 
 <section class="tool-hero">

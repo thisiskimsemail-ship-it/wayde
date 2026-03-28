@@ -1111,6 +1111,10 @@ function forceCloseSession() {
     // Hide pitch preview card
     const pitchPreview = document.getElementById('pitchPreview');
     if (pitchPreview) pitchPreview.classList.add('hidden');
+    // Clean up post-session screens
+    if (typeof cleanupPostSessionScreens === 'function') cleanupPostSessionScreens();
+    document.querySelector('.download-progress')?.remove();
+    document.getElementById('postSessionScreen')?.remove();
     // Hide input bar on welcome
     if (inputArea) inputArea.style.display = 'none';
     document.body.classList.remove('in-session', 'board-open');
@@ -1163,12 +1167,18 @@ function doCloseSession() {
     if (workshopLayout) workshopLayout.classList.remove('board-active', 'board-lean-canvas');
     document.body.classList.remove('board-open');
 
-    // Hide synopsis, lead form, format choice, post-session screen
+    // Hide synopsis, lead form, format choice, post-session screens
     document.getElementById('reportSynopsis')?.classList.add('hidden');
     document.getElementById('reportUnlock')?.classList.add('hidden');
     document.getElementById('reportFormatChoice')?.classList.add('hidden');
+    document.getElementById('postSessionLoading')?.classList.add('hidden');
+    document.getElementById('postSessionReveal')?.classList.add('hidden');
+    document.getElementById('postSessionNext')?.classList.add('hidden');
     document.getElementById('postSessionScreen')?.remove();
     document.getElementById('postDownloadPanel')?.remove();
+    // Restore chat pane visibility
+    const chatPaneEl = document.getElementById('chatPane');
+    if (chatPaneEl) chatPaneEl.style.display = '';
 
     // Show welcome, move input back, hide session bar
     welcome.classList.remove('hidden');
@@ -2188,7 +2198,7 @@ async function streamResponse() {
                 messagesEl.appendChild(boardChip);
                 boardChip.querySelector('.wrap-chip-report').addEventListener('click', () => {
                     boardChip.remove();
-                    generateReport();
+                    startPostSessionFlow();
                 });
                 scrollToBottom();
                 // Also show report CTA in footer
@@ -2329,8 +2339,6 @@ async function generateReport() {
     if (reportGenerating || state.reportGenerated) return; // prevent double-generation
     trackEvent('report_generate', { exchanges: state.exchangeCount });
     reportGenerating = true;
-    // Close the board immediately so report has full chat width
-    if (state.board && state.board.visible) { toggleBoard(); }
     reportCtaBtn.disabled = true;
     reportCtaBtn.textContent = 'Generating report...';
 
@@ -2520,7 +2528,7 @@ reportCtaBtn.addEventListener('click', async () => {
         return;
     }
 
-    if (typeof startPostSessionFlow === 'function') { startPostSessionFlow(); } else { generateReport(); }
+    startPostSessionFlow();
 });
 
 // === SHARED LEAD CAPTURE LOGIC ===
@@ -2875,39 +2883,55 @@ document.querySelectorAll('.report-actions').forEach(bar => {
 
 // === DOWNLOAD AS WORD (.doc) ===
 
-function downloadReportWord() {
+async function downloadReportWord() {
+    if (!state.reportText) return;
+
+    const synopsis = state.reportSynopsis || {};
+    const exName = EXERCISE_LABELS[state.exercise] || state.exercise;
+
+    try {
+        const resp = await fetch('/api/report/docx', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                report: state.reportText,
+                synopsis: synopsis,
+                exercise: state.exercise || '',
+                mode: state.mode || '',
+                board_cards: state.board?.cards || []
+            })
+        });
+
+        if (!resp.ok) throw new Error('DOCX generation failed');
+        const blob = await resp.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        const title = synopsis.title || 'Studio Report';
+        const safeName = title.replace(/[^a-zA-Z0-9 _-]/g, '').trim().slice(0, 60);
+        a.href = url;
+        a.download = safeName + ' - The Studio.docx';
+        a.click();
+        URL.revokeObjectURL(url);
+    } catch (err) {
+        console.error('[Report] DOCX download failed, using fallback:', err);
+        downloadReportWordFallback();
+    }
+}
+
+function downloadReportWordFallback() {
     const content = $('#reportContent');
     if (!content) return;
-
     const mName = MODE_LABELS[state.mode] || state.mode;
     const exName = EXERCISE_LABELS[state.exercise] || state.exercise;
     const date = new Date().toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' });
-
     const html = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
-<head><meta charset="utf-8"><title>${mName} · ${exName} · ${date}</title>
-<style>
-body { font-family: Arial, Helvetica, sans-serif; font-size: 11pt; color: #333; line-height: 1.5; max-width: 700px; margin: 0 auto; padding: 2rem; }
-h1 { font-size: 18pt; color: #1E194F; margin-bottom: 0.25em; }
-h2 { font-size: 14pt; color: #1E194F; margin-top: 1.5em; }
-h3 { font-size: 12pt; color: #1E194F; margin-top: 1.2em; }
-p { margin: 0.5em 0; }
-blockquote { border-left: 3px solid #ED3694; padding-left: 1em; margin: 1em 0; color: #555; font-style: italic; }
-a { color: #F15A22; }
-li { margin: 0.25em 0; }
-.meta { color: #888; font-size: 9pt; margin-bottom: 1.5em; }
-.footer { margin-top: 2em; padding-top: 1em; border-top: 1px solid #ddd; font-size: 9pt; color: #888; }
-</style></head><body>
+<head><meta charset="utf-8"><title>${mName} \u00B7 ${exName} \u00B7 ${date}</title>
+<style>body{font-family:Arial,sans-serif;font-size:11pt;color:#333;line-height:1.5;max-width:700px;margin:0 auto;padding:2rem}h1{font-size:18pt;color:#1E194F}h2{font-size:14pt;color:#1E194F}h3{font-size:12pt;color:#1E194F}blockquote{border-left:3px solid #ED3694;padding-left:1em;color:#555;font-style:italic}</style></head><body>
 <h1>Studio Workshop Summary</h1>
-<div class="meta">${mName} · ${exName} · ${date}</div>
-${state.reportSynopsis?.title ? `<h2 style="text-align:center;margin-bottom:0.25em;">${state.reportSynopsis.title}</h2>` : ''}
-${state.reportSynopsis?.hook ? `<p style="font-style:italic;color:#666;text-align:center;margin-bottom:1.5em;">${state.reportSynopsis.hook}</p>` : ''}
+<p style="color:#888;font-size:9pt">${mName} \u00B7 ${exName} \u00B7 ${date}</p>
 ${content.innerHTML}
-<div class="footer">
-  <p>Wade Institute of Entrepreneurship · wadeinstitute.org.au</p>
-  <p>Generated by Wade Studio · For educational purposes only · Decisions remain yours.</p>
-</div>
+<p style="margin-top:2em;padding-top:1em;border-top:1px solid #ddd;font-size:9pt;color:#888">Wade Institute of Entrepreneurship \u00B7 wadeinstitute.org.au</p>
 </body></html>`;
-
     const blob = new Blob([html], { type: 'application/msword' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -2917,6 +2941,79 @@ ${content.innerHTML}
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+}
+
+async function downloadReportPptx() {
+    if (!state.reportText) return;
+
+    try {
+        const resp = await fetch('/api/report/pptx', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                report: state.reportText,
+                synopsis: state.reportSynopsis || {},
+                exercise: state.exercise || '',
+                mode: state.mode || '',
+                board_cards: state.board?.cards || [],
+                headline: state._revealData?.headline || ''
+            })
+        });
+
+        if (!resp.ok) throw new Error('PPTX generation failed');
+        const blob = await resp.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        const exName = EXERCISE_LABELS[state.exercise] || state.exercise;
+        a.href = url;
+        a.download = `${exName} - The Studio.pptx`;
+        a.click();
+        URL.revokeObjectURL(url);
+    } catch (err) {
+        console.error('[Report] PPTX download failed:', err);
+    }
+}
+
+async function downloadSessionExport(format) {
+    const exName = EXERCISE_LABELS[state.exercise] || state.exercise;
+    const endpoint = format === 'svg' ? '/api/session/svg' : `/api/session/${format}`;
+
+    try {
+        if (format === 'svg') {
+            // SVG returns JSON with svg string — download as .svg file
+            const resp = await fetch(endpoint, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ exercise: state.exercise, board_cards: state.board?.cards || [] })
+            });
+            if (!resp.ok) throw new Error('SVG export failed');
+            const data = await resp.json();
+            const blob = new Blob([data.svg], { type: 'image/svg+xml' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${exName} - The Studio.svg`;
+            a.click();
+            URL.revokeObjectURL(url);
+        } else {
+            // PNG/PDF return binary blobs
+            const resp = await fetch(endpoint, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ exercise: state.exercise, board_cards: state.board?.cards || [] })
+            });
+            if (!resp.ok) throw new Error(`${format.toUpperCase()} export failed`);
+            const blob = await resp.blob();
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${exName} - The Studio.${format}`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+    } catch (err) {
+        console.error(`[Export] ${format.toUpperCase()} download failed:`, err);
+    }
 }
 
 // === EMAIL REPORT COPY ===
@@ -3053,6 +3150,485 @@ function renderNextExercisePanel() {
         panel.remove();
         navigateToStage(next.mode, next.exercise);
     });
+}
+
+// === POST-SESSION FLOW (3-screen experience) ===
+
+// Category display labels for post-download cards
+const CATEGORY_LABELS = { untangle: 'UNTANGLE', spark: 'SPARK', test: 'TEST', build: 'BUILD' };
+const CATEGORY_ICONS = { untangle: '◆', spark: '△', test: '◉', build: '⚙' };
+
+async function startPostSessionFlow() {
+    if (reportGenerating || state.reportGenerated) return;
+    trackEvent('post_session_start', { exchanges: state.exchangeCount });
+    reportGenerating = true;
+
+    const exName = EXERCISE_LABELS[state.exercise] || state.exercise;
+    const modeName = MODE_LABELS[state.mode] || state.mode;
+    const toolMap = TOOL_PROGRAM_MAP[state.exercise] || TOOL_PROGRAM_FALLBACK;
+
+    // Calculate session duration
+    const sessionDuration = state.sessionStartTime
+        ? Math.round((Date.now() - state.sessionStartTime) / 60000)
+        : Math.round(state.exchangeCount * 2);
+
+    // Hide chat pane elements, board, report CTA
+    const chatPane = document.getElementById('chatPane');
+    const boardPane = document.getElementById('boardPane');
+    const workshopLayout = document.getElementById('workshopLayout');
+    if (chatPane) chatPane.style.display = 'none';
+    if (boardPane) boardPane.classList.add('hidden');
+    if (workshopLayout) workshopLayout.classList.remove('board-active');
+    reportCta.classList.add('hidden');
+    if (inputArea) inputArea.style.display = 'none';
+    sessionBar.classList.add('hidden');
+
+    // ---- Screen 1: Loading ----
+    const loadingScreen = document.getElementById('postSessionLoading');
+    loadingScreen.classList.remove('hidden');
+    loadingScreen.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    // Populate subtitle
+    const subtitle = document.getElementById('psLoadingSubtitle');
+    if (subtitle) subtitle.textContent = `Pete is assembling your ${exName} report and visual`;
+
+    // Populate program recommendation card
+    const programName = document.getElementById('psProgramName');
+    const programBridge = document.getElementById('psProgramBridge');
+    const programLink = document.getElementById('psProgramLink');
+    const programDesc = document.getElementById('psProgramDesc');
+    if (programName) programName.textContent = toolMap.program;
+    if (programBridge) programBridge.textContent = toolMap.bridge;
+    if (programLink) programLink.href = toolMap.programUrl;
+    if (programDesc) programDesc.textContent = toolMap.programUrl ? '' : '';
+
+    // Dismiss link
+    document.getElementById('psDismissProgram')?.addEventListener('click', () => {
+        document.getElementById('psProgramCard')?.classList.add('hidden');
+        document.getElementById('psDismissProgram')?.classList.add('hidden');
+    });
+
+    // Animate progress bar and steps
+    const progressFill = document.getElementById('psProgressFill');
+    const steps = [
+        { el: document.getElementById('psStep1'), pct: 20 },
+        { el: document.getElementById('psStep2'), pct: 45 },
+        { el: document.getElementById('psStep3'), pct: 70 },
+        { el: document.getElementById('psStep4'), pct: 90 }
+    ];
+
+    let stepIdx = 0;
+    const stepInterval = setInterval(() => {
+        if (stepIdx > 0 && steps[stepIdx - 1].el) {
+            steps[stepIdx - 1].el.classList.remove('active');
+            steps[stepIdx - 1].el.classList.add('done');
+            const icon = steps[stepIdx - 1].el.querySelector('.ps-step-icon');
+            if (icon) icon.textContent = '\u2713';
+        }
+        if (stepIdx < steps.length) {
+            steps[stepIdx].el.classList.add('active');
+            const icon = steps[stepIdx].el.querySelector('.ps-step-icon');
+            if (icon) icon.textContent = '\u25CF';
+            if (progressFill) progressFill.style.width = steps[stepIdx].pct + '%';
+            stepIdx++;
+        }
+    }, 4000);
+
+    // Prepare messages for both calls
+    let reportMessages = [...state.messages];
+    const switchIdx = reportMessages.findLastIndex(m => m._switchPoint);
+    if (switchIdx > 0) {
+        const preSummary = reportMessages.slice(0, switchIdx)
+            .filter(m => m.role === 'user' && !m.content.startsWith('[SYSTEM]'))
+            .map(m => m.content).join(' | ');
+        reportMessages = [
+            { role: 'user', content: `[Context from previous exercise]: ${preSummary}` },
+            { role: 'assistant', content: 'Understood \u2014 I have the context from your previous exercise.' },
+            ...reportMessages.slice(switchIdx).map(m => ({ role: m.role, content: m.content }))
+        ];
+    }
+
+    // Fire both API calls in parallel
+    const reportPromise = fetch('/api/report', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            mode: state.mode,
+            exercise: state.exercise,
+            messages: reportMessages,
+            parking_lot: state.parkingLot,
+            board_cards: state.board.cards
+        })
+    }).then(r => r.ok ? r.json() : Promise.reject('Report failed'));
+
+    const revealPromise = fetch('/api/session/reveal', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            mode: state.mode,
+            exercise: state.exercise,
+            messages: reportMessages,
+            board_cards: state.board.cards
+        })
+    }).then(r => r.ok ? r.json() : Promise.reject('Reveal failed'));
+
+    // SVG generation (non-blocking — ok if it fails)
+    const svgPromise = fetch('/api/session/svg', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            exercise: state.exercise,
+            board_cards: state.board.cards
+        })
+    }).then(r => r.ok ? r.json() : null).catch(() => null);
+
+    try {
+        const [reportData, revealData] = await Promise.all([reportPromise, revealPromise]);
+        clearInterval(stepInterval);
+
+        // Mark all steps done
+        steps.forEach(s => {
+            if (s.el) {
+                s.el.classList.remove('active');
+                s.el.classList.add('done');
+                const icon = s.el.querySelector('.ps-step-icon');
+                if (icon) icon.textContent = '\u2713';
+            }
+        });
+        if (progressFill) progressFill.style.width = '100%';
+
+        // Store report data
+        state.reportText = reportData.report || '';
+        state.reportSynopsis = reportData.synopsis || {};
+        state.reportGenerated = true;
+        state._revealData = revealData;
+        state._sessionDuration = sessionDuration;
+
+        // Prepare full report in background (hidden card)
+        if (reportContent) reportContent.innerHTML = renderMarkdown(state.reportText);
+        populateReportMeta();
+
+        // Brief pause then transition to Screen 2
+        await new Promise(resolve => setTimeout(resolve, 800));
+        loadingScreen.classList.add('hidden');
+
+        // ---- Screen 2: Reveal ----
+        const revealScreen = document.getElementById('postSessionReveal');
+        revealScreen.classList.remove('hidden');
+        revealScreen.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+        // Inject SVG visual (may still be loading — insert when ready)
+        const svgPlaceholder = document.getElementById('psSvgPlaceholder');
+        svgPromise.then(svgData => {
+            if (svgData && svgData.svg && svgPlaceholder) {
+                svgPlaceholder.innerHTML = svgData.svg;
+            }
+        });
+
+        // Populate closing message
+        const closingText = document.getElementById('psClosingText');
+        if (closingText) closingText.innerHTML = (revealData.closing_message || '').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+
+        // Populate headline with yellow emphasis
+        const headline = document.getElementById('psHeadline');
+        if (headline) {
+            const headlineText = revealData.headline || '';
+            // Find a key phrase to highlight — put last clause in <em>
+            const dashIdx = headlineText.lastIndexOf('\u2014');
+            const commaIdx = headlineText.lastIndexOf(',');
+            const splitIdx = dashIdx > 0 ? dashIdx : (commaIdx > headlineText.length / 2 ? commaIdx : -1);
+            if (splitIdx > 0) {
+                headline.innerHTML = headlineText.slice(0, splitIdx + 1) + ' <em>' + headlineText.slice(splitIdx + 1).trim() + '</em>';
+            } else {
+                // Highlight last ~4 words
+                const words = headlineText.split(' ');
+                if (words.length > 4) {
+                    const splitAt = Math.max(1, words.length - 4);
+                    headline.innerHTML = words.slice(0, splitAt).join(' ') + ' <em>' + words.slice(splitAt).join(' ') + '</em>';
+                } else {
+                    headline.textContent = headlineText;
+                }
+            }
+        }
+
+        // Byline
+        const byline = document.getElementById('psByline');
+        if (byline) byline.textContent = `Pete's take \u00B7 ${exName} \u00B7 ${sessionDuration} min session`;
+
+        // Synopsis text
+        const synopsisText = document.getElementById('psSynopsisText');
+        if (synopsisText) synopsisText.innerHTML = (revealData.synopsis || '').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+
+        // Recommendations list
+        const recoList = document.getElementById('psRecommendations');
+        if (recoList && revealData.recommendations) {
+            recoList.innerHTML = revealData.recommendations
+                .map(r => `<li><strong>${EXERCISE_LABELS[r.exercise] || r.exercise}</strong> \u2014 ${r.reason}</li>`)
+                .join('');
+        }
+
+        // Store recommendations for Screen 3
+        state._revealRecommendations = revealData.recommendations || [];
+
+        // Wire email form
+        const emailForm = document.getElementById('psEmailForm');
+        const emailCapture = document.getElementById('psEmailCapture');
+        const formatButtons = document.getElementById('psFormatButtons');
+
+        emailForm?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('psDownloadBtn');
+            const email = document.getElementById('psEmailInput')?.value?.trim();
+            if (!email) return;
+
+            btn.disabled = true;
+            btn.textContent = 'Sending...';
+
+            state.userEmail = email;
+            localStorage.setItem('wade_user_email', email);
+
+            // Send lead
+            try {
+                await fetch('/api/lead', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email, name: '', company: '', role: '',
+                        mode: state.mode,
+                        exercise: state.exercise,
+                        report: state.reportText,
+                        rating: state.rating,
+                        messages: state.messages
+                    })
+                });
+            } catch (err) {
+                console.error('[PostSession] Lead capture failed:', err);
+            }
+
+            // Save session summary
+            fetch('/api/summary', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email,
+                    device_id: state.deviceId,
+                    mode: state.mode,
+                    exercise: state.exercise,
+                    messages: state.messages
+                })
+            }).catch(() => {});
+
+            // Hide email form, show format buttons
+            emailCapture.classList.add('hidden');
+            formatButtons.classList.remove('hidden');
+
+            // Auto-download Word
+            downloadReportWord();
+
+            // After brief delay, transition to Screen 3
+            setTimeout(() => transitionToPostDownload(), 2500);
+        });
+
+        // Wire format buttons
+        document.getElementById('psFormatWord')?.addEventListener('click', () => downloadReportWord());
+        document.getElementById('psFormatPptx')?.addEventListener('click', () => downloadReportPptx());
+        document.getElementById('psFormatSvg')?.addEventListener('click', () => downloadSessionExport('svg'));
+        document.getElementById('psFormatPng')?.addEventListener('click', () => downloadSessionExport('png'));
+        document.getElementById('psFormatPdf')?.addEventListener('click', () => downloadSessionExport('pdf'));
+
+        // Share buttons
+        document.getElementById('psShareCopyLink')?.addEventListener('click', async () => {
+            try {
+                const resp = await fetch('/api/share', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ report: state.reportText, synopsis: state.reportSynopsis, exercise: state.exercise, mode: state.mode })
+                });
+                if (resp.ok) {
+                    const data = await resp.json();
+                    const url = window.location.origin + data.url;
+                    await navigator.clipboard.writeText(url);
+                    const btn = document.getElementById('psShareCopyLink');
+                    if (btn) { btn.textContent = '\u2713 Copied!'; setTimeout(() => { btn.textContent = '\u{1F4C4} Copy link'; }, 2000); }
+                }
+            } catch (err) { console.error('[Share] Copy link failed:', err); }
+        });
+        document.getElementById('psShareLinkedIn')?.addEventListener('click', () => {
+            const headline = state._revealData?.headline || '';
+            const exName = EXERCISE_LABELS[state.exercise] || state.exercise;
+            const text = encodeURIComponent(`Just completed a ${exName} session with The Studio (Wade Institute). ${headline}\n\nTry it at wadeinstitute.org.au/studio`);
+            window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent('https://wadeinstitute.org.au/studio')}&text=${text}`, '_blank');
+        });
+        document.getElementById('psShareEmail')?.addEventListener('click', () => {
+            const headline = state._revealData?.headline || '';
+            const exName = EXERCISE_LABELS[state.exercise] || state.exercise;
+            const subject = encodeURIComponent(`${exName} — The Studio (Wade Institute)`);
+            const body = encodeURIComponent(`I just completed a ${exName} session with The Studio.\n\n${headline}\n\nCheck it out: https://wadeinstitute.org.au/studio`);
+            window.open(`mailto:?subject=${subject}&body=${body}`);
+        });
+
+    } catch (err) {
+        clearInterval(stepInterval);
+        console.error('[PostSession] Flow failed:', err);
+        // Fallback: restore chat pane and use old flow
+        loadingScreen.classList.add('hidden');
+        if (chatPane) chatPane.style.display = '';
+        if (inputArea) inputArea.style.display = '';
+        sessionBar.classList.remove('hidden');
+        reportCta.classList.remove('hidden');
+        reportGenerating = false;
+        reportCtaBtn.disabled = false;
+        reportCtaBtn.textContent = 'Generate my report \u2192';
+        // Try old flow as fallback
+        generateReport();
+    }
+}
+
+function transitionToPostDownload() {
+    const revealScreen = document.getElementById('postSessionReveal');
+    const nextScreen = document.getElementById('postSessionNext');
+    if (!nextScreen) return;
+
+    revealScreen?.classList.add('hidden');
+    nextScreen.classList.remove('hidden');
+    nextScreen.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    const exName = EXERCISE_LABELS[state.exercise] || state.exercise;
+    const modeName = MODE_LABELS[state.mode] || state.mode;
+    const revealData = state._revealData || {};
+    const duration = state._sessionDuration || 0;
+    const email = state.userEmail || '';
+
+    // Confirmation subtitle
+    const confirmSub = document.getElementById('psConfirmSubtitle');
+    if (confirmSub && email) confirmSub.textContent = `Word report, PowerPoint deck, and SVG sent to ${email}`;
+
+    // Pete Recommends Next — 3 tool cards
+    const nextTools = document.getElementById('psNextTools');
+    const recommendations = state._revealRecommendations || [];
+
+    if (nextTools && recommendations.length > 0) {
+        nextTools.innerHTML = recommendations.map(r => {
+            const mode = EXERCISE_MODE[r.exercise] || 'untangle';
+            const name = EXERCISE_LABELS[r.exercise] || r.exercise;
+            const category = CATEGORY_LABELS[mode] || mode.toUpperCase();
+            const icon = CATEGORY_ICONS[mode] || '◆';
+            const time = EXERCISE_TIMES[r.exercise] || '~20 min';
+            return `
+                <div class="ps-next-card" data-mode="${mode}" data-exercise="${r.exercise}" data-category="${mode}">
+                    <div class="ps-next-card-accent"></div>
+                    <div class="ps-next-card-icon">${icon}</div>
+                    <div class="ps-next-card-body">
+                        <div class="ps-next-card-name">${name}</div>
+                        <div class="ps-next-card-desc">${r.reason}</div>
+                        <div class="ps-next-card-meta">
+                            <span class="ps-next-card-tag">${category}</span>
+                            <span class="ps-next-card-time">~${time}</span>
+                        </div>
+                    </div>
+                    <span class="ps-next-card-arrow">›</span>
+                </div>
+            `;
+        }).join('');
+
+        nextTools.querySelectorAll('.ps-next-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const mode = card.dataset.mode;
+                const exercise = card.dataset.exercise;
+                cleanupPostSessionScreens();
+                startExercise(mode, exercise);
+            });
+        });
+    }
+
+    // Session card
+    const sessionTitle = document.getElementById('psSessionTitle');
+    const sessionHeadline = document.getElementById('psSessionHeadline');
+    const sessionMeta = document.getElementById('psSessionMeta');
+    if (sessionTitle) sessionTitle.textContent = `${exName} \u2014 The Studio`;
+    if (sessionHeadline && revealData.headline) sessionHeadline.textContent = `"${revealData.headline}"`;
+    if (sessionMeta) {
+        const today = new Date().toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' });
+        sessionMeta.textContent = `${today} \u00B7 ${duration} min \u00B7 ${modeName}`;
+    }
+
+    // Wade Programs Nudge
+    const nudgeHeading = document.getElementById('psNudgeHeading');
+    const nudgeText = document.getElementById('psNudgeText');
+    const nudgeStatNum = document.getElementById('psNudgeStatNumber');
+    const nudgeStatLabel = document.getElementById('psNudgeStatLabel');
+
+    // Count "thin" cells — board zones with 0-1 cards
+    const boardCards = state.board?.cards || [];
+    const zoneCounts = {};
+    boardCards.forEach(c => { zoneCounts[c.zone] = (zoneCounts[c.zone] || 0) + 1; });
+    const thinCells = Object.values(zoneCounts).filter(c => c <= 1).length;
+
+    if (nudgeHeading) nudgeHeading.textContent = `Your ${exName.toLowerCase()} is strong \u2014 but ${exName.toLowerCase()}s don't build companies. People do.`;
+    if (nudgeText) nudgeText.textContent = `The Studio helped you think through ${exName} in ${duration} minutes. Imagine what happens when you work through it with a cohort of founders who'll challenge your assumptions, share their networks, and hold you accountable. That's what Wade's programs are built for.`;
+    if (nudgeStatNum) nudgeStatNum.textContent = thinCells || 3;
+    if (nudgeStatLabel) nudgeStatLabel.textContent = `cells on your ${exName.toLowerCase()} need deeper work`;
+
+    // Session action buttons
+    document.getElementById('psEditBoard')?.addEventListener('click', () => {
+        cleanupPostSessionScreens();
+        // Restore chat and board
+        const chatPane = document.getElementById('chatPane');
+        if (chatPane) chatPane.style.display = '';
+        if (inputArea) inputArea.style.display = '';
+        toggleBoard();
+    });
+    document.getElementById('psRedownload')?.addEventListener('click', () => downloadReportWord());
+
+    // Explore More Tools grid — 4 tools not current
+    const exploreGrid = document.getElementById('psExploreGrid');
+    if (exploreGrid) {
+        const allTools = Object.entries(EXERCISE_MODE)
+            .filter(([ex]) => ex !== state.exercise)
+            .sort(() => Math.random() - 0.5)
+            .slice(0, 4);
+
+        exploreGrid.innerHTML = allTools.map(([ex, mode]) => {
+            const name = EXERCISE_LABELS[ex] || ex;
+            const desc = EXERCISE_DESCS[ex] || '';
+            const time = EXERCISE_TIMES[ex] || '~20 min';
+            return `
+                <div class="ps-explore-tile" data-mode="${mode}" data-exercise="${ex}" data-category="${mode}">
+                    <div class="ps-explore-tile-name">${name}</div>
+                    <div class="ps-explore-tile-desc">${desc}</div>
+                    <div class="ps-explore-tile-time">~${time}</div>
+                </div>
+            `;
+        }).join('');
+
+        exploreGrid.querySelectorAll('.ps-explore-tile').forEach(tile => {
+            tile.addEventListener('click', () => {
+                const mode = tile.dataset.mode;
+                const exercise = tile.dataset.exercise;
+                cleanupPostSessionScreens();
+                startExercise(mode, exercise);
+            });
+        });
+    }
+
+    // Wire new session button
+    document.getElementById('psNewSessionBtn')?.addEventListener('click', () => {
+        cleanupPostSessionScreens();
+        forceCloseSession();
+    });
+}
+
+function cleanupPostSessionScreens() {
+    document.getElementById('postSessionLoading')?.classList.add('hidden');
+    document.getElementById('postSessionReveal')?.classList.add('hidden');
+    document.getElementById('postSessionNext')?.classList.add('hidden');
+
+    // Restore chat pane visibility
+    const chatPane = document.getElementById('chatPane');
+    if (chatPane) chatPane.style.display = '';
+    if (inputArea) inputArea.style.display = '';
+    sessionBar.classList.remove('hidden');
+    reportGenerating = false;
 }
 
 // === WORKSHOP PHASE & PROGRESS ===
@@ -4530,333 +5106,6 @@ function maybeStartTour() {
 }
 
 // === QUICK-FIRE BUTTON INJECTION (backup for missed OPTIONS) ===
-
-// === POST-SESSION FLOW ===
-async function startPostSessionFlow() {
-    if (reportGenerating || state.reportGenerated) return;
-    trackEvent('post_session_start', { exchanges: state.exchangeCount });
-    reportGenerating = true;
-
-    const exName = EXERCISE_LABELS[state.exercise] || state.exercise;
-    const toolMap = TOOL_PROGRAM_MAP[state.exercise] || TOOL_PROGRAM_FALLBACK;
-
-    // Hide chat pane elements, board, report CTA
-    const chatPane = document.getElementById('chatPane');
-    const boardPane = document.getElementById('boardPane');
-    const workshopLayout = document.getElementById('workshopLayout');
-    if (chatPane) chatPane.style.display = 'none';
-    if (boardPane) boardPane.classList.add('hidden');
-    if (workshopLayout) workshopLayout.classList.remove('board-active');
-    reportCta.classList.add('hidden');
-    if (inputArea) inputArea.style.display = 'none';
-    sessionBar.classList.add('hidden');
-
-    // ---- Screen 1: Loading ----
-    const loadingScreen = document.getElementById('postSessionLoading');
-    loadingScreen.classList.remove('hidden');
-    loadingScreen.scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-    // Populate subtitle
-    const subtitle = document.getElementById('psLoadingSubtitle');
-    if (subtitle) subtitle.textContent = `Pete is assembling your ${exName} report and visual`;
-
-    // Populate program recommendation card
-    const programName = document.getElementById('psProgramName');
-    const programBridge = document.getElementById('psProgramBridge');
-    const programLink = document.getElementById('psProgramLink');
-    if (programName) programName.textContent = toolMap.program;
-    if (programBridge) programBridge.textContent = toolMap.bridge;
-    if (programLink) programLink.href = toolMap.programUrl;
-
-    // Animate progress bar and steps
-    const progressFill = document.getElementById('psProgressFill');
-    const steps = [
-        { el: document.getElementById('psStep1'), pct: 20 },
-        { el: document.getElementById('psStep2'), pct: 45 },
-        { el: document.getElementById('psStep3'), pct: 70 },
-        { el: document.getElementById('psStep4'), pct: 90 }
-    ];
-
-    let stepIdx = 0;
-    const stepInterval = setInterval(() => {
-        if (stepIdx > 0 && steps[stepIdx - 1].el) {
-            steps[stepIdx - 1].el.classList.remove('active');
-            steps[stepIdx - 1].el.classList.add('done');
-            const icon = steps[stepIdx - 1].el.querySelector('.ps-step-icon');
-            if (icon) icon.textContent = '\u2713';
-        }
-        if (stepIdx < steps.length) {
-            steps[stepIdx].el.classList.add('active');
-            const icon = steps[stepIdx].el.querySelector('.ps-step-icon');
-            if (icon) icon.textContent = '\u25CF';
-            if (progressFill) progressFill.style.width = steps[stepIdx].pct + '%';
-            stepIdx++;
-        }
-    }, 4000);
-
-    // Prepare messages for both calls
-    let reportMessages = [...state.messages];
-    const switchIdx = reportMessages.findLastIndex(m => m._switchPoint);
-    if (switchIdx > 0) {
-        const preSummary = reportMessages.slice(0, switchIdx)
-            .filter(m => m.role === 'user' && !m.content.startsWith('[SYSTEM]'))
-            .map(m => m.content).join(' | ');
-        reportMessages = [
-            { role: 'user', content: `[Context from previous exercise]: ${preSummary}` },
-            { role: 'assistant', content: 'Understood \u2014 I have the context from your previous exercise.' },
-            ...reportMessages.slice(switchIdx).map(m => ({ role: m.role, content: m.content }))
-        ];
-    }
-
-    // Fire both API calls in parallel
-    const reportPromise = fetch('/api/report', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            mode: state.mode,
-            exercise: state.exercise,
-            messages: reportMessages,
-            parking_lot: state.parkingLot,
-            board_cards: state.board.cards
-        })
-    }).then(r => r.ok ? r.json() : Promise.reject('Report failed'));
-
-    const revealPromise = fetch('/api/session/reveal', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            mode: state.mode,
-            exercise: state.exercise,
-            messages: reportMessages,
-            board_cards: state.board.cards
-        })
-    }).then(r => r.ok ? r.json() : Promise.reject('Reveal failed'));
-
-    try {
-        const [reportData, revealData] = await Promise.all([reportPromise, revealPromise]);
-        clearInterval(stepInterval);
-
-        // Mark all steps done
-        steps.forEach(s => {
-            if (s.el) {
-                s.el.classList.remove('active');
-                s.el.classList.add('done');
-                const icon = s.el.querySelector('.ps-step-icon');
-                if (icon) icon.textContent = '\u2713';
-            }
-        });
-        if (progressFill) progressFill.style.width = '100%';
-
-        // Store report data
-        state.reportText = reportData.report || '';
-        state.reportSynopsis = reportData.synopsis || {};
-        state.reportGenerated = true;
-
-        // Prepare full report in background (hidden card)
-        if (reportContent) reportContent.innerHTML = renderMarkdown(state.reportText);
-        populateReportMeta();
-
-        // Brief pause then transition to Screen 2
-        await new Promise(resolve => setTimeout(resolve, 800));
-        loadingScreen.classList.add('hidden');
-
-        // ---- Screen 2: Reveal ----
-        const revealScreen = document.getElementById('postSessionReveal');
-        revealScreen.classList.remove('hidden');
-        revealScreen.scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-        // Populate reveal content
-        const closingText = document.getElementById('psClosingText');
-        const headline = document.getElementById('psHeadline');
-        const synopsisText = document.getElementById('psSynopsisText');
-        const recoList = document.getElementById('psRecommendations');
-
-        if (closingText) closingText.textContent = revealData.closing_message || '';
-        if (headline) {
-            // Put last few words in <em> for yellow emphasis
-            const words = (revealData.headline || '').split(' ');
-            if (words.length > 3) {
-                const last2 = words.splice(-2).join(' ');
-                headline.innerHTML = words.join(' ') + ' <em>' + last2 + '</em>';
-            } else {
-                headline.textContent = revealData.headline || '';
-            }
-        }
-        if (synopsisText) synopsisText.textContent = revealData.synopsis || '';
-        if (recoList && revealData.recommendations) {
-            recoList.innerHTML = revealData.recommendations
-                .map(r => `<li><strong>${EXERCISE_LABELS[r.exercise] || r.exercise}</strong> \u2014 ${r.reason}</li>`)
-                .join('');
-        }
-
-        // Store reveal recommendations for Screen 3
-        state._revealRecommendations = revealData.recommendations || [];
-
-        // Wire email form
-        const emailForm = document.getElementById('psEmailForm');
-        const emailCapture = document.getElementById('psEmailCapture');
-        const formatButtons = document.getElementById('psFormatButtons');
-
-        emailForm?.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById('psDownloadBtn');
-            const email = document.getElementById('psEmailInput')?.value?.trim();
-            const name = document.getElementById('psNameInput')?.value?.trim();
-            const company = document.getElementById('psCompanyInput')?.value?.trim();
-            if (!email) return;
-
-            btn.disabled = true;
-            btn.textContent = 'Sending...';
-
-            state.userEmail = email;
-            localStorage.setItem('wade_user_email', email);
-
-            // Send lead
-            try {
-                await fetch('/api/lead', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        email, name, company, role: '',
-                        mode: state.mode,
-                        exercise: state.exercise,
-                        report: state.reportText,
-                        rating: state.rating,
-                        messages: state.messages
-                    })
-                });
-            } catch (err) {
-                console.error('[PostSession] Lead capture failed:', err);
-            }
-
-            // Save session summary
-            fetch('/api/summary', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    email,
-                    device_id: state.deviceId,
-                    mode: state.mode,
-                    exercise: state.exercise,
-                    messages: state.messages
-                })
-            }).catch(() => {});
-
-            // Hide email form, show format buttons
-            emailCapture.classList.add('hidden');
-            formatButtons.classList.remove('hidden');
-
-            // Auto-download Word
-            downloadReportWord();
-
-            // After brief delay, transition to Screen 3
-            setTimeout(() => transitionToPostDownload(), 2000);
-        });
-
-        // Wire format button
-        document.getElementById('psFormatWord')?.addEventListener('click', () => {
-            downloadReportWord();
-        });
-
-    } catch (err) {
-        clearInterval(stepInterval);
-        console.error('[PostSession] Flow failed:', err);
-        // Fallback: restore chat pane and use old flow
-        loadingScreen.classList.add('hidden');
-        if (chatPane) chatPane.style.display = '';
-        if (inputArea) inputArea.style.display = '';
-        sessionBar.classList.remove('hidden');
-        reportCta.classList.remove('hidden');
-        reportGenerating = false;
-        reportCtaBtn.disabled = false;
-        reportCtaBtn.textContent = 'Generate my report \u2192';
-    }
-}
-
-function transitionToPostDownload() {
-    const revealScreen = document.getElementById('postSessionReveal');
-    const nextScreen = document.getElementById('postSessionNext');
-    if (!nextScreen) return;
-
-    revealScreen?.classList.add('hidden');
-    nextScreen.classList.remove('hidden');
-    nextScreen.scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-    // Populate next-tool recommendations from reveal data
-    const nextTools = document.getElementById('psNextTools');
-    const recommendations = state._revealRecommendations || [];
-
-    if (nextTools && recommendations.length > 0) {
-        nextTools.innerHTML = recommendations.map(r => {
-            const mode = EXERCISE_MODE[r.exercise] || 'untangle';
-            const modeName = MODE_LABELS[mode] || mode;
-            const name = EXERCISE_LABELS[r.exercise] || r.exercise;
-            return `
-                <div class="ps-next-card" data-mode="${mode}" data-exercise="${r.exercise}">
-                    <div class="ps-next-card-mode">${modeName}</div>
-                    <div class="ps-next-card-name">${name}</div>
-                    <div class="ps-next-card-desc">${r.reason}</div>
-                </div>
-            `;
-        }).join('');
-
-        // Wire card clicks
-        nextTools.querySelectorAll('.ps-next-card').forEach(card => {
-            card.addEventListener('click', () => {
-                const mode = card.dataset.mode;
-                const exercise = card.dataset.exercise;
-                cleanupPostSessionScreens();
-                startExercise(mode, exercise);
-            });
-        });
-    }
-
-    // Populate explore grid — all tools except current
-    const exploreGrid = document.getElementById('psExploreGrid');
-    if (exploreGrid) {
-        const allTools = Object.entries(EXERCISE_MODE)
-            .filter(([ex]) => ex !== state.exercise)
-            .slice(0, 8); // show 8 max
-
-        exploreGrid.innerHTML = allTools.map(([ex, mode]) => {
-            const name = EXERCISE_LABELS[ex] || ex;
-            const modeName = MODE_LABELS[mode] || mode;
-            return `
-                <div class="ps-explore-tile" data-mode="${mode}" data-exercise="${ex}">
-                    <div class="ps-explore-tile-name">${name}</div>
-                    <div class="ps-explore-tile-mode">${modeName}</div>
-                </div>
-            `;
-        }).join('');
-
-        exploreGrid.querySelectorAll('.ps-explore-tile').forEach(tile => {
-            tile.addEventListener('click', () => {
-                const mode = tile.dataset.mode;
-                const exercise = tile.dataset.exercise;
-                cleanupPostSessionScreens();
-                startExercise(mode, exercise);
-            });
-        });
-    }
-
-    // Wire new session button
-    document.getElementById('psNewSessionBtn')?.addEventListener('click', () => {
-        cleanupPostSessionScreens();
-        forceCloseSession();
-    });
-}
-
-function cleanupPostSessionScreens() {
-    document.getElementById('postSessionLoading')?.classList.add('hidden');
-    document.getElementById('postSessionReveal')?.classList.add('hidden');
-    document.getElementById('postSessionNext')?.classList.add('hidden');
-
-    // Restore chat pane visibility
-    const chatPane = document.getElementById('chatPane');
-    if (chatPane) chatPane.style.display = '';
-}
-
-
 // Conversation-first: MutationObserver for quickfire removed.
 // Pete uses [OPTIONS] tags inline when he wants to offer choices.
 // The OPTIONS parser in streamResponse handles rendering.

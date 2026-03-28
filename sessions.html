@@ -11,11 +11,14 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; }
         .header { padding: 1rem 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: space-between; }
-        .logo { height: 72px; width: auto; }
-        .header-nav { display: flex; border: 1px solid rgba(255,255,255,0.12); border-radius: 999px; overflow: hidden; }
-        .header-nav a { padding: 0.4rem 1.1rem; font-size: 0.8rem; font-weight: 500; color: var(--text-dim); text-decoration: none; transition: all 0.2s; }
-        .header-nav a:hover { color: var(--text); background: rgba(255,255,255,0.05); }
-        .header-nav a.active { color: var(--text); background: rgba(255,255,255,0.08); }
+        .logo { height: 50px; width: auto; }
+        .header-nav { display: flex; border: 1px solid rgba(255,255,255,0.12); border-radius: 999px; overflow: hidden; margin-left: auto; margin-right: 1rem; }
+        .header-nav-link { padding: 0.4rem 1.1rem; font-size: 0.8rem; font-weight: 500; color: rgba(255,255,255,0.5); text-decoration: none; transition: all 0.2s; white-space: nowrap; }
+        .header-nav-link:hover { color: #fff; background: rgba(255,255,255,0.05); }
+        .header-nav-link.active { color: #fff; background: rgba(255,255,255,0.08); }
+        .header-controls { display: flex; align-items: center; gap: 0.5rem; }
+        .text-size-btn, .theme-toggle, .tour-help-btn { background: transparent; border: 1px solid rgba(255,255,255,0.12); border-radius: 6px; width: 32px; height: 32px; color: rgba(255,255,255,0.5); font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .text-size-btn:hover, .theme-toggle:hover, .tour-help-btn:hover { border-color: rgba(255,255,255,0.3); color: #fff; }
 
         .container { max-width: 900px; margin: 0 auto; padding: 2rem; }
         .back { color: var(--orange); text-decoration: none; font-size: 0.85rem; display: inline-block; margin-bottom: 1.5rem; }
@@ -75,11 +78,17 @@
 <body>
     <header class="header">
         <img class="logo" src="logo.png" alt="Wade Institute">
-        <nav class="header-nav">
-            <a href="index.html">The Studio</a>
-            <a href="toolbox.html">Toolbox</a>
-            <a href="sessions.html" class="active">Sessions</a>
+        <nav class="header-nav" id="headerNav">
+            <a class="header-nav-link" href="index.html">The Studio</a>
+            <a class="header-nav-link" href="toolbox.html">Toolbox</a>
+            <a class="header-nav-link active" href="sessions.html">Sessions</a>
+            <a class="header-nav-link header-feedback-link" href="#" id="headerFeedbackLink">Feedback</a>
         </nav>
+        <div class="header-controls">
+            <button class="text-size-btn" id="textSizeToggle" title="Adjust text size" aria-label="Adjust text size">Aa</button>
+            <button class="theme-toggle" id="themeToggle" title="Toggle light/dark mode" aria-label="Toggle light/dark mode">☀</button>
+            <button class="tour-help-btn" id="tourHelpBtn" title="Help" aria-label="Help">?</button>
+        </div>
     </header>
 
     <div class="container">

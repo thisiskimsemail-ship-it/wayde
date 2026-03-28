@@ -7,4 +7,4 @@ openpyxl
 PyPDF2
 python-docx
 python-pptx
-fpdf2
+cairosvg
