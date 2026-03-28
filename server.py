@@ -3541,7 +3541,16 @@ def generate_session_svg(exercise, board_cards):
     zone_map = SVG_ZONE_MAP.get(exercise, {})
 
     # For each zone with data, find the corresponding content text in the SVG
-    # and replace the placeholder content
+    # and replace the placeholder content.
+    #
+    # Strategy: find the zone label, then find the NEXT zone label (or end of SVG).
+    # Within that region, replace all content text elements with actual board data.
+
+    # Build a list of all zone label positions for boundary detection
+    all_labels = set()
+    for bz, sl in zone_map.items():
+        all_labels.add(sl)
+
     for board_zone, card_texts in zone_data.items():
         svg_label = zone_map.get(board_zone)
         if not svg_label:
@@ -3549,48 +3558,69 @@ def generate_session_svg(exercise, board_cards):
 
         # Combine all card texts for this zone
         combined = ' | '.join(card_texts) if len(card_texts) > 1 else card_texts[0]
+        lines = _wrap_text(combined, max_chars=36)
 
-        # Wrap into lines
-        lines = _wrap_text(combined, max_chars=38)
-
-        # Strategy: find the SVG zone label text element, then replace
-        # the next N content text elements (fill="#C8CED8") after it
-        # with our actual data.
-        #
-        # We look for: <text ... fill="#C8CED8" ...>placeholder</text>
-        # that appear after the zone label, and replace their content.
-        pattern = f'>{_re.escape(svg_label)}</text>'
-        label_pos = svg.find(pattern)
+        # Find this zone's label in the SVG
+        label_pattern = f'>{_re.escape(svg_label)}</text>'
+        label_pos = svg.find(label_pattern)
         if label_pos < 0:
             continue
 
-        # Find the next rect or comment that starts a new zone (rough boundary)
-        search_start = label_pos + len(pattern)
+        search_start = label_pos + len(label_pattern)
 
-        # Find all content text elements in this zone region
-        # Look for the next ~500 chars for content text elements
-        region_end = search_start + 800
-        region = svg[search_start:region_end]
+        # Find the next zone boundary — look for next <rect that starts a new zone
+        # (zone rects have fill="#1F2E4D" or start with a comment like "<!-- Col")
+        next_zone = len(svg)
+        # Find next zone label
+        for other_label in all_labels:
+            if other_label == svg_label:
+                continue
+            other_pattern = f'>{_re.escape(other_label)}</text>'
+            other_pos = svg.find(other_pattern, search_start)
+            if other_pos > 0 and other_pos < next_zone:
+                next_zone = other_pos
+        # Also look for next section comment or rect as boundary
+        for boundary in ['<!-- Col', '<!-- Row', '<!-- Step', '<!-- Arrow', '<!-- Root', '<!-- Footer', '<!-- Riskiest']:
+            bp = svg.find(boundary, search_start)
+            if bp > 0 and bp < next_zone:
+                next_zone = bp
 
-        # Find all content text elements
+        region = svg[search_start:next_zone]
+
+        # Find all content text elements in this region
+        # Match any text with fill="#C8CED8" (body), "#FFFFFF" (emphasis), or "#6B7A8E" (subheading)
         content_pattern = _re.compile(
-            r'(<text\s+x="(\d+)"\s+y="(\d+)"\s+fill="#C8CED8"\s+font-size="\d+"[^>]*>)([^<]*)(</text>)'
+            r'(<text\s+x="(\d+)"\s+y="(\d+)"\s+fill="(?:#C8CED8|#FFFFFF|#6B7A8E)"\s+font-size="(?:11|12|13)(?:\.\d+)?"[^>]*>)([^<]*)(</text>)'
         )
         matches = list(content_pattern.finditer(region))
 
-        if matches:
-            # Replace content text elements with our data
-            # Work backwards to preserve offsets
-            for i, match in enumerate(reversed(matches)):
-                idx = len(matches) - 1 - i
-                if idx < len(lines):
-                    new_text = _html.escape(lines[idx])
-                else:
-                    new_text = ''  # Clear extra placeholder lines
+        if not matches:
+            continue
 
-                abs_start = search_start + match.start(4)
-                abs_end = search_start + match.end(4)
-                svg = svg[:abs_start] + new_text + svg[abs_end:]
+        # Get the x position and starting y from the first content line
+        first_x = int(matches[0].group(2))
+        first_y = int(matches[0].group(3))
+        line_height = 14
+        if len(matches) > 1:
+            line_height = max(14, int(matches[1].group(3)) - int(matches[0].group(3)))
+
+        # Build replacement: remove all old content text, insert new lines
+        # Work backwards to preserve offsets
+        for match in reversed(matches):
+            abs_start = search_start + match.start(0)
+            abs_end = search_start + match.end(0)
+            svg = svg[:abs_start] + svg[abs_end:]
+
+        # Now insert new text lines at the position of the first removed element
+        insert_pos = search_start + matches[0].start(0)
+        new_elements = []
+        for i, line in enumerate(lines[:8]):  # Max 8 lines per zone
+            escaped = _html.escape(line)
+            y = first_y + i * line_height
+            new_elements.append(f'  <text x="{first_x}" y="{y}" fill="#C8CED8" font-size="11">{escaped}</text>')
+
+        insert_text = '\n'.join(new_elements)
+        svg = svg[:insert_pos] + insert_text + '\n' + svg[insert_pos:]
 
     return svg
 
