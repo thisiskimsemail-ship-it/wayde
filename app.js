@@ -3963,6 +3963,32 @@ const BOARD_LAYOUTS = {
             { id: 'actions', name: 'Actions', empty: 'Next steps', hint: '90-day plan + 48-hour first step', colour: 'yellow' }
         ],
         gridClass: 'board-grid-flywheel'
+    },
+    'mash-up': {
+        zones: [
+            { id: 'mu-problem', name: 'Problem', empty: 'Your core challenge', hint: 'What specific problem needs solving?', colour: 'orange' },
+            { id: 'mu-abstract', name: 'Abstract Structure', empty: 'The structural pattern', hint: 'What type of problem is this, stripped of context?', colour: 'orange' },
+            { id: 'mu-collision-1', name: 'Collision 1', empty: 'First domain collision', hint: 'Source domain + story + mechanism', colour: 'orange' },
+            { id: 'mu-collision-2', name: 'Collision 2', empty: 'Second domain collision', hint: 'Source domain + story + mechanism', colour: 'orange' },
+            { id: 'mu-collision-3', name: 'Collision 3', empty: 'Third domain collision', hint: 'Source domain + story + mechanism', colour: 'orange' },
+            { id: 'mu-collision-4', name: 'Collision 4', empty: 'Fourth domain collision', hint: 'Source domain + story + mechanism', colour: 'orange' },
+            { id: 'mu-remix', name: 'Remixed Ideas', empty: 'Adapted solutions', hint: 'Ideas remixed from hot collisions + source tags', colour: 'orange' },
+            { id: 'mu-actions', name: 'Actions', empty: 'First experiment', hint: 'Which remixed idea to prototype first, and how', colour: 'orange' }
+        ],
+        gridClass: 'board-grid-mash-up'
+    },
+    'analogical': {
+        zones: [
+            { id: 'mu-problem', name: 'Problem', empty: 'Your core challenge', hint: 'What specific problem needs solving?', colour: 'orange' },
+            { id: 'mu-abstract', name: 'Abstract Structure', empty: 'The structural pattern', hint: 'What type of problem is this, stripped of context?', colour: 'orange' },
+            { id: 'mu-collision-1', name: 'Collision 1', empty: 'First domain collision', hint: 'Source domain + story + mechanism', colour: 'orange' },
+            { id: 'mu-collision-2', name: 'Collision 2', empty: 'Second domain collision', hint: 'Source domain + story + mechanism', colour: 'orange' },
+            { id: 'mu-collision-3', name: 'Collision 3', empty: 'Third domain collision', hint: 'Source domain + story + mechanism', colour: 'orange' },
+            { id: 'mu-collision-4', name: 'Collision 4', empty: 'Fourth domain collision', hint: 'Source domain + story + mechanism', colour: 'orange' },
+            { id: 'mu-remix', name: 'Remixed Ideas', empty: 'Adapted solutions', hint: 'Ideas remixed from hot collisions + source tags', colour: 'orange' },
+            { id: 'mu-actions', name: 'Actions', empty: 'First experiment', hint: 'Which remixed idea to prototype first, and how', colour: 'orange' }
+        ],
+        gridClass: 'board-grid-mash-up'
     }
 };
 

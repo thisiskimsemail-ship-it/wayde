@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="preload" href="fonts/GT-Walsheim-Regular.woff" as="font" type="font/woff" crossorigin>
-<title>Analogical Thinking — Wade Innovation Toolbox</title>
+<title>Mash Up — Wade Innovation Toolbox</title>
 <style>
   @font-face { font-family: "GT Walsheim"; src: url("fonts/GT-Walsheim-Regular.woff") format("woff"), url("fonts/GT-Walsheim-Regular.ttf") format("truetype"); font-weight: 400; font-style: normal; font-display: swap; }
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -42,7 +42,7 @@
   .qf-pathways-label { font-size: 13px; color: var(--text-light); margin-bottom: 10px; }
   .pathway-tags { display: flex; flex-wrap: wrap; gap: 6px; }
   .pathway-tag { font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 100px; border: 1px solid; }
-  .pathway-tag.test { border-color: rgba(237,54,148,0.4); color: var(--test); }
+  .pathway-tag.spark { border-color: rgba(241,90,34,0.4); color: var(--spark); }
   .qf-cta { display: block; width: 100%; text-align: center; margin-top: 24px; padding: 14px 24px; background: var(--cat-color); color: var(--white); border-radius: 100px; border: none; font-size: 16px; font-weight: 600; font-family: 'GT Walsheim', 'Space Grotesk', sans-serif; cursor: pointer; text-decoration: none; transition: all 0.2s; }
   .qf-cta:hover { filter: brightness(0.9); }
   .content-area { padding: 0 60px 80px; max-width: 1300px; margin: 0 auto; }
@@ -61,20 +61,32 @@
   .step-desc { font-size: 15px; color: var(--text-body); line-height: 1.6; }
   .sample-output { background: var(--card-bg); border-radius: 16px; border: 1px solid var(--border); padding: 32px; margin-top: 8px; }
   .sample-label { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--cat-color); margin-bottom: 20px; }
-  .sample-root { margin-top: 20px; padding-top: 20px; border-top: 2px solid var(--cat-color); }
-  .sample-root-label { font-size: 12px; font-weight: 700; color: var(--cat-color); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px; }
-  .sample-root-text { font-family: 'GT Walsheim', 'Space Grotesk', sans-serif; font-size: 20px; color: var(--white); line-height: 1.4; }
 
-  /* Analogy map */
-  .analogy-problem { font-size: 14px; color: var(--text-light); margin-bottom: 8px; }
-  .analogy-problem strong { color: var(--white); }
-  .analogy-abstract { font-size: 13px; color: var(--text-light); font-style: italic; padding-bottom: 16px; border-bottom: 1px solid var(--border); margin-bottom: 16px; }
-  .analogy-card { padding: 14px 0; border-bottom: 1px solid var(--border); }
-  .analogy-card:last-of-type { border-bottom: none; }
-  .analogy-card.selected { background: rgba(237,54,148,0.06); margin: 0 -16px; padding: 14px 16px; border-radius: 10px; border-bottom: none; }
-  .analogy-domain { font-size: 12px; font-weight: 700; color: var(--cat-color); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 4px; }
-  .analogy-text { font-size: 14px; color: var(--white); line-height: 1.5; margin-bottom: 4px; }
-  .analogy-transfer { font-size: 13px; color: var(--text-light); }
+  /* Mash Up board preview */
+  .mashup-board { display: flex; flex-direction: column; gap: 16px; }
+  .mashup-top { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .mashup-card { background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+  .mashup-card-label { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--cat-color); margin-bottom: 8px; }
+  .mashup-card-text { font-size: 14px; color: var(--white); line-height: 1.5; }
+  .mashup-card-sub { font-size: 13px; color: var(--text-light); margin-top: 4px; }
+  .collision-cards { display: flex; flex-direction: column; gap: 10px; }
+  .collision-card { padding: 14px 16px; border: 1px solid var(--border); border-radius: 10px; background: rgba(255,255,255,0.03); }
+  .collision-card.hot { border-color: rgba(241,90,34,0.4); background: rgba(241,90,34,0.06); }
+  .collision-card.warm { border-color: rgba(228,229,23,0.3); }
+  .collision-card.cold { border-color: var(--border); opacity: 0.7; }
+  .collision-domain { font-size: 12px; font-weight: 700; color: var(--cat-color); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 4px; }
+  .collision-story { font-size: 14px; color: var(--white); line-height: 1.5; margin-bottom: 4px; }
+  .collision-mechanism { font-size: 14px; color: var(--white); font-weight: 600; margin-bottom: 4px; }
+  .collision-resonance { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+  .collision-resonance.hot { color: #F15A22; }
+  .collision-resonance.warm { color: #E4E517; }
+  .collision-resonance.cold { color: var(--text-light); }
+  .remix-section { border-top: 2px solid var(--cat-color); padding-top: 16px; }
+  .remix-idea { padding: 12px 0; border-bottom: 1px solid var(--border); }
+  .remix-idea:last-child { border-bottom: none; }
+  .remix-tag { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; padding: 2px 8px; border-radius: 100px; background: rgba(241,90,34,0.15); color: var(--cat-color); margin-bottom: 4px; }
+  .remix-text { font-size: 14px; color: var(--white); line-height: 1.5; }
+  .remix-notes { font-size: 13px; color: var(--text-light); margin-top: 2px; }
 
   .foundation-logos { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 16px; }
   .org-badge { font-size: 12px; font-weight: 600; padding: 8px 16px; border-radius: 10px; background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--text-light); }
@@ -91,7 +103,7 @@
   .related-tool-icon.build { background: rgba(228,229,23,0.15); color: #E4E517; }
   .related-tool-text h4 { font-size: 14px; font-weight: 600; color: var(--white); margin-bottom: 2px; }
   .related-tool-text p { font-size: 13px; color: var(--text-light); line-height: 1.4; }
-  .pete-note { background: linear-gradient(135deg, rgba(237,54,148,0.08), rgba(237,54,148,0.04)); border: 1px solid rgba(237,54,148,0.25); border-radius: 14px; padding: 24px; }
+  .pete-note { background: linear-gradient(135deg, rgba(241,90,34,0.08), rgba(241,90,34,0.04)); border: 1px solid rgba(241,90,34,0.25); border-radius: 14px; padding: 24px; }
   .pete-avatar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
   .pete-avatar { width: 32px; height: 32px; border-radius: 8px; background: var(--navy); display: flex; align-items: center; justify-content: center; color: var(--white); font-weight: 700; font-size: 13px; }
   .pete-label { font-size: 13px; font-weight: 600; color: var(--white); }
@@ -110,7 +122,7 @@
   .footer-links a:hover { color: var(--white); }
   .footer-right { font-size: 13px; color: var(--text-light); }
   @media (max-width: 1000px) { .tool-hero-grid, .content-grid { grid-template-columns: 1fr; gap: 32px; } header { padding: 0 32px; } .tool-hero, .content-area, .tool-bottom-cta { padding-left: 32px; padding-right: 32px; } }
-  @media (max-width: 600px) { .tool-hero-left h1 { font-size: 40px; } .section-block h2 { font-size: 28px; } footer { flex-direction: column; gap: 16px; text-align: center; } .tool-bottom-cta { flex-direction: column; gap: 24px; text-align: center; } }
+  @media (max-width: 600px) { .tool-hero-left h1 { font-size: 40px; } .section-block h2 { font-size: 28px; } footer { flex-direction: column; gap: 16px; text-align: center; } .tool-bottom-cta { flex-direction: column; gap: 24px; text-align: center; } .mashup-top { grid-template-columns: 1fr; } }
 
   /* Light theme */
   html[data-theme="light"] { --navy-deep: #f8f7f5; --navy: #1E194F; --text-body: #444; --text-light: #888; --border: rgba(0,0,0,0.08); --border-light: rgba(0,0,0,0.15); --card-bg: #fff; --card-hover: #f5f5f5; }
@@ -155,22 +167,22 @@
 </header>
 
 <section class="tool-hero">
-  <div class="breadcrumb"><a href="index.html">The Studio</a><span>/</span><a href="toolbox.html">Toolbox</a><span>/</span><a href="toolbox.html#spark">The Spark</a><span>/</span>Analogical Thinking</div>
+  <div class="breadcrumb"><a href="index.html">The Studio</a><span>/</span><a href="toolbox.html">Toolbox</a><span>/</span><a href="toolbox.html#spark">The Spark</a><span>/</span>Mash Up</div>
   <div class="tool-hero-grid">
     <div class="tool-hero-left">
       <div class="stage-badge">THE SPARK</div>
-      <h1>Analogical Thinking</h1>
-      <p class="tool-headline">Borrow solutions from unexpected places.</p>
-      <p class="tool-intro">Solving a problem by drawing on how a similar problem has been solved in a completely different domain. Most challenges have been addressed somewhere — in nature, another industry, a different culture or era. Shinkansen nose from kingfisher beak. Velcro from burs. Airbnb's trust model from eBay.</p>
+      <h1>Mash Up</h1>
+      <p class="tool-headline">Smash two worlds together. See what comes out.</p>
+      <p class="tool-intro">Most ideation tools help people generate ideas from their own experience. The problem is that experience has edges. Mash Up is systematic cross-pollination with energy. Pete pulls in unexpected domains, collides them with your challenge in real time, and asks what you hear in the collision. Some combinations are duds. Some produce something genuinely new. The speed and volume is the point.</p>
     </div>
     <div class="quick-facts">
       <div class="qf-title">Quick Facts</div>
       <div class="qf-row"><span class="qf-label">Duration</span><span class="qf-value">~20 minutes</span></div>
       <div class="qf-row"><span class="qf-label">Category</span><span class="qf-value">The Spark</span></div>
-      <div class="qf-row"><span class="qf-label">Origin</span><span class="qf-value">Classical rhetoric (Aristotle)</span></div>
-      <div class="qf-row"><span class="qf-label">Created by</span><span class="qf-value">Aristotle; IDEO (modern)</span></div>
+      <div class="qf-row"><span class="qf-label">Origin</span><span class="qf-value">IDEO Mash Up method</span></div>
+      <div class="qf-row"><span class="qf-label">Output</span><span class="qf-value">Remixed ideas + source analogies</span></div>
       <div class="qf-pathways"><div class="qf-pathways-label">Used in pathways</div><div class="pathway-tags"><span class="pathway-tag spark">The Spark</span></div></div>
-      <a href="index.html?tool=analogical-thinking" class="qf-cta">Try Analogical Thinking &rarr;</a>
+      <a href="index.html?tool=mash-up" class="qf-cta">Try Mash Up &rarr;</a>
     </div>
   </div>
 </section>
@@ -180,78 +192,106 @@
     <div class="content-main">
       <div class="section-block">
         <h2>When to use it</h2>
-        <p>Use when conventional approaches are exhausted, when the team keeps generating similar ideas, or when you want a genuinely differentiated solution. Also when a problem feels unique — it usually isn't.</p>
-        <p>Core tool in <strong>The Spark</strong> for finding proven patterns.</p>
+        <p>Use when conventional approaches keep producing similar ideas, when the team is stuck in its own industry bubble, or when you want a genuinely differentiated solution. A logistics founder thinks about logistics solutions. A health-tech CEO thinks about health-tech solutions. The most valuable ideas often come from a completely different domain that solved a structurally similar problem years ago.</p>
+        <p>Core tool in <strong>The Spark</strong> for breaking out of familiar thinking.</p>
       </div>
       <div class="section-block">
         <h2>How it works in The Studio</h2>
         <p>Here's how a session works with Pete:</p>
         <div class="steps-timeline">
-          <div class="step-item"><div class="step-number">1</div><div class="step-title">Define the core challenge</div><div class="step-desc">What specific problem needs solving?</div></div>
-          <div class="step-item"><div class="step-number">2</div><div class="step-title">Abstract the underlying pattern</div><div class="step-desc">What type of problem is this, stripped of context?</div></div>
-          <div class="step-item"><div class="step-number">3</div><div class="step-title">Search for analogies</div><div class="step-desc">Pete prompts across domains — nature, military, healthcare, sports, etc.</div></div>
-          <div class="step-item"><div class="step-number">4</div><div class="step-title">Map the parallels</div><div class="step-desc">What's the mechanism that made the analogy work?</div></div>
-          <div class="step-item"><div class="step-number">5</div><div class="step-title">Select strongest analogy</div><div class="step-desc">Which one transfers most cleanly?</div></div>
-          <div class="step-item"><div class="step-number">6</div><div class="step-title">Translate to your context</div><div class="step-desc">How would you apply this mechanism to your challenge?</div></div>
+          <div class="step-item"><div class="step-number">1</div><div class="step-title">Define the core challenge</div><div class="step-desc">What specific problem needs solving? Pete gets you to a clean problem statement.</div></div>
+          <div class="step-item"><div class="step-number">2</div><div class="step-title">Abstract the structure</div><div class="step-desc">Strip away the context. What type of problem is this at its core? This is the unlock.</div></div>
+          <div class="step-item"><div class="step-number">3</div><div class="step-title">Collision round</div><div class="step-desc">Pete fires domains at you &mdash; nature, military, hospitality, sport, music &mdash; and asks what you hear in each collision. Rate each: hot, warm, or cold.</div></div>
+          <div class="step-item"><div class="step-number">4</div><div class="step-title">Pull the hot ones forward</div><div class="step-desc">The collisions that resonated get examined. What's the transferable mechanism? Why did it land?</div></div>
+          <div class="step-item"><div class="step-number">5</div><div class="step-title">Remix into your context</div><div class="step-desc">Take the best mechanisms and adapt them into concrete ideas for your challenge.</div></div>
+          <div class="step-item"><div class="step-number">6</div><div class="step-title">Pick your first experiment</div><div class="step-desc">Which remixed idea do you prototype first? What's the smallest version you could test this week?</div></div>
         </div>
       </div>
       <div class="section-block">
         <h2>Sample output</h2>
-        <p>Here's what an Analogical Thinking session looks like in practice:</p>
+        <p>Here's what a Mash Up session board looks like:</p>
         <div class="sample-output">
           <div class="sample-label">Example: Reducing Customer Support Wait Times</div>
-          <div class="analogy-problem"><strong>Your problem:</strong> "Customers wait too long for support, then leave."</div>
-          <div class="analogy-abstract">Abstract pattern: "Queue management under variable demand."</div>
-          <div class="analogy-card">
-            <div class="analogy-domain">Healthcare</div>
-            <div class="analogy-text">Emergency room triage — don't serve in order, serve by urgency.</div>
-            <div class="analogy-transfer">Transferable: Priority-based routing.</div>
-          </div>
-          <div class="analogy-card">
-            <div class="analogy-domain">Airlines</div>
-            <div class="analogy-text">Self-service kiosks handle 80% of check-ins.</div>
-            <div class="analogy-transfer">Transferable: AI handles simple queries, humans handle complex.</div>
-          </div>
-          <div class="analogy-card selected">
-            <div class="analogy-domain">Restaurants &#9733;</div>
-            <div class="analogy-text">Appetisers while you wait — the wait becomes part of the experience.</div>
-            <div class="analogy-transfer">Transferable: Serve quick-win content while they're in queue — relevant help articles, video walkthroughs, community answers.</div>
-          </div>
-          <div class="sample-root">
-            <div class="sample-root-label">Selected Analogy</div>
-            <div class="sample-root-text">The restaurant "appetiser" model — transform dead waiting time into productive self-service time. If 40% of issues resolve before an agent connects, you've cut queue length without adding headcount.</div>
+          <div class="mashup-board">
+            <!-- Top band: problem + abstract -->
+            <div class="mashup-top">
+              <div class="mashup-card">
+                <div class="mashup-card-label">Problem</div>
+                <div class="mashup-card-text">Customers wait too long for support, then leave.</div>
+              </div>
+              <div class="mashup-card">
+                <div class="mashup-card-label">Abstract Structure</div>
+                <div class="mashup-card-text">Queue management under variable demand.</div>
+                <div class="mashup-card-sub">How do you serve people faster without adding capacity?</div>
+              </div>
+            </div>
+            <!-- Middle band: collision cards -->
+            <div class="collision-cards">
+              <div class="collision-card hot">
+                <div class="collision-domain">Restaurants</div>
+                <div class="collision-story">Appetisers while you wait &mdash; the wait becomes part of the experience.</div>
+                <div class="collision-mechanism">Mechanism: Fill dead time with value so the queue feels shorter.</div>
+                <div class="collision-resonance hot">&#9733; Hot</div>
+              </div>
+              <div class="collision-card warm">
+                <div class="collision-domain">Healthcare</div>
+                <div class="collision-story">Emergency room triage &mdash; don't serve in order, serve by urgency.</div>
+                <div class="collision-mechanism">Mechanism: Priority-based routing by severity.</div>
+                <div class="collision-resonance warm">Warm</div>
+              </div>
+              <div class="collision-card cold">
+                <div class="collision-domain">Airlines</div>
+                <div class="collision-story">Self-service kiosks handle 80% of check-ins without a human.</div>
+                <div class="collision-mechanism">Mechanism: Automate simple, reserve humans for complex.</div>
+                <div class="collision-resonance cold">Cold</div>
+              </div>
+            </div>
+            <!-- Bottom band: remixed ideas -->
+            <div class="remix-section">
+              <div class="mashup-card-label" style="margin-bottom:12px;">Remixed Ideas</div>
+              <div class="remix-idea">
+                <div class="remix-tag">From: Restaurants</div>
+                <div class="remix-text">Serve quick-win content while customers are in queue &mdash; relevant help articles, video walkthroughs, community answers. If 40% of issues resolve before an agent connects, queue length drops without adding headcount.</div>
+                <div class="remix-notes">Test: Add a contextual help carousel to the waiting screen this sprint.</div>
+              </div>
+              <div class="remix-idea">
+                <div class="remix-tag">From: Healthcare</div>
+                <div class="remix-text">Route by issue severity, not arrival time. VIP and revenue-critical tickets jump the queue; simple queries get instant bot resolution.</div>
+                <div class="remix-notes">Test: Tag top 3 ticket categories by priority and measure resolution time change.</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
       <div class="section-block">
         <h2>What you get</h2>
-        <p>Set of analogies from other domains, each suggesting a direction or mechanism. Session ends by selecting the most generative analogy and translating its solution into a concrete experiment or design direction.</p>
+        <p>A set of collision cards from unexpected domains, each revealing a transferable mechanism. The session ends with remixed ideas adapted to your challenge, each tagged back to its source analogy, plus a concrete first experiment to run.</p>
       </div>
       <div class="section-block">
         <h2>Foundation</h2>
-        <p>Rooted in classical rhetoric (<strong>Aristotle</strong>). Modern application by IDEO's biomimicry practice and DARPA. Used by P&amp;G's Connect + Develop program. Connected to Clayton Christensen's disruptive innovation research.</p>
-        <div class="foundation-logos"><span class="org-badge">IDEO</span><span class="org-badge">DARPA</span><span class="org-badge">P&amp;G</span><span class="org-badge">Stanford d.school</span><span class="org-badge">Harvard Business School</span></div>
+        <p>Rooted in IDEO's Mash Up methodology and cross-pollination practice. Draws on the same intellectual territory as classical analogical reasoning (<strong>Aristotle</strong>), biomimicry, and DARPA's structured analogy programs. Used by P&amp;G's Connect + Develop program to source external innovations.</p>
+        <div class="foundation-logos"><span class="org-badge">IDEO</span><span class="org-badge">DARPA</span><span class="org-badge">P&amp;G</span><span class="org-badge">Stanford d.school</span></div>
       </div>
     </div>
     <div class="sidebar">
-      <div class="pete-note"><div class="pete-avatar-row"><div class="pete-avatar">P</div><div class="pete-label">Pete's note</div></div><p class="pete-text">"The best solutions are almost never invented from scratch. They're borrowed from somewhere no one thought to look. I'll take you to some surprising places."</p></div>
+      <div class="pete-note"><div class="pete-avatar-row"><div class="pete-avatar">P</div><div class="pete-label">Pete's note</div></div><p class="pete-text">"The best solutions are almost never invented from scratch. They're borrowed from somewhere no one thought to look. I'll take you to some surprising places &mdash; and we'll move fast. Some collisions will be duds. That's the point. We're looking for the one that makes you lean forward."</p></div>
       <div class="sidebar-card">
         <div class="sidebar-card-label">Often paired with</div>
         <a href="tool-detail-scamper.html" class="related-tool"><div class="related-tool-icon spark">S</div><div class="related-tool-text"><h4>SCAMPER</h4><p>Stretch the borrowed solution further</p></div></a>
-        <a href="tool-detail-crazy-8s.html" class="related-tool"><div class="related-tool-icon spark">C</div><div class="related-tool-text"><h4>Crazy 8s</h4><p>Generate variations on the analogy</p></div></a>
+        <a href="tool-detail-crazy-8s.html" class="related-tool"><div class="related-tool-icon spark">C</div><div class="related-tool-text"><h4>Crazy 8s</h4><p>Generate rapid variations on the remixed idea</p></div></a>
       </div>
       <div class="sidebar-card">
         <div class="sidebar-card-label">Also in The Spark</div>
-        <a href="tool-detail-crazy-8s.html" class="related-tool"><div class="related-tool-icon spark">C</div><div class="related-tool-text"><h4>Crazy 8s</h4><p>Rapidly sketch eight ideas in eight minutes</p></div></a>
-        <a href="tool-detail-scamper.html" class="related-tool"><div class="related-tool-icon spark">S</div><div class="related-tool-text"><h4>SCAMPER</h4><p>Stretch an idea by substituting, combining, adapting and more</p></div></a>
+        <a href="tool-detail-hmw.html" class="related-tool"><div class="related-tool-icon spark">H</div><div class="related-tool-text"><h4>How Might We</h4><p>Reframe problems as opportunity questions</p></div></a>
+        <a href="tool-detail-constraint-flip.html" class="related-tool"><div class="related-tool-icon spark">C</div><div class="related-tool-text"><h4>Constraint Flip</h4><p>Turn limitations into creative advantages</p></div></a>
       </div>
     </div>
   </div>
 </section>
 
 <div class="tool-bottom-cta">
-  <div class="tool-bottom-left"><h3>Try Analogical Thinking?</h3><p>Pete will guide you. About 20 minutes, always free.</p></div>
-  <div class="tool-bottom-right"><a href="toolbox.html" class="back-link">&larr; Back to toolbox</a><a href="index.html?tool=analogical-thinking" class="qf-cta" style="display:inline-block; width:auto;">Start Analogical Thinking &rarr;</a></div>
+  <div class="tool-bottom-left"><h3>Try Mash Up?</h3><p>Pete will guide you. About 20 minutes, always free.</p></div>
+  <div class="tool-bottom-right"><a href="toolbox.html" class="back-link">&larr; Back to toolbox</a><a href="index.html?tool=mash-up" class="qf-cta" style="display:inline-block; width:auto;">Start Mash Up &rarr;</a></div>
 </div>
 
 <footer><div class="footer-left"><a href="index.html"><img src="wade-icon.png" alt="Wade Institute" style="height:28px;width:auto;"></a><div class="footer-links"><a href="https://wadeinstitute.org.au">wadeinstitute.org.au</a><a href="mailto:enquiries@wadeinstitute.org.au">Contact</a><a href="privacy.html">Privacy</a></div></div><div class="footer-right">&copy; 2026 Wade Institute of Entrepreneurship</div></footer>

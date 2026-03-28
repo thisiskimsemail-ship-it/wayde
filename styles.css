@@ -144,6 +144,7 @@ body[data-mode] .board-grid-canvas,
 body[data-mode] .board-grid-pitch,
 body[data-mode] .board-grid-premortem,
 body[data-mode] .board-grid-effectuation,
+body[data-mode] .board-grid-mash-up,
 body[data-mode] .board-grid-default { border-color: color-mix(in srgb, var(--stage-color) 20%, transparent); }
 body[data-mode] .zone-name { color: var(--stage-color); }
 body[data-mode] .board-card { border-left-color: var(--stage-color); }
@@ -4764,6 +4765,43 @@ body.light .feedback-input, html[data-theme="light"] .feedback-input { backgroun
     .board-grid-trade-off { grid-template-columns: 1fr; }
 }
 
+/* === MASH UP BOARD GRID === */
+/* Three horizontal bands: anchors (2-col), collisions (full-width), remix + actions (full-width) */
+.board-grid-mash-up {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    border: 1px solid var(--stage-color, rgba(255,255,255,0.1));
+    border-radius: 8px;
+    overflow: hidden;
+}
+.board-grid-mash-up .board-zone {
+    min-height: auto;
+    border-radius: 0;
+    background: var(--bg, #12103a);
+    border-left: 3px solid var(--stage-color, #F15A22);
+    padding: 0.6rem;
+    overflow: visible;
+}
+.board-grid-mash-up .board-zone .zone-cards {
+    max-height: none;
+    overflow: visible;
+}
+/* Anchors: problem + abstract side by side (top band) */
+.board-grid-mash-up .board-zone[data-zone="mu-problem"] { grid-column: 1; }
+.board-grid-mash-up .board-zone[data-zone="mu-abstract"] { grid-column: 2; }
+/* Collisions: full-width cards (middle band) */
+.board-grid-mash-up .board-zone[data-zone="mu-collision-1"],
+.board-grid-mash-up .board-zone[data-zone="mu-collision-2"],
+.board-grid-mash-up .board-zone[data-zone="mu-collision-3"],
+.board-grid-mash-up .board-zone[data-zone="mu-collision-4"] { grid-column: 1 / -1; }
+/* Remix + Actions: full-width (bottom band) */
+.board-grid-mash-up .board-zone[data-zone="mu-remix"],
+.board-grid-mash-up .board-zone[data-zone="mu-actions"] { grid-column: 1 / -1; }
+@media (max-width: 600px) {
+    .board-grid-mash-up { grid-template-columns: 1fr; }
+}
+
 /* Compact text for all custom boards */
 .board-grid-trade-off .zone-name,
 .board-grid-cold-open .zone-name,
@@ -4772,7 +4810,8 @@ body.light .feedback-input, html[data-theme="light"] .feedback-input { backgroun
 .board-grid-toc .zone-name,
 .board-grid-iceberg .zone-name,
 .board-grid-constraint-flip .zone-name,
-.board-grid-flywheel .zone-name { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+.board-grid-flywheel .zone-name,
+.board-grid-mash-up .zone-name { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
 
 .board-grid-trade-off .board-card-text,
 .board-grid-cold-open .board-card-text,
@@ -4781,7 +4820,8 @@ body.light .feedback-input, html[data-theme="light"] .feedback-input { backgroun
 .board-grid-toc .board-card-text,
 .board-grid-iceberg .board-card-text,
 .board-grid-constraint-flip .board-card-text,
-.board-grid-flywheel .board-card-text { font-size: 0.8rem; line-height: 1.4; }
+.board-grid-flywheel .board-card-text,
+.board-grid-mash-up .board-card-text { font-size: 0.8rem; line-height: 1.4; }
 
 .board-grid-trade-off .zone-empty,
 .board-grid-trade-off .zone-hint,
@@ -4798,7 +4838,9 @@ body.light .feedback-input, html[data-theme="light"] .feedback-input { backgroun
 .board-grid-constraint-flip .zone-empty,
 .board-grid-constraint-flip .zone-hint,
 .board-grid-flywheel .zone-empty,
-.board-grid-flywheel .zone-hint { font-size: 0.7rem; }
+.board-grid-flywheel .zone-hint,
+.board-grid-mash-up .zone-empty,
+.board-grid-mash-up .zone-hint { font-size: 0.7rem; }
 
 
 /* ============================================================
@@ -5571,11 +5613,13 @@ body.light .feedback-input, html[data-theme="light"] .feedback-input { backgroun
     .board-grid-canvas,
     .board-grid-trade-off,
     .board-grid-premortem,
-    .board-grid-effectuation {
+    .board-grid-effectuation,
+    .board-grid-mash-up {
         grid-template-columns: 1fr !important;
     }
     .board-grid-canvas .board-zone,
-    .board-grid-trade-off .board-zone {
+    .board-grid-trade-off .board-zone,
+    .board-grid-mash-up .board-zone {
         grid-column: 1 !important;
         grid-row: auto !important;
     }
