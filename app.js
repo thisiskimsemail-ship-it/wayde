@@ -215,17 +215,6 @@ function trackEvent(event, meta = {}) {
 }
 
 // === EXERCISE LABELS ===
-// === TOOL-SPECIFIC BOARD TAG MAPS ===
-
-const FIVE_WHYS_TAG_MAP = {
-    'problem': 'fw-problem', 'presenting-problem': 'fw-problem',
-    'why1': 'fw-why1', 'why-1': 'fw-why1',
-    'why2': 'fw-why2', 'why-2': 'fw-why2',
-    'why3': 'fw-why3', 'why-3': 'fw-why3',
-    'why4': 'fw-why4', 'why-4': 'fw-why4',
-    'why5': 'fw-why5', 'why-5': 'fw-why5', 'root-cause': 'fw-why5', 'root': 'fw-why5'
-};
-
 const EXERCISE_LABELS = {
     'five-whys': 'Five Whys',
     'hmw': 'How Might We',
@@ -1122,13 +1111,6 @@ function forceCloseSession() {
     // Hide pitch preview card
     const pitchPreview = document.getElementById('pitchPreview');
     if (pitchPreview) pitchPreview.classList.add('hidden');
-    // Clean up post-session screens
-    if (typeof cleanupPostSessionScreens === 'function') cleanupPostSessionScreens();
-    document.querySelector('.download-progress')?.remove();
-    document.getElementById('postSessionScreen')?.remove();
-    // Restore chat pane visibility (in case post-session flow hid it)
-    const chatPaneEl = document.getElementById('chatPane');
-    if (chatPaneEl) chatPaneEl.style.display = '';
     // Hide input bar on welcome
     if (inputArea) inputArea.style.display = 'none';
     document.body.classList.remove('in-session', 'board-open');
@@ -1172,6 +1154,21 @@ function doCloseSession() {
     state.reportGenerated = false;
     state.reportText = '';
     delete document.body.dataset.mode;
+
+    // Close and reset the board
+    const boardPane = document.getElementById('boardPane');
+    if (boardPane) boardPane.classList.add('hidden');
+    state.board = { cards: [], visible: false };
+    const workshopLayout = document.getElementById('workshopLayout');
+    if (workshopLayout) workshopLayout.classList.remove('board-active', 'board-lean-canvas');
+    document.body.classList.remove('board-open');
+
+    // Hide synopsis, lead form, format choice, post-session screen
+    document.getElementById('reportSynopsis')?.classList.add('hidden');
+    document.getElementById('reportUnlock')?.classList.add('hidden');
+    document.getElementById('reportFormatChoice')?.classList.add('hidden');
+    document.getElementById('postSessionScreen')?.remove();
+    document.getElementById('postDownloadPanel')?.remove();
 
     // Show welcome, move input back, hide session bar
     welcome.classList.remove('hidden');
@@ -2191,7 +2188,7 @@ async function streamResponse() {
                 messagesEl.appendChild(boardChip);
                 boardChip.querySelector('.wrap-chip-report').addEventListener('click', () => {
                     boardChip.remove();
-                    startPostSessionFlow();
+                    generateReport();
                 });
                 scrollToBottom();
                 // Also show report CTA in footer
@@ -2521,7 +2518,7 @@ reportCtaBtn.addEventListener('click', async () => {
         return;
     }
 
-    startPostSessionFlow();
+    generateReport();
 });
 
 // === SHARED LEAD CAPTURE LOGIC ===
@@ -2877,46 +2874,47 @@ document.querySelectorAll('.report-actions').forEach(bar => {
 // === DOWNLOAD AS WORD (.doc) ===
 
 function downloadReportWord() {
-    if (!state.reportText) return;
+    const content = $('#reportContent');
+    if (!content) return;
 
-    const synopsis = state.reportSynopsis || {};
-    const body = JSON.stringify({
-        report: state.reportText,
-        synopsis: synopsis,
-        exercise: state.exercise || '',
-        mode: state.mode || '',
-        board_cards: state.board?.cards || []
-    });
+    const mName = MODE_LABELS[state.mode] || state.mode;
+    const exName = EXERCISE_LABELS[state.exercise] || state.exercise;
+    const date = new Date().toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' });
 
-    fetch('/api/report/docx', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: body
-    })
-    .then(resp => {
-        if (!resp.ok) throw new Error('Report generation failed');
-        return resp.blob();
-    })
-    .then(blob => {
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        const title = synopsis.title || 'Studio Report';
-        const safeName = title.replace(/[^a-zA-Z0-9 _-]/g, '').trim().slice(0, 60);
-        a.href = url;
-        a.download = safeName + ' - The Studio.docx';
-        a.click();
-        URL.revokeObjectURL(url);
-    })
-    .catch(err => {
-        console.error('[Report] DOCX download failed:', err);
-        // Fallback to old HTML-as-doc method
-        downloadReportWordFallback();
-    });
-}
+    const html = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
+<head><meta charset="utf-8"><title>${mName} · ${exName} · ${date}</title>
+<style>
+body { font-family: Arial, Helvetica, sans-serif; font-size: 11pt; color: #333; line-height: 1.5; max-width: 700px; margin: 0 auto; padding: 2rem; }
+h1 { font-size: 18pt; color: #1E194F; margin-bottom: 0.25em; }
+h2 { font-size: 14pt; color: #1E194F; margin-top: 1.5em; }
+h3 { font-size: 12pt; color: #1E194F; margin-top: 1.2em; }
+p { margin: 0.5em 0; }
+blockquote { border-left: 3px solid #ED3694; padding-left: 1em; margin: 1em 0; color: #555; font-style: italic; }
+a { color: #F15A22; }
+li { margin: 0.25em 0; }
+.meta { color: #888; font-size: 9pt; margin-bottom: 1.5em; }
+.footer { margin-top: 2em; padding-top: 1em; border-top: 1px solid #ddd; font-size: 9pt; color: #888; }
+</style></head><body>
+<h1>Studio Workshop Summary</h1>
+<div class="meta">${mName} · ${exName} · ${date}</div>
+${state.reportSynopsis?.title ? `<h2 style="text-align:center;margin-bottom:0.25em;">${state.reportSynopsis.title}</h2>` : ''}
+${state.reportSynopsis?.hook ? `<p style="font-style:italic;color:#666;text-align:center;margin-bottom:1.5em;">${state.reportSynopsis.hook}</p>` : ''}
+${content.innerHTML}
+<div class="footer">
+  <p>Wade Institute of Entrepreneurship · wadeinstitute.org.au</p>
+  <p>Generated by Wade Studio · For educational purposes only · Decisions remain yours.</p>
+</div>
+</body></html>`;
 
-// Fallback: client-side HTML-as-doc (used if server endpoint fails)
-function downloadReportWordFallback() {
-    // No-op fallback — server-side DOCX is the primary method
+    const blob = new Blob([html], { type: 'application/msword' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `Wade-Studio-${exName.replace(/\s+/g, '-')}-${date.replace(/\s+/g, '-')}.doc`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
 }
 
 // === EMAIL REPORT COPY ===
@@ -3055,332 +3053,6 @@ function renderNextExercisePanel() {
     });
 }
 
-// === POST-SESSION FLOW (3-screen experience) ===
-
-async function startPostSessionFlow() {
-    if (reportGenerating || state.reportGenerated) return;
-    trackEvent('post_session_start', { exchanges: state.exchangeCount });
-    reportGenerating = true;
-
-    const exName = EXERCISE_LABELS[state.exercise] || state.exercise;
-    const toolMap = TOOL_PROGRAM_MAP[state.exercise] || TOOL_PROGRAM_FALLBACK;
-
-    // Hide chat pane elements, board, report CTA
-    const chatPane = document.getElementById('chatPane');
-    const boardPane = document.getElementById('boardPane');
-    const workshopLayout = document.getElementById('workshopLayout');
-    if (chatPane) chatPane.style.display = 'none';
-    if (boardPane) boardPane.classList.add('hidden');
-    if (workshopLayout) workshopLayout.classList.remove('board-active');
-    reportCta.classList.add('hidden');
-    if (inputArea) inputArea.style.display = 'none';
-    sessionBar.classList.add('hidden');
-
-    // ---- Screen 1: Loading ----
-    const loadingScreen = document.getElementById('postSessionLoading');
-    loadingScreen.classList.remove('hidden');
-    loadingScreen.scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-    // Populate subtitle
-    const subtitle = document.getElementById('psLoadingSubtitle');
-    if (subtitle) subtitle.textContent = `Pete is assembling your ${exName} report and visual`;
-
-    // Populate program recommendation card
-    const programName = document.getElementById('psProgramName');
-    const programBridge = document.getElementById('psProgramBridge');
-    const programLink = document.getElementById('psProgramLink');
-    if (programName) programName.textContent = toolMap.program;
-    if (programBridge) programBridge.textContent = toolMap.bridge;
-    if (programLink) programLink.href = toolMap.programUrl;
-
-    // Animate progress bar and steps
-    const progressFill = document.getElementById('psProgressFill');
-    const steps = [
-        { el: document.getElementById('psStep1'), pct: 20 },
-        { el: document.getElementById('psStep2'), pct: 45 },
-        { el: document.getElementById('psStep3'), pct: 70 },
-        { el: document.getElementById('psStep4'), pct: 90 }
-    ];
-
-    let stepIdx = 0;
-    const stepInterval = setInterval(() => {
-        if (stepIdx > 0 && steps[stepIdx - 1].el) {
-            steps[stepIdx - 1].el.classList.remove('active');
-            steps[stepIdx - 1].el.classList.add('done');
-            const icon = steps[stepIdx - 1].el.querySelector('.ps-step-icon');
-            if (icon) icon.textContent = '\u2713';
-        }
-        if (stepIdx < steps.length) {
-            steps[stepIdx].el.classList.add('active');
-            const icon = steps[stepIdx].el.querySelector('.ps-step-icon');
-            if (icon) icon.textContent = '\u25CF';
-            if (progressFill) progressFill.style.width = steps[stepIdx].pct + '%';
-            stepIdx++;
-        }
-    }, 4000);
-
-    // Prepare messages for both calls
-    let reportMessages = [...state.messages];
-    const switchIdx = reportMessages.findLastIndex(m => m._switchPoint);
-    if (switchIdx > 0) {
-        const preSummary = reportMessages.slice(0, switchIdx)
-            .filter(m => m.role === 'user' && !m.content.startsWith('[SYSTEM]'))
-            .map(m => m.content).join(' | ');
-        reportMessages = [
-            { role: 'user', content: `[Context from previous exercise]: ${preSummary}` },
-            { role: 'assistant', content: 'Understood \u2014 I have the context from your previous exercise.' },
-            ...reportMessages.slice(switchIdx).map(m => ({ role: m.role, content: m.content }))
-        ];
-    }
-
-    // Fire both API calls in parallel
-    const reportPromise = fetch('/api/report', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            mode: state.mode,
-            exercise: state.exercise,
-            messages: reportMessages,
-            parking_lot: state.parkingLot,
-            board_cards: state.board.cards
-        })
-    }).then(r => r.ok ? r.json() : Promise.reject('Report failed'));
-
-    const revealPromise = fetch('/api/session/reveal', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            mode: state.mode,
-            exercise: state.exercise,
-            messages: reportMessages,
-            board_cards: state.board.cards
-        })
-    }).then(r => r.ok ? r.json() : Promise.reject('Reveal failed'));
-
-    try {
-        const [reportData, revealData] = await Promise.all([reportPromise, revealPromise]);
-        clearInterval(stepInterval);
-
-        // Mark all steps done
-        steps.forEach(s => {
-            if (s.el) {
-                s.el.classList.remove('active');
-                s.el.classList.add('done');
-                const icon = s.el.querySelector('.ps-step-icon');
-                if (icon) icon.textContent = '\u2713';
-            }
-        });
-        if (progressFill) progressFill.style.width = '100%';
-
-        // Store report data
-        state.reportText = reportData.report || '';
-        state.reportSynopsis = reportData.synopsis || {};
-        state.reportGenerated = true;
-
-        // Prepare full report in background (hidden card)
-        if (reportContent) reportContent.innerHTML = renderMarkdown(state.reportText);
-        populateReportMeta();
-
-        // Brief pause then transition to Screen 2
-        await new Promise(resolve => setTimeout(resolve, 800));
-        loadingScreen.classList.add('hidden');
-
-        // ---- Screen 2: Reveal ----
-        const revealScreen = document.getElementById('postSessionReveal');
-        revealScreen.classList.remove('hidden');
-        revealScreen.scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-        // Populate reveal content
-        const closingText = document.getElementById('psClosingText');
-        const headline = document.getElementById('psHeadline');
-        const synopsisText = document.getElementById('psSynopsisText');
-        const recoList = document.getElementById('psRecommendations');
-
-        if (closingText) closingText.textContent = revealData.closing_message || '';
-        if (headline) {
-            // Put last few words in <em> for yellow emphasis
-            const words = (revealData.headline || '').split(' ');
-            if (words.length > 3) {
-                const last2 = words.splice(-2).join(' ');
-                headline.innerHTML = words.join(' ') + ' <em>' + last2 + '</em>';
-            } else {
-                headline.textContent = revealData.headline || '';
-            }
-        }
-        if (synopsisText) synopsisText.textContent = revealData.synopsis || '';
-        if (recoList && revealData.recommendations) {
-            recoList.innerHTML = revealData.recommendations
-                .map(r => `<li><strong>${EXERCISE_LABELS[r.exercise] || r.exercise}</strong> \u2014 ${r.reason}</li>`)
-                .join('');
-        }
-
-        // Store reveal recommendations for Screen 3
-        state._revealRecommendations = revealData.recommendations || [];
-
-        // Wire email form
-        const emailForm = document.getElementById('psEmailForm');
-        const emailCapture = document.getElementById('psEmailCapture');
-        const formatButtons = document.getElementById('psFormatButtons');
-
-        emailForm?.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById('psDownloadBtn');
-            const email = document.getElementById('psEmailInput')?.value?.trim();
-            const name = document.getElementById('psNameInput')?.value?.trim();
-            const company = document.getElementById('psCompanyInput')?.value?.trim();
-            if (!email) return;
-
-            btn.disabled = true;
-            btn.textContent = 'Sending...';
-
-            state.userEmail = email;
-            localStorage.setItem('wade_user_email', email);
-
-            // Send lead
-            try {
-                await fetch('/api/lead', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        email, name, company, role: '',
-                        mode: state.mode,
-                        exercise: state.exercise,
-                        report: state.reportText,
-                        rating: state.rating,
-                        messages: state.messages
-                    })
-                });
-            } catch (err) {
-                console.error('[PostSession] Lead capture failed:', err);
-            }
-
-            // Save session summary
-            fetch('/api/summary', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    email,
-                    device_id: state.deviceId,
-                    mode: state.mode,
-                    exercise: state.exercise,
-                    messages: state.messages
-                })
-            }).catch(() => {});
-
-            // Hide email form, show format buttons
-            emailCapture.classList.add('hidden');
-            formatButtons.classList.remove('hidden');
-
-            // Auto-download Word
-            downloadReportWord();
-
-            // After brief delay, transition to Screen 3
-            setTimeout(() => transitionToPostDownload(), 2000);
-        });
-
-        // Wire format button
-        document.getElementById('psFormatWord')?.addEventListener('click', () => {
-            downloadReportWord();
-        });
-
-    } catch (err) {
-        clearInterval(stepInterval);
-        console.error('[PostSession] Flow failed:', err);
-        // Fallback: restore chat pane and use old flow
-        loadingScreen.classList.add('hidden');
-        if (chatPane) chatPane.style.display = '';
-        if (inputArea) inputArea.style.display = '';
-        sessionBar.classList.remove('hidden');
-        reportCta.classList.remove('hidden');
-        reportGenerating = false;
-        reportCtaBtn.disabled = false;
-        reportCtaBtn.textContent = 'Generate my report \u2192';
-    }
-}
-
-function transitionToPostDownload() {
-    const revealScreen = document.getElementById('postSessionReveal');
-    const nextScreen = document.getElementById('postSessionNext');
-    if (!nextScreen) return;
-
-    revealScreen?.classList.add('hidden');
-    nextScreen.classList.remove('hidden');
-    nextScreen.scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-    // Populate next-tool recommendations from reveal data
-    const nextTools = document.getElementById('psNextTools');
-    const recommendations = state._revealRecommendations || [];
-
-    if (nextTools && recommendations.length > 0) {
-        nextTools.innerHTML = recommendations.map(r => {
-            const mode = EXERCISE_MODE[r.exercise] || 'untangle';
-            const modeName = MODE_LABELS[mode] || mode;
-            const name = EXERCISE_LABELS[r.exercise] || r.exercise;
-            return `
-                <div class="ps-next-card" data-mode="${mode}" data-exercise="${r.exercise}">
-                    <div class="ps-next-card-mode">${modeName}</div>
-                    <div class="ps-next-card-name">${name}</div>
-                    <div class="ps-next-card-desc">${r.reason}</div>
-                </div>
-            `;
-        }).join('');
-
-        // Wire card clicks
-        nextTools.querySelectorAll('.ps-next-card').forEach(card => {
-            card.addEventListener('click', () => {
-                const mode = card.dataset.mode;
-                const exercise = card.dataset.exercise;
-                cleanupPostSessionScreens();
-                startExercise(mode, exercise);
-            });
-        });
-    }
-
-    // Populate explore grid — all tools except current
-    const exploreGrid = document.getElementById('psExploreGrid');
-    if (exploreGrid) {
-        const allTools = Object.entries(EXERCISE_MODE)
-            .filter(([ex]) => ex !== state.exercise)
-            .slice(0, 8); // show 8 max
-
-        exploreGrid.innerHTML = allTools.map(([ex, mode]) => {
-            const name = EXERCISE_LABELS[ex] || ex;
-            const modeName = MODE_LABELS[mode] || mode;
-            return `
-                <div class="ps-explore-tile" data-mode="${mode}" data-exercise="${ex}">
-                    <div class="ps-explore-tile-name">${name}</div>
-                    <div class="ps-explore-tile-mode">${modeName}</div>
-                </div>
-            `;
-        }).join('');
-
-        exploreGrid.querySelectorAll('.ps-explore-tile').forEach(tile => {
-            tile.addEventListener('click', () => {
-                const mode = tile.dataset.mode;
-                const exercise = tile.dataset.exercise;
-                cleanupPostSessionScreens();
-                startExercise(mode, exercise);
-            });
-        });
-    }
-
-    // Wire new session button
-    document.getElementById('psNewSessionBtn')?.addEventListener('click', () => {
-        cleanupPostSessionScreens();
-        forceCloseSession();
-    });
-}
-
-function cleanupPostSessionScreens() {
-    document.getElementById('postSessionLoading')?.classList.add('hidden');
-    document.getElementById('postSessionReveal')?.classList.add('hidden');
-    document.getElementById('postSessionNext')?.classList.add('hidden');
-
-    // Restore chat pane visibility
-    const chatPane = document.getElementById('chatPane');
-    if (chatPane) chatPane.style.display = '';
-}
-
 // === WORKSHOP PHASE & PROGRESS ===
 
 function updatePhaseIndicator(phase) {
@@ -3418,8 +3090,8 @@ const BOARD_LAYOUTS = {
             { id: 'fw-why2', name: 'Why #2', empty: 'Deeper', hint: 'Why does that happen?', colour: 'teal' },
             { id: 'fw-why3', name: 'Why #3', empty: 'Deeper still', hint: 'Why?', colour: 'teal' },
             { id: 'fw-why4', name: 'Why #4', empty: 'Approaching root', hint: 'Why?', colour: 'teal' },
-            { id: 'fw-why5', name: 'Root Cause', empty: 'The real insight', hint: 'The deepest why', colour: 'orange' },
-            { id: 'actions', name: 'Actions', empty: 'What to do about it', hint: 'Next steps', colour: 'orange' }
+            { id: 'fw-why5', name: 'Root Cause', empty: 'The real insight', hint: 'The deepest why', colour: 'teal' },
+            { id: 'actions', name: 'Actions', empty: 'What to do about it', hint: 'Next steps', colour: 'teal' }
         ],
         gridClass: 'board-grid-five-whys'
     },
@@ -3430,8 +3102,8 @@ const BOARD_LAYOUTS = {
             { id: 'em-thinks', name: 'Thinks', empty: 'What they think privately', hint: 'Inner thoughts, worries, hopes', colour: 'teal' },
             { id: 'em-does', name: 'Does', empty: 'Observable behaviour', hint: 'Actions, habits, routines', colour: 'teal' },
             { id: 'em-feels', name: 'Feels', empty: 'Emotions', hint: 'Anxious, excited, frustrated, hopeful', colour: 'teal' },
-            { id: 'em-contradictions', name: 'Contradictions', empty: 'Where says and does don\'t match', hint: 'The gaps are the insights', colour: 'orange' },
-            { id: 'insights', name: 'Key Insight', empty: 'The most important discovery', hint: 'What changes because of this?', colour: 'orange' }
+            { id: 'em-contradictions', name: 'Contradictions', empty: 'Where says and does don\'t match', hint: 'The gaps are the insights', colour: 'teal' },
+            { id: 'insights', name: 'Key Insight', empty: 'The most important discovery', hint: 'What changes because of this?', colour: 'teal' }
         ],
         gridClass: 'board-grid-empathy-map'
     },
@@ -3439,10 +3111,10 @@ const BOARD_LAYOUTS = {
         zones: [
             { id: 'jtbd-situation', name: 'Situation', empty: 'When I\'m...', hint: 'The context that triggers the need', colour: 'teal' },
             { id: 'jtbd-functional', name: 'Functional Job', empty: 'What task am I trying to accomplish?', hint: 'The practical thing they need done', colour: 'teal' },
-            { id: 'jtbd-emotional', name: 'Emotional Job', empty: 'How do I want to feel?', hint: 'Confidence, relief, excitement', colour: 'pink' },
-            { id: 'jtbd-social', name: 'Social Job', empty: 'How do I want to be perceived?', hint: 'Competent, innovative, caring', colour: 'pink' },
-            { id: 'jtbd-hiring', name: 'Hiring Criteria', empty: 'What makes them choose?', hint: 'Speed, cost, trust, outcome', colour: 'orange' },
-            { id: 'insights', name: 'Underserved Job', empty: 'The job no one does well', hint: 'This is the opportunity', colour: 'orange' }
+            { id: 'jtbd-emotional', name: 'Emotional Job', empty: 'How do I want to feel?', hint: 'Confidence, relief, excitement', colour: 'teal' },
+            { id: 'jtbd-social', name: 'Social Job', empty: 'How do I want to be perceived?', hint: 'Competent, innovative, caring', colour: 'teal' },
+            { id: 'jtbd-hiring', name: 'Hiring Criteria', empty: 'What makes them choose?', hint: 'Speed, cost, trust, outcome', colour: 'teal' },
+            { id: 'insights', name: 'Underserved Job', empty: 'The job no one does well', hint: 'This is the opportunity', colour: 'teal' }
         ],
         gridClass: 'board-grid-jtbd'
     },
@@ -3456,7 +3128,7 @@ const BOARD_LAYOUTS = {
             { id: 'c8-6', name: 'Idea 6', empty: 'Sixth idea', hint: '~1 minute', colour: 'orange' },
             { id: 'c8-7', name: 'Idea 7', empty: 'Seventh idea', hint: '~1 minute', colour: 'orange' },
             { id: 'c8-8', name: 'Idea 8', empty: 'Eighth idea', hint: '~1 minute', colour: 'orange' },
-            { id: 'c8-shortlist', name: 'Shortlist', empty: 'Best ideas selected', hint: 'Star your favourites', colour: 'teal' }
+            { id: 'c8-shortlist', name: 'Shortlist', empty: 'Best ideas selected', hint: 'Star your favourites', colour: 'orange' }
         ],
         gridClass: 'board-grid-crazy8s'
     },
@@ -3468,8 +3140,8 @@ const BOARD_LAYOUTS = {
             { id: 'hmw-q3', name: 'HMW #3', empty: 'Third reframe', hint: 'How might we...?', colour: 'orange' },
             { id: 'hmw-q4', name: 'HMW #4', empty: 'Fourth reframe', hint: 'How might we...?', colour: 'orange' },
             { id: 'hmw-q5', name: 'HMW #5', empty: 'Fifth reframe', hint: 'How might we...?', colour: 'orange' },
-            { id: 'hmw-best', name: 'Most Promising', empty: 'The reframe with the most potential', hint: 'Which one opens the most interesting direction?', colour: 'teal' },
-            { id: 'actions', name: 'Actions', empty: 'Next steps', hint: 'What to explore from here', colour: 'teal' }
+            { id: 'hmw-best', name: 'Most Promising', empty: 'The reframe with the most potential', hint: 'Which one opens the most interesting direction?', colour: 'orange' },
+            { id: 'actions', name: 'Actions', empty: 'Next steps', hint: 'What to explore from here', colour: 'orange' }
         ],
         gridClass: 'board-grid-hmw'
     },
@@ -3482,32 +3154,32 @@ const BOARD_LAYOUTS = {
             { id: 'sc-p', name: 'P — Put to Other Uses', empty: 'What else could this do?', hint: 'New markets, new contexts', colour: 'orange' },
             { id: 'sc-e', name: 'E — Eliminate', empty: 'What could you remove?', hint: 'The hardest question', colour: 'orange' },
             { id: 'sc-r', name: 'R — Reverse', empty: 'What if you did the opposite?', hint: 'Flip the assumption', colour: 'orange' },
-            { id: 'sc-shortlist', name: 'Shortlist', empty: 'Best ideas across all lenses', hint: 'Star your favourites', colour: 'teal' }
+            { id: 'sc-shortlist', name: 'Shortlist', empty: 'Best ideas across all lenses', hint: 'Star your favourites', colour: 'orange' }
         ],
         gridClass: 'board-grid-scamper'
     },
     'devils-advocate': {
         zones: [
             { id: 'da-idea', name: 'The Idea', empty: 'What are you defending?', hint: 'State your case', colour: 'pink' },
-            { id: 'da-for', name: 'Case For', empty: 'Your strongest arguments', hint: 'Why this should work', colour: 'teal' },
+            { id: 'da-for', name: 'Case For', empty: 'Your strongest arguments', hint: 'Why this should work', colour: 'pink' },
             { id: 'da-against', name: 'Case Against', empty: 'Pete\'s challenges', hint: 'Why this might not work', colour: 'pink' },
-            { id: 'da-rebuttals', name: 'Rebuttals', empty: 'Your responses', hint: 'How you address each challenge', colour: 'orange' },
-            { id: 'da-verdict', name: 'Verdict', empty: 'What survived and what didn\'t', hint: 'The honest assessment', colour: 'teal' },
-            { id: 'actions', name: 'Actions', empty: 'Weaknesses to address', hint: 'What to fix before committing', colour: 'orange' }
+            { id: 'da-rebuttals', name: 'Rebuttals', empty: 'Your responses', hint: 'How you address each challenge', colour: 'pink' },
+            { id: 'da-verdict', name: 'Verdict', empty: 'What survived and what didn\'t', hint: 'The honest assessment', colour: 'pink' },
+            { id: 'actions', name: 'Actions', empty: 'Weaknesses to address', hint: 'What to fix before committing', colour: 'pink' }
         ],
         gridClass: 'board-grid-devils-advocate'
     },
     'rapid-experiment': {
         zones: [
             { id: 're-hypothesis', name: 'Hypothesis', empty: 'What do you believe?', hint: 'If we [do X], then [Y] will happen', colour: 'yellow' },
-            { id: 're-assumption', name: 'Riskiest Assumption', empty: 'What must be true?', hint: 'The one that kills the idea if wrong', colour: 'orange' },
+            { id: 're-assumption', name: 'Riskiest Assumption', empty: 'What must be true?', hint: 'The one that kills the idea if wrong', colour: 'yellow' },
             { id: 're-method', name: 'Test Method', empty: 'How you\'ll test it', hint: 'Concierge, landing page, pre-sell...', colour: 'yellow' },
             { id: 're-metric', name: 'Success Metric', empty: 'The number you\'ll measure', hint: 'Specific, measurable', colour: 'yellow' },
-            { id: 're-pass', name: 'Pass Criteria', empty: 'What counts as success?', hint: 'The threshold', colour: 'teal' },
-            { id: 're-fail', name: 'Fail Criteria', empty: 'What counts as failure?', hint: 'Be honest before you see the data', colour: 'pink' },
+            { id: 're-pass', name: 'Pass Criteria', empty: 'What counts as success?', hint: 'The threshold', colour: 'yellow' },
+            { id: 're-fail', name: 'Fail Criteria', empty: 'What counts as failure?', hint: 'Be honest before you see the data', colour: 'yellow' },
             { id: 're-predicted', name: 'Predicted Outcome', empty: 'What you expect', hint: 'Write this before running', colour: 'yellow' },
-            { id: 're-actual', name: 'Actual Outcome', empty: '(Fill in after running)', hint: 'What actually happened', colour: 'teal' },
-            { id: 'actions', name: 'Next Step', empty: '48-hour action', hint: 'Build it, run it, ship it', colour: 'orange' }
+            { id: 're-actual', name: 'Actual Outcome', empty: '(Fill in after running)', hint: 'What actually happened', colour: 'yellow' },
+            { id: 'actions', name: 'Next Step', empty: '48-hour action', hint: 'Build it, run it, ship it', colour: 'yellow' }
         ],
         gridClass: 'board-grid-rapid-experiment'
     },
@@ -3522,47 +3194,47 @@ const BOARD_LAYOUTS = {
     },
     'lean-canvas': {
         zones: [
-            { id: 'problem', name: 'Problem', empty: 'Top 1-3 problems', hint: 'What are the top 3 problems?', colour: 'orange' },
-            { id: 'solution', name: 'Solution', empty: 'Top features', hint: 'How you solve each problem', colour: 'pink' },
-            { id: 'uvp', name: 'Unique Value Prop', empty: 'Single clear message', hint: 'Why are you different?', colour: 'pink' },
+            { id: 'problem', name: 'Problem', empty: 'Top 1-3 problems', hint: 'What are the top 3 problems?', colour: 'yellow' },
+            { id: 'solution', name: 'Solution', empty: 'Top features', hint: 'How you solve each problem', colour: 'yellow' },
+            { id: 'uvp', name: 'Unique Value Prop', empty: 'Single clear message', hint: 'Why are you different?', colour: 'yellow' },
             { id: 'unfair', name: 'Unfair Advantage', empty: 'Can\'t be copied', hint: 'What can\'t be easily copied?', colour: 'yellow' },
-            { id: 'segments', name: 'Customer Segments', empty: 'Target customers', hint: 'Who are your target customers?', colour: 'orange' },
-            { id: 'channels', name: 'Channels', empty: 'Path to customers', hint: 'How you reach customers', colour: 'pink' },
-            { id: 'revenue', name: 'Revenue Streams', empty: 'How you make money', hint: 'Revenue model', colour: 'teal' },
-            { id: 'costs', name: 'Cost Structure', empty: 'Key costs', hint: 'Key cost drivers', colour: 'teal' },
-            { id: 'metrics', name: 'Key Metrics', empty: 'Numbers that matter', hint: 'Key numbers to track', colour: 'teal' }
+            { id: 'segments', name: 'Customer Segments', empty: 'Target customers', hint: 'Who are your target customers?', colour: 'yellow' },
+            { id: 'channels', name: 'Channels', empty: 'Path to customers', hint: 'How you reach customers', colour: 'yellow' },
+            { id: 'revenue', name: 'Revenue Streams', empty: 'How you make money', hint: 'Revenue model', colour: 'yellow' },
+            { id: 'costs', name: 'Cost Structure', empty: 'Key costs', hint: 'Key cost drivers', colour: 'yellow' },
+            { id: 'metrics', name: 'Key Metrics', empty: 'Numbers that matter', hint: 'Key numbers to track', colour: 'yellow' }
         ],
         gridClass: 'board-grid-canvas'
     },
     'pre-mortem': {
         zones: [
-            { id: 'risk-market', name: 'Market Risk', empty: 'Market failures', hint: 'Wrong market, bad timing, no demand', colour: 'orange' },
-            { id: 'risk-product', name: 'Product Risk', empty: 'Product failures', hint: 'Wrong solution, bad UX, doesn\'t work', colour: 'orange' },
+            { id: 'risk-market', name: 'Market Risk', empty: 'Market failures', hint: 'Wrong market, bad timing, no demand', colour: 'pink' },
+            { id: 'risk-product', name: 'Product Risk', empty: 'Product failures', hint: 'Wrong solution, bad UX, doesn\'t work', colour: 'pink' },
             { id: 'risk-team', name: 'Team Risk', empty: 'Team failures', hint: 'Wrong skills, conflict, burnout', colour: 'pink' },
-            { id: 'risk-financial', name: 'Financial Risk', empty: 'Money failures', hint: 'Ran out of cash, wrong pricing', colour: 'teal' },
-            { id: 'risk-competition', name: 'Competition Risk', empty: 'Competitive failures', hint: 'Beaten by incumbents or new entrants', colour: 'teal' },
-            { id: 'risk-timing', name: 'Timing Risk', empty: 'Timing failures', hint: 'Too early, too late, external shock', colour: 'yellow' },
-            { id: 'risk-mitigations', name: 'Mitigations', empty: 'Actions to reduce risk', hint: 'What you can do this week', colour: 'orange' }
+            { id: 'risk-financial', name: 'Financial Risk', empty: 'Money failures', hint: 'Ran out of cash, wrong pricing', colour: 'pink' },
+            { id: 'risk-competition', name: 'Competition Risk', empty: 'Competitive failures', hint: 'Beaten by incumbents or new entrants', colour: 'pink' },
+            { id: 'risk-timing', name: 'Timing Risk', empty: 'Timing failures', hint: 'Too early, too late, external shock', colour: 'pink' },
+            { id: 'risk-mitigations', name: 'Mitigations', empty: 'Actions to reduce risk', hint: 'What you can do this week', colour: 'pink' }
         ],
         gridClass: 'board-grid-premortem'
     },
     'effectuation': {
         zones: [
-            { id: 'eff-means', name: 'Bird in Hand', empty: 'What you already have', hint: 'Skills, knowledge, network', colour: 'orange' },
-            { id: 'eff-loss', name: 'Affordable Loss', empty: 'What you can risk', hint: 'Time, money, reputation', colour: 'pink' },
-            { id: 'eff-quilt', name: 'Crazy Quilt', empty: 'Who could join', hint: 'Partners, allies, co-creators', colour: 'teal' },
+            { id: 'eff-means', name: 'Bird in Hand', empty: 'What you already have', hint: 'Skills, knowledge, network', colour: 'yellow' },
+            { id: 'eff-loss', name: 'Affordable Loss', empty: 'What you can risk', hint: 'Time, money, reputation', colour: 'yellow' },
+            { id: 'eff-quilt', name: 'Crazy Quilt', empty: 'Who could join', hint: 'Partners, allies, co-creators', colour: 'yellow' },
             { id: 'eff-lemonade', name: 'Lemonade', empty: 'Surprises to leverage', hint: 'Turn setbacks into advantages', colour: 'yellow' },
-            { id: 'eff-pilot', name: 'Pilot in the Plane', empty: 'What you control', hint: 'Shape the future, don\'t predict it', colour: 'orange' },
-            { id: 'eff-action', name: 'First Move', empty: 'This week\'s action', hint: 'One concrete step in 48 hours', colour: 'orange' }
+            { id: 'eff-pilot', name: 'Pilot in the Plane', empty: 'What you control', hint: 'Shape the future, don\'t predict it', colour: 'yellow' },
+            { id: 'eff-action', name: 'First Move', empty: 'This week\'s action', hint: 'One concrete step in 48 hours', colour: 'yellow' }
         ],
         gridClass: 'board-grid-effectuation'
     },
     'elevator-pitch': {
         zones: [
-            { id: 'pitch-customer', name: 'Target Customer', empty: 'Who is this for?', hint: 'The specific person who needs this most', colour: 'orange' },
-            { id: 'pitch-problem', name: 'Problem / Need', empty: 'What pain do they have?', hint: 'The urgent problem they face', colour: 'orange' },
-            { id: 'pitch-solution', name: 'Product / Service', empty: 'What are you building?', hint: 'Name and category', colour: 'pink' },
-            { id: 'pitch-benefit', name: 'Key Benefit', empty: 'What changes for them?', hint: 'The specific outcome they get', colour: 'teal' },
+            { id: 'pitch-customer', name: 'Target Customer', empty: 'Who is this for?', hint: 'The specific person who needs this most', colour: 'yellow' },
+            { id: 'pitch-problem', name: 'Problem / Need', empty: 'What pain do they have?', hint: 'The urgent problem they face', colour: 'yellow' },
+            { id: 'pitch-solution', name: 'Product / Service', empty: 'What are you building?', hint: 'Name and category', colour: 'yellow' },
+            { id: 'pitch-benefit', name: 'Key Benefit', empty: 'What changes for them?', hint: 'The specific outcome they get', colour: 'yellow' },
             { id: 'pitch-differentiator', name: 'Differentiator', empty: 'Why you, not them?', hint: 'What makes you different from alternatives', colour: 'yellow' }
         ],
         gridClass: 'board-grid-pitch'
@@ -3573,8 +3245,8 @@ const BOARD_LAYOUTS = {
             { id: 'ice-patterns', name: 'Patterns', empty: 'What keeps happening?', hint: 'Recurring themes beneath the event', colour: 'teal' },
             { id: 'ice-structures', name: 'Structures', empty: 'What causes the pattern?', hint: 'Incentives, processes, power dynamics', colour: 'teal' },
             { id: 'ice-mental', name: 'Mental Models', empty: 'What belief holds this in place?', hint: 'The deepest assumption', colour: 'teal' },
-            { id: 'ice-leverage', name: 'Leverage Point', empty: 'Where to intervene', hint: 'The change with the greatest impact', colour: 'orange' },
-            { id: 'actions', name: 'Actions', empty: 'Next steps', hint: 'Test or shift the mental model', colour: 'orange' }
+            { id: 'ice-leverage', name: 'Leverage Point', empty: 'Where to intervene', hint: 'The change with the greatest impact', colour: 'teal' },
+            { id: 'actions', name: 'Actions', empty: 'Next steps', hint: 'Test or shift the mental model', colour: 'teal' }
         ],
         gridClass: 'board-grid-iceberg'
     },
@@ -3582,43 +3254,43 @@ const BOARD_LAYOUTS = {
         zones: [
             { id: 'cf-constraint', name: 'The Constraint', empty: 'Your biggest limitation', hint: 'Be specific — not just "no money"', colour: 'orange' },
             { id: 'cf-flip', name: 'The Flip', empty: 'The same fact, seen as an advantage', hint: 'What can you do because of this?', colour: 'orange' },
-            { id: 'cf-ideas', name: 'Constraint-Driven Ideas', empty: 'Ideas that depend on the constraint', hint: 'If the constraint disappeared, would the idea still work?', colour: 'pink' },
+            { id: 'cf-ideas', name: 'Constraint-Driven Ideas', empty: 'Ideas that depend on the constraint', hint: 'If the constraint disappeared, would the idea still work?', colour: 'orange' },
             { id: 'cf-moat', name: 'The Moat Idea', empty: 'The idea competitors can\'t copy', hint: 'Only works because of your specific limitation', colour: 'orange' },
-            { id: 'actions', name: 'Actions', empty: 'First test', hint: 'How to validate the moat idea', colour: 'teal' }
+            { id: 'actions', name: 'Actions', empty: 'First test', hint: 'How to validate the moat idea', colour: 'orange' }
         ],
         gridClass: 'board-grid-constraint-flip'
     },
     'socratic': {
         zones: [
             { id: 'sq-verified', name: 'Verified', empty: 'Tested — evidence exists', hint: 'Claims with real data behind them', colour: 'teal' },
-            { id: 'sq-assumed', name: 'Assumed', empty: 'Believed but untested', hint: 'Feels true but no evidence', colour: 'orange' },
-            { id: 'sq-inherited', name: 'Inherited', empty: 'Someone told you — you accepted it', hint: 'Absorbed from others without testing', colour: 'pink' },
-            { id: 'sq-critical', name: 'Critical Assumption', empty: 'The one that changes everything', hint: 'If this is wrong, the whole plan shifts', colour: 'orange' },
+            { id: 'sq-assumed', name: 'Assumed', empty: 'Believed but untested', hint: 'Feels true but no evidence', colour: 'teal' },
+            { id: 'sq-inherited', name: 'Inherited', empty: 'Someone told you — you accepted it', hint: 'Absorbed from others without testing', colour: 'teal' },
+            { id: 'sq-critical', name: 'Critical Assumption', empty: 'The one that changes everything', hint: 'If this is wrong, the whole plan shifts', colour: 'teal' },
             { id: 'actions', name: 'The Test', empty: 'How to validate the critical assumption', hint: 'Simplest test in the next two weeks', colour: 'teal' }
         ],
         gridClass: 'board-grid-socratic'
     },
     'reality-check': {
         zones: [
-            { id: 'rc-claims', name: 'The Story', empty: 'Your narrative claims', hint: 'What you say about how things are going', colour: 'teal' },
+            { id: 'rc-claims', name: 'The Story', empty: 'Your narrative claims', hint: 'What you say about how things are going', colour: 'pink' },
             { id: 'rc-evidence', name: 'The Evidence', empty: 'Actual data for each claim', hint: 'Numbers, dates, measurements', colour: 'pink' },
-            { id: 'rc-supported', name: 'Supported', empty: 'Story matches data', hint: 'Claims with evidence behind them', colour: 'teal' },
-            { id: 'rc-gap', name: 'The Gap', empty: 'Where story and data diverge', hint: 'Claims with weak or no evidence', colour: 'orange' },
-            { id: 'rc-revised', name: 'The Honest Version', empty: 'Revised narrative grounded in data', hint: 'What you\'d say if you had to be completely honest', colour: 'teal' },
-            { id: 'rc-metrics', name: '3 Key Metrics', empty: 'The numbers that actually matter', hint: 'Not vanity metrics — signal metrics', colour: 'orange' },
-            { id: 'actions', name: 'Actions', empty: 'Close the biggest gap this week', hint: 'One concrete step', colour: 'orange' }
+            { id: 'rc-supported', name: 'Supported', empty: 'Story matches data', hint: 'Claims with evidence behind them', colour: 'pink' },
+            { id: 'rc-gap', name: 'The Gap', empty: 'Where story and data diverge', hint: 'Claims with weak or no evidence', colour: 'pink' },
+            { id: 'rc-revised', name: 'The Honest Version', empty: 'Revised narrative grounded in data', hint: 'What you\'d say if you had to be completely honest', colour: 'pink' },
+            { id: 'rc-metrics', name: '3 Key Metrics', empty: 'The numbers that actually matter', hint: 'Not vanity metrics — signal metrics', colour: 'pink' },
+            { id: 'actions', name: 'Actions', empty: 'Close the biggest gap this week', hint: 'One concrete step', colour: 'pink' }
         ],
         gridClass: 'board-grid-reality-check'
     },
     'theory-of-change': {
         zones: [
             { id: 'toc-outcome', name: 'The Outcome', empty: 'Long-term change you want to create', hint: 'Not what you do — what\'s different in the world', colour: 'yellow' },
-            { id: 'toc-control', name: 'Within Control', empty: 'Preconditions you can create', hint: 'Actions and conditions you directly influence', colour: 'teal' },
-            { id: 'toc-influence', name: 'Within Influence', empty: 'Preconditions you can nudge', hint: 'Can\'t guarantee but can increase likelihood', colour: 'orange' },
-            { id: 'toc-outside', name: 'Outside Control', empty: 'Must happen independently', hint: 'The assumptions your whole plan rests on', colour: 'pink' },
+            { id: 'toc-control', name: 'Within Control', empty: 'Preconditions you can create', hint: 'Actions and conditions you directly influence', colour: 'yellow' },
+            { id: 'toc-influence', name: 'Within Influence', empty: 'Preconditions you can nudge', hint: 'Can\'t guarantee but can increase likelihood', colour: 'yellow' },
+            { id: 'toc-outside', name: 'Outside Control', empty: 'Must happen independently', hint: 'The assumptions your whole plan rests on', colour: 'yellow' },
             { id: 'toc-activities', name: 'Activities', empty: 'What you\'ll actually do', hint: 'Specific actions to create controllable conditions', colour: 'yellow' },
-            { id: 'toc-weakest', name: 'Weakest Link', empty: 'The connection you\'re least confident about', hint: 'Where the chain is most likely to break', colour: 'pink' },
-            { id: 'actions', name: 'The Test', empty: 'Validate the weakest link', hint: 'Simplest test in the next month', colour: 'orange' }
+            { id: 'toc-weakest', name: 'Weakest Link', empty: 'The connection you\'re least confident about', hint: 'Where the chain is most likely to break', colour: 'yellow' },
+            { id: 'actions', name: 'The Test', empty: 'Validate the weakest link', hint: 'Simplest test in the next month', colour: 'yellow' }
         ],
         gridClass: 'board-grid-toc'
     },
@@ -3626,12 +3298,12 @@ const BOARD_LAYOUTS = {
         zones: [
             { id: 'to-features', name: 'All Features', empty: 'The full offer, deconstructed', hint: '5-7 dimensions with levels', colour: 'pink' },
             { id: 'to-rounds', name: 'Trade-Off Rounds', empty: 'Package A vs Package B', hint: 'Each round forces a sacrifice', colour: 'pink' },
-            { id: 'to-musthave', name: 'Must-Have', empty: 'Won 5-6+ rounds', hint: 'Core value — customers always choose this', colour: 'teal' },
-            { id: 'to-nicetohave', name: 'Nice-to-Have', empty: 'Won 2-4 rounds', hint: 'Valuable but tradeable', colour: 'orange' },
+            { id: 'to-musthave', name: 'Must-Have', empty: 'Won 5-6+ rounds', hint: 'Core value — customers always choose this', colour: 'pink' },
+            { id: 'to-nicetohave', name: 'Nice-to-Have', empty: 'Won 2-4 rounds', hint: 'Valuable but tradeable', colour: 'pink' },
             { id: 'to-expendable', name: 'Expendable', empty: 'Won 0-1 rounds', hint: 'You care more than your customer does', colour: 'pink' },
-            { id: 'to-surprise', name: 'The Surprise', empty: 'The feature you were most wrong about', hint: 'Overvalued or undervalued going in', colour: 'orange' },
-            { id: 'to-mvo', name: 'Minimum Viable Offer', empty: 'Survivors only — the simplest version someone would pay for', hint: 'Strip everything else away', colour: 'teal' },
-            { id: 'actions', name: 'Actions', empty: 'What changes because of this', hint: 'Roadmap, pricing, or positioning shift', colour: 'orange' }
+            { id: 'to-surprise', name: 'The Surprise', empty: 'The feature you were most wrong about', hint: 'Overvalued or undervalued going in', colour: 'pink' },
+            { id: 'to-mvo', name: 'Minimum Viable Offer', empty: 'Survivors only — the simplest version someone would pay for', hint: 'Strip everything else away', colour: 'pink' },
+            { id: 'actions', name: 'Actions', empty: 'What changes because of this', hint: 'Roadmap, pricing, or positioning shift', colour: 'pink' }
         ],
         gridClass: 'board-grid-trade-off'
     },
@@ -3640,10 +3312,10 @@ const BOARD_LAYOUTS = {
             { id: 'co-v1', name: 'Version 1', empty: 'First attempt', hint: '30 seconds, no context', colour: 'pink' },
             { id: 'co-v2', name: 'Version 2', empty: 'Second attempt', hint: 'After feedback', colour: 'pink' },
             { id: 'co-v3', name: 'Version 3', empty: 'Third attempt', hint: 'Final iteration', colour: 'pink' },
-            { id: 'co-hook', name: 'The Hook', empty: 'One sentence that earns "tell me more"', hint: 'The dinner party sentence', colour: 'orange' },
-            { id: 'co-followup', name: 'The Follow-up', empty: 'Problem + insight + why it matters', hint: 'Once they\'re listening', colour: 'orange' },
-            { id: 'co-detail', name: 'The Detail', empty: 'Features + evidence + proof', hint: 'Save for the real conversation', colour: 'teal' },
-            { id: 'insights', name: 'Key Insights', empty: 'What Pete noticed', hint: 'Patterns and observations', colour: 'teal' }
+            { id: 'co-hook', name: 'The Hook', empty: 'One sentence that earns "tell me more"', hint: 'The dinner party sentence', colour: 'pink' },
+            { id: 'co-followup', name: 'The Follow-up', empty: 'Problem + insight + why it matters', hint: 'Once they\'re listening', colour: 'pink' },
+            { id: 'co-detail', name: 'The Detail', empty: 'Features + evidence + proof', hint: 'Save for the real conversation', colour: 'pink' },
+            { id: 'insights', name: 'Key Insights', empty: 'What Pete noticed', hint: 'Patterns and observations', colour: 'pink' }
         ],
         gridClass: 'board-grid-cold-open'
     },
@@ -3653,9 +3325,9 @@ const BOARD_LAYOUTS = {
             { id: 'fw-component-2', name: 'Component 2', empty: 'What does Component 1 lead to?', hint: 'The next link in the chain', colour: 'yellow' },
             { id: 'fw-component-3', name: 'Component 3', empty: 'What does Component 2 lead to?', hint: 'The next link', colour: 'yellow' },
             { id: 'fw-component-4', name: 'Component 4', empty: 'What completes the loop?', hint: 'How it feeds back to the start', colour: 'yellow' },
-            { id: 'fw-bottleneck', name: 'Bottleneck', empty: 'The weakest link', hint: 'Which connection loses the most energy?', colour: 'orange' },
-            { id: 'insights', name: 'Key Insights', empty: 'What emerged', hint: 'Patterns and observations', colour: 'teal' },
-            { id: 'actions', name: 'Actions', empty: 'Next steps', hint: '90-day plan + 48-hour first step', colour: 'orange' }
+            { id: 'fw-bottleneck', name: 'Bottleneck', empty: 'The weakest link', hint: 'Which connection loses the most energy?', colour: 'yellow' },
+            { id: 'insights', name: 'Key Insights', empty: 'What emerged', hint: 'Patterns and observations', colour: 'yellow' },
+            { id: 'actions', name: 'Actions', empty: 'Next steps', hint: '90-day plan + 48-hour first step', colour: 'yellow' }
         ],
         gridClass: 'board-grid-flywheel'
     }
@@ -3686,6 +3358,16 @@ const RISK_TAG_MAP = {
 };
 
 
+// === TOOL-SPECIFIC BOARD TAG MAPS ===
+
+const FIVE_WHYS_TAG_MAP = {
+    'problem': 'fw-problem', 'presenting-problem': 'fw-problem',
+    'why1': 'fw-why1', 'why-1': 'fw-why1',
+    'why2': 'fw-why2', 'why-2': 'fw-why2',
+    'why3': 'fw-why3', 'why-3': 'fw-why3',
+    'why4': 'fw-why4', 'why-4': 'fw-why4',
+    'why5': 'fw-why5', 'why-5': 'fw-why5', 'root-cause': 'fw-why5', 'root': 'fw-why5'
+};
 const EMPATHY_TAG_MAP = {
     'user': 'em-user', 'persona': 'em-user', 'says': 'em-says', 'thinks': 'em-thinks',
     'does': 'em-does', 'feels': 'em-feels',
@@ -4710,8 +4392,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!state.messages.length) return;
         // Trigger the report card directly
         const reportCard = document.getElementById('reportCard');
-        if (reportCard && typeof startPostSessionFlow === 'function') {
-            startPostSessionFlow();
+        if (reportCard && typeof generateReport === 'function') {
+            generateReport();
         }
     });
 
@@ -4846,14 +4528,6 @@ function maybeStartTour() {
 }
 
 // === QUICK-FIRE BUTTON INJECTION (backup for missed OPTIONS) ===
-
-// Header feedback link opens the feedback panel
-document.getElementById('headerFeedbackLink')?.addEventListener('click', (e) => {
-    e.preventDefault();
-    const panel = document.getElementById('feedbackPanel');
-    if (panel) panel.classList.toggle('hidden');
-});
-
 // Conversation-first: MutationObserver for quickfire removed.
 // Pete uses [OPTIONS] tags inline when he wants to offer choices.
 // The OPTIONS parser in streamResponse handles rendering.
@@ -5003,4 +4677,13 @@ hintObserver.observe(document.body, { childList: true, subtree: true, attributes
 
     vv.addEventListener('resize', onViewportResize);
     vv.addEventListener('scroll', onViewportResize);
+
+// Exit protection — warn before closing tab during active session
+window.addEventListener('beforeunload', (e) => {
+    if (state.mode && state.mode !== 'routing' && state.messages.length > 2 && !state.reportGenerated) {
+        e.preventDefault();
+        e.returnValue = '';
+    }
+});
+
 })();
