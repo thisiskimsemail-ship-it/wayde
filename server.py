@@ -8,7 +8,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from datetime import datetime, timezone, timedelta
 from html.parser import HTMLParser
-from flask import Flask, request, Response, send_from_directory, jsonify
+from flask import Flask, request, Response, send_from_directory, jsonify, make_response
 from dotenv import load_dotenv
 import anthropic
 
@@ -5519,20 +5519,17 @@ FEEDBACK DATA:
     })
 
 
-if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 3000))
-    app.run(host='0.0.0.0', port=port, debug=os.environ.get('FLASK_DEBUG', 'false').lower() == 'true')
-
-
 # === BRANDED DOCX REPORT GENERATION ===
 
 @app.route('/api/report/docx', methods=['POST'])
 def generate_branded_docx():
-    """Generate a branded .docx report with Wade logo, SVG canvas, and structured content."""
+    """Generate a branded .docx report with Wade Institute branding spec."""
     from docx import Document
-    from docx.shared import Inches, Pt, Cm, RGBColor
+    from docx.shared import Inches, Pt, Cm, RGBColor, Emu
     from docx.enum.text import WD_ALIGN_PARAGRAPH
-    from docx.enum.style import WD_STYLE_TYPE
+    from docx.enum.table import WD_TABLE_ALIGNMENT
+    from docx.oxml.ns import qn, nsdecls
+    from docx.oxml import parse_xml
     import re as _re
     import io
 
@@ -5553,186 +5550,347 @@ def generate_branded_docx():
     bullets = synopsis.get('bullets', [])
     date_str = __import__('datetime').datetime.now().strftime('%d %B %Y')
 
-    # Category colours
-    cat_colors = {
-        'untangle': RGBColor(0x27, 0xBD, 0xBE),
-        'spark': RGBColor(0xF1, 0x5A, 0x22),
-        'test': RGBColor(0xED, 0x36, 0x94),
-        'build': RGBColor(0xE4, 0xE5, 0x17),
-    }
-    accent = cat_colors.get(mode, RGBColor(0xF1, 0x5A, 0x22))
-    navy = RGBColor(0x1E, 0x19, 0x4F)
-    grey = RGBColor(0x66, 0x66, 0x66)
-    light_grey = RGBColor(0x99, 0x99, 0x99)
+    # ── Report Branding Specification colours ──
+    navy = RGBColor(0x1B, 0x22, 0x40)        # #1B2240 — headings, header bar, footer
+    dark_blue = RGBColor(0x2E, 0x3A, 0x5C)   # #2E3A5C — sub-headings
+    orange = RGBColor(0xE8, 0x65, 0x2D)       # #E8652D — accents, tags, deadlines
+    teal = RGBColor(0x3D, 0xD6, 0xC8)         # #3DD6C8 — borders, links, accents
+    dark_grey = RGBColor(0x4A, 0x55, 0x68)    # #4A5568 — body text
+    mid_grey = RGBColor(0xA0, 0xAE, 0xC0)     # #A0AEC0 — metadata, footer text
+    light_bg = RGBColor(0xF7, 0xFA, 0xFC)     # #F7FAFC — Go Further background
+    white = RGBColor(0xFF, 0xFF, 0xFF)
+
+    # ── Helpers ──
+
+    def _add_border_left(paragraph, color_hex='3DD6C8', width='12', space='8'):
+        """Add a left border to a paragraph (teal accent line on H2s, blockquotes)."""
+        pPr = paragraph._p.get_or_add_pPr()
+        borders = parse_xml(
+            f'<w:pBdr {nsdecls("w")}>'
+            f'  <w:left w:val="single" w:sz="{width}" w:space="{space}" w:color="{color_hex}"/>'
+            f'</w:pBdr>'
+        )
+        pPr.append(borders)
+
+    def _shade_cell(cell, color_hex):
+        """Apply background shading to a table cell."""
+        shading = parse_xml(
+            f'<w:shd {nsdecls("w")} w:fill="{color_hex}" w:val="clear"/>'
+        )
+        cell._tc.get_or_add_tcPr().append(shading)
+
+    def _shade_paragraph(paragraph, color_hex):
+        """Apply background shading to a paragraph."""
+        pPr = paragraph._p.get_or_add_pPr()
+        shading = parse_xml(
+            f'<w:shd {nsdecls("w")} w:fill="{color_hex}" w:val="clear"/>'
+        )
+        pPr.append(shading)
+
+    def _add_run_with_inline_formatting(paragraph, text, base_font='Arial', base_size=11, base_color=None):
+        """Parse **bold** and *italic* in text, add runs to paragraph."""
+        if base_color is None:
+            base_color = dark_grey
+        parts = _re.split(r'(\*\*[^*]+\*\*|\*[^*]+\*)', text)
+        for part in parts:
+            if not part:
+                continue
+            if part.startswith('**') and part.endswith('**'):
+                run = paragraph.add_run(part[2:-2])
+                run.bold = True
+            elif part.startswith('*') and part.endswith('*') and not part.startswith('**'):
+                run = paragraph.add_run(part[1:-1])
+                run.font.italic = True
+            else:
+                # Strip markdown links
+                cleaned = _re.sub(r'\[([^\]]+)\]\([^)]+\)', r'\1', part)
+                run = paragraph.add_run(cleaned)
+            run.font.name = base_font
+            run.font.size = Pt(base_size)
+            run.font.color.rgb = base_color
+
+    # ── Detect "Go Further with Wade" section boundary ──
+    go_further_marker = None
+    lines_all = report_text.split('\n')
+    for i, ln in enumerate(lines_all):
+        if _re.match(r'^#{1,3}\s+.*Go\s+Further', ln, _re.IGNORECASE):
+            go_further_marker = i
+            break
 
     try:
         doc = Document()
 
-        # Page margins
+        # ── Page margins ──
         for section in doc.sections:
             section.top_margin = Cm(2)
-            section.bottom_margin = Cm(2)
+            section.bottom_margin = Cm(1.5)
             section.left_margin = Cm(2.5)
             section.right_margin = Cm(2.5)
 
-        # Styles
+        # ── Base style: Arial 11pt, dark grey body ──
         style = doc.styles['Normal']
         style.font.name = 'Arial'
         style.font.size = Pt(11)
-        style.font.color.rgb = RGBColor(0x33, 0x33, 0x33)
-        style.paragraph_format.line_spacing = 1.4
+        style.font.color.rgb = dark_grey
+        style.paragraph_format.line_spacing = 1.5
         style.paragraph_format.space_after = Pt(6)
 
-        # Wade logo
+        # ── HEADER BAR — navy full-width table ──
+        header_tbl = doc.add_table(rows=1, cols=2)
+        header_tbl.alignment = WD_TABLE_ALIGNMENT.CENTER
+        # Remove table borders, set navy background
+        for cell in header_tbl.rows[0].cells:
+            _shade_cell(cell, '1B2240')
+            cell.width = Inches(3.25)
+            for p in cell.paragraphs:
+                p.paragraph_format.space_before = Pt(12)
+                p.paragraph_format.space_after = Pt(12)
+
+        # Left cell: Wade logo
+        left_cell = header_tbl.cell(0, 0)
+        left_cell.paragraphs[0].clear()
         logo_path = os.path.join(os.path.dirname(__file__), 'logo-orange.png')
         if os.path.exists(logo_path):
-            logo_para = doc.add_paragraph()
-            logo_para.alignment = WD_ALIGN_PARAGRAPH.LEFT
-            run = logo_para.add_run()
-            run.add_picture(logo_path, width=Inches(1.8))
+            run = left_cell.paragraphs[0].add_run()
+            run.add_picture(logo_path, width=Inches(1.4))
+        left_cell.paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.LEFT
 
-        # Category + Tool + Date line
-        meta = doc.add_paragraph()
-        meta.alignment = WD_ALIGN_PARAGRAPH.LEFT
-        meta.paragraph_format.space_before = Pt(4)
-        meta.paragraph_format.space_after = Pt(12)
-        run = meta.add_run(f'{mode_name.upper()}  ·  {exercise_name.upper()}  ·  {date_str.upper()}')
-        run.font.size = Pt(9)
-        run.font.color.rgb = light_grey
-        run.font.name = 'Arial'
+        # Right cell: metadata (mode · exercise · date)
+        right_cell = header_tbl.cell(0, 1)
+        right_cell.paragraphs[0].clear()
+        right_cell.paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+        meta_run = right_cell.paragraphs[0].add_run(
+            f'{mode_name.upper()}  ·  {exercise_name.upper()}\n{date_str.upper()}'
+        )
+        meta_run.font.size = Pt(8)
+        meta_run.font.color.rgb = mid_grey
+        meta_run.font.name = 'Arial'
 
-        # Accent line
-        accent_para = doc.add_paragraph()
-        accent_para.paragraph_format.space_after = Pt(16)
-        # Use a border-bottom effect via a coloured run
-        run = accent_para.add_run('━' * 60)
-        run.font.size = Pt(4)
-        run.font.color.rgb = accent
+        # Remove header table borders
+        tbl_xml = header_tbl._tbl
+        tblPr = tbl_xml.tblPr if tbl_xml.tblPr is not None else parse_xml(f'<w:tblPr {nsdecls("w")}/>')
+        borders = parse_xml(
+            f'<w:tblBorders {nsdecls("w")}>'
+            '  <w:top w:val="none" w:sz="0" w:space="0" w:color="auto"/>'
+            '  <w:left w:val="none" w:sz="0" w:space="0" w:color="auto"/>'
+            '  <w:bottom w:val="none" w:sz="0" w:space="0" w:color="auto"/>'
+            '  <w:right w:val="none" w:sz="0" w:space="0" w:color="auto"/>'
+            '  <w:insideH w:val="none" w:sz="0" w:space="0" w:color="auto"/>'
+            '  <w:insideV w:val="none" w:sz="0" w:space="0" w:color="auto"/>'
+            '</w:tblBorders>'
+        )
+        tblPr.append(borders)
 
-        # Title (the AI-generated insight title)
+        # Spacer after header
+        doc.add_paragraph().paragraph_format.space_after = Pt(4)
+
+        # ── TITLE — Georgia 24pt navy ──
         title_para = doc.add_paragraph()
         title_para.alignment = WD_ALIGN_PARAGRAPH.LEFT
-        title_para.paragraph_format.space_after = Pt(8)
+        title_para.paragraph_format.space_after = Pt(4)
         run = title_para.add_run(title)
-        run.font.size = Pt(22)
+        run.font.size = Pt(24)
         run.font.color.rgb = navy
         run.font.bold = True
-        run.font.name = 'Arial'
+        run.font.name = 'Georgia'
 
-        # Hook (italic subtitle)
+        # ── HOOK — Georgia 13pt italic dark blue ──
         if hook:
             hook_para = doc.add_paragraph()
-            hook_para.paragraph_format.space_after = Pt(16)
+            hook_para.paragraph_format.space_after = Pt(12)
             run = hook_para.add_run(hook)
-            run.font.size = Pt(12)
-            run.font.color.rgb = grey
+            run.font.size = Pt(13)
+            run.font.color.rgb = dark_blue
             run.font.italic = True
-            run.font.name = 'Arial'
+            run.font.name = 'Georgia'
 
-        # Synopsis bullets
+        # ── SYNOPSIS BULLETS — teal left border card ──
         if bullets:
             for bullet in bullets:
-                bp = doc.add_paragraph(style='List Bullet')
-                run = bp.add_run(bullet)
+                bp = doc.add_paragraph()
+                bp.paragraph_format.left_indent = Cm(0.5)
+                bp.paragraph_format.space_after = Pt(4)
+                _shade_paragraph(bp, 'F7FAFC')
+                _add_border_left(bp, '3DD6C8', '18', '10')
+                run = bp.add_run(f'  ·  {bullet}')
                 run.font.size = Pt(10)
-                run.font.color.rgb = grey
-            doc.add_paragraph()  # spacer
+                run.font.color.rgb = dark_grey
+                run.font.name = 'Arial'
+            doc.add_paragraph().paragraph_format.space_after = Pt(8)
 
-        # Accent line before body
+        # ── Teal accent line before body ──
         sep = doc.add_paragraph()
-        run = sep.add_run('━' * 60)
-        run.font.size = Pt(4)
-        run.font.color.rgb = accent
+        run = sep.add_run('━' * 72)
+        run.font.size = Pt(3)
+        run.font.color.rgb = teal
         sep.paragraph_format.space_after = Pt(16)
 
-        # Report body — parse markdown to docx
-        for line in report_text.split('\n'):
+        # ── REPORT BODY — parse markdown lines ──
+        in_go_further = False
+        in_action_block = False
+        current_section_is_questions = False
+
+        for idx, line in enumerate(lines_all):
             stripped = line.strip()
+
+            # Detect Go Further section
+            if go_further_marker is not None and idx >= go_further_marker:
+                if not in_go_further:
+                    in_go_further = True
+                    # Add navy top border before Go Further
+                    border_p = doc.add_paragraph()
+                    border_p.paragraph_format.space_before = Pt(24)
+                    run = border_p.add_run('━' * 72)
+                    run.font.size = Pt(3)
+                    run.font.color.rgb = navy
+
             if not stripped:
                 continue
 
-            if stripped.startswith('### '):
-                p = doc.add_paragraph()
-                p.paragraph_format.space_before = Pt(16)
-                p.paragraph_format.space_after = Pt(6)
-                run = p.add_run(stripped[4:])
-                run.font.size = Pt(13)
-                run.font.bold = True
-                run.font.color.rgb = navy
-            elif stripped.startswith('## '):
-                p = doc.add_paragraph()
-                p.paragraph_format.space_before = Pt(20)
-                p.paragraph_format.space_after = Pt(8)
-                run = p.add_run(stripped[3:])
-                run.font.size = Pt(15)
-                run.font.bold = True
-                run.font.color.rgb = navy
-            elif stripped.startswith('# '):
+            # ── H1 ──
+            if stripped.startswith('# ') and not stripped.startswith('## '):
+                heading_text = stripped[2:]
                 p = doc.add_paragraph()
                 p.paragraph_format.space_before = Pt(24)
                 p.paragraph_format.space_after = Pt(10)
-                run = p.add_run(stripped[2:])
-                run.font.size = Pt(18)
+                run = p.add_run(heading_text)
+                run.font.size = Pt(20)
                 run.font.bold = True
                 run.font.color.rgb = navy
-            elif stripped.startswith('- ') or stripped.startswith('* '):
-                clean = _re.sub(r'\*\*([^*]+)\*\*', r'\1', stripped[2:])
-                p = doc.add_paragraph(style='List Bullet')
-                # Handle bold within bullets
-                parts = _re.split(r'(\*\*[^*]+\*\*)', stripped[2:])
-                for part in parts:
-                    if part.startswith('**') and part.endswith('**'):
-                        run = p.add_run(part[2:-2])
-                        run.bold = True
-                    else:
-                        p.add_run(part)
+                run.font.name = 'Georgia'
+                if in_go_further:
+                    _shade_paragraph(p, 'F7FAFC')
+                current_section_is_questions = False
+                in_action_block = False
+
+            # ── H2 — teal left border accent ──
+            elif stripped.startswith('## '):
+                heading_text = stripped[3:]
+                p = doc.add_paragraph()
+                p.paragraph_format.space_before = Pt(20)
+                p.paragraph_format.space_after = Pt(8)
+                p.paragraph_format.left_indent = Cm(0.3)
+                _add_border_left(p, '3DD6C8', '18', '8')
+                run = p.add_run(heading_text)
+                run.font.size = Pt(16)
+                run.font.bold = True
+                run.font.color.rgb = navy
+                run.font.name = 'Georgia'
+                if in_go_further:
+                    _shade_paragraph(p, 'F7FAFC')
+                # Track section type for special rendering
+                current_section_is_questions = bool(
+                    _re.search(r'question|sitting\s+with', heading_text, _re.IGNORECASE)
+                )
+                in_action_block = bool(
+                    _re.search(r'action|recommended|next\s+step', heading_text, _re.IGNORECASE)
+                )
+
+            # ── H3 ──
+            elif stripped.startswith('### '):
+                heading_text = stripped[4:]
+                p = doc.add_paragraph()
+                p.paragraph_format.space_before = Pt(14)
+                p.paragraph_format.space_after = Pt(6)
+                run = p.add_run(heading_text)
+                run.font.size = Pt(13)
+                run.font.bold = True
+                run.font.color.rgb = dark_blue
+                run.font.name = 'Georgia'
+                if in_go_further:
+                    _shade_paragraph(p, 'F7FAFC')
+
+            # ── Blockquote — teal left border, light tint bg ──
             elif stripped.startswith('>'):
-                # Blockquote
+                clean = stripped.lstrip('> ')
                 p = doc.add_paragraph()
                 p.paragraph_format.left_indent = Cm(1)
-                clean = stripped.lstrip('> ')
+                p.paragraph_format.space_before = Pt(8)
+                p.paragraph_format.space_after = Pt(8)
+                _add_border_left(p, '3DD6C8', '14', '10')
+                _shade_paragraph(p, 'F0FDFA')
                 run = p.add_run(clean)
                 run.font.italic = True
-                run.font.color.rgb = grey
-            elif _re.match(r'^\d+\.', stripped):
-                # Numbered list
-                clean = _re.sub(r'^\d+\.\s*', '', stripped)
-                parts = _re.split(r'(\*\*[^*]+\*\*)', clean)
-                p = doc.add_paragraph(style='List Number')
-                for part in parts:
-                    if part.startswith('**') and part.endswith('**'):
-                        run = p.add_run(part[2:-2])
-                        run.bold = True
-                    else:
-                        # Strip markdown links
-                        part = _re.sub(r'\[([^\]]+)\]\([^)]+\)', r'\1', part)
-                        p.add_run(part)
-            else:
-                # Regular paragraph
-                clean = _re.sub(r'\[([^\]]+)\]\([^)]+\)', r'\1', stripped)
-                parts = _re.split(r'(\*\*[^*]+\*\*)', clean)
-                p = doc.add_paragraph()
-                for part in parts:
-                    if part.startswith('**') and part.endswith('**'):
-                        run = p.add_run(part[2:-2])
-                        run.bold = True
-                    else:
-                        p.add_run(part)
+                run.font.color.rgb = dark_blue
+                run.font.name = 'Georgia'
+                run.font.size = Pt(11)
 
-        # Workshop Board section (if cards exist)
+            # ── Bullet list ──
+            elif stripped.startswith('- ') or stripped.startswith('* '):
+                content = stripped[2:]
+                p = doc.add_paragraph(style='List Bullet')
+
+                # Questions section → render as orange pill tags
+                if current_section_is_questions:
+                    p.style = doc.styles['Normal']
+                    p.paragraph_format.space_before = Pt(6)
+                    p.paragraph_format.space_after = Pt(6)
+                    # Orange tag styling — bold orange text with bullet
+                    run = p.add_run('●  ')
+                    run.font.color.rgb = orange
+                    run.font.size = Pt(8)
+                    _add_run_with_inline_formatting(p, content, base_color=dark_blue, base_size=11)
+
+                # Action items → card-style with shading
+                elif in_action_block:
+                    p.style = doc.styles['Normal']
+                    p.paragraph_format.left_indent = Cm(0.5)
+                    p.paragraph_format.space_before = Pt(6)
+                    p.paragraph_format.space_after = Pt(6)
+                    _shade_paragraph(p, 'F7FAFC')
+                    # Check for deadline pattern like "(by Week 2)" or "(This week)"
+                    deadline_match = _re.search(r'\(([^)]*(?:week|day|month|tomorrow|today)[^)]*)\)', content, _re.IGNORECASE)
+                    main_text = content
+                    if deadline_match:
+                        main_text = content[:deadline_match.start()].strip()
+                        deadline_text = deadline_match.group(1)
+                    run = p.add_run('▸  ')
+                    run.font.color.rgb = teal
+                    run.font.size = Pt(10)
+                    _add_run_with_inline_formatting(p, main_text, base_size=11)
+                    if deadline_match:
+                        run = p.add_run(f'  {deadline_text}')
+                        run.font.color.rgb = orange
+                        run.font.size = Pt(9)
+                        run.font.bold = True
+                        run.font.name = 'Arial'
+                else:
+                    _add_run_with_inline_formatting(p, content)
+
+                if in_go_further:
+                    _shade_paragraph(p, 'F7FAFC')
+
+            # ── Numbered list ──
+            elif _re.match(r'^\d+\.', stripped):
+                clean = _re.sub(r'^\d+\.\s*', '', stripped)
+                p = doc.add_paragraph(style='List Number')
+                _add_run_with_inline_formatting(p, clean)
+                if in_go_further:
+                    _shade_paragraph(p, 'F7FAFC')
+
+            # ── Regular paragraph ──
+            else:
+                p = doc.add_paragraph()
+                _add_run_with_inline_formatting(p, stripped)
+                if in_go_further:
+                    _shade_paragraph(p, 'F7FAFC')
+
+        # ── WORKSHOP BOARD (canvas table — navy cells, teal headers) ──
         if board_cards:
             doc.add_paragraph()
             sep2 = doc.add_paragraph()
-            run = sep2.add_run('━' * 60)
-            run.font.size = Pt(4)
-            run.font.color.rgb = accent
+            run = sep2.add_run('━' * 72)
+            run.font.size = Pt(3)
+            run.font.color.rgb = teal
 
             board_head = doc.add_paragraph()
             board_head.paragraph_format.space_before = Pt(16)
+            board_head.paragraph_format.space_after = Pt(10)
             run = board_head.add_run('WORKSHOP BOARD')
-            run.font.size = Pt(11)
+            run.font.size = Pt(14)
             run.font.bold = True
-            run.font.color.rgb = accent
+            run.font.color.rgb = navy
+            run.font.name = 'Georgia'
 
             # Group by zone
             grouped = {}
@@ -5742,33 +5900,89 @@ def generate_branded_docx():
                 if text:
                     grouped.setdefault(zone, []).append(text)
 
-            for zone, items in grouped.items():
-                zone_label = zone.replace('-', ' ').replace('_', ' ').title()
-                zp = doc.add_paragraph()
-                zp.paragraph_format.space_before = Pt(10)
-                run = zp.add_run(zone_label)
-                run.font.size = Pt(10)
-                run.font.bold = True
-                run.font.color.rgb = navy
-                for item in items:
-                    bp = doc.add_paragraph(style='List Bullet')
-                    bp.add_run(item)
+            if grouped:
+                # Build a table: one row per zone
+                board_tbl = doc.add_table(rows=0, cols=2)
+                board_tbl.alignment = WD_TABLE_ALIGNMENT.CENTER
 
-        # Footer
-        doc.add_paragraph()
-        footer_sep = doc.add_paragraph()
-        run = footer_sep.add_run('━' * 60)
-        run.font.size = Pt(4)
-        run.font.color.rgb = light_grey
+                # Remove default borders, add navy styling
+                btbl_xml = board_tbl._tbl
+                btblPr = btbl_xml.tblPr if btbl_xml.tblPr is not None else parse_xml(f'<w:tblPr {nsdecls("w")}/>')
+                btbl_borders = parse_xml(
+                    f'<w:tblBorders {nsdecls("w")}>'
+                    '  <w:top w:val="single" w:sz="4" w:space="0" w:color="2E3A5C"/>'
+                    '  <w:left w:val="single" w:sz="4" w:space="0" w:color="2E3A5C"/>'
+                    '  <w:bottom w:val="single" w:sz="4" w:space="0" w:color="2E3A5C"/>'
+                    '  <w:right w:val="single" w:sz="4" w:space="0" w:color="2E3A5C"/>'
+                    '  <w:insideH w:val="single" w:sz="2" w:space="0" w:color="2E3A5C"/>'
+                    '  <w:insideV w:val="single" w:sz="2" w:space="0" w:color="2E3A5C"/>'
+                    '</w:tblBorders>'
+                )
+                btblPr.append(btbl_borders)
 
-        footer = doc.add_paragraph()
-        footer.alignment = WD_ALIGN_PARAGRAPH.LEFT
-        footer.paragraph_format.space_before = Pt(8)
-        run = footer.add_run(f'The Studio  ·  Wade Institute of Entrepreneurship  ·  wadeinstitute.org.au')
-        run.font.size = Pt(8)
-        run.font.color.rgb = light_grey
+                for zone, items in grouped.items():
+                    zone_label = zone.replace('-', ' ').replace('_', ' ').upper()
+                    row = board_tbl.add_row()
 
-        # Save to buffer
+                    # Zone header cell — teal background
+                    hdr_cell = row.cells[0]
+                    _shade_cell(hdr_cell, '3DD6C8')
+                    hdr_cell.width = Inches(2)
+                    hp = hdr_cell.paragraphs[0]
+                    hp.paragraph_format.space_before = Pt(6)
+                    hp.paragraph_format.space_after = Pt(6)
+                    hr = hp.add_run(zone_label)
+                    hr.font.size = Pt(9)
+                    hr.font.bold = True
+                    hr.font.color.rgb = navy
+                    hr.font.name = 'Arial'
+
+                    # Content cell — navy background, white text
+                    val_cell = row.cells[1]
+                    _shade_cell(val_cell, '1B2240')
+                    vp = val_cell.paragraphs[0]
+                    vp.paragraph_format.space_before = Pt(6)
+                    vp.paragraph_format.space_after = Pt(6)
+                    for j, item in enumerate(items):
+                        if j > 0:
+                            vp.add_run('\n')
+                        vr = vp.add_run(f'·  {item}')
+                        vr.font.size = Pt(10)
+                        vr.font.color.rgb = white
+                        vr.font.name = 'Arial'
+
+        # ── FOOTER — navy bar crediting Wade Institute ──
+        doc.add_paragraph().paragraph_format.space_after = Pt(20)
+
+        footer_tbl = doc.add_table(rows=1, cols=1)
+        footer_tbl.alignment = WD_TABLE_ALIGNMENT.CENTER
+        footer_cell = footer_tbl.cell(0, 0)
+        _shade_cell(footer_cell, '1B2240')
+        fp = footer_cell.paragraphs[0]
+        fp.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        fp.paragraph_format.space_before = Pt(14)
+        fp.paragraph_format.space_after = Pt(14)
+        fr = fp.add_run('Generated by The Studio  ·  Wade Institute of Entrepreneurship  ·  wadeinstitute.org.au')
+        fr.font.size = Pt(8)
+        fr.font.color.rgb = mid_grey
+        fr.font.name = 'Arial'
+
+        # Remove footer table borders (clean navy bar)
+        ftbl_xml = footer_tbl._tbl
+        ftblPr = ftbl_xml.tblPr if ftbl_xml.tblPr is not None else parse_xml(f'<w:tblPr {nsdecls("w")}/>')
+        ftbl_borders = parse_xml(
+            f'<w:tblBorders {nsdecls("w")}>'
+            '  <w:top w:val="none" w:sz="0" w:space="0" w:color="auto"/>'
+            '  <w:left w:val="none" w:sz="0" w:space="0" w:color="auto"/>'
+            '  <w:bottom w:val="none" w:sz="0" w:space="0" w:color="auto"/>'
+            '  <w:right w:val="none" w:sz="0" w:space="0" w:color="auto"/>'
+            '  <w:insideH w:val="none" w:sz="0" w:space="0" w:color="auto"/>'
+            '  <w:insideV w:val="none" w:sz="0" w:space="0" w:color="auto"/>'
+            '</w:tblBorders>'
+        )
+        ftblPr.append(ftbl_borders)
+
+        # ── Save to buffer ──
         buffer = io.BytesIO()
         doc.save(buffer)
         buffer.seek(0)
@@ -5782,6 +5996,8 @@ def generate_branded_docx():
 
     except Exception as e:
         print(f"[DOCX] ERROR: {str(e)}")
+        import traceback
+        traceback.print_exc()
         return jsonify({'error': f'DOCX generation failed: {str(e)}'}), 500
 
 
@@ -5999,3 +6215,450 @@ def generate_branded_pptx():
         import traceback
         traceback.print_exc()
         return jsonify({'error': f'PPTX generation failed: {str(e)}'}), 500
+
+
+# === BRANDED PDF REPORT GENERATION ===
+
+@app.route('/api/report/pdf', methods=['POST'])
+def generate_branded_pdf():
+    """Generate a branded PDF report with Wade Institute branding spec using fpdf2."""
+    from fpdf import FPDF
+    import re as _re
+    import io
+
+    data = request.json or {}
+    report_text = data.get('report', '')
+    synopsis = data.get('synopsis', {})
+    exercise = data.get('exercise', '')
+    mode = data.get('mode', '')
+    board_cards = data.get('board_cards', [])
+    svg_data = data.get('svg_data', '')
+
+    if not report_text:
+        return jsonify({'error': 'No report text provided'}), 400
+
+    exercise_name = EXERCISE_NAMES.get(exercise, exercise or 'Coaching Session')
+    mode_name = MODE_NAMES.get(mode, mode or 'The Studio')
+    title = synopsis.get('title', f'{exercise_name} Report')
+    hook = synopsis.get('hook', '')
+    bullets = synopsis.get('bullets', [])
+    date_str = __import__('datetime').datetime.now().strftime('%d %B %Y')
+
+    # ── Report Branding Specification colours (R, G, B tuples) ──
+    NAVY = (27, 34, 64)           # #1B2240
+    DARK_BLUE = (46, 58, 92)     # #2E3A5C
+    ORANGE = (232, 101, 45)      # #E8652D
+    TEAL = (61, 214, 200)        # #3DD6C8
+    DARK_GREY = (74, 85, 104)    # #4A5568
+    MID_GREY = (160, 174, 192)   # #A0AEC0
+    LIGHT_BG = (247, 250, 252)   # #F7FAFC
+    WHITE = (255, 255, 255)
+
+    class StudioPDF(FPDF):
+        def __init__(self):
+            super().__init__()
+            self.set_auto_page_break(auto=True, margin=20)
+            # Register GT Walsheim as Unicode-capable body font
+            font_dir = os.path.join(os.path.dirname(__file__), 'fonts')
+            ttf_path = os.path.join(font_dir, 'GT-Walsheim-Regular.ttf')
+            self._has_gt = os.path.exists(ttf_path)
+            if self._has_gt:
+                self.add_font('GTWalsheim', '', ttf_path, uni=True)
+                # Use GT Walsheim for body text (supports Unicode)
+                self._body_font = 'GTWalsheim'
+                self._body_font_bold = 'Helvetica'  # fallback for bold
+            else:
+                self._body_font = 'Helvetica'
+                self._body_font_bold = 'Helvetica'
+            # Headings use Times (built-in, good for serif headings)
+            self._heading_font = 'Times'
+
+        def header(self):
+            pass  # Custom header drawn manually on first page
+
+        def footer(self):
+            self.set_y(-15)
+            self.set_font(self._body_font, '', 7)
+            self.set_text_color(*MID_GREY)
+            self.cell(0, 10, 'Generated by The Studio  |  Wade Institute of Entrepreneurship  |  wadeinstitute.org.au', align='C')
+
+    try:
+        pdf = StudioPDF()
+        pdf.add_page()
+
+        page_w = pdf.w - pdf.l_margin - pdf.r_margin  # usable width
+
+        # ── HEADER BAR — navy full-width ──
+        pdf.set_fill_color(*NAVY)
+        pdf.rect(0, 0, pdf.w, 22, 'F')
+
+        # Logo in header
+        logo_path = os.path.join(os.path.dirname(__file__), 'logo-orange.png')
+        if os.path.exists(logo_path):
+            pdf.image(logo_path, x=10, y=4, h=14)
+
+        # Metadata text right-aligned in header
+        pdf.set_font(pdf._body_font, '', 7)
+        pdf.set_text_color(*MID_GREY)
+        meta_text = f'{mode_name.upper()}  |  {exercise_name.upper()}  |  {date_str.upper()}'
+        pdf.set_xy(pdf.w - 10 - pdf.get_string_width(meta_text), 8)
+        pdf.cell(pdf.get_string_width(meta_text), 6, meta_text, align='R')
+
+        pdf.set_y(30)
+
+        # ── TITLE — 22pt navy bold ──
+        pdf.set_font(pdf._heading_font, 'B', 22)
+        pdf.set_text_color(*NAVY)
+        pdf.multi_cell(page_w, 10, title)
+        pdf.ln(2)
+
+        # ── HOOK — italic dark blue ──
+        if hook:
+            pdf.set_font(pdf._heading_font, 'I', 12)
+            pdf.set_text_color(*DARK_BLUE)
+            pdf.multi_cell(page_w, 7, hook)
+            pdf.ln(4)
+
+        # ── SYNOPSIS BULLETS — teal left border ──
+        if bullets:
+            for bullet in bullets:
+                y_start = pdf.get_y()
+                # Teal left border
+                pdf.set_fill_color(*LIGHT_BG)
+                pdf.rect(pdf.l_margin, y_start, page_w, 8, 'F')
+                pdf.set_draw_color(*TEAL)
+                pdf.set_line_width(0.8)
+                pdf.line(pdf.l_margin, y_start, pdf.l_margin, y_start + 8)
+                pdf.set_font(pdf._body_font, '', 9)
+                pdf.set_text_color(*DARK_GREY)
+                pdf.set_xy(pdf.l_margin + 4, y_start + 1.5)
+                pdf.cell(page_w - 4, 5, f'  {bullet}')
+                pdf.set_y(y_start + 9)
+            pdf.ln(4)
+
+        # ── Teal accent line ──
+        pdf.set_draw_color(*TEAL)
+        pdf.set_line_width(0.3)
+        pdf.line(pdf.l_margin, pdf.get_y(), pdf.l_margin + page_w, pdf.get_y())
+        pdf.ln(6)
+
+        # ── Parse and render markdown report body ──
+        lines_all = report_text.split('\n')
+
+        # Detect "Go Further" section
+        go_further_idx = None
+        for i, ln in enumerate(lines_all):
+            if _re.match(r'^#{1,3}\s+.*Go\s+Further', ln, _re.IGNORECASE):
+                go_further_idx = i
+                break
+
+        in_go_further = False
+        in_action_block = False
+        current_section_is_questions = False
+
+        def _strip_markdown_formatting(text):
+            """Remove **bold** and *italic* markers for plain text output."""
+            text = _re.sub(r'\*\*([^*]+)\*\*', r'\1', text)
+            text = _re.sub(r'\*([^*]+)\*', r'\1', text)
+            text = _re.sub(r'\[([^\]]+)\]\([^)]+\)', r'\1', text)
+            return text
+
+        def _render_text_with_formatting(pdf_obj, text, x, max_w, base_font, base_size, base_color, bold_color=None):
+            """Render text with **bold** and *italic* inline formatting."""
+            if bold_color is None:
+                bold_color = base_color
+            # For bold/italic, use Helvetica (built-in) since GTWalsheim only has regular
+            styled_font = 'Helvetica' if base_font == 'GTWalsheim' else base_font
+            parts = _re.split(r'(\*\*[^*]+\*\*|\*[^*]+\*)', text)
+            # Strip markdown links
+            cleaned_parts = []
+            for part in parts:
+                if part:
+                    cleaned_parts.append(_re.sub(r'\[([^\]]+)\]\([^)]+\)', r'\1', part))
+
+            pdf_obj.set_x(x)
+            for part in cleaned_parts:
+                if not part:
+                    continue
+                if part.startswith('**') and part.endswith('**'):
+                    pdf_obj.set_font(styled_font, 'B', base_size)
+                    pdf_obj.set_text_color(*bold_color)
+                    pdf_obj.write(6, part[2:-2])
+                elif part.startswith('*') and part.endswith('*') and not part.startswith('**'):
+                    pdf_obj.set_font(styled_font, 'I', base_size)
+                    pdf_obj.set_text_color(*base_color)
+                    pdf_obj.write(6, part[1:-1])
+                else:
+                    pdf_obj.set_font(base_font, '', base_size)
+                    pdf_obj.set_text_color(*base_color)
+                    pdf_obj.write(6, part)
+
+        for idx, line in enumerate(lines_all):
+            stripped = line.strip()
+
+            # Check for page break needed
+            if pdf.get_y() > pdf.h - 30:
+                pdf.add_page()
+
+            # Detect Go Further section
+            if go_further_idx is not None and idx >= go_further_idx:
+                if not in_go_further:
+                    in_go_further = True
+                    # Navy separator before Go Further
+                    pdf.ln(6)
+                    pdf.set_draw_color(*NAVY)
+                    pdf.set_line_width(0.5)
+                    pdf.line(pdf.l_margin, pdf.get_y(), pdf.l_margin + page_w, pdf.get_y())
+                    pdf.ln(6)
+
+            if not stripped:
+                pdf.ln(3)
+                continue
+
+            # ── H1 ──
+            if stripped.startswith('# ') and not stripped.startswith('## '):
+                heading_text = stripped[2:]
+                pdf.ln(6)
+                if in_go_further:
+                    pdf.set_fill_color(*LIGHT_BG)
+                    y_h1 = pdf.get_y()
+                    pdf.rect(pdf.l_margin, y_h1, page_w, 12, 'F')
+                pdf.set_font(pdf._heading_font, 'B', 18)
+                pdf.set_text_color(*NAVY)
+                pdf.multi_cell(page_w, 10, heading_text)
+                pdf.ln(3)
+                current_section_is_questions = False
+                in_action_block = False
+
+            # ── H2 — teal left border accent ──
+            elif stripped.startswith('## '):
+                heading_text = stripped[3:]
+                pdf.ln(5)
+                y_h2 = pdf.get_y()
+                # Teal left accent bar
+                pdf.set_draw_color(*TEAL)
+                pdf.set_line_width(1.2)
+                pdf.line(pdf.l_margin, y_h2, pdf.l_margin, y_h2 + 9)
+                if in_go_further:
+                    pdf.set_fill_color(*LIGHT_BG)
+                    pdf.rect(pdf.l_margin + 2, y_h2, page_w - 2, 9, 'F')
+                pdf.set_font(pdf._heading_font, 'B', 14)
+                pdf.set_text_color(*NAVY)
+                pdf.set_x(pdf.l_margin + 5)
+                pdf.multi_cell(page_w - 5, 8, heading_text)
+                pdf.ln(2)
+                current_section_is_questions = bool(
+                    _re.search(r'question|sitting\s+with', heading_text, _re.IGNORECASE)
+                )
+                in_action_block = bool(
+                    _re.search(r'action|recommended|next\s+step', heading_text, _re.IGNORECASE)
+                )
+
+            # ── H3 ──
+            elif stripped.startswith('### '):
+                heading_text = stripped[4:]
+                pdf.ln(4)
+                pdf.set_font(pdf._heading_font, 'B', 12)
+                pdf.set_text_color(*DARK_BLUE)
+                pdf.multi_cell(page_w, 7, heading_text)
+                pdf.ln(2)
+
+            # ── Blockquote — teal left border, light bg ──
+            elif stripped.startswith('>'):
+                clean = stripped.lstrip('> ')
+                y_bq = pdf.get_y()
+                # Light teal background
+                pdf.set_fill_color(240, 253, 250)  # #F0FDFA
+                line_h = max(8, len(clean) // 80 * 7 + 8)
+                pdf.rect(pdf.l_margin + 3, y_bq, page_w - 3, line_h, 'F')
+                # Teal left border
+                pdf.set_draw_color(*TEAL)
+                pdf.set_line_width(0.7)
+                pdf.line(pdf.l_margin + 3, y_bq, pdf.l_margin + 3, y_bq + line_h)
+                pdf.set_font(pdf._heading_font, 'I', 10)
+                pdf.set_text_color(*DARK_BLUE)
+                pdf.set_xy(pdf.l_margin + 7, y_bq + 1)
+                pdf.multi_cell(page_w - 10, 6, clean)
+                pdf.set_y(y_bq + line_h + 2)
+
+            # ── Bullet list ──
+            elif stripped.startswith('- ') or stripped.startswith('* '):
+                content = stripped[2:]
+                clean_content = _strip_markdown_formatting(content)
+
+                if current_section_is_questions:
+                    # Orange bullet for questions
+                    pdf.set_font(pdf._body_font, '', 7)
+                    pdf.set_text_color(*ORANGE)
+                    pdf.cell(5, 6, '-')
+                    _render_text_with_formatting(pdf, content, pdf.get_x(), page_w - 15,
+                                                 pdf._body_font, 10, DARK_BLUE, DARK_BLUE)
+                    pdf.ln(7)
+
+                elif in_action_block:
+                    # Action item with light bg
+                    y_act = pdf.get_y()
+                    pdf.set_fill_color(*LIGHT_BG)
+                    pdf.rect(pdf.l_margin + 2, y_act, page_w - 2, 8, 'F')
+                    pdf.set_font(pdf._body_font, '', 9)
+                    pdf.set_text_color(*TEAL)
+                    pdf.set_x(pdf.l_margin + 4)
+                    pdf.cell(5, 6, '>')
+                    # Check for deadline — strip it from main text, render separately in orange
+                    deadline_match = _re.search(r'\(([^)]*(?:week|day|month|tomorrow|today)[^)]*)\)', content, _re.IGNORECASE)
+                    main_text = content
+                    if deadline_match:
+                        main_text = content[:deadline_match.start()].strip()
+                    _render_text_with_formatting(pdf, main_text, pdf.get_x(), page_w - 15,
+                                                 pdf._body_font, 10, DARK_GREY)
+                    if deadline_match:
+                        pdf.set_font(pdf._body_font_bold, 'B', 8)
+                        pdf.set_text_color(*ORANGE)
+                        pdf.write(6, f'  {deadline_match.group(1)}')
+                    pdf.ln(8)
+
+                else:
+                    # Regular bullet
+                    pdf.set_font(pdf._body_font, '', 10)
+                    pdf.set_text_color(*DARK_GREY)
+                    pdf.set_x(pdf.l_margin + 4)
+                    pdf.cell(5, 6, '-')
+                    _render_text_with_formatting(pdf, content, pdf.get_x(), page_w - 15,
+                                                 pdf._body_font, 10, DARK_GREY)
+                    pdf.ln(7)
+
+                if in_go_further:
+                    pass  # bg already handled by section
+
+            # ── Numbered list ──
+            elif _re.match(r'^\d+\.', stripped):
+                num_match = _re.match(r'^(\d+)\.\s*(.*)', stripped)
+                if num_match:
+                    num = num_match.group(1)
+                    content = num_match.group(2)
+                    pdf.set_font(pdf._body_font_bold, 'B', 10)
+                    pdf.set_text_color(*TEAL)
+                    pdf.set_x(pdf.l_margin + 4)
+                    pdf.cell(8, 6, f'{num}.')
+                    _render_text_with_formatting(pdf, content, pdf.get_x(), page_w - 18,
+                                                 pdf._body_font, 10, DARK_GREY)
+                    pdf.ln(7)
+
+            # ── Horizontal rule ──
+            elif stripped in ('---', '***', '___'):
+                pdf.ln(3)
+                pdf.set_draw_color(*MID_GREY)
+                pdf.set_line_width(0.2)
+                pdf.line(pdf.l_margin, pdf.get_y(), pdf.l_margin + page_w, pdf.get_y())
+                pdf.ln(3)
+
+            # ── Regular paragraph ──
+            else:
+                clean = _strip_markdown_formatting(stripped)
+                pdf.set_font(pdf._body_font, '', 10)
+                pdf.set_text_color(*DARK_GREY)
+                pdf.multi_cell(page_w, 6, clean)
+                pdf.ln(2)
+
+        # ── WORKSHOP BOARD (canvas table) ──
+        if board_cards:
+            pdf.ln(4)
+            pdf.set_draw_color(*TEAL)
+            pdf.set_line_width(0.3)
+            pdf.line(pdf.l_margin, pdf.get_y(), pdf.l_margin + page_w, pdf.get_y())
+            pdf.ln(6)
+
+            pdf.set_font(pdf._heading_font, 'B', 14)
+            pdf.set_text_color(*NAVY)
+            pdf.cell(page_w, 8, 'WORKSHOP BOARD')
+            pdf.ln(10)
+
+            # Group by zone
+            grouped = {}
+            for card in board_cards:
+                zone = card.get('zone', 'general')
+                text = card.get('text', '')
+                if text:
+                    grouped.setdefault(zone, []).append(text)
+
+            if grouped:
+                col_w_label = 45
+                col_w_content = page_w - col_w_label
+
+                for zone, items in grouped.items():
+                    zone_label = zone.replace('-', ' ').replace('_', ' ').upper()
+                    y_row = pdf.get_y()
+
+                    # Calculate row height
+                    content_text = '\n'.join(f'  {item}' for item in items)
+                    # Estimate height: ~6mm per line, accounting for wrapping
+                    est_lines = sum(max(1, len(item) // 60 + 1) for item in items)
+                    row_h = max(10, est_lines * 6 + 4)
+
+                    if y_row + row_h > pdf.h - 25:
+                        pdf.add_page()
+                        y_row = pdf.get_y()
+
+                    # Teal header cell
+                    pdf.set_fill_color(*TEAL)
+                    pdf.rect(pdf.l_margin, y_row, col_w_label, row_h, 'F')
+                    pdf.set_font(pdf._body_font_bold, 'B', 8)
+                    pdf.set_text_color(*NAVY)
+                    pdf.set_xy(pdf.l_margin + 2, y_row + 2)
+                    pdf.multi_cell(col_w_label - 4, 5, zone_label)
+
+                    # Navy content cell
+                    pdf.set_fill_color(*NAVY)
+                    pdf.rect(pdf.l_margin + col_w_label, y_row, col_w_content, row_h, 'F')
+                    pdf.set_font(pdf._body_font, '', 9)
+                    pdf.set_text_color(*WHITE)
+                    pdf.set_xy(pdf.l_margin + col_w_label + 3, y_row + 2)
+                    for j, item in enumerate(items):
+                        if j > 0:
+                            pdf.ln(5)
+                            pdf.set_x(pdf.l_margin + col_w_label + 3)
+                        pdf.multi_cell(col_w_content - 6, 5, f'  {item}')
+
+                    pdf.set_y(y_row + row_h + 1)
+
+        # ── SVG CANVAS EMBED ──
+        # If SVG data was passed, convert to PNG and embed
+        if svg_data:
+            try:
+                import cairosvg
+                png_bytes = cairosvg.svg2png(bytestring=svg_data.encode('utf-8'), output_width=1200)
+                png_io = io.BytesIO(png_bytes)
+                pdf.add_page()
+                pdf.set_font(pdf._heading_font, 'B', 14)
+                pdf.set_text_color(*NAVY)
+                pdf.cell(page_w, 8, 'WORKSHOP CANVAS')
+                pdf.ln(10)
+                # Fit to page width
+                pdf.image(png_io, x=pdf.l_margin, w=page_w)
+            except Exception as svg_err:
+                print(f"[PDF] SVG embed failed: {svg_err}")
+
+        # ── Save to buffer ──
+        buffer = io.BytesIO()
+        pdf.output(buffer)
+        buffer.seek(0)
+
+        response = make_response(buffer.read())
+        response.headers['Content-Type'] = 'application/pdf'
+        safe_title = ''.join(c for c in title if c.isalnum() or c in ' -_').strip()[:60]
+        response.headers['Content-Disposition'] = f'attachment; filename="{safe_title} - The Studio.pdf"'
+        print(f"[PDF] Generated branded report for {exercise_name}")
+        return response
+
+    except Exception as e:
+        print(f"[PDF] ERROR: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({'error': f'PDF generation failed: {str(e)}'}), 500
+
+
+# === SERVER ENTRY POINT ===
+
+if __name__ == '__main__':
+    port = int(os.environ.get('PORT', 3000))
+    app.run(host='0.0.0.0', port=port, debug=os.environ.get('FLASK_DEBUG', 'false').lower() == 'true')

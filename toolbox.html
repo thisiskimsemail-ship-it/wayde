@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link rel="preload" href="fonts/GT-Walsheim-Regular.woff" as="font" type="font/woff" crossorigin>
-    <link rel="stylesheet" href="styles.css?v=138">
+    <link rel="stylesheet" href="styles.css?v=148">
     <style>
         /* Toolbox-specific overrides */
         .toolbox-shell { height: auto; min-height: 100vh; overflow: visible; }
@@ -167,7 +167,7 @@
         <nav class="header-nav">
             <a class="header-nav-link" href="index.html">The Studio</a>
             <a class="header-nav-link active" href="toolbox.html">Toolbox</a>
-            <a class="header-nav-link" href="sessions.html">Sessions</a>
+            <a class="header-nav-link" href="index.html">Sessions</a>
         </nav>
         <div class="header-controls">
             <button class="text-size-btn" id="textSizeToggle" title="Adjust text size">Aa</button>
@@ -197,7 +197,7 @@
                     <a class="tb-tool-pill" href="tool-detail-empathy-map.html">Empathy Map</a>
                     <a class="tb-tool-pill" href="tool-detail-jobs-to-be-done.html">Jobs to Be Done</a>
                 </div>
-                <a class="tb-cta" href="index.html?tool=five-whys">Start here &rarr;</a>
+                <a class="tb-cta" href="index.html?category=untangle">Start here &rarr;</a>
             </div>
 
             <!-- THE SPARK — top-right (idea-led, fuzzy) -->
@@ -210,9 +210,8 @@
                     <a class="tb-tool-pill" href="tool-detail-crazy-8s.html">Crazy 8s</a>
                     <a class="tb-tool-pill" href="tool-detail-how-might-we.html">How Might We</a>
                     <a class="tb-tool-pill" href="tool-detail-scamper.html">SCAMPER</a>
-                    <a class="tb-tool-pill" href="tool-detail-analogical-thinking.html">Analogical Thinking</a>
                 </div>
-                <a class="tb-cta" href="index.html?tool=crazy-8s">Start here &rarr;</a>
+                <a class="tb-cta" href="index.html?category=spark">Start here &rarr;</a>
             </div>
 
             <!-- THE TEST — bottom-left (problem-led, clear) -->
@@ -224,8 +223,9 @@
                 <div class="tb-tools">
                     <a class="tb-tool-pill" href="tool-detail-pre-mortem.html">Pre-Mortem</a>
                     <a class="tb-tool-pill" href="tool-detail-devils-advocate.html">Devil's Advocate</a>
+                    <a class="tb-tool-pill" href="tool-detail-rapid-experiment.html">Rapid Experiment</a>
                 </div>
-                <a class="tb-cta" href="index.html?tool=pre-mortem">Start here &rarr;</a>
+                <a class="tb-cta" href="index.html?category=test">Start here &rarr;</a>
             </div>
 
             <!-- THE BUILD — bottom-right (idea-led, clear) -->
@@ -237,9 +237,9 @@
                 <div class="tb-tools">
                     <a class="tb-tool-pill" href="tool-detail-lean-canvas.html">Lean Canvas</a>
                     <a class="tb-tool-pill" href="tool-detail-effectuation.html">Effectuation</a>
-                    <a class="tb-tool-pill" href="tool-detail-rapid-experiment.html">Rapid Experiment</a>
+                    <a class="tb-tool-pill" href="tool-detail-analogical-thinking.html">Analogical Thinking</a>
                 </div>
-                <a class="tb-cta" href="index.html?tool=lean-canvas">Start here &rarr;</a>
+                <a class="tb-cta" href="index.html?category=build">Start here &rarr;</a>
             </div>
 
         </div>
@@ -294,7 +294,7 @@
 <!-- Theme toggle (mirrors main site) -->
 <script>
 (function() {
-    const saved = localStorage.getItem('theme');
+    const saved = localStorage.getItem('studio_theme');
     if (saved) document.documentElement.setAttribute('data-theme', saved);
     const btn = document.getElementById('themeToggle');
     if (btn) {
@@ -308,7 +308,7 @@
             const isLight = document.documentElement.getAttribute('data-theme') === 'light';
             const next = isLight ? 'dark' : 'light';
             document.documentElement.setAttribute('data-theme', next);
-            localStorage.setItem('theme', next);
+            localStorage.setItem('studio_theme', next);
             updateIcon();
         });
     }
