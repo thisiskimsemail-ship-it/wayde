@@ -3090,8 +3090,8 @@ const BOARD_LAYOUTS = {
             { id: 'fw-why2', name: 'Why #2', empty: 'Deeper', hint: 'Why does that happen?', colour: 'teal' },
             { id: 'fw-why3', name: 'Why #3', empty: 'Deeper still', hint: 'Why?', colour: 'teal' },
             { id: 'fw-why4', name: 'Why #4', empty: 'Approaching root', hint: 'Why?', colour: 'teal' },
-            { id: 'fw-why5', name: 'Root Cause', empty: 'The real insight', hint: 'The deepest why', colour: 'orange' },
-            { id: 'actions', name: 'Actions', empty: 'What to do about it', hint: 'Next steps', colour: 'orange' }
+            { id: 'fw-why5', name: 'Root Cause', empty: 'The real insight', hint: 'The deepest why', colour: 'teal' },
+            { id: 'actions', name: 'Actions', empty: 'What to do about it', hint: 'Next steps', colour: 'teal' }
         ],
         gridClass: 'board-grid-five-whys'
     },
@@ -3102,8 +3102,8 @@ const BOARD_LAYOUTS = {
             { id: 'em-thinks', name: 'Thinks', empty: 'What they think privately', hint: 'Inner thoughts, worries, hopes', colour: 'teal' },
             { id: 'em-does', name: 'Does', empty: 'Observable behaviour', hint: 'Actions, habits, routines', colour: 'teal' },
             { id: 'em-feels', name: 'Feels', empty: 'Emotions', hint: 'Anxious, excited, frustrated, hopeful', colour: 'teal' },
-            { id: 'em-contradictions', name: 'Contradictions', empty: 'Where says and does don\'t match', hint: 'The gaps are the insights', colour: 'orange' },
-            { id: 'insights', name: 'Key Insight', empty: 'The most important discovery', hint: 'What changes because of this?', colour: 'orange' }
+            { id: 'em-contradictions', name: 'Contradictions', empty: 'Where says and does don\'t match', hint: 'The gaps are the insights', colour: 'teal' },
+            { id: 'insights', name: 'Key Insight', empty: 'The most important discovery', hint: 'What changes because of this?', colour: 'teal' }
         ],
         gridClass: 'board-grid-empathy-map'
     },
@@ -3111,10 +3111,10 @@ const BOARD_LAYOUTS = {
         zones: [
             { id: 'jtbd-situation', name: 'Situation', empty: 'When I\'m...', hint: 'The context that triggers the need', colour: 'teal' },
             { id: 'jtbd-functional', name: 'Functional Job', empty: 'What task am I trying to accomplish?', hint: 'The practical thing they need done', colour: 'teal' },
-            { id: 'jtbd-emotional', name: 'Emotional Job', empty: 'How do I want to feel?', hint: 'Confidence, relief, excitement', colour: 'pink' },
-            { id: 'jtbd-social', name: 'Social Job', empty: 'How do I want to be perceived?', hint: 'Competent, innovative, caring', colour: 'pink' },
-            { id: 'jtbd-hiring', name: 'Hiring Criteria', empty: 'What makes them choose?', hint: 'Speed, cost, trust, outcome', colour: 'orange' },
-            { id: 'insights', name: 'Underserved Job', empty: 'The job no one does well', hint: 'This is the opportunity', colour: 'orange' }
+            { id: 'jtbd-emotional', name: 'Emotional Job', empty: 'How do I want to feel?', hint: 'Confidence, relief, excitement', colour: 'teal' },
+            { id: 'jtbd-social', name: 'Social Job', empty: 'How do I want to be perceived?', hint: 'Competent, innovative, caring', colour: 'teal' },
+            { id: 'jtbd-hiring', name: 'Hiring Criteria', empty: 'What makes them choose?', hint: 'Speed, cost, trust, outcome', colour: 'teal' },
+            { id: 'insights', name: 'Underserved Job', empty: 'The job no one does well', hint: 'This is the opportunity', colour: 'teal' }
         ],
         gridClass: 'board-grid-jtbd'
     },
@@ -3128,7 +3128,7 @@ const BOARD_LAYOUTS = {
             { id: 'c8-6', name: 'Idea 6', empty: 'Sixth idea', hint: '~1 minute', colour: 'orange' },
             { id: 'c8-7', name: 'Idea 7', empty: 'Seventh idea', hint: '~1 minute', colour: 'orange' },
             { id: 'c8-8', name: 'Idea 8', empty: 'Eighth idea', hint: '~1 minute', colour: 'orange' },
-            { id: 'c8-shortlist', name: 'Shortlist', empty: 'Best ideas selected', hint: 'Star your favourites', colour: 'teal' }
+            { id: 'c8-shortlist', name: 'Shortlist', empty: 'Best ideas selected', hint: 'Star your favourites', colour: 'orange' }
         ],
         gridClass: 'board-grid-crazy8s'
     },
@@ -3140,8 +3140,8 @@ const BOARD_LAYOUTS = {
             { id: 'hmw-q3', name: 'HMW #3', empty: 'Third reframe', hint: 'How might we...?', colour: 'orange' },
             { id: 'hmw-q4', name: 'HMW #4', empty: 'Fourth reframe', hint: 'How might we...?', colour: 'orange' },
             { id: 'hmw-q5', name: 'HMW #5', empty: 'Fifth reframe', hint: 'How might we...?', colour: 'orange' },
-            { id: 'hmw-best', name: 'Most Promising', empty: 'The reframe with the most potential', hint: 'Which one opens the most interesting direction?', colour: 'teal' },
-            { id: 'actions', name: 'Actions', empty: 'Next steps', hint: 'What to explore from here', colour: 'teal' }
+            { id: 'hmw-best', name: 'Most Promising', empty: 'The reframe with the most potential', hint: 'Which one opens the most interesting direction?', colour: 'orange' },
+            { id: 'actions', name: 'Actions', empty: 'Next steps', hint: 'What to explore from here', colour: 'orange' }
         ],
         gridClass: 'board-grid-hmw'
     },
@@ -3154,32 +3154,32 @@ const BOARD_LAYOUTS = {
             { id: 'sc-p', name: 'P — Put to Other Uses', empty: 'What else could this do?', hint: 'New markets, new contexts', colour: 'orange' },
             { id: 'sc-e', name: 'E — Eliminate', empty: 'What could you remove?', hint: 'The hardest question', colour: 'orange' },
             { id: 'sc-r', name: 'R — Reverse', empty: 'What if you did the opposite?', hint: 'Flip the assumption', colour: 'orange' },
-            { id: 'sc-shortlist', name: 'Shortlist', empty: 'Best ideas across all lenses', hint: 'Star your favourites', colour: 'teal' }
+            { id: 'sc-shortlist', name: 'Shortlist', empty: 'Best ideas across all lenses', hint: 'Star your favourites', colour: 'orange' }
         ],
         gridClass: 'board-grid-scamper'
     },
     'devils-advocate': {
         zones: [
             { id: 'da-idea', name: 'The Idea', empty: 'What are you defending?', hint: 'State your case', colour: 'pink' },
-            { id: 'da-for', name: 'Case For', empty: 'Your strongest arguments', hint: 'Why this should work', colour: 'teal' },
+            { id: 'da-for', name: 'Case For', empty: 'Your strongest arguments', hint: 'Why this should work', colour: 'pink' },
             { id: 'da-against', name: 'Case Against', empty: 'Pete\'s challenges', hint: 'Why this might not work', colour: 'pink' },
-            { id: 'da-rebuttals', name: 'Rebuttals', empty: 'Your responses', hint: 'How you address each challenge', colour: 'orange' },
-            { id: 'da-verdict', name: 'Verdict', empty: 'What survived and what didn\'t', hint: 'The honest assessment', colour: 'teal' },
-            { id: 'actions', name: 'Actions', empty: 'Weaknesses to address', hint: 'What to fix before committing', colour: 'orange' }
+            { id: 'da-rebuttals', name: 'Rebuttals', empty: 'Your responses', hint: 'How you address each challenge', colour: 'pink' },
+            { id: 'da-verdict', name: 'Verdict', empty: 'What survived and what didn\'t', hint: 'The honest assessment', colour: 'pink' },
+            { id: 'actions', name: 'Actions', empty: 'Weaknesses to address', hint: 'What to fix before committing', colour: 'pink' }
         ],
         gridClass: 'board-grid-devils-advocate'
     },
     'rapid-experiment': {
         zones: [
             { id: 're-hypothesis', name: 'Hypothesis', empty: 'What do you believe?', hint: 'If we [do X], then [Y] will happen', colour: 'yellow' },
-            { id: 're-assumption', name: 'Riskiest Assumption', empty: 'What must be true?', hint: 'The one that kills the idea if wrong', colour: 'orange' },
+            { id: 're-assumption', name: 'Riskiest Assumption', empty: 'What must be true?', hint: 'The one that kills the idea if wrong', colour: 'yellow' },
             { id: 're-method', name: 'Test Method', empty: 'How you\'ll test it', hint: 'Concierge, landing page, pre-sell...', colour: 'yellow' },
             { id: 're-metric', name: 'Success Metric', empty: 'The number you\'ll measure', hint: 'Specific, measurable', colour: 'yellow' },
-            { id: 're-pass', name: 'Pass Criteria', empty: 'What counts as success?', hint: 'The threshold', colour: 'teal' },
-            { id: 're-fail', name: 'Fail Criteria', empty: 'What counts as failure?', hint: 'Be honest before you see the data', colour: 'pink' },
+            { id: 're-pass', name: 'Pass Criteria', empty: 'What counts as success?', hint: 'The threshold', colour: 'yellow' },
+            { id: 're-fail', name: 'Fail Criteria', empty: 'What counts as failure?', hint: 'Be honest before you see the data', colour: 'yellow' },
             { id: 're-predicted', name: 'Predicted Outcome', empty: 'What you expect', hint: 'Write this before running', colour: 'yellow' },
-            { id: 're-actual', name: 'Actual Outcome', empty: '(Fill in after running)', hint: 'What actually happened', colour: 'teal' },
-            { id: 'actions', name: 'Next Step', empty: '48-hour action', hint: 'Build it, run it, ship it', colour: 'orange' }
+            { id: 're-actual', name: 'Actual Outcome', empty: '(Fill in after running)', hint: 'What actually happened', colour: 'yellow' },
+            { id: 'actions', name: 'Next Step', empty: '48-hour action', hint: 'Build it, run it, ship it', colour: 'yellow' }
         ],
         gridClass: 'board-grid-rapid-experiment'
     },
@@ -3194,47 +3194,47 @@ const BOARD_LAYOUTS = {
     },
     'lean-canvas': {
         zones: [
-            { id: 'problem', name: 'Problem', empty: 'Top 1-3 problems', hint: 'What are the top 3 problems?', colour: 'orange' },
-            { id: 'solution', name: 'Solution', empty: 'Top features', hint: 'How you solve each problem', colour: 'pink' },
-            { id: 'uvp', name: 'Unique Value Prop', empty: 'Single clear message', hint: 'Why are you different?', colour: 'pink' },
+            { id: 'problem', name: 'Problem', empty: 'Top 1-3 problems', hint: 'What are the top 3 problems?', colour: 'yellow' },
+            { id: 'solution', name: 'Solution', empty: 'Top features', hint: 'How you solve each problem', colour: 'yellow' },
+            { id: 'uvp', name: 'Unique Value Prop', empty: 'Single clear message', hint: 'Why are you different?', colour: 'yellow' },
             { id: 'unfair', name: 'Unfair Advantage', empty: 'Can\'t be copied', hint: 'What can\'t be easily copied?', colour: 'yellow' },
-            { id: 'segments', name: 'Customer Segments', empty: 'Target customers', hint: 'Who are your target customers?', colour: 'orange' },
-            { id: 'channels', name: 'Channels', empty: 'Path to customers', hint: 'How you reach customers', colour: 'pink' },
-            { id: 'revenue', name: 'Revenue Streams', empty: 'How you make money', hint: 'Revenue model', colour: 'teal' },
-            { id: 'costs', name: 'Cost Structure', empty: 'Key costs', hint: 'Key cost drivers', colour: 'teal' },
-            { id: 'metrics', name: 'Key Metrics', empty: 'Numbers that matter', hint: 'Key numbers to track', colour: 'teal' }
+            { id: 'segments', name: 'Customer Segments', empty: 'Target customers', hint: 'Who are your target customers?', colour: 'yellow' },
+            { id: 'channels', name: 'Channels', empty: 'Path to customers', hint: 'How you reach customers', colour: 'yellow' },
+            { id: 'revenue', name: 'Revenue Streams', empty: 'How you make money', hint: 'Revenue model', colour: 'yellow' },
+            { id: 'costs', name: 'Cost Structure', empty: 'Key costs', hint: 'Key cost drivers', colour: 'yellow' },
+            { id: 'metrics', name: 'Key Metrics', empty: 'Numbers that matter', hint: 'Key numbers to track', colour: 'yellow' }
         ],
         gridClass: 'board-grid-canvas'
     },
     'pre-mortem': {
         zones: [
-            { id: 'risk-market', name: 'Market Risk', empty: 'Market failures', hint: 'Wrong market, bad timing, no demand', colour: 'orange' },
-            { id: 'risk-product', name: 'Product Risk', empty: 'Product failures', hint: 'Wrong solution, bad UX, doesn\'t work', colour: 'orange' },
+            { id: 'risk-market', name: 'Market Risk', empty: 'Market failures', hint: 'Wrong market, bad timing, no demand', colour: 'pink' },
+            { id: 'risk-product', name: 'Product Risk', empty: 'Product failures', hint: 'Wrong solution, bad UX, doesn\'t work', colour: 'pink' },
             { id: 'risk-team', name: 'Team Risk', empty: 'Team failures', hint: 'Wrong skills, conflict, burnout', colour: 'pink' },
-            { id: 'risk-financial', name: 'Financial Risk', empty: 'Money failures', hint: 'Ran out of cash, wrong pricing', colour: 'teal' },
-            { id: 'risk-competition', name: 'Competition Risk', empty: 'Competitive failures', hint: 'Beaten by incumbents or new entrants', colour: 'teal' },
-            { id: 'risk-timing', name: 'Timing Risk', empty: 'Timing failures', hint: 'Too early, too late, external shock', colour: 'yellow' },
-            { id: 'risk-mitigations', name: 'Mitigations', empty: 'Actions to reduce risk', hint: 'What you can do this week', colour: 'orange' }
+            { id: 'risk-financial', name: 'Financial Risk', empty: 'Money failures', hint: 'Ran out of cash, wrong pricing', colour: 'pink' },
+            { id: 'risk-competition', name: 'Competition Risk', empty: 'Competitive failures', hint: 'Beaten by incumbents or new entrants', colour: 'pink' },
+            { id: 'risk-timing', name: 'Timing Risk', empty: 'Timing failures', hint: 'Too early, too late, external shock', colour: 'pink' },
+            { id: 'risk-mitigations', name: 'Mitigations', empty: 'Actions to reduce risk', hint: 'What you can do this week', colour: 'pink' }
         ],
         gridClass: 'board-grid-premortem'
     },
     'effectuation': {
         zones: [
-            { id: 'eff-means', name: 'Bird in Hand', empty: 'What you already have', hint: 'Skills, knowledge, network', colour: 'orange' },
-            { id: 'eff-loss', name: 'Affordable Loss', empty: 'What you can risk', hint: 'Time, money, reputation', colour: 'pink' },
-            { id: 'eff-quilt', name: 'Crazy Quilt', empty: 'Who could join', hint: 'Partners, allies, co-creators', colour: 'teal' },
+            { id: 'eff-means', name: 'Bird in Hand', empty: 'What you already have', hint: 'Skills, knowledge, network', colour: 'yellow' },
+            { id: 'eff-loss', name: 'Affordable Loss', empty: 'What you can risk', hint: 'Time, money, reputation', colour: 'yellow' },
+            { id: 'eff-quilt', name: 'Crazy Quilt', empty: 'Who could join', hint: 'Partners, allies, co-creators', colour: 'yellow' },
             { id: 'eff-lemonade', name: 'Lemonade', empty: 'Surprises to leverage', hint: 'Turn setbacks into advantages', colour: 'yellow' },
-            { id: 'eff-pilot', name: 'Pilot in the Plane', empty: 'What you control', hint: 'Shape the future, don\'t predict it', colour: 'orange' },
-            { id: 'eff-action', name: 'First Move', empty: 'This week\'s action', hint: 'One concrete step in 48 hours', colour: 'orange' }
+            { id: 'eff-pilot', name: 'Pilot in the Plane', empty: 'What you control', hint: 'Shape the future, don\'t predict it', colour: 'yellow' },
+            { id: 'eff-action', name: 'First Move', empty: 'This week\'s action', hint: 'One concrete step in 48 hours', colour: 'yellow' }
         ],
         gridClass: 'board-grid-effectuation'
     },
     'elevator-pitch': {
         zones: [
-            { id: 'pitch-customer', name: 'Target Customer', empty: 'Who is this for?', hint: 'The specific person who needs this most', colour: 'orange' },
-            { id: 'pitch-problem', name: 'Problem / Need', empty: 'What pain do they have?', hint: 'The urgent problem they face', colour: 'orange' },
-            { id: 'pitch-solution', name: 'Product / Service', empty: 'What are you building?', hint: 'Name and category', colour: 'pink' },
-            { id: 'pitch-benefit', name: 'Key Benefit', empty: 'What changes for them?', hint: 'The specific outcome they get', colour: 'teal' },
+            { id: 'pitch-customer', name: 'Target Customer', empty: 'Who is this for?', hint: 'The specific person who needs this most', colour: 'yellow' },
+            { id: 'pitch-problem', name: 'Problem / Need', empty: 'What pain do they have?', hint: 'The urgent problem they face', colour: 'yellow' },
+            { id: 'pitch-solution', name: 'Product / Service', empty: 'What are you building?', hint: 'Name and category', colour: 'yellow' },
+            { id: 'pitch-benefit', name: 'Key Benefit', empty: 'What changes for them?', hint: 'The specific outcome they get', colour: 'yellow' },
             { id: 'pitch-differentiator', name: 'Differentiator', empty: 'Why you, not them?', hint: 'What makes you different from alternatives', colour: 'yellow' }
         ],
         gridClass: 'board-grid-pitch'
@@ -3245,8 +3245,8 @@ const BOARD_LAYOUTS = {
             { id: 'ice-patterns', name: 'Patterns', empty: 'What keeps happening?', hint: 'Recurring themes beneath the event', colour: 'teal' },
             { id: 'ice-structures', name: 'Structures', empty: 'What causes the pattern?', hint: 'Incentives, processes, power dynamics', colour: 'teal' },
             { id: 'ice-mental', name: 'Mental Models', empty: 'What belief holds this in place?', hint: 'The deepest assumption', colour: 'teal' },
-            { id: 'ice-leverage', name: 'Leverage Point', empty: 'Where to intervene', hint: 'The change with the greatest impact', colour: 'orange' },
-            { id: 'actions', name: 'Actions', empty: 'Next steps', hint: 'Test or shift the mental model', colour: 'orange' }
+            { id: 'ice-leverage', name: 'Leverage Point', empty: 'Where to intervene', hint: 'The change with the greatest impact', colour: 'teal' },
+            { id: 'actions', name: 'Actions', empty: 'Next steps', hint: 'Test or shift the mental model', colour: 'teal' }
         ],
         gridClass: 'board-grid-iceberg'
     },
@@ -3254,43 +3254,43 @@ const BOARD_LAYOUTS = {
         zones: [
             { id: 'cf-constraint', name: 'The Constraint', empty: 'Your biggest limitation', hint: 'Be specific — not just "no money"', colour: 'orange' },
             { id: 'cf-flip', name: 'The Flip', empty: 'The same fact, seen as an advantage', hint: 'What can you do because of this?', colour: 'orange' },
-            { id: 'cf-ideas', name: 'Constraint-Driven Ideas', empty: 'Ideas that depend on the constraint', hint: 'If the constraint disappeared, would the idea still work?', colour: 'pink' },
+            { id: 'cf-ideas', name: 'Constraint-Driven Ideas', empty: 'Ideas that depend on the constraint', hint: 'If the constraint disappeared, would the idea still work?', colour: 'orange' },
             { id: 'cf-moat', name: 'The Moat Idea', empty: 'The idea competitors can\'t copy', hint: 'Only works because of your specific limitation', colour: 'orange' },
-            { id: 'actions', name: 'Actions', empty: 'First test', hint: 'How to validate the moat idea', colour: 'teal' }
+            { id: 'actions', name: 'Actions', empty: 'First test', hint: 'How to validate the moat idea', colour: 'orange' }
         ],
         gridClass: 'board-grid-constraint-flip'
     },
     'socratic': {
         zones: [
             { id: 'sq-verified', name: 'Verified', empty: 'Tested — evidence exists', hint: 'Claims with real data behind them', colour: 'teal' },
-            { id: 'sq-assumed', name: 'Assumed', empty: 'Believed but untested', hint: 'Feels true but no evidence', colour: 'orange' },
-            { id: 'sq-inherited', name: 'Inherited', empty: 'Someone told you — you accepted it', hint: 'Absorbed from others without testing', colour: 'pink' },
-            { id: 'sq-critical', name: 'Critical Assumption', empty: 'The one that changes everything', hint: 'If this is wrong, the whole plan shifts', colour: 'orange' },
+            { id: 'sq-assumed', name: 'Assumed', empty: 'Believed but untested', hint: 'Feels true but no evidence', colour: 'teal' },
+            { id: 'sq-inherited', name: 'Inherited', empty: 'Someone told you — you accepted it', hint: 'Absorbed from others without testing', colour: 'teal' },
+            { id: 'sq-critical', name: 'Critical Assumption', empty: 'The one that changes everything', hint: 'If this is wrong, the whole plan shifts', colour: 'teal' },
             { id: 'actions', name: 'The Test', empty: 'How to validate the critical assumption', hint: 'Simplest test in the next two weeks', colour: 'teal' }
         ],
         gridClass: 'board-grid-socratic'
     },
     'reality-check': {
         zones: [
-            { id: 'rc-claims', name: 'The Story', empty: 'Your narrative claims', hint: 'What you say about how things are going', colour: 'teal' },
+            { id: 'rc-claims', name: 'The Story', empty: 'Your narrative claims', hint: 'What you say about how things are going', colour: 'pink' },
             { id: 'rc-evidence', name: 'The Evidence', empty: 'Actual data for each claim', hint: 'Numbers, dates, measurements', colour: 'pink' },
-            { id: 'rc-supported', name: 'Supported', empty: 'Story matches data', hint: 'Claims with evidence behind them', colour: 'teal' },
-            { id: 'rc-gap', name: 'The Gap', empty: 'Where story and data diverge', hint: 'Claims with weak or no evidence', colour: 'orange' },
-            { id: 'rc-revised', name: 'The Honest Version', empty: 'Revised narrative grounded in data', hint: 'What you\'d say if you had to be completely honest', colour: 'teal' },
-            { id: 'rc-metrics', name: '3 Key Metrics', empty: 'The numbers that actually matter', hint: 'Not vanity metrics — signal metrics', colour: 'orange' },
-            { id: 'actions', name: 'Actions', empty: 'Close the biggest gap this week', hint: 'One concrete step', colour: 'orange' }
+            { id: 'rc-supported', name: 'Supported', empty: 'Story matches data', hint: 'Claims with evidence behind them', colour: 'pink' },
+            { id: 'rc-gap', name: 'The Gap', empty: 'Where story and data diverge', hint: 'Claims with weak or no evidence', colour: 'pink' },
+            { id: 'rc-revised', name: 'The Honest Version', empty: 'Revised narrative grounded in data', hint: 'What you\'d say if you had to be completely honest', colour: 'pink' },
+            { id: 'rc-metrics', name: '3 Key Metrics', empty: 'The numbers that actually matter', hint: 'Not vanity metrics — signal metrics', colour: 'pink' },
+            { id: 'actions', name: 'Actions', empty: 'Close the biggest gap this week', hint: 'One concrete step', colour: 'pink' }
         ],
         gridClass: 'board-grid-reality-check'
     },
     'theory-of-change': {
         zones: [
             { id: 'toc-outcome', name: 'The Outcome', empty: 'Long-term change you want to create', hint: 'Not what you do — what\'s different in the world', colour: 'yellow' },
-            { id: 'toc-control', name: 'Within Control', empty: 'Preconditions you can create', hint: 'Actions and conditions you directly influence', colour: 'teal' },
-            { id: 'toc-influence', name: 'Within Influence', empty: 'Preconditions you can nudge', hint: 'Can\'t guarantee but can increase likelihood', colour: 'orange' },
-            { id: 'toc-outside', name: 'Outside Control', empty: 'Must happen independently', hint: 'The assumptions your whole plan rests on', colour: 'pink' },
+            { id: 'toc-control', name: 'Within Control', empty: 'Preconditions you can create', hint: 'Actions and conditions you directly influence', colour: 'yellow' },
+            { id: 'toc-influence', name: 'Within Influence', empty: 'Preconditions you can nudge', hint: 'Can\'t guarantee but can increase likelihood', colour: 'yellow' },
+            { id: 'toc-outside', name: 'Outside Control', empty: 'Must happen independently', hint: 'The assumptions your whole plan rests on', colour: 'yellow' },
             { id: 'toc-activities', name: 'Activities', empty: 'What you\'ll actually do', hint: 'Specific actions to create controllable conditions', colour: 'yellow' },
-            { id: 'toc-weakest', name: 'Weakest Link', empty: 'The connection you\'re least confident about', hint: 'Where the chain is most likely to break', colour: 'pink' },
-            { id: 'actions', name: 'The Test', empty: 'Validate the weakest link', hint: 'Simplest test in the next month', colour: 'orange' }
+            { id: 'toc-weakest', name: 'Weakest Link', empty: 'The connection you\'re least confident about', hint: 'Where the chain is most likely to break', colour: 'yellow' },
+            { id: 'actions', name: 'The Test', empty: 'Validate the weakest link', hint: 'Simplest test in the next month', colour: 'yellow' }
         ],
         gridClass: 'board-grid-toc'
     },
@@ -3298,12 +3298,12 @@ const BOARD_LAYOUTS = {
         zones: [
             { id: 'to-features', name: 'All Features', empty: 'The full offer, deconstructed', hint: '5-7 dimensions with levels', colour: 'pink' },
             { id: 'to-rounds', name: 'Trade-Off Rounds', empty: 'Package A vs Package B', hint: 'Each round forces a sacrifice', colour: 'pink' },
-            { id: 'to-musthave', name: 'Must-Have', empty: 'Won 5-6+ rounds', hint: 'Core value — customers always choose this', colour: 'teal' },
-            { id: 'to-nicetohave', name: 'Nice-to-Have', empty: 'Won 2-4 rounds', hint: 'Valuable but tradeable', colour: 'orange' },
+            { id: 'to-musthave', name: 'Must-Have', empty: 'Won 5-6+ rounds', hint: 'Core value — customers always choose this', colour: 'pink' },
+            { id: 'to-nicetohave', name: 'Nice-to-Have', empty: 'Won 2-4 rounds', hint: 'Valuable but tradeable', colour: 'pink' },
             { id: 'to-expendable', name: 'Expendable', empty: 'Won 0-1 rounds', hint: 'You care more than your customer does', colour: 'pink' },
-            { id: 'to-surprise', name: 'The Surprise', empty: 'The feature you were most wrong about', hint: 'Overvalued or undervalued going in', colour: 'orange' },
-            { id: 'to-mvo', name: 'Minimum Viable Offer', empty: 'Survivors only — the simplest version someone would pay for', hint: 'Strip everything else away', colour: 'teal' },
-            { id: 'actions', name: 'Actions', empty: 'What changes because of this', hint: 'Roadmap, pricing, or positioning shift', colour: 'orange' }
+            { id: 'to-surprise', name: 'The Surprise', empty: 'The feature you were most wrong about', hint: 'Overvalued or undervalued going in', colour: 'pink' },
+            { id: 'to-mvo', name: 'Minimum Viable Offer', empty: 'Survivors only — the simplest version someone would pay for', hint: 'Strip everything else away', colour: 'pink' },
+            { id: 'actions', name: 'Actions', empty: 'What changes because of this', hint: 'Roadmap, pricing, or positioning shift', colour: 'pink' }
         ],
         gridClass: 'board-grid-trade-off'
     },
@@ -3312,10 +3312,10 @@ const BOARD_LAYOUTS = {
             { id: 'co-v1', name: 'Version 1', empty: 'First attempt', hint: '30 seconds, no context', colour: 'pink' },
             { id: 'co-v2', name: 'Version 2', empty: 'Second attempt', hint: 'After feedback', colour: 'pink' },
             { id: 'co-v3', name: 'Version 3', empty: 'Third attempt', hint: 'Final iteration', colour: 'pink' },
-            { id: 'co-hook', name: 'The Hook', empty: 'One sentence that earns "tell me more"', hint: 'The dinner party sentence', colour: 'orange' },
-            { id: 'co-followup', name: 'The Follow-up', empty: 'Problem + insight + why it matters', hint: 'Once they\'re listening', colour: 'orange' },
-            { id: 'co-detail', name: 'The Detail', empty: 'Features + evidence + proof', hint: 'Save for the real conversation', colour: 'teal' },
-            { id: 'insights', name: 'Key Insights', empty: 'What Pete noticed', hint: 'Patterns and observations', colour: 'teal' }
+            { id: 'co-hook', name: 'The Hook', empty: 'One sentence that earns "tell me more"', hint: 'The dinner party sentence', colour: 'pink' },
+            { id: 'co-followup', name: 'The Follow-up', empty: 'Problem + insight + why it matters', hint: 'Once they\'re listening', colour: 'pink' },
+            { id: 'co-detail', name: 'The Detail', empty: 'Features + evidence + proof', hint: 'Save for the real conversation', colour: 'pink' },
+            { id: 'insights', name: 'Key Insights', empty: 'What Pete noticed', hint: 'Patterns and observations', colour: 'pink' }
         ],
         gridClass: 'board-grid-cold-open'
     },
@@ -3325,9 +3325,9 @@ const BOARD_LAYOUTS = {
             { id: 'fw-component-2', name: 'Component 2', empty: 'What does Component 1 lead to?', hint: 'The next link in the chain', colour: 'yellow' },
             { id: 'fw-component-3', name: 'Component 3', empty: 'What does Component 2 lead to?', hint: 'The next link', colour: 'yellow' },
             { id: 'fw-component-4', name: 'Component 4', empty: 'What completes the loop?', hint: 'How it feeds back to the start', colour: 'yellow' },
-            { id: 'fw-bottleneck', name: 'Bottleneck', empty: 'The weakest link', hint: 'Which connection loses the most energy?', colour: 'orange' },
-            { id: 'insights', name: 'Key Insights', empty: 'What emerged', hint: 'Patterns and observations', colour: 'teal' },
-            { id: 'actions', name: 'Actions', empty: 'Next steps', hint: '90-day plan + 48-hour first step', colour: 'orange' }
+            { id: 'fw-bottleneck', name: 'Bottleneck', empty: 'The weakest link', hint: 'Which connection loses the most energy?', colour: 'yellow' },
+            { id: 'insights', name: 'Key Insights', empty: 'What emerged', hint: 'Patterns and observations', colour: 'yellow' },
+            { id: 'actions', name: 'Actions', empty: 'Next steps', hint: '90-day plan + 48-hour first step', colour: 'yellow' }
         ],
         gridClass: 'board-grid-flywheel'
     }
