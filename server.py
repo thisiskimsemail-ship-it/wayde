@@ -2019,6 +2019,10 @@ BOARD TAGS — emit these to populate the Workshop Board:
 - [ACTION: First test for the moat idea]""" + FACILITATOR_OVERLAY
 }
 
+# Aliases: mash-up routes to the analogical prompt
+SYSTEM_PROMPTS["spark:mash-up"] = SYSTEM_PROMPTS["spark:analogical"]
+SYSTEM_PROMPTS["build:mash-up"] = SYSTEM_PROMPTS.get("build:analogical", SYSTEM_PROMPTS["spark:analogical"])
+
 # === ROUTES ===
 
 @app.route('/')
@@ -3956,7 +3960,8 @@ EXERCISE_NAMES = {
     'jtbd': 'Jobs to Be Done',
     'scamper': 'SCAMPER',
     'crazy-8s': 'Crazy 8s',
-    'analogical': 'Analogical Thinking',
+    'mash-up': 'Mash Up',
+    'analogical': 'Mash Up',
     'pre-mortem': 'Pre-Mortem',
     'devils-advocate': "Devil's Advocate",
     'rapid-experiment': 'Rapid Experiment',
@@ -3969,7 +3974,8 @@ EXERCISE_NAMES = {
     'flywheel': 'Flywheel',
     'reality-check': 'Reality Check',
     'theory-of-change': 'Theory of Change',
-    'constraint-flip': 'Constraint Flip'
+    'constraint-flip': 'Constraint Flip',
+    'trade-off': 'The Trade-Off'
 }
 
 MODE_NAMES = {

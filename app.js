@@ -139,9 +139,9 @@ function updateStageLogo(mode) {
 // === BREADCRUMB DROPDOWN ===
 const STAGE_TOOLS = {
     untangle: ['five-whys', 'empathy-map', 'jtbd', 'socratic', 'iceberg'],
-    spark: ['crazy-8s', 'hmw', 'scamper', 'constraint-flip'],
-    test: ['pre-mortem', 'devils-advocate', 'rapid-experiment', 'cold-open', 'reality-check', 'trade-off'],
-    build: ['lean-canvas', 'effectuation', 'analogical', 'flywheel', 'theory-of-change']
+    spark: ['crazy-8s', 'hmw', 'scamper', 'mash-up', 'constraint-flip'],
+    test: ['pre-mortem', 'devils-advocate', 'cold-open', 'reality-check', 'trade-off'],
+    build: ['lean-canvas', 'effectuation', 'rapid-experiment', 'flywheel', 'theory-of-change']
 };
 
 function updateBreadcrumbDropdown(currentMode, currentExercise) {
@@ -221,7 +221,8 @@ const EXERCISE_LABELS = {
     'jtbd': 'Jobs to Be Done',
     'scamper': 'SCAMPER',
     'crazy-8s': 'Crazy 8s',
-    'analogical': 'Analogical Thinking',
+    'mash-up': 'Mash Up',
+    'analogical': 'Mash Up',
     'pre-mortem': 'Pre-Mortem',
     'devils-advocate': "Devil's Advocate",
     'rapid-experiment': 'Rapid Experiment',
@@ -255,10 +256,11 @@ const EXERCISE_MODE = {
     'crazy-8s':         'spark',
     'pre-mortem':       'test',
     'devils-advocate':  'test',
-    'analogical':       'build',
+    'mash-up':          'spark',
+    'analogical':       'spark',
     'lean-canvas':      'build',
     'effectuation':     'build',
-    'rapid-experiment': 'test',
+    'rapid-experiment': 'build',
     'flywheel': 'build',
     'socratic': 'untangle',
     'cold-open': 'test',
@@ -271,7 +273,8 @@ const EXERCISE_MODE = {
 
 // Map hyphenated tool-detail page slugs to internal exercise keys
 const TOOL_SLUG_MAP = {
-    'analogical-thinking': 'analogical',
+    'analogical-thinking': 'mash-up',
+    'mash-up': 'mash-up',
     'jobs-to-be-done': 'jtbd',
     'how-might-we': 'hmw',
     'socratic-questioning': 'socratic'
@@ -290,7 +293,8 @@ const EXERCISE_DESCS = {
     'rapid-experiment': 'Design a quick test to learn before you build.',
     'lean-canvas':      'Outline your venture model on a single page.',
     'effectuation':     'Build using the resources and relationships you already have.',
-    'analogical':       'Borrow solutions from unexpected places.',
+    'mash-up':          'Smash ideas from different industries together and see what comes out.',
+    'analogical':       'Smash ideas from different industries together and see what comes out.',
     'flywheel':         'Map the reinforcing loop that drives your growth and find the bottleneck.',
     'socratic':         'Test whether your problem is built on facts or assumptions.',
     'cold-open':         'Can your message survive first contact with a stranger?',
@@ -314,6 +318,7 @@ const EXERCISE_HINTS = {
     'rapid-experiment': 'e.g. "I think our clients would value a monthly insight briefing — but I\'m not sure"',
     'lean-canvas':      'e.g. "I\'m developing a new service offering within our division"',
     'effectuation':     'e.g. "I have deep expertise in policy and a strong network in government — where do I start?"',
+    'mash-up':          'e.g. "How might we reduce handoff delays between teams the way Formula 1 does pit stops?"',
     'analogical':       'e.g. "How might we reduce handoff delays between teams the way Formula 1 does pit stops?"',
     'cold-open':        'e.g. "I need to explain what we do to investors who have never heard of us"',
     'iceberg':          'e.g. "We keep losing our best people and nothing we try seems to fix it"',
@@ -338,7 +343,8 @@ const EXERCISE_ARCS = {
     'rapid-experiment': 'We\'ll design a quick, cheap test to validate your riskiest assumption before you build.',
     'lean-canvas':      'We\'ll map your venture model on one page, then pressure-test the weakest blocks.',
     'effectuation':     'We\'ll start with what you have — skills, network, resources — then find where they point.',
-    'analogical':       'We\'ll borrow solutions from unexpected places and adapt them to your challenge.',
+    'mash-up':          'We\'ll smash ideas from completely different industries together, see what collides, and remix the best into something new.',
+    'analogical':       'We\'ll smash ideas from completely different industries together, see what collides, and remix the best into something new.',
     'iceberg':          'We\'ll go four levels deep — from what happened, to the pattern, to the structure, to the belief holding it all in place.',
     'constraint-flip':  'Pete will help you see your biggest constraint as your deepest competitive advantage. Ideas that only work because of the limitation.',
     'trade-off':        'Pete will force you to choose between your own features. The ones that survive every round are your core value.',
@@ -420,6 +426,12 @@ const TOOL_PROGRAM_MAP = {
         program: 'Master of Entrepreneurship',
         programUrl: 'https://wadeinstitute.org.au/programs/entrepreneurs/master-of-entrepreneurship/',
         bridge: 'Creative frameworks like SCAMPER are part of Wade\'s innovation toolkit. The Master of Entrepreneurship teaches 20 frameworks and helps you apply them to your own venture.',
+        segment: 'founder'
+    },
+    'mash-up': {
+        program: 'Master of Entrepreneurship',
+        programUrl: 'https://wadeinstitute.org.au/programs/entrepreneurs/master-of-entrepreneurship/',
+        bridge: 'Cross-domain thinking is one of the most powerful innovation skills. Wade\'s Master of Entrepreneurship builds this muscle over 10 months of structured practice.',
         segment: 'founder'
     },
     'analogical': {
@@ -512,6 +524,7 @@ const STARTER_PROMPTS = {
     'crazy-8s': ['I need fresh ideas for a problem I\'ve been stuck on', 'Help me brainstorm — I want quantity, not quality'],
     'hmw': ['I have a problem but I\'m not sure how to reframe it', 'Turn my frustration into an opportunity question'],
     'scamper': ['I have an existing product I want to reinvent', 'Help me stretch this idea in unexpected directions'],
+    'mash-up': ['I need solutions from outside my industry', 'How would a completely different field solve this?'],
     'analogical': ['I need solutions from outside my industry', 'How would a completely different field solve this?'],
     'constraint-flip': ['We have no marketing budget and our competitors spend millions', 'I keep apologising for our limitations in pitches'],
     'pre-mortem': ['We\'re about to launch — what could go wrong?', 'I need to stress-test this plan before we commit'],
@@ -531,7 +544,7 @@ const EXERCISE_EXCHANGES = {
     'five-whys': 7, 'jtbd': 10, 'empathy-map': 10,
     'hmw': 8, 'scamper': 10, 'crazy-8s': 8,
     'pre-mortem': 10, 'devils-advocate': 10, 'rapid-experiment': 8,
-    'lean-canvas': 12, 'effectuation': 8, 'analogical': 8, 'flywheel': 10, 'socratic': 8, 'cold-open': 8, 'reality-check': 8, 'theory-of-change': 10, 'trade-off': 10, 'iceberg': 8, 'constraint-flip': 8
+    'lean-canvas': 12, 'effectuation': 8, 'mash-up': 8, 'analogical': 8, 'flywheel': 10, 'socratic': 8, 'cold-open': 8, 'reality-check': 8, 'theory-of-change': 10, 'trade-off': 10, 'iceberg': 8, 'constraint-flip': 8
 };
 
 // Human-readable time estimates per exercise
@@ -547,7 +560,8 @@ const EXERCISE_TIMES = {
     'rapid-experiment':'15 min',
     'lean-canvas':    '20 min',
     'effectuation':   '20 min',
-    'analogical':     '15 min',
+    'mash-up':        '20 min',
+    'analogical':     '20 min',
     'flywheel':       '25 min',
     'socratic':       '20 min',
     'cold-open':      '20 min',
@@ -580,9 +594,9 @@ const STAGE_DEFAULT = {
 // All exercises grouped by category
 const TOOLS_BY_MODE = {
     untangle: ['five-whys', 'empathy-map', 'jtbd', 'socratic', 'iceberg'],
-    spark:    ['crazy-8s', 'hmw', 'scamper', 'constraint-flip'],
-    test:     ['pre-mortem', 'devils-advocate', 'rapid-experiment', 'cold-open', 'reality-check', 'trade-off'],
-    build:    ['lean-canvas', 'effectuation', 'analogical', 'flywheel', 'theory-of-change']
+    spark:    ['crazy-8s', 'hmw', 'scamper', 'mash-up', 'constraint-flip'],
+    test:     ['pre-mortem', 'devils-advocate', 'cold-open', 'reality-check', 'trade-off'],
+    build:    ['lean-canvas', 'effectuation', 'rapid-experiment', 'flywheel', 'theory-of-change']
 };
 
 // Category prompts — used by homepage cards and ?category= URL param
@@ -643,6 +657,7 @@ const toolLearnLink = $('#toolLearnLink');
 const TOOL_DETAIL_SLUG = {
     'jtbd': 'jobs-to-be-done',
     'hmw': 'how-might-we',
+    'mash-up': 'analogical-thinking',
     'analogical': 'analogical-thinking',
     'socratic': 'socratic-questioning',
     'cold-open': 'cold-open',
