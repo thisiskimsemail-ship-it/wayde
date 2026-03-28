@@ -13,6 +13,13 @@
 }
 .lp-sample-link:hover { opacity: 1; text-decoration: underline; }
 
+/* === TRADE-OFF BOARD MOCKUP === */
+.lp-board-mock-tradeoff {
+    display: grid !important; grid-template-columns: repeat(3, 1fr) !important;
+    gap: 0.75rem !important; padding: 1rem !important;
+}
+@media (max-width: 640px) { .lp-board-mock-tradeoff { grid-template-columns: 1fr !important; } }
+
 /* === QUOTES GRID === */
 .lp-quotes-grid {
     display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem;
