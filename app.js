@@ -2329,6 +2329,8 @@ async function generateReport() {
     if (reportGenerating || state.reportGenerated) return; // prevent double-generation
     trackEvent('report_generate', { exchanges: state.exchangeCount });
     reportGenerating = true;
+    // Close the board immediately so report has full chat width
+    if (state.board && state.board.visible) { toggleBoard(); }
     reportCtaBtn.disabled = true;
     reportCtaBtn.textContent = 'Generating report...';
 
