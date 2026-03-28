@@ -4722,3 +4722,32 @@ body.light .feedback-input, html[data-theme="light"] .feedback-input { backgroun
 .board-grid-constraint-flip .zone-hint,
 .board-grid-flywheel .zone-empty,
 .board-grid-flywheel .zone-hint { font-size: 0.7rem; }
+
+/* Force all board zones to use ONLY the stage colour — no mixed colours */
+.board-zone { border-left-color: var(--stage-color) !important; }
+.board-zone .zone-name { color: var(--stage-color) !important; }
+.board-card { border-left-color: var(--stage-color) !important; }
+
+/* Rapid Experiment board grid */
+.board-grid-rapid-experiment {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1px;
+    overflow-y: auto;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 8px;
+    flex: 1;
+}
+.board-grid-rapid-experiment .board-zone { min-height: 80px; border-radius: 0; background: var(--bg); border-left: none !important; }
+.board-grid-rapid-experiment .board-zone[data-zone="re-hypothesis"] { grid-column: 1 / -1; }
+.board-grid-rapid-experiment .board-zone[data-zone="re-assumption"] { grid-column: 1 / -1; }
+.board-grid-rapid-experiment .board-zone[data-zone="re-predicted"] { grid-column: 1 / -1; }
+.board-grid-rapid-experiment .board-zone[data-zone="re-actual"] { grid-column: 1 / -1; }
+.board-grid-rapid-experiment .board-zone[data-zone="actions"] { grid-column: 1 / -1; }
+.board-grid-rapid-experiment .zone-name { font-size: 0.7rem; }
+.board-grid-rapid-experiment .board-card-text { font-size: 0.8rem; }
+@media (max-width: 640px) {
+    .board-grid-rapid-experiment { grid-template-columns: 1fr; }
+    .board-grid-rapid-experiment .board-zone { grid-column: 1 !important; }
+}
