@@ -4687,6 +4687,35 @@ body.light .feedback-input, html[data-theme="light"] .feedback-input { backgroun
 }
 .feature-hint-dismiss:hover { background: rgba(255,255,255,0.3); }
 
+/* Trade-Off board: 2-column layout with auto-expanding zones */
+.board-grid-trade-off {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    border: 1px solid var(--stage-color, rgba(255,255,255,0.1));
+    border-radius: 8px;
+    overflow: hidden;
+}
+.board-grid-trade-off .board-zone {
+    min-height: auto;
+    border-radius: 0;
+    background: var(--bg, #12103a);
+    border-left: 3px solid var(--stage-color, #ED3694);
+    padding: 0.6rem;
+    overflow: visible;
+}
+.board-grid-trade-off .board-zone .zone-cards {
+    max-height: none;
+    overflow: visible;
+}
+.board-grid-trade-off .board-zone[data-zone="to-mvo"],
+.board-grid-trade-off .board-zone[data-zone="actions"] {
+    grid-column: 1 / -1;
+}
+@media (max-width: 600px) {
+    .board-grid-trade-off { grid-template-columns: 1fr; }
+}
+
 /* Compact text for all custom boards */
 .board-grid-trade-off .zone-name,
 .board-grid-cold-open .zone-name,
