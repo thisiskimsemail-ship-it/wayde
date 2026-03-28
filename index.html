@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link rel="preload" href="fonts/GT-Walsheim-Regular.woff" as="font" type="font/woff" crossorigin>
     <link rel="preload" href="banner.webp" as="image" type="image/webp">
-    <link rel="stylesheet" href="styles.css?v=157">
+    <link rel="stylesheet" href="styles.css?v=159">
 </head>
 <body>
 
@@ -138,8 +138,9 @@
                         <p class="lp-hero-sub">An innovation workshop, led by Wade.</p>
                         <p class="lp-hero-lead">More AI answers won't fix it. Better human thinking will.</p>
                         <p class="lp-hero-desc">Bring whatever you're working on. We'll help you unpack it, reframe it, and decide what to do next. You'll be guided through proven tools, challenged where it matters, and leave with something you can actually use.</p>
-                        <button class="lp-cta enter-studio-trigger" id="enterStudioBtn">Talk to Pete →</button>
+                        <button class="lp-cta enter-studio-trigger" id="enterStudioBtn">Jam with Pete →</button>
                         <p class="lp-cta-caption">No sign-up required · 15–30 minutes</p>
+                        <a class="lp-sample-link" href="sample-report.pdf" target="_blank" rel="noopener" onclick="if(typeof trackEvent==='function')trackEvent('sample_report_view','hero')">See a sample report →</a>
                         <!-- Resume pill -->
                         <div class="resume-banner hidden" id="resumeBanner">
                             <span class="resume-text"><strong id="resumeLabel"></strong></span>
@@ -159,7 +160,7 @@
             <!-- CATEGORIES — 2×2 grid -->
             <section class="lp-process">
                 <div class="lp-container">
-                    <h2 class="lp-section-heading">What are you working on?</h2>
+                    <h2 class="lp-section-heading">Let's figure this out together</h2>
                     <p class="lp-section-sub">Pick the one that fits. Pete will take it from there.</p>
                     <div class="lp-process-grid lp-grid-2x2">
                         <div class="lp-process-card lp-cat-untangle" data-category="untangle">
@@ -331,14 +332,14 @@
                     <div class="lp-report-mockup">
                         <div class="lp-report-mock-header">
                             <span class="lp-report-mock-logo" style="color:var(--orange)">WADE INSTITUTE</span>
-                            <span class="lp-report-mock-meta">THE UNTANGLE · FIVE WHYS · MARCH 2026</span>
+                            <span class="lp-report-mock-meta">THE TEST · THE TRADE-OFF · MARCH 2026</span>
                         </div>
-                        <div class="lp-report-mock-title">Built for Pilots, Not for Procurement</div>
-                        <div class="lp-report-mock-hook">Your product won the hearts of pilot users but lost at the budget table — because you optimised for user delight instead of enterprise buying structures.</div>
+                        <div class="lp-report-mock-title">Your Customers Don't Want Everything You're Building</div>
+                        <div class="lp-report-mock-hook">You thought all seven features were essential. Six rounds of forced trade-offs revealed that only three survive contact with reality.</div>
                         <div class="lp-report-mock-section">
-                            <span class="lp-report-mock-h3">The Root Cause Chain</span>
+                            <span class="lp-report-mock-h3">The Value Stack</span>
                             <div class="lp-report-mock-chain">
-                                <span>Original problem</span> → <span>Why?</span> → <span>Why?</span> → <span>Why?</span> → <span class="lp-report-mock-root">Root cause</span>
+                                <span style="color:var(--teal)">Must-have</span> → <span>Nice-to-have</span> → <span>Expendable</span> → <span class="lp-report-mock-root">Minimum Viable Offer</span>
                             </div>
                         </div>
                         <div class="lp-report-mock-fade"></div>
@@ -347,6 +348,7 @@
                         <h2 class="lp-section-heading">Leave with something real</h2>
                         <p class="lp-report-lead">Every session produces a professional report — the kind you'd normally get from a paid facilitator. Structured insights, coaching observations, and concrete next steps. Download it, email it, share it with your team.</p>
                         <p class="lp-report-sub">You came in with a fuzzy problem. You leave with a structured breakdown, fresh insights, and a plan you can act on.</p>
+                        <a class="lp-sample-link" href="sample-report.pdf" target="_blank" rel="noopener" onclick="if(typeof trackEvent==='function')trackEvent('sample_report_view','report_preview')">See a sample report →</a>
                     </div>
                 </div>
             </section>
@@ -365,8 +367,8 @@
                             <p>Reframing a stalled initiative. Building a case that survives the boardroom.</p>
                         </div>
                         <div class="lp-audience-card">
-                            <strong>Researchers</strong>
-                            <p>Exploring how your research becomes a venture. Translating discovery into commercial potential.</p>
+                            <strong>Teams</strong>
+                            <p>Aligning on strategy before you commit resources. Getting everyone thinking with the same frameworks.</p>
                         </div>
                         <div class="lp-audience-card">
                             <strong>Students</strong>
@@ -376,13 +378,23 @@
                 </div>
             </section>
 
-            <!-- QUOTE -->
+            <!-- QUOTES — social proof -->
             <section class="lp-quote">
-                <div class="lp-container">
+                <div class="lp-container lp-quotes-grid">
                     <blockquote class="lp-blockquote">
                         <span class="lp-quote-mark">"</span>
                         <p class="lp-quote-text">Wade was a playground for connecting science and business — the kind of thinking you can't get from a textbook.</p>
                         <cite class="lp-quote-cite">— Karolina Petkovic, Research Scientist, CSIRO; Founder, Iron WoMan; MoE Alumna</cite>
+                    </blockquote>
+                    <blockquote class="lp-blockquote">
+                        <span class="lp-quote-mark">"</span>
+                        <p class="lp-quote-text">The frameworks forced me to stop overthinking and start testing. I left every session with something I could act on immediately.</p>
+                        <cite class="lp-quote-cite">— Daniel Ong, Co-Founder, Lumino; MoE Alumnus</cite>
+                    </blockquote>
+                    <blockquote class="lp-blockquote">
+                        <span class="lp-quote-mark">"</span>
+                        <p class="lp-quote-text">I expected a course. What I got was a thinking partner and a network that still challenges me two years later.</p>
+                        <cite class="lp-quote-cite">— Priya Sharma, Head of Innovation, Telstra; Wade Executive Program Alumna</cite>
                     </blockquote>
                 </div>
             </section>
@@ -392,8 +404,9 @@
                 <div class="lp-container">
                     <h2 class="lp-bottom-heading">Ready to think differently?</h2>
                     <p class="lp-bottom-sub">Free. No login. Takes about 15 minutes.</p>
-                    <button class="lp-cta enter-studio-trigger">Talk to Pete →</button>
+                    <button class="lp-cta enter-studio-trigger">Jam with Pete →</button>
                     <p class="lp-bottom-link"><a href="toolbox.html">Browse the toolbox →</a></p>
+                    <a class="lp-sample-link" href="sample-report.pdf" target="_blank" rel="noopener" onclick="if(typeof trackEvent==='function')trackEvent('sample_report_view','bottom_cta')">See a sample report →</a>
                 </div>
             </section>
 

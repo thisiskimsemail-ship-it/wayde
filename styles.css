@@ -5,6 +5,25 @@
 .shortcuts-modal-overlay.hidden { display: none !important; }
 .tour-toast.hidden { display: none !important; }
 
+/* === SAMPLE REPORT LINK === */
+.lp-sample-link {
+    display: inline-block; margin-top: 0.75rem; font-size: 0.85rem;
+    font-weight: 500; color: var(--orange, #F15A22); text-decoration: none;
+    opacity: 0.85; transition: opacity 0.2s;
+}
+.lp-sample-link:hover { opacity: 1; text-decoration: underline; }
+
+/* === QUOTES GRID === */
+.lp-quotes-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem;
+}
+.lp-quotes-grid .lp-blockquote {
+    margin: 0; padding: 0;
+}
+@media (max-width: 900px) {
+    .lp-quotes-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+}
+
 /* === TRADE-OFF BUNDLE CARDS === */
 .bundle-round { margin: 1rem 0; }
 .bundle-round-title {
