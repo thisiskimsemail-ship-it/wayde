@@ -4136,9 +4136,8 @@ body.board-maximised > .input-area {
     border-radius: 0;
     background: var(--bg);
 }
-/* Zone colour accents — left border per section */
-/* Zone borders are neutral — stage colour on board header/border only */
-.board-zone { border-left: 3px solid rgba(255,255,255,0.15); }
+/* Zone colour accents — left border uses stage colour */
+body[data-mode] .board-zone { border-left: 3px solid var(--stage-color); }
 
 .board-grid-canvas .zone-name {
     font-size: 0.8rem;
@@ -4148,8 +4147,8 @@ body.board-maximised > .input-area {
     letter-spacing: 0.04em;
 }
 /* Zone name colours match their section */
-/* Zone names are neutral — stage colour is on board header/border only */
-.board-zone .zone-name { color: rgba(255,255,255,0.5); }
+/* Zone names use stage colour */
+body[data-mode] .board-zone .zone-name { color: var(--stage-color); }
 .board-grid-canvas .board-card-text {
     font-size: 0.85rem;
     line-height: 1.45;
@@ -4770,6 +4769,9 @@ body.light .feedback-input, html[data-theme="light"] .feedback-input { backgroun
     margin: 0 auto;
     padding: 3rem 1.5rem 4rem;
     animation: psFadeUp 0.6s ease-out;
+    grid-column: 1 / -1;
+    width: 100%;
+    overflow-y: auto;
 }
 .ps-screen.hidden { display: none; }
 

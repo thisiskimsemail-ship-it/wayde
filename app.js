@@ -4728,6 +4728,9 @@ moveInputToWelcome();
 
 function renderMarkdown(text) {
     let html = text
+        // Fix broken Unicode escapes from AI output
+        .replace(/\\u([\da-fA-F]{4})/g, (_, hex) => String.fromCharCode(parseInt(hex, 16)))
+        .replace(/\\x([\da-fA-F]{2})/g, (_, hex) => String.fromCharCode(parseInt(hex, 16)))
         // Escape HTML
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
