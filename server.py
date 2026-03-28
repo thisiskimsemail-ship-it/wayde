@@ -3396,6 +3396,9 @@ SVG_ZONE_MAP = {
         'eff-lemonade': 'LEMONADE',
         'eff-action': 'FIRST MOVE',
     },
+    'mash-up': {
+        'insights': 'APPLICATION',
+    },
     'analogical': {
         'insights': 'APPLICATION',
     },
@@ -3454,6 +3457,7 @@ SVG_TEMPLATE_FILE = {
     'pre-mortem': 'pre-mortem.svg',
     'devils-advocate': 'devils-advocate.svg',
     'effectuation': 'effectuation.svg',
+    'mash-up': 'analogical.svg',
     'analogical': 'analogical.svg',
     'rapid-experiment': 'rapid-experiment.svg',
     'theory-of-change': 'theory-of-change.svg',
