@@ -135,17 +135,17 @@
 <body>
 <div class="app-shell toolbox-shell">
     <header class="header">
-        <a href="index.html"><img class="logo" src="logo.png" alt="Wade Institute"></a>
-        <nav class="header-nav">
+        <img class="logo" src="logo.png" alt="Wade Institute">
+        <nav class="header-nav" id="headerNav">
             <a class="header-nav-link" href="index.html">The Studio</a>
             <a class="header-nav-link active" href="toolbox.html">Toolbox</a>
+            <a class="header-nav-link" href="sessions.html">Sessions</a>
+            <a class="header-nav-link header-feedback-link" href="#" id="headerFeedbackLink">Feedback</a>
         </nav>
         <div class="header-controls">
-            <button class="text-size-btn" id="textSizeToggle" title="Adjust text size">Aa</button>
-            <button class="theme-toggle" id="themeToggle" title="Toggle light/dark mode" aria-label="Toggle light/dark mode">
-                <span class="theme-icon">&#9728;</span>
-            </button>
-            <a class="tour-help-btn" href="index.html" title="Back to The Studio">?</a>
+            <button class="text-size-btn" id="textSizeToggle" title="Adjust text size" aria-label="Adjust text size">Aa</button>
+            <button class="theme-toggle" id="themeToggle" title="Toggle light/dark mode" aria-label="Toggle light/dark mode">☀</button>
+            <button class="tour-help-btn" id="tourHelpBtn" title="Help" aria-label="Help">?</button>
         </div>
     </header>
 

@@ -38,19 +38,15 @@
   }
 
   /* -- HEADER -- */
-  header {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-    background: var(--navy-deep);
-    border-bottom: 2px solid var(--orange);
-    padding: 0 60px; height: 72px;
-    display: flex; align-items: center; justify-content: space-between;
-  }
-  .logo { font-weight: 700; font-size: 15px; line-height: 1.15; color: var(--orange); letter-spacing: 0.4px; text-transform: uppercase; }
-  .header-nav { display: flex; gap: 12px; align-items: center; }
-  .nav-pill { font-size: 14px; font-weight: 500; padding: 8px 20px; border-radius: 100px; border: 1.5px solid rgba(255,255,255,0.25); background: transparent; color: var(--white); cursor: pointer; text-decoration: none; transition: all 0.2s; font-family: 'GT Walsheim', 'Space Grotesk', sans-serif; }
-  .nav-pill:hover { background: rgba(255,255,255,0.1); }
-  .nav-pill.active { background: var(--white); color: var(--navy); border-color: var(--white); }
-  .nav-icon { width: 36px; height: 36px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,0.25); display: flex; align-items: center; justify-content: center; color: var(--white); font-size: 14px; text-decoration: none; }
+  .header { padding: 1rem 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: space-between; }
+  .logo { height: 50px; width: auto; }
+  .header-nav { display: flex; border: 1px solid rgba(255,255,255,0.12); border-radius: 999px; overflow: hidden; margin-left: auto; margin-right: 1rem; }
+  .header-nav-link { padding: 0.4rem 1.1rem; font-size: 0.8rem; font-weight: 500; color: rgba(255,255,255,0.5); text-decoration: none; transition: all 0.2s; white-space: nowrap; }
+  .header-nav-link:hover { color: #fff; background: rgba(255,255,255,0.05); }
+  .header-nav-link.active { color: #fff; background: rgba(255,255,255,0.08); }
+  .header-controls { display: flex; align-items: center; gap: 0.5rem; }
+  .text-size-btn, .theme-toggle, .tour-help-btn { background: transparent; border: 1px solid rgba(255,255,255,0.12); border-radius: 6px; width: 32px; height: 32px; color: rgba(255,255,255,0.5); font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+  .text-size-btn:hover, .theme-toggle:hover, .tour-help-btn:hover { border-color: rgba(255,255,255,0.3); color: #fff; }
 
   /* -- TOOL HERO -- */
   .tool-hero {
@@ -417,7 +413,7 @@
   /* -- RESPONSIVE -- */
   @media (max-width: 1000px) {
     .tool-hero-grid, .content-grid { grid-template-columns: 1fr; gap: 32px; }
-    header { padding: 0 32px; }
+    .header { padding: 1rem 1rem; }
     .tool-hero, .content-area, .tool-bottom-cta { padding-left: 32px; padding-right: 32px; }
   }
   @media (max-width: 600px) {
