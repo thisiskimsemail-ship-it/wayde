@@ -5218,10 +5218,19 @@ hintObserver.observe(document.body, { childList: true, subtree: true, attributes
     const stars = document.querySelectorAll('.feedback-star');
     let selectedRating = 0;
 
-    if (!tab || !panel) return;
+    if (!panel) return;
 
-    tab.addEventListener('click', () => { panel.classList.remove('hidden'); tab.style.display = 'none'; });
-    closeBtn.addEventListener('click', () => { panel.classList.add('hidden'); tab.style.display = ''; });
+    if (tab) tab.addEventListener('click', () => { panel.classList.remove('hidden'); tab.style.display = 'none'; });
+    if (closeBtn) closeBtn.addEventListener('click', () => { panel.classList.add('hidden'); if (tab) tab.style.display = ''; });
+
+    // Nav bar feedback button
+    const navFeedback = $('#navFeedbackBtn');
+    if (navFeedback) {
+        navFeedback.addEventListener('click', (e) => {
+            e.preventDefault();
+            panel.classList.toggle('hidden');
+        });
+    }
 
     stars.forEach(star => {
         star.addEventListener('click', () => {
