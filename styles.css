@@ -4134,6 +4134,7 @@ body.board-maximised > .input-area {
     gap: 0.5rem;
     flex: 1;
     min-height: 0;
+    overflow-y: auto;
 }
 
 /* Default board: single column */
@@ -4236,6 +4237,7 @@ body[data-mode] .board-zone .zone-name { color: var(--stage-color); }
     transition: background 0.15s, outline 0.15s;
     display: flex;
     flex-direction: column;
+    flex-shrink: 0;
 }
 
 .board-zone.drag-over {

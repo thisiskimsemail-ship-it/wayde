@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Privacy — Wade Studio</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=93">
     <style>
         .privacy-page {
             max-width: 680px;
@@ -56,6 +56,21 @@
             color: var(--text);
             text-decoration: underline;
         }
+        .privacy-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        .privacy-header img {
+            height: 48px;
+        }
+        .privacy-header a {
+            color: var(--orange);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
         .privacy-footer {
             max-width: 680px;
             margin: 0 auto;
@@ -68,20 +83,10 @@
     </style>
 </head>
 <body>
-    <header class="header">
-        <img class="logo" src="logo.png" alt="Wade Institute">
-        <nav class="header-nav" id="headerNav">
-            <a class="header-nav-link" href="index.html">The Studio</a>
-            <a class="header-nav-link" href="toolbox.html">Toolbox</a>
-            <a class="header-nav-link" href="sessions.html">Sessions</a>
-            <a class="header-nav-link header-feedback-link" href="#" id="headerFeedbackLink">Feedback</a>
-        </nav>
-        <div class="header-controls">
-            <button class="text-size-btn" id="textSizeToggle" title="Adjust text size" aria-label="Adjust text size">Aa</button>
-            <button class="theme-toggle" id="themeToggle" title="Toggle light/dark mode" aria-label="Toggle light/dark mode">☀</button>
-            <button class="tour-help-btn" id="tourHelpBtn" title="Help" aria-label="Help">?</button>
-        </div>
-    </header>
+    <div class="privacy-header">
+        <a href="/"><img src="logo.png" alt="Wade Institute of Entrepreneurship"></a>
+        <a href="/">← Back to The Studio</a>
+    </div>
 
     <div class="privacy-page">
         <h1>Privacy and Data</h1>
@@ -135,5 +140,66 @@
     <div class="privacy-footer">
         Wade Institute of Entrepreneurship · Ormond College, University of Melbourne · <a href="mailto:enquiries@wadeinstitute.org.au">enquiries@wadeinstitute.org.au</a> · +61 3 9344 1100
     </div>
+
+    <!-- Feedback widget -->
+    <button class="feedback-tab" id="feedbackTab">Feedback</button>
+    <div class="feedback-panel hidden" id="feedbackPanel">
+        <div class="feedback-header">
+            <span>How was your experience?</span>
+            <button class="feedback-close" id="feedbackClose">&times;</button>
+        </div>
+        <p class="feedback-beta">The Studio is in beta. Help us make it amazing by sharing your experience.</p>
+        <div class="feedback-rating" id="feedbackRating">
+            <button class="feedback-star" data-rating="1">1</button>
+            <button class="feedback-star" data-rating="2">2</button>
+            <button class="feedback-star" data-rating="3">3</button>
+            <button class="feedback-star" data-rating="4">4</button>
+            <button class="feedback-star" data-rating="5">5</button>
+        </div>
+        <div class="feedback-rating-labels">
+            <span>Not great</span>
+            <span>Loved it</span>
+        </div>
+        <textarea class="feedback-input" id="feedbackInput" placeholder="Tell us more... what worked, what didn't, what you'd change." rows="3"></textarea>
+        <button class="feedback-submit" id="feedbackSubmit">Send feedback</button>
+    </div>
+
+    <script>
+    (function() {
+        var tab = document.getElementById('feedbackTab');
+        var panel = document.getElementById('feedbackPanel');
+        var closeBtn = document.getElementById('feedbackClose');
+        var submitBtn = document.getElementById('feedbackSubmit');
+        var input = document.getElementById('feedbackInput');
+        var stars = document.querySelectorAll('.feedback-star');
+        var selectedRating = 0;
+        if (!tab || !panel) return;
+        tab.addEventListener('click', function() { panel.classList.remove('hidden'); tab.style.display = 'none'; });
+        closeBtn.addEventListener('click', function() { panel.classList.add('hidden'); tab.style.display = ''; });
+        stars.forEach(function(star) {
+            star.addEventListener('click', function() {
+                selectedRating = parseInt(star.dataset.rating);
+                stars.forEach(function(s) { s.classList.toggle('active', parseInt(s.dataset.rating) <= selectedRating); });
+            });
+        });
+        submitBtn.addEventListener('click', function() {
+            var text = input.value.trim();
+            if (!selectedRating && !text) return;
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Sending...';
+            fetch('/api/feedback', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ rating: selectedRating, text: text, page: window.location.pathname, tool: null, stage: null, exchanges: 0, timestamp: new Date().toISOString() })
+            }).then(function() {
+                submitBtn.textContent = 'Thanks!';
+                input.value = '';
+                selectedRating = 0;
+                stars.forEach(function(s) { s.classList.remove('active'); });
+                setTimeout(function() { panel.classList.add('hidden'); tab.style.display = ''; submitBtn.textContent = 'Send feedback'; submitBtn.disabled = false; }, 1500);
+            }).catch(function() { submitBtn.textContent = 'Failed — try again'; submitBtn.disabled = false; });
+        });
+    })();
+    </script>
 </body>
 </html>
