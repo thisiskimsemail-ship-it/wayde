@@ -3580,7 +3580,7 @@ function transitionToPostDownload() {
     const thinCells = Object.values(zoneCounts).filter(c => c <= 1).length;
 
     if (nudgeHeading) nudgeHeading.textContent = `Your ${exName.toLowerCase()} is strong \u2014 but ${exName.toLowerCase()}s don't build companies. People do.`;
-    if (nudgeText) nudgeText.textContent = `The Studio helped you think through ${exName} in ${duration} minutes. Imagine what happens when you work through it with a cohort of founders who'll challenge your assumptions, share their networks, and hold you accountable. That's what Wade's programs are built for.`;
+    if (nudgeText) nudgeText.textContent = `The Studio helped you think through ${exName}. Imagine what happens when you work through it with a cohort of peers who'll challenge your assumptions, share their networks, and hold you accountable. That\u2019s what Wade\u2019s programs are built for.`;
     if (nudgeStatNum) nudgeStatNum.textContent = thinCells || 3;
     if (nudgeStatLabel) nudgeStatLabel.textContent = `cells on your ${exName.toLowerCase()} need deeper work`;
 
