@@ -430,18 +430,18 @@
 <body>
 
 <!-- HEADER -->
-<header>
-  <a href="index.html"><img class="logo" src="logo.png" alt="Wade Institute" style="height:50px;width:auto;"></a>
+<header class="header">
+  <a href="index.html"><img class="logo" src="logo.png" alt="Wade Institute"></a>
   <nav class="header-nav">
-    <a href="index.html" class="nav-pill">The Studio</a>
-    <a href="toolbox.html" class="nav-pill active">Toolbox</a>
-    <a href="sessions.html" class="nav-pill">Sessions</a>
-    <a href="#" class="nav-pill" onclick="document.getElementById('feedbackPanel')?.classList.toggle('hidden'); return false;">Feedback</a>
+    <a href="index.html" class="header-nav-link">The Studio</a>
+    <a href="toolbox.html" class="header-nav-link active">Toolbox</a>
+    <a href="sessions.html" class="header-nav-link">Sessions</a>
+    <a href="#" class="header-nav-link" onclick="document.getElementById('feedbackPanel')?.classList.toggle('hidden'); return false;">Feedback</a>
   </nav>
-  <div class="header-controls" style="display:flex;gap:8px;align-items:center;">
-    <button class="nav-icon" onclick="document.documentElement.dataset.textSize=({'':'lg','lg':'xl','xl':''}[document.documentElement.dataset.textSize||''])||''" title="Adjust text size">Aa</button>
-    <button class="nav-icon" onclick="document.documentElement.dataset.theme=document.documentElement.dataset.theme==='light'?'':'light'" title="Toggle light/dark mode">&#x2731;</button>
-    <a href="index.html" class="nav-icon" title="Back to The Studio">?</a>
+  <div class="header-controls">
+    <button class="text-size-btn" onclick="document.documentElement.dataset.textSize=({'':'lg','lg':'xl','xl':''}[document.documentElement.dataset.textSize||''])||''" title="Adjust text size">Aa</button>
+    <button class="text-size-btn" onclick="document.documentElement.dataset.theme=document.documentElement.dataset.theme==='light'?'':'light'" title="Toggle light/dark mode">&#x2731;</button>
+    <a href="index.html" class="text-size-btn" title="Back to The Studio">?</a>
   </div>
 </header>
 
@@ -643,9 +643,9 @@
         </a>
 
         <a href="tool-detail-analogical-thinking.html" class="related-tool">
-          <div class="related-tool-icon test">A</div>
+          <div class="related-tool-icon spark">M</div>
           <div class="related-tool-text">
-            <h4>Analogical Thinking</h4>
+            <h4>Mash Up</h4>
             <p>Find proven patterns from other industries</p>
           </div>
         </a>

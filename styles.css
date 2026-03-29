@@ -111,7 +111,7 @@ html[data-theme="light"] .ps-board-empty { color: rgba(0,0,0,0.25); }
     display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem;
 }
 .lp-quotes-grid .lp-blockquote {
-    margin: 0; padding: 0;
+    margin: 0;
 }
 @media (max-width: 900px) {
     .lp-quotes-grid { grid-template-columns: 1fr; gap: 1.5rem; }
@@ -1760,19 +1760,20 @@ body.in-session .header-nav { display: none; }
 .lp-board-mock-header {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    gap: 1rem;
     padding: 0.75rem 1rem;
     border-bottom: 1px solid rgba(255,255,255,0.06);
 }
-.lp-board-mock-title { font-weight: 700; color: var(--orange); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; }
-.lp-board-mock-actions { font-size: 0.75rem; color: var(--text-muted); }
+.lp-board-mock-title { font-weight: 700; color: var(--orange); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap; }
+.lp-board-mock-meta { font-size: 0.7rem; color: var(--text-muted); letter-spacing: 0.05em; text-transform: uppercase; white-space: nowrap; }
+.lp-board-mock-actions { font-size: 0.75rem; color: var(--text-muted); margin-left: auto; white-space: nowrap; }
 .lp-board-mock-zones { padding: 1rem; display: flex; flex-direction: column; gap: 1rem; }
 .lp-board-mock-canvas { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; }
 @media (max-width: 640px) { .lp-board-mock-canvas { grid-template-columns: repeat(2, 1fr); } }
 .lp-board-mock-zone-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; display: block; margin-bottom: 0.5rem; }
 .lp-board-mock-card {
     background: rgba(255,255,255,0.04);
-    border-left: 3px solid var(--orange);
+    border-left: 3px solid var(--pink);
     border-radius: 6px;
     padding: 0.5rem 0.75rem;
     font-size: 0.8rem;
@@ -1792,15 +1793,15 @@ body.in-session .header-nav { display: none; }
     position: relative;
     overflow: hidden;
 }
-.lp-report-mock-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 2px solid var(--orange); }
-.lp-report-mock-logo { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.05em; }
+.lp-report-mock-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 2px solid var(--pink); }
+.lp-report-mock-logo { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.05em; color: var(--orange); }
 .lp-report-mock-meta { font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; }
 .lp-report-mock-title { font-size: 1.5rem; font-weight: 700; color: var(--text); margin-bottom: 0.75rem; }
-.lp-report-mock-hook { font-size: 0.85rem; font-style: italic; color: var(--text-dim); line-height: 1.6; margin-bottom: 1.25rem; }
+.lp-report-mock-hook { font-size: 0.85rem; color: var(--text-dim); line-height: 1.6; margin-bottom: 1.25rem; }
 .lp-report-mock-section { margin-bottom: 1rem; }
 .lp-report-mock-h3 { font-size: 0.9rem; font-weight: 700; color: var(--text); margin-bottom: 0.5rem; }
 .lp-report-mock-chain { display: flex; align-items: center; gap: 0.5rem; font-size: 0.75rem; color: var(--text-muted); flex-wrap: wrap; }
-.lp-report-mock-root { color: var(--orange); font-weight: 700; }
+.lp-report-mock-root { color: var(--pink); font-weight: 700; }
 .lp-report-mock-fade { position: absolute; bottom: 0; left: 0; right: 0; height: 60px; background: linear-gradient(transparent, var(--bg)); }
 .lp-report-lead { font-size: 0.95rem; color: var(--text-dim); line-height: 1.7; margin-bottom: 1rem; }
 .lp-report-sub { font-size: 0.875rem; color: var(--text-muted); line-height: 1.6; }
@@ -1822,8 +1823,8 @@ body.in-session .header-nav { display: none; }
 /* QUOTE */
 .lp-quote { padding: 4rem 0; }
 .lp-blockquote { max-width: 700px; margin: 0 auto; position: relative; padding-left: 2rem; border-left: 3px solid var(--orange); }
-.lp-quote-mark { font-size: 5rem; color: var(--orange); opacity: 0.3; position: absolute; top: -1.5rem; left: -0.5rem; line-height: 1; font-family: Georgia, serif; }
-.lp-quote-text { font-size: 1.2rem; font-style: italic; color: var(--text-dim); line-height: 1.7; margin-bottom: 1rem; }
+.lp-quote-mark { font-size: 3rem; color: var(--orange); opacity: 0.4; line-height: 1; font-family: Georgia, serif; display: block; margin-bottom: 0.25rem; }
+.lp-quote-text { font-size: 1.1rem; color: var(--text-dim); line-height: 1.7; margin-bottom: 1rem; }
 .lp-quote-cite { font-size: 0.85rem; color: var(--text-muted); font-style: normal; display: block; }
 
 /* BOTTOM CTA */
