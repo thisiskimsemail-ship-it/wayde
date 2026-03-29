@@ -524,8 +524,8 @@ const STARTER_PROMPTS = {
     'crazy-8s': ['I need fresh ideas for a problem I\'ve been stuck on', 'Help me brainstorm — I want quantity, not quality'],
     'hmw': ['I have a problem but I\'m not sure how to reframe it', 'Turn my frustration into an opportunity question'],
     'scamper': ['I have an existing product I want to reinvent', 'Help me stretch this idea in unexpected directions'],
-    'mash-up': ['I need solutions from outside my industry', 'How would a completely different field solve this?'],
-    'analogical': ['I need solutions from outside my industry', 'How would a completely different field solve this?'],
+    'mash-up': ['I keep solving this the same way and it\'s not working', 'My industry is stuck — I want a completely fresh angle'],
+    'analogical': ['I keep solving this the same way and it\'s not working', 'My industry is stuck — I want a completely fresh angle'],
     'constraint-flip': ['We have no marketing budget and our competitors spend millions', 'I keep apologising for our limitations in pitches'],
     'pre-mortem': ['We\'re about to launch — what could go wrong?', 'I need to stress-test this plan before we commit'],
     'devils-advocate': ['I think I have the answer — challenge me', 'My team is too aligned — nobody is pushing back'],
@@ -784,10 +784,41 @@ function updateStageProgress(mode) {
     });
 }
 
+// Gate: require report before switching tools (if user has had enough exchanges)
+function requireReportBeforeSwitch(callback) {
+    if (state.exchangeCount >= 3 && !state.reportGenerated && !state.routing) {
+        // Show confirmation modal
+        const overlay = document.createElement('div');
+        overlay.className = 'report-gate-overlay';
+        overlay.innerHTML = `
+            <div class="report-gate-modal" data-mode="${state.mode}">
+                <h3>Generate your report first?</h3>
+                <p>You've been working through ${EXERCISE_LABELS[state.exercise] || state.exercise}. Grab your session summary before moving on — you won't be able to come back to it.</p>
+                <div class="report-gate-actions">
+                    <button class="report-gate-btn report-gate-generate">Get my report first</button>
+                    <button class="report-gate-btn report-gate-skip">Skip and switch</button>
+                </div>
+            </div>`;
+        document.body.appendChild(overlay);
+        overlay.querySelector('.report-gate-generate').addEventListener('click', () => {
+            overlay.remove();
+            // Trigger report generation — user can switch after
+            generateReport();
+        });
+        overlay.querySelector('.report-gate-skip').addEventListener('click', () => {
+            overlay.remove();
+            callback();
+        });
+        return true; // blocked
+    }
+    return false; // not blocked
+}
+
 // Navigate to a stage — carries report context if available, picks a specific exercise if provided
 function navigateToStage(targetMode, specificExercise = null) {
     if (state.streaming) return;
     const targetExercise = specificExercise || STAGE_DEFAULT[targetMode];
+    if (requireReportBeforeSwitch(() => navigateToStage(targetMode, specificExercise))) return;
     if (state.reportText) {
         state.projectContext.push({
             stage: MODE_LABELS[state.mode] || state.mode,
@@ -1029,12 +1060,11 @@ function startExercise(mode, exercise, startMsg = null) {
     $('#reportLinkedInBtn')?.classList.add('hidden');
     routingBack.classList.add('hidden');
 
-    // Show What to Expect card + tool-specific starter prompts
-    showExpectCard(exercise);
+    // Show tool-specific starter prompts (expect card removed — activity brief is sufficient)
     renderStarterPrompts(exercise);
 
     // Switch board layout based on exercise — custom boards for structured tools
-    const customLayouts = ['lean-canvas', 'elevator-pitch', 'pre-mortem', 'effectuation', 'flywheel', 'cold-open', 'iceberg', 'constraint-flip', 'socratic', 'reality-check', 'theory-of-change', 'trade-off', 'five-whys', 'empathy-map', 'jtbd', 'crazy-8s', 'hmw', 'scamper', 'devils-advocate', 'rapid-experiment'];
+    const customLayouts = ['lean-canvas', 'elevator-pitch', 'pre-mortem', 'effectuation', 'flywheel', 'cold-open', 'iceberg', 'constraint-flip', 'socratic', 'reality-check', 'theory-of-change', 'trade-off', 'five-whys', 'empathy-map', 'jtbd', 'crazy-8s', 'hmw', 'scamper', 'devils-advocate', 'rapid-experiment', 'mash-up', 'analogical'];
     if (customLayouts.includes(exercise)) {
         switchBoardLayout(exercise);
     } else {
@@ -1250,6 +1280,7 @@ function doCloseSession() {
 // === SWAP TOOLS ===
 
 function swapToTool(mode, exercise, swapEl) {
+    if (requireReportBeforeSwitch(() => swapToTool(mode, exercise, swapEl))) return;
     // Preserve conversation history
     const previousMessages = [...state.messages];
 
@@ -1964,7 +1995,7 @@ async function streamResponse() {
                         if (breadcrumbStage) breadcrumbStage.textContent = (MODE_LABELS[autoMode] || autoMode).toUpperCase();
                         if (breadcrumbTool) breadcrumbTool.innerHTML = (EXERCISE_LABELS[autoKey] || autoKey) + ' <svg class="breadcrumb-chevron" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg>';
                         // Switch board layout
-                        const customLayouts = ['lean-canvas', 'elevator-pitch', 'pre-mortem', 'effectuation', 'flywheel', 'cold-open', 'iceberg', 'constraint-flip', 'socratic', 'reality-check', 'theory-of-change', 'trade-off', 'five-whys', 'empathy-map', 'jtbd', 'crazy-8s', 'hmw', 'scamper', 'devils-advocate', 'rapid-experiment'];
+                        const customLayouts = ['lean-canvas', 'elevator-pitch', 'pre-mortem', 'effectuation', 'flywheel', 'cold-open', 'iceberg', 'constraint-flip', 'socratic', 'reality-check', 'theory-of-change', 'trade-off', 'five-whys', 'empathy-map', 'jtbd', 'crazy-8s', 'hmw', 'scamper', 'devils-advocate', 'rapid-experiment', 'mash-up', 'analogical'];
                         if (customLayouts.includes(autoKey)) {
                             switchBoardLayout(autoKey);
                         } else {
@@ -2174,11 +2205,15 @@ async function streamResponse() {
             fullText = fullText.replace(/\n?\[PHASE:\s*(?:diverge|converge)\]/g, '').trim();
             if (agentDiv) agentDiv.innerHTML = renderMarkdown(fullText);
             updatePhaseIndicator(state.currentPhase);
-            // Insert phase transition divider in chat
-            const transDiv = document.createElement('div');
-            transDiv.className = `phase-transition phase-${state.currentPhase}`;
-            transDiv.innerHTML = `<span class="phase-transition-text">— ${state.currentPhase === 'diverge' ? 'Opening up' : 'Time to narrow down'} —</span>`;
-            messagesEl.appendChild(transDiv);
+            // Insert board nudge on diverge, narrowing divider on converge
+            if (state.currentPhase === 'diverge' && !boardNudgeShown) {
+                showBoardNudge();
+            } else if (state.currentPhase === 'converge') {
+                const transDiv = document.createElement('div');
+                transDiv.className = 'phase-transition phase-converge';
+                transDiv.innerHTML = '<span class="phase-transition-text">— Time to narrow down —</span>';
+                messagesEl.appendChild(transDiv);
+            }
         }
 
         // Parse [CELEBRATE] tag — breakthrough moment effect
@@ -2801,7 +2836,7 @@ document.getElementById('unlockForm')?.addEventListener('submit', async (e) => {
         </div>
         <div class="download-ready hidden" id="dlReady">
             <p class="download-ready-text">Your report is ready</p>
-            <button class="download-ready-btn" id="dlDownloadBtn">Download Report (.docx)</button>
+            <button class="download-ready-btn" id="dlDownloadBtn">Download Report (.pdf)</button>
             <p class="download-ready-note">It was good thinking with you today.</p>
         </div>
     `;
@@ -2933,12 +2968,8 @@ async function downloadReportPdf() {
 
     const synopsis = state.reportSynopsis || {};
 
-    // Try to capture SVG canvas data if available
-    let svgData = '';
-    try {
-        const svgEl = document.querySelector('.board-svg, #boardSvg, svg.canvas-board');
-        if (svgEl) svgData = new XMLSerializer().serializeToString(svgEl);
-    } catch (e) { /* ignore */ }
+    // SVG canvas removed — PDF uses the Workshop Board table instead
+    const svgData = '';
 
     try {
         const resp = await fetch('/api/report/pdf', {
@@ -3341,15 +3372,8 @@ async function startPostSessionFlow() {
         })
     }).then(r => r.ok ? r.json() : revealFallback).catch(() => revealFallback);
 
-    // SVG generation (non-blocking — ok if it fails)
-    const svgPromise = fetch('/api/session/svg', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            exercise: state.exercise,
-            board_cards: state.board.cards
-        })
-    }).then(r => r.ok ? r.json() : null).catch(() => null);
+    // HTML board snapshot (replaces SVG generation)
+    const boardHtml = buildPostSessionBoard(state.exercise, state.board.cards);
 
     try {
         console.log('[PostSession] Waiting for report + reveal...');
@@ -3389,25 +3413,21 @@ async function startPostSessionFlow() {
         revealScreen.classList.remove('hidden');
         revealScreen.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
-        // Inject SVG visual (may still be loading — insert when ready)
+        // Inject HTML board visual (replaces SVG canvas)
         const svgPlaceholder = document.getElementById('psSvgPlaceholder');
         const canvasExpand = document.getElementById('psCanvasExpand');
         const canvasWrapper = document.getElementById('psCanvasWrapper');
-        svgPromise.then(svgData => {
-            if (svgData && svgData.svg && svgPlaceholder) {
-                svgPlaceholder.innerHTML = svgData.svg;
-                // Show expand button
-                if (canvasExpand) canvasExpand.style.display = 'inline-block';
-            } else {
-                // No SVG — hide canvas section
-                if (canvasWrapper) canvasWrapper.style.display = 'none';
-            }
-        });
+        if (boardHtml && svgPlaceholder) {
+            svgPlaceholder.innerHTML = boardHtml;
+            if (canvasExpand) canvasExpand.style.display = 'inline-block';
+        } else if (state.board.cards.length === 0) {
+            if (canvasWrapper) canvasWrapper.style.display = 'none';
+        }
         // Canvas expand/collapse
         if (canvasExpand) {
             canvasExpand.addEventListener('click', () => {
                 const isExpanded = canvasWrapper.classList.toggle('ps-canvas-expanded');
-                canvasExpand.textContent = isExpanded ? 'Collapse canvas' : 'See your full canvas';
+                canvasExpand.textContent = isExpanded ? 'Collapse board' : 'See your full board';
             });
         }
 
@@ -3914,6 +3934,32 @@ const BOARD_LAYOUTS = {
         ],
         gridClass: 'board-grid-constraint-flip'
     },
+    'mash-up': {
+        zones: [
+            { id: 'mu-problem', name: 'Your Challenge', empty: 'The problem in your own words', hint: 'What are you trying to solve?', colour: 'orange' },
+            { id: 'mu-abstract', name: 'Abstract Version', empty: 'The problem stripped to its essence', hint: 'Remove the industry — what\'s the underlying pattern?', colour: 'orange' },
+            { id: 'mu-collision-1', name: 'Collision 1', empty: 'First outside-world analogy', hint: 'How does a different field solve this?', colour: 'orange' },
+            { id: 'mu-collision-2', name: 'Collision 2', empty: 'Second outside-world analogy', hint: 'A wilder, more distant domain', colour: 'orange' },
+            { id: 'mu-collision-3', name: 'Collision 3', empty: 'Third outside-world analogy', hint: 'From nature, art, or history', colour: 'orange' },
+            { id: 'mu-collision-4', name: 'Collision 4', empty: 'Fourth outside-world analogy', hint: 'The most unexpected one', colour: 'orange' },
+            { id: 'mu-remix', name: 'The Remix', empty: 'Your new approach — mashed up from the best collisions', hint: 'Combine elements that don\'t usually meet', colour: 'orange' },
+            { id: 'mu-actions', name: 'Actions', empty: 'First step to test the remix', hint: 'What can you try this week?', colour: 'orange' }
+        ],
+        gridClass: 'board-grid-mash-up'
+    },
+    'analogical': {
+        zones: [
+            { id: 'mu-problem', name: 'Your Challenge', empty: 'The problem in your own words', hint: 'What are you trying to solve?', colour: 'orange' },
+            { id: 'mu-abstract', name: 'Abstract Version', empty: 'The problem stripped to its essence', hint: 'Remove the industry — what\'s the underlying pattern?', colour: 'orange' },
+            { id: 'mu-collision-1', name: 'Collision 1', empty: 'First outside-world analogy', hint: 'How does a different field solve this?', colour: 'orange' },
+            { id: 'mu-collision-2', name: 'Collision 2', empty: 'Second outside-world analogy', hint: 'A wilder, more distant domain', colour: 'orange' },
+            { id: 'mu-collision-3', name: 'Collision 3', empty: 'Third outside-world analogy', hint: 'From nature, art, or history', colour: 'orange' },
+            { id: 'mu-collision-4', name: 'Collision 4', empty: 'Fourth outside-world analogy', hint: 'The most unexpected one', colour: 'orange' },
+            { id: 'mu-remix', name: 'The Remix', empty: 'Your new approach — mashed up from the best collisions', hint: 'Combine elements that don\'t usually meet', colour: 'orange' },
+            { id: 'mu-actions', name: 'Actions', empty: 'First step to test the remix', hint: 'What can you try this week?', colour: 'orange' }
+        ],
+        gridClass: 'board-grid-mash-up'
+    },
     'socratic': {
         zones: [
             { id: 'sq-verified', name: 'Verified', empty: 'Tested — evidence exists', hint: 'Claims with real data behind them', colour: 'teal' },
@@ -4130,6 +4176,15 @@ const COLD_OPEN_TAG_MAP = {
     'hook': 'co-hook', 'follow-up': 'co-followup', 'followup': 'co-followup',
     'detail': 'co-detail'
 };
+// Mash Up / Analogical Thinking tag mapping
+const MASHUP_TAG_MAP = {
+    'problem': 'mu-problem', 'abstract': 'mu-abstract',
+    'collision-1': 'mu-collision-1', 'collision-2': 'mu-collision-2',
+    'collision-3': 'mu-collision-3', 'collision-4': 'mu-collision-4',
+    'remix': 'mu-remix', 'remixed': 'mu-remix',
+    'actions': 'mu-actions', 'action': 'mu-actions'
+};
+
 var TOOL_TAG_MAPS = {
     'five-whys': FIVE_WHYS_TAG_MAP, 'empathy-map': EMPATHY_TAG_MAP,
     'jtbd': JTBD_TAG_MAP_TOOL, 'crazy-8s': CRAZY8S_TAG_MAP,
@@ -4138,7 +4193,8 @@ var TOOL_TAG_MAPS = {
     'socratic': SOCRATIC_TAG_MAP, 'reality-check': REALITY_TAG_MAP,
     'theory-of-change': TOC_TAG_MAP, 'trade-off': TRADEOFF_TAG_MAP,
     'iceberg': ICEBERG_TAG_MAP, 'constraint-flip': CONSTRAINT_TAG_MAP,
-    'cold-open': COLD_OPEN_TAG_MAP
+    'cold-open': COLD_OPEN_TAG_MAP,
+    'mash-up': MASHUP_TAG_MAP, 'analogical': MASHUP_TAG_MAP
 };
 
 // Effectuation principle tag mapping
@@ -4450,6 +4506,50 @@ function updateBoardCounts() {
         boardCountEl.textContent = total;
         boardCountEl.classList.toggle('hidden', total === 0);
     }
+}
+
+// Build a standalone HTML board for the post-session reveal screen
+function buildPostSessionBoard(exercise, cards) {
+    if (!cards || cards.length === 0) return '';
+    const layout = BOARD_LAYOUTS[exercise] || BOARD_LAYOUTS['default'];
+    if (!layout) return '';
+
+    // Group cards by zone
+    const grouped = {};
+    cards.forEach(c => {
+        if (!grouped[c.zone]) grouped[c.zone] = [];
+        grouped[c.zone].push(c);
+    });
+
+    // Build HTML grid matching the board layout
+    let zonesHtml = '';
+    layout.zones.forEach(zone => {
+        const zoneCards = grouped[zone.id] || [];
+        const cardsHtml = zoneCards.map(c =>
+            `<div class="ps-board-card">${c.text || ''}</div>`
+        ).join('');
+        const emptyHtml = zoneCards.length === 0
+            ? `<div class="ps-board-empty">${zone.empty || ''}</div>` : '';
+
+        zonesHtml += `<div class="ps-board-zone" data-zone="${zone.id}">
+            <div class="ps-board-zone-label">${zone.name}</div>
+            ${cardsHtml}${emptyHtml}
+        </div>`;
+    });
+
+    const exerciseName = EXERCISE_LABELS[exercise] || exercise;
+    const modeName = Object.keys(MODE_LABELS).find(k =>
+        (TOOLS_BY_MODE[k] || []).includes(exercise)
+    );
+    const stageLabel = modeName ? MODE_LABELS[modeName] : '';
+
+    return `<div class="ps-board" data-mode="${modeName || ''}">
+        <div class="ps-board-header">
+            <span class="ps-board-title">WORKSHOP BOARD</span>
+            <span class="ps-board-meta">${stageLabel} · ${exerciseName}</span>
+        </div>
+        <div class="ps-board-grid ${layout.gridClass || ''}">${zonesHtml}</div>
+    </div>`;
 }
 
 // === SVG CANVAS VIEW (Lean Canvas only for now) ===
@@ -5459,26 +5559,7 @@ const TOOL_DESCRIPTIONS = {
     'theory-of-change': { desc: 'Pete will help you draw the causal chain from your activities to the impact you hope to create.', output: 'A theory of change board and report with your impact pathway.' }
 };
 
-function showExpectCard(exercise) {
-    document.querySelector('.session-expect-card')?.remove();
-    const info = TOOL_DESCRIPTIONS[exercise];
-    if (!info) return;
-    const label = EXERCISE_LABELS[exercise] || exercise;
-    const time = EXERCISE_TIMES[exercise] || '20 min';
-
-    const card = document.createElement('div');
-    card.className = 'session-expect-card';
-    card.innerHTML = `<div class="session-expect-title">${label} \u2014 ~${time}</div><p class="session-expect-desc">${info.desc}</p>`;
-
-    const messagesEl = document.getElementById('messages');
-    if (messagesEl) messagesEl.prepend(card);
-
-    // Auto-remove after first user message
-    const form = document.getElementById('inputForm');
-    if (form) {
-        form.addEventListener('submit', () => card.remove(), { once: true });
-    }
-}
+// showExpectCard removed — activity-brief card is the single intro card
 
 // === GENERIC ROUTING PROMPT PILLS ===
 const ROUTING_PROMPTS = [
@@ -5518,13 +5599,8 @@ function showBoardNudge() {
     if (!messagesEl) return;
     const nudge = document.createElement('div');
     nudge.className = 'board-nudge-msg';
-    nudge.innerHTML = '\u2728 I\'ve started building your <a id="boardNudgeLink">workshop board</a>. You can open it anytime to see your thinking take shape.';
+    nudge.innerHTML = '\u2728 I\'ve started building your workshop board. You can open and close it anytime to see your thinking take shape using the toggle button in the menu.';
     messagesEl.appendChild(nudge);
-    nudge.querySelector('#boardNudgeLink')?.addEventListener('click', (e) => {
-        e.preventDefault();
-        const boardToggle = document.getElementById('boardToggle');
-        if (boardToggle) boardToggle.click();
-    });
     scrollToBottom();
 }
 

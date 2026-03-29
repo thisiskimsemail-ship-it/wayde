@@ -1157,7 +1157,7 @@ End with: "Pick one idea to carry forward. Not the safest — the most interesti
 
     "build:analogical": STUDIO_IDENTITY + """
 
-You are guiding an ANALOGICAL THINKING exercise — the practice of drawing inspiration from other domains to solve your problem in a novel way. Used by IDEO (biomimicry), DARPA (military technologies adapted from nature), Procter & Gamble (Connect + Develop programme), and at the core of Clayton Christensen's disruptive innovation research.
+You are guiding a MASH UP exercise — the practice of drawing inspiration from other domains to solve your problem in a novel way. Used by IDEO (biomimicry), DARPA (military technologies adapted from nature), Procter & Gamble (Connect + Develop programme), and at the core of Clayton Christensen's disruptive innovation research.
 
 The insight: most problems have already been solved somewhere else. The trick is finding the right analogy.
 
@@ -1191,11 +1191,23 @@ Ask: "What would it look like if you applied this to your venture? Be literal �
 ## Synthesis
 After three domains, ask: "Which analogy gave you the most unexpected insight? What's the one idea you'd want to explore further — and what assumption would it break about how your industry currently works?"
 
-Be curious and associative. The weirder the analogy, the more valuable it often is.""" + FACILITATOR_OVERLAY,
+Be curious and associative. The weirder the analogy, the more valuable it often is.
+
+## BOARD TAGS — emit these to populate the Workshop Board:
+After the core problem is described: [BOARD:problem: concise problem statement]
+After distilling the abstract structure: [BOARD:abstract: the structural pattern stripped of context]
+After each domain collision, capture the analogy and the insight:
+[BOARD:collision-1: Domain + analogy + mechanism (e.g., "Nature: tree root networks — share resources underground")]
+[BOARD:collision-2: second domain collision]
+[BOARD:collision-3: third domain collision]
+[BOARD:collision-4: fourth domain collision] (if explored)
+When remixing ideas from collisions: [BOARD:remix: adapted solution idea]
+When agreeing on next steps: [BOARD:actions: first experiment or prototype step]
+Emit tags AFTER your conversational response. Aim for 5-8 board cards across the session.""" + FACILITATOR_OVERLAY,
 
     "spark:analogical": STUDIO_IDENTITY + """
 
-You are guiding an ANALOGICAL THINKING exercise — the practice of drawing inspiration from other domains to solve your problem in a novel way. Used by IDEO (biomimicry), DARPA (military technologies adapted from nature), Procter & Gamble (Connect + Develop programme), and at the core of Clayton Christensen's disruptive innovation research.
+You are guiding a MASH UP exercise — the practice of drawing inspiration from other domains to solve your problem in a novel way. Used by IDEO (biomimicry), DARPA (military technologies adapted from nature), Procter & Gamble (Connect + Develop programme), and at the core of Clayton Christensen's disruptive innovation research.
 
 The insight: most problems have already been solved somewhere else. The trick is finding the right analogy.
 
@@ -1228,6 +1240,18 @@ Ask: "What would it look like if you applied this to your venture? Be literal �
 
 ## Synthesis
 After three domains, ask: "Which analogy gave you the most unexpected insight? What's the one idea you'd want to explore further — and what assumption would it break about how your industry currently works?"
+
+## BOARD TAGS — emit these to populate the Workshop Board:
+After the core problem is described: [BOARD:problem: concise problem statement]
+After distilling the abstract structure: [BOARD:abstract: the structural pattern stripped of context]
+After each domain collision, capture the analogy and the insight:
+[BOARD:collision-1: Domain + analogy + mechanism (e.g., "Nature: tree root networks — share resources underground")]
+[BOARD:collision-2: second domain collision]
+[BOARD:collision-3: third domain collision]
+[BOARD:collision-4: fourth domain collision] (if explored)
+When remixing ideas from collisions: [BOARD:remix: adapted solution idea]
+When agreeing on next steps: [BOARD:actions: first experiment or prototype step]
+Emit tags AFTER your conversational response. Aim for 5-8 board cards across the session.
 
 Be curious and associative. The weirder the analogy, the more valuable it often is.""" + FACILITATOR_OVERLAY,
 
@@ -1341,54 +1365,75 @@ Keep it feeling like a descent — each phase should feel like going deeper. Be 
 
     "test:trade-off": STUDIO_IDENTITY + """
 
-You are running THE TRADE-OFF exercise — forcing trade-offs between features to reveal what customers actually value.
+You are running THE TRADE-OFF exercise — forcing rapid trade-offs between feature bundles to reveal what customers actually value. This is fast-paced and decisive. No long discussions between rounds.
 
-THE FACILITATION ARC — four phases:
+THE FACILITATION ARC — three phases:
 
-PHASE 1: DEFINE THE OFFER
-Opening: "Forget the pitch for a moment. I want to understand every lever you could pull. What are the features, pricing options, service levels — all the things a customer might value?"
-Break their offer into 5-7 testable dimensions. Each needs distinct levels. Push for specificity.
-Include price as a dimension: "Price is a feature too. What are the realistic options?"
+## PHASE 1: DEFINE THE OFFER (1-2 exchanges max)
 
-Emit [BOARD:feature: Feature name — Level 1 / Level 2 / Level 3] for each dimension.
+Opening: "Forget the pitch for a moment. I want to understand the key levers you could pull. What are the main categories of features or value your customer gets? Give me up to 5 categories — and for each, what are 3 levels you could offer (basic, mid, premium)?"
 
-PHASE 2: THE TRADE-OFFS (6-8 rounds)
-Present two competing packages as side-by-side bundle cards. Use the BUNDLE tag to render them visually:
+Structure their offer into EXACTLY 3-5 categories. Each category needs exactly 3 levels (e.g., Basic / Standard / Premium, or Free / Paid / Enterprise). Push for specificity.
 
-[BUNDLE:Round 1|Package A|Feature1=Level A,Feature2=Level A,Feature3=Level A,Price=$29/mo|Package B|Feature1=Level B,Feature2=Level B,Feature3=Level B,Price=$49/mo]
+Then ask: "What's the price range? What would the bare minimum bundle cost, and what would the full premium package cost?"
 
-Format: [BUNDLE:Round title|Name A|feature=level pairs comma-separated|Name B|feature=level pairs comma-separated]
-Always include Price as the last feature in each bundle. Use descriptive package names when possible (e.g. "The Lean Build" vs "The Full Suite").
-Start easy, escalate to painful. After each user choice, probe: "Why that one? What was the deciding factor?"
-Track wins/losses per feature. Look for the painful round where both feel essential.
+After defining all categories, emit board tags:
+[BOARD:feature: Category 1 — Level 1 / Level 2 / Level 3] for each category.
 
-After the user chooses, emit [BOARD:round: Round N — chosen package name wins] to log the result.
+## PHASE 2: THE TRADE-OFF ROUNDS (10 rounds, rapid-fire)
 
-PHASE 3: THE VALUE STACK
-Rank features by survival rate: must-have (won 5-6+), nice-to-have (won 2-4), expendable (won 0-1).
-Surface the surprise: "You said X was your differentiator. It lost 4 of 6 rounds."
-Name the quiet winner — a feature they undervalued that consistently won.
+Run EXACTLY 10 rounds. Present two competing packages using the BUNDLE tag. Each round = one user response. Do NOT add observations, commentary, or "why" questions between rounds. Just present the next bundle immediately after their choice.
 
-Emit [BOARD:must-have: Feature (N/N wins)] for each must-have.
-Emit [BOARD:nice-to-have: Feature (N/N wins)] for each nice-to-have.
-Emit [BOARD:expendable: Feature (N/N wins)] for each expendable.
-Emit [BOARD:surprise: The feature you were most wrong about — description]
+Format: [BUNDLE:Round N|Package A name|Feature1=Level,Feature2=Level,Price=$X/mo|Package B name|Feature1=Level,Feature2=Level,Price=$Y/mo]
 
-PHASE 4: MINIMUM VIABLE OFFER
-"Using only the features that survived, what's the simplest version someone would still pay for?"
-Be ruthless: "You're adding back a feature that lost 3 rounds. Why? Because the customer wants it, or because you want it?"
-Close with: "What's the one feature you were most wrong about? And what will you do differently?"
+Always include Price as the last feature in each bundle. Use descriptive package names (e.g., "The Lean Build" vs "The Full Suite").
 
-Emit [BOARD:mvo: MVO description — features + price point]
-Emit [ACTION: What changes because of this — roadmap, pricing, or positioning shift]
+ROUND DESIGN RULES:
+- Rounds 1-3: Easy warm-up. Clear winner — one bundle is obviously better value. Builds confidence.
+- Rounds 4-6: Getting harder. Both bundles have genuine appeal. Trade-offs start to bite.
+- Rounds 7-9: Painful. The user's favourite feature is pitted against something they need. Force the hard choice.
+- Round 10: The killer round. Strip everything to the bone — bare minimum vs. one premium feature at a high price.
 
-KEY MOVES:
-- "Price is a feature" — include it in trade-offs
-- "Which one goes?" — the forcing question every round
-- "Why that one?" — probe reasoning after each choice
-- "The quiet winner" — feature that keeps surviving despite being undervalued
-- "Your favourite vs. theirs" — founder's pet feature keeps losing
-- "Would they still buy?" — testing the minimum viable offer""" + FACILITATOR_OVERLAY,
+Vary the combinations. Every category should appear at different levels across the 10 rounds. Some rounds should mix high/low across different categories. Never repeat the same matchup.
+
+After each user choice, say ONLY "Got it. Round N:" and present the next bundle. No analysis, no "interesting", no "why did you choose that". Keep the pace relentless.
+
+Track wins internally: every time a category appears at a higher level in the winning bundle, it scores a win. Every time it appears at a higher level in the losing bundle, it scores a loss.
+
+After the user's Round 10 choice, emit round results:
+[BOARD:round: Round 1-10 results — brief one-line summary of winning pattern]
+
+## PHASE 3: THE ANALYSIS (after all 10 rounds)
+
+After Round 10, deliver the full analysis in a SINGLE message. No more questions. Include:
+
+1. **The Value Stack** — rank every category by win rate:
+   - Must-have (won 7+ of 10): these drive the purchase decision
+   - Nice-to-have (won 4-6 of 10): valued but tradeable
+   - Expendable (won 0-3 of 10): cut these from v1
+
+2. **The Surprise** — the biggest gap between what the user assumed mattered and what the rounds revealed. Name the overvalued feature and the undervalued one.
+
+3. **The Minimum Viable Offer** — using only must-haves at their mid-level, plus the price point that won most often. "This is what your customer would actually pay for."
+
+4. **The Quiet Winner** — the feature that kept surviving even when bundled against strong competition.
+
+5. **What to cut** — be direct about what doesn't earn its place.
+
+Emit all board tags in this final message:
+[BOARD:must-have: Category (N/10 wins)] for each must-have
+[BOARD:nice-to-have: Category (N/10 wins)] for each nice-to-have
+[BOARD:expendable: Category (N/10 wins)] for each expendable
+[BOARD:surprise: The feature you were most wrong about — description]
+[BOARD:mvo: MVO description — features + price point]
+
+KEY RULES:
+- Maximum 5 feature categories, exactly 3 levels each
+- Exactly 10 trade-off rounds, no more, no fewer
+- NO commentary between rounds — just "Got it. Round N:" and the next bundle
+- ALL analysis comes in one message after Round 10
+- Price is always a feature in every bundle
+- The board should be mostly empty during rounds, then fully populated by the analysis""" + FACILITATOR_OVERLAY,
 
     "build:lean-canvas": STUDIO_IDENTITY + """
 
@@ -3460,6 +3505,7 @@ SVG_ZONE_MAP = {
         'cf-constraint': 'THE LIMITATION',
         'cf-flip': 'REFRAMED AS ADVANTAGE',
         'cf-moat': 'THE MOAT IDEA',
+        'cf-ideas': 'IDEAS',
     },
     'socratic': {
         'sq-verified': 'VERIFIED',
@@ -6667,34 +6713,29 @@ def generate_branded_pdf():
     bullets = synopsis.get('bullets', [])
     date_str = __import__('datetime').datetime.now().strftime('%d %B %Y')
 
-    # ── Report Branding Specification colours (R, G, B tuples) ──
-    NAVY = (27, 34, 64)           # #1B2240
-    DARK_BLUE = (46, 58, 92)     # #2E3A5C
-    ORANGE = (232, 101, 45)      # #E8652D
-    TEAL = (61, 214, 200)        # #3DD6C8
-    DARK_GREY = (74, 85, 104)    # #4A5568
-    MID_GREY = (160, 174, 192)   # #A0AEC0
-    LIGHT_BG = (247, 250, 252)   # #F7FAFC
+    # ── Report Branding — Wade official palette only ──
+    NAVY = (30, 25, 79)           # #1E194F  (Wade deep navy)
+    ORANGE = (241, 90, 34)        # #F15A22  (Wade orange)
+    DARK_GREY = (73, 71, 77)      # #49474D  (Wade dark grey)
+    MID_GREY = (168, 164, 165)    # #A8A4A5  (Wade mid grey)
+    LIGHT_BG = (246, 245, 245)    # #F6F5F5  (Wade light grey 1)
     WHITE = (255, 255, 255)
 
     class StudioPDF(FPDF):
         def __init__(self):
             super().__init__()
             self.set_auto_page_break(auto=True, margin=20)
-            # Register GT Walsheim as Unicode-capable body font
+            # Register GT Walsheim — the only font used in reports
             font_dir = os.path.join(os.path.dirname(__file__), 'fonts')
             ttf_path = os.path.join(font_dir, 'GT-Walsheim-Regular.ttf')
             self._has_gt = os.path.exists(ttf_path)
             if self._has_gt:
                 self.add_font('GTWalsheim', '', ttf_path, uni=True)
-                # Use GT Walsheim for body text (supports Unicode)
                 self._body_font = 'GTWalsheim'
-                self._body_font_bold = 'Helvetica'  # fallback for bold
             else:
                 self._body_font = 'Helvetica'
-                self._body_font_bold = 'Helvetica'
-            # Headings use Times (built-in, good for serif headings)
-            self._heading_font = 'Times'
+            # Bold/italic use Helvetica (closest built-in sans-serif match)
+            self._body_font_bold = 'Helvetica'
 
         def header(self):
             pass  # Custom header drawn manually on first page
@@ -6730,26 +6771,26 @@ def generate_branded_pdf():
         pdf.set_y(30)
 
         # ── TITLE — 22pt navy bold ──
-        pdf.set_font(pdf._heading_font, 'B', 22)
+        pdf.set_font(pdf._body_font_bold, 'B', 22)
         pdf.set_text_color(*NAVY)
         pdf.multi_cell(page_w, 10, title)
         pdf.ln(2)
 
-        # ── HOOK — italic dark blue ──
+        # ── HOOK — italic navy ──
         if hook:
-            pdf.set_font(pdf._heading_font, 'I', 12)
-            pdf.set_text_color(*DARK_BLUE)
+            pdf.set_font(pdf._body_font_bold, 'I', 12)
+            pdf.set_text_color(*NAVY)
             pdf.multi_cell(page_w, 7, hook)
             pdf.ln(4)
 
-        # ── SYNOPSIS BULLETS — teal left border ──
+        # ── SYNOPSIS BULLETS — orange left border ──
         if bullets:
             for bullet in bullets:
                 y_start = pdf.get_y()
-                # Teal left border
+                # Orange left border
                 pdf.set_fill_color(*LIGHT_BG)
                 pdf.rect(pdf.l_margin, y_start, page_w, 8, 'F')
-                pdf.set_draw_color(*TEAL)
+                pdf.set_draw_color(*ORANGE)
                 pdf.set_line_width(0.8)
                 pdf.line(pdf.l_margin, y_start, pdf.l_margin, y_start + 8)
                 pdf.set_font(pdf._body_font, '', 9)
@@ -6759,8 +6800,8 @@ def generate_branded_pdf():
                 pdf.set_y(y_start + 9)
             pdf.ln(4)
 
-        # ── Teal accent line ──
-        pdf.set_draw_color(*TEAL)
+        # ── Orange accent line ──
+        pdf.set_draw_color(*ORANGE)
         pdf.set_line_width(0.3)
         pdf.line(pdf.l_margin, pdf.get_y(), pdf.l_margin + page_w, pdf.get_y())
         pdf.ln(6)
@@ -6846,26 +6887,26 @@ def generate_branded_pdf():
                     pdf.set_fill_color(*LIGHT_BG)
                     y_h1 = pdf.get_y()
                     pdf.rect(pdf.l_margin, y_h1, page_w, 12, 'F')
-                pdf.set_font(pdf._heading_font, 'B', 18)
+                pdf.set_font(pdf._body_font_bold, 'B', 18)
                 pdf.set_text_color(*NAVY)
                 pdf.multi_cell(page_w, 10, heading_text)
                 pdf.ln(3)
                 current_section_is_questions = False
                 in_action_block = False
 
-            # ── H2 — teal left border accent ──
+            # ── H2 — orange left border accent ──
             elif stripped.startswith('## '):
                 heading_text = stripped[3:]
                 pdf.ln(5)
                 y_h2 = pdf.get_y()
-                # Teal left accent bar
-                pdf.set_draw_color(*TEAL)
+                # Orange left accent bar
+                pdf.set_draw_color(*ORANGE)
                 pdf.set_line_width(1.2)
                 pdf.line(pdf.l_margin, y_h2, pdf.l_margin, y_h2 + 9)
                 if in_go_further:
                     pdf.set_fill_color(*LIGHT_BG)
                     pdf.rect(pdf.l_margin + 2, y_h2, page_w - 2, 9, 'F')
-                pdf.set_font(pdf._heading_font, 'B', 14)
+                pdf.set_font(pdf._body_font_bold, 'B', 14)
                 pdf.set_text_color(*NAVY)
                 pdf.set_x(pdf.l_margin + 5)
                 pdf.multi_cell(page_w - 5, 8, heading_text)
@@ -6881,25 +6922,25 @@ def generate_branded_pdf():
             elif stripped.startswith('### '):
                 heading_text = stripped[4:]
                 pdf.ln(4)
-                pdf.set_font(pdf._heading_font, 'B', 12)
-                pdf.set_text_color(*DARK_BLUE)
+                pdf.set_font(pdf._body_font_bold, 'B', 12)
+                pdf.set_text_color(*NAVY)
                 pdf.multi_cell(page_w, 7, heading_text)
                 pdf.ln(2)
 
-            # ── Blockquote — teal left border, light bg ──
+            # ── Blockquote — orange left border, light bg ──
             elif stripped.startswith('>'):
                 clean = stripped.lstrip('> ')
                 y_bq = pdf.get_y()
-                # Light teal background
-                pdf.set_fill_color(240, 253, 250)  # #F0FDFA
+                # Light grey background
+                pdf.set_fill_color(*LIGHT_BG)
                 line_h = max(8, len(clean) // 80 * 7 + 8)
                 pdf.rect(pdf.l_margin + 3, y_bq, page_w - 3, line_h, 'F')
-                # Teal left border
-                pdf.set_draw_color(*TEAL)
+                # Orange left border
+                pdf.set_draw_color(*ORANGE)
                 pdf.set_line_width(0.7)
                 pdf.line(pdf.l_margin + 3, y_bq, pdf.l_margin + 3, y_bq + line_h)
-                pdf.set_font(pdf._heading_font, 'I', 10)
-                pdf.set_text_color(*DARK_BLUE)
+                pdf.set_font(pdf._body_font_bold, 'I', 10)
+                pdf.set_text_color(*NAVY)
                 pdf.set_xy(pdf.l_margin + 7, y_bq + 1)
                 pdf.multi_cell(page_w - 10, 6, clean)
                 pdf.set_y(y_bq + line_h + 2)
@@ -6915,7 +6956,7 @@ def generate_branded_pdf():
                     pdf.set_text_color(*ORANGE)
                     pdf.cell(5, 6, '-')
                     _render_text_with_formatting(pdf, content, pdf.get_x(), page_w - 15,
-                                                 pdf._body_font, 10, DARK_BLUE, DARK_BLUE)
+                                                 pdf._body_font, 10, NAVY, NAVY)
                     pdf.ln(7)
 
                 elif in_action_block:
@@ -6924,7 +6965,7 @@ def generate_branded_pdf():
                     pdf.set_fill_color(*LIGHT_BG)
                     pdf.rect(pdf.l_margin + 2, y_act, page_w - 2, 8, 'F')
                     pdf.set_font(pdf._body_font, '', 9)
-                    pdf.set_text_color(*TEAL)
+                    pdf.set_text_color(*ORANGE)
                     pdf.set_x(pdf.l_margin + 4)
                     pdf.cell(5, 6, '>')
                     # Check for deadline — strip it from main text, render separately in orange
@@ -6960,7 +7001,7 @@ def generate_branded_pdf():
                     num = num_match.group(1)
                     content = num_match.group(2)
                     pdf.set_font(pdf._body_font_bold, 'B', 10)
-                    pdf.set_text_color(*TEAL)
+                    pdf.set_text_color(*ORANGE)
                     pdf.set_x(pdf.l_margin + 4)
                     pdf.cell(8, 6, f'{num}.')
                     _render_text_with_formatting(pdf, content, pdf.get_x(), page_w - 18,
@@ -6986,12 +7027,12 @@ def generate_branded_pdf():
         # ── WORKSHOP BOARD (canvas table) ──
         if board_cards:
             pdf.ln(4)
-            pdf.set_draw_color(*TEAL)
+            pdf.set_draw_color(*ORANGE)
             pdf.set_line_width(0.3)
             pdf.line(pdf.l_margin, pdf.get_y(), pdf.l_margin + page_w, pdf.get_y())
             pdf.ln(6)
 
-            pdf.set_font(pdf._heading_font, 'B', 14)
+            pdf.set_font(pdf._body_font_bold, 'B', 14)
             pdf.set_text_color(*NAVY)
             pdf.cell(page_w, 8, 'WORKSHOP BOARD')
             pdf.ln(10)
@@ -7022,11 +7063,11 @@ def generate_branded_pdf():
                         pdf.add_page()
                         y_row = pdf.get_y()
 
-                    # Teal header cell
-                    pdf.set_fill_color(*TEAL)
+                    # Orange header cell
+                    pdf.set_fill_color(*ORANGE)
                     pdf.rect(pdf.l_margin, y_row, col_w_label, row_h, 'F')
                     pdf.set_font(pdf._body_font_bold, 'B', 8)
-                    pdf.set_text_color(*NAVY)
+                    pdf.set_text_color(*WHITE)
                     pdf.set_xy(pdf.l_margin + 2, y_row + 2)
                     pdf.multi_cell(col_w_label - 4, 5, zone_label)
 
@@ -7052,7 +7093,7 @@ def generate_branded_pdf():
                 png_bytes = cairosvg.svg2png(bytestring=svg_data.encode('utf-8'), output_width=1200)
                 png_io = io.BytesIO(png_bytes)
                 pdf.add_page()
-                pdf.set_font(pdf._heading_font, 'B', 14)
+                pdf.set_font(pdf._body_font_bold, 'B', 14)
                 pdf.set_text_color(*NAVY)
                 pdf.cell(page_w, 8, 'WORKSHOP CANVAS')
                 pdf.ln(10)
