@@ -3379,6 +3379,15 @@ html[data-theme="light"] .report-synopsis {
 .report-content p:first-child { margin-top: 0; }
 .report-content p:last-child { margin-bottom: 0; }
 
+/* Branded HTML report iframe */
+.report-iframe {
+    width: 100%;
+    min-height: 800px;
+    border: none;
+    border-radius: 8px;
+    background: white;
+}
+
 .report-header {
     display: flex;
     align-items: center;

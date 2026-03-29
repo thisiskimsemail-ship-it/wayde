@@ -3608,18 +3608,20 @@ PLACEHOLDER_SVG_REMOVED = True  # Marker so grep confirms cleanup happened
 
 # === REPORT GENERATION ===
 
-# === UNIVERSAL REPORT SECTIONS (appended to every tool-specific report) ===
-# Based on Report Structure Specification (28 March 2026)
-# The report has two zones: the user's work (Sections 1-8) and the Wade CTA (Section 9).
-# Wade content appears ONLY in Section 9. Everything before it belongs to the user.
-UNIVERSAL_REPORT_SECTIONS = """
+# === UNIVERSAL REPORT JSON INSTRUCTION ===
+# Based on Report Structure Specification v5 (30 March 2026)
+# The AI outputs structured JSON. The server renders it into branded HTML via report_template.py.
+# The report has two zones: the user's work (all sections) and the Wade CTA (go_further only).
+UNIVERSAL_REPORT_JSON = """
 
-VOICE & TONE
+OUTPUT FORMAT: You MUST return a single valid JSON object. No markdown. No explanation. No code fences. Just the JSON.
+
+VOICE & TONE (apply to all text fields):
 Write like a sharp peer reviewer, not a life coach. Second person ("you") but direct and analytical. Bold, curious, ambitious, action-oriented.
 - Never hedge. Instead: "Do this." "Test this." "The next question is."
 - Never flatter. Present findings, don't validate.
 - Frame every insight as something the user surfaced. "You identified..." "Your thinking pointed to..."
-- Never pitch. Never reference Wade programs, Waders, community members, or Studio tools in Sections 1-8. All Wade content belongs in Section 9 only.
+- Never pitch. Never reference Wade programs, Waders, community members, or Studio tools in any section except go_further. All Wade content belongs in go_further only.
 
 AUDIENCE CLUSTER — Read the conversation, identify INVESTOR / FOUNDER / CORPORATE INNOVATOR / EDUCATOR, and apply the matching lens:
 - INVESTOR: analytical, conviction-focused. Language: deploy, thesis, diligence, risk-adjusted.
@@ -3628,737 +3630,559 @@ AUDIENCE CLUSTER — Read the conversation, identify INVESTOR / FOUNDER / CORPOR
 - EDUCATOR: practical, classroom-ready. Language: students, curriculum, embed, implement.
 
 CRITICAL CONTENT RULES:
-- Sections 1-8 contain ZERO references to Wade people, Wade programs, Wade community members, or Studio tool names.
-- No "Pattern Someone Else Found" subsections anywhere in the report body.
-- No Wader names appear in sections 1-8.
-- No Studio tool names appear as recommendations in sections 1-8.
-- Recommended Actions: 3-5 maximum. Every action must be traceable to a specific session moment. No generic advice. No actions reference The Studio, Wade people, or Wade programs.
+- All sections except go_further contain ZERO references to Wade people, Wade programs, Wade community members, or Studio tool names.
+- No Wader names appear outside go_further.
+- Recommended actions: 3-5 maximum. Every action must be traceable to a specific session moment. No generic advice.
 
-REPORT STRUCTURE — use these exact section names and order:
+VALUES-BEHAVIOUR GAP (Untangle tools only):
+Look for [GAP_ESPOUSED:], [GAP_ACTUAL:], and [GAP_CONSEQUENCE:] tags in the conversation. If present:
+- Use the gap data in the reframe to connect findings to the systemic constraint.
+- Include at least one action that addresses the gap directly.
+- If the gap is the most striking finding, it may be the headline.
+- If [GAP_NONE] is present, do not force one.
+- Frame supportively — a constraint to work with, not a failure.
 
-# Innovation Coaching Session Summary
+JSON SCHEMA — return this exact structure:
 
-### Synopsis
-Three-part synopsis: (1) what emerged — name the core tension or finding in plain language specific to this person, (2) the reframe — the shift in thinking, (3) what's in the report — 3-4 bullet points previewing key findings. The subject is the idea, not the experience. Never reference the AI, the tool, or "your session." Never say "Pete identified" or "this session surfaced." Let the insight speak for itself.
+{
+  "headline": "Under 15 words. Specific to this session. Creates productive discomfort. Names the core tension or reframe. Data-driven where possible.",
+  "subtitle": "1-2 sentences: what they believed coming in vs what the session revealed. The subject is the idea, not the experience. Never reference the AI, the tool, or the session itself.",
+  "insights": [
+    {"label": "KEY FINDING", "number": "3 / 7", "description": "short phrase describing the stat"},
+    {"label": "SURPRISE", "number": "1", "description": "short phrase"},
+    {"label": "PATTERN", "number": "100%", "description": "short phrase"}
+  ],
+  "opening": "2-3 sentences. What they believed coming in vs what the session revealed. The subject is the idea, not the experience. Never reference the AI or the tool.",
+  "challenge": "One paragraph restating the user's challenge in their own terms. Should feel like the user wrote it — grounded, specific, using their language. No softening.",
+  "evidence": {
+    "text": "1-2 paragraphs of original analysis — the core insight and reframe from the session. Specific, analytical, written from the user's perspective. NOT a session summary — an INSIGHT. This is the most valuable section.",
+    "components": []
+  },
+  "key_moments": [
+    {
+      "label": "3-5 words naming the pattern",
+      "quote": "Direct quote from the user — sharp analytical commentary connecting what they said to something bigger. QUALITY BAR: 'This is an identity statement, not a deliverable request' is good. 'This captures the core transformation' is bad."
+    }
+  ],
+  "reframe": {
+    "heading": "The reframe",
+    "body": "Closing synthesis. 2-3 sentences restating the core shift and pointing forward. If the user answered a reflection question, open with their exact words. Then go FURTHER — connect dots they haven't connected. Name the real problem underneath the stated problem. End with: 'This session scratched the surface of [specific theme]. The pattern underneath it takes longer to see.'"
+  },
+  "questions": [
+    {"tag": "ASSUMPTION", "question": "A provocative question the user should sit with. No answer needed."},
+    {"tag": "SYSTEM", "question": "Another question. Categories: ASSUMPTION, STAKEHOLDER, REVERSAL, TIMELINE, COST, IDENTITY, SYSTEM."},
+    {"tag": "COST", "question": "Third question."},
+    {"tag": "STAKEHOLDER", "question": "Fourth question."}
+  ],
+  "actions": [
+    {"bold": "Bold action title.", "description": "What to do, why it matters, what it will reveal. Do this by [specific timeframe]. Action 1 should align with any 48-hour commitment made during the session."},
+    {"bold": "Second action.", "description": "Grounded in a specific session moment. If you can't point to the moment, it doesn't belong."},
+    {"bold": "Third action.", "description": "QUALITY BAR: Would a Tina Seelig-level thinker be impressed? If it could apply to any random startup, delete it."}
+  ],
+  "go_further": {
+    "text": "This report was generated by The Studio, a product of the Wade Institute of Entrepreneurship.",
+    "cards": [
+      {"heading": "Suggested reading", "body": "One relevant article from WADE_KNOWLEDGE_BLOCK with a one-line explanation of why it's relevant. If no match, use a general recommendation."},
+      {"heading": "Wade programs", "body": "One program recommendation contextual to the session. INVESTOR: VC Catalyst/Fundamentals/Impact Catalyst. FOUNDER: Master of Entrepreneurship/Growth Engine. CORPORATE: Think Like an Entrepreneur/Bespoke. EDUCATOR: UpSchool."},
+      {"heading": "Contact the Wade team", "body": "If you want to go deeper on what came up today, the Wade team can point you in the right direction. wadeinstitute.org.au/contact"}
+    ]
+  }
+}
 
-### The Challenge
-One paragraph restating the user's challenge in their own terms. This should feel like the user wrote it — grounded, specific, using their language. Not a Pete interpretation. No softening.
+INSIGHTS STRIP RULES:
+- Exactly 3 insights. Each has label (uppercase), number (a stat, fraction, or percentage), and description (short phrase).
+- Labels should be: KEY FINDING, SURPRISE, PATTERN — or tool-appropriate variants like PIVOT, RISK, SIGNAL.
+- The number field must be data-driven from the session: a count, a ratio (e.g. "3 / 7"), a percentage, or a single word if no number fits.
 
-### What Emerged
-This is the most valuable section of the report. It contains the core insight — the reframe that came out of the session. 1-2 paragraphs of original analysis that names the tension, identifies the shift, and explains why it matters. This should be specific, analytical, written from the user's perspective. NOT a session summary — an INSIGHT.
+KEY MOMENTS RULES:
+- 2-3 moments. Each has a label (3-5 word pattern name) and a quote (the user's actual words followed by 1-2 sentences of interpretation).
+- Bad commentary: "This captures the core transformation you facilitate." (restating) or "This is an important insight." (empty)
+- Good commentary: "This is an identity statement, not a deliverable request — it means your product needs to shift how they see themselves, not just what they produce."
 
-### Key Moments
-2-3 pivotal moments from the conversation. Each one has:
-- A bold heading (3-5 words naming the pattern)
-- A direct quote from the user (in quotation marks, as a blockquote)
-- 1-2 sentences of interpretation explaining why this moment matters — sharp analytical commentary connecting what they said to something bigger
-
-QUALITY BAR for commentary:
-- Bad: "This captures the core transformation you facilitate." (restating)
-- Bad: "This is an important insight." (empty)
-- Good: "This is an identity statement, not a deliverable request — it means your product needs to shift how they see themselves, not just what they produce."
-- Good: "You said 'no one else is doing this' — but that's a warning sign, not a competitive advantage."
-
-### Questions Worth Sitting With
-2-4 provocative questions tagged by category. These are questions the user should take away and think about — they don't need answers in the report.
-Format: **[CATEGORY]** — [Question]
-Categories: ASSUMPTION, STAKEHOLDER, REVERSAL, TIMELINE, COST, IDENTITY, SYSTEM.
-
-[THE TOOL-SPECIFIC OUTPUT SECTION GOES HERE — see the tool-specific instructions above this block. For tools with a canvas output (Lean Canvas, Empathy Map), render as a table. For other tools, render the board cards as a categorised list under the heading "### Workshop Board".]
-
-### Recommended Actions
-3-5 specific, time-bound actions the user should take in their world. Maximum five. Every action must be grounded in something specific that emerged during the session — if you can't point to the moment in the conversation that generated the action, it doesn't belong.
-
-Format:
-1. **[Bold action title]** — [What to do, why it matters, what it will reveal]. *Do this by [specific timeframe].*
-2-5. [Same format]
-
-QUALITY BAR: Would a Tina Seelig-level thinker be impressed by these actions? If any action could apply to any random startup, delete it and write something specific to THIS person. If any action is "talk to customers" or "do market research" without specifying WHO and WHAT to ask, it's not good enough.
-
-Action 1 should align with any 48-hour commitment the user made during the session.
-
-VALUES-BEHAVIOUR GAP IN REPORTS (Untangle tools only):
-During the session, the participant may have been asked about the gap between what their organisation says it values and what it actually rewards. Look for [GAP_ESPOUSED:], [GAP_ACTUAL:], and [GAP_CONSEQUENCE:] tags in the conversation. If present:
-1. DO NOT create a separate "values-behaviour gap" section. This is coaching context, not an assessment.
-2. Use the gap data in The Reframe section below to connect the tool's findings to the systemic constraint. Help the participant see that the problem they explored is shaped by — and possibly sustained by — the gap they identified.
-3. Include at least one Recommended Action that addresses the gap directly. Frame it as a prerequisite or first step, not an afterthought.
-4. If the gap is the most striking finding of the session, it may be the headline for the Synopsis. Apply standard headline rules: specific, data-driven, under 12 words.
-5. If [GAP_NONE] is present (no gap surfaced), do not force one. But note in the reframe whether the session findings were consistent with that claim.
-6. Frame the gap supportively — as a constraint to work with, not a failure. The tone is "here's the system you're operating in — and here's how to start shifting it." Never read as an indictment.
-
-### The Reframe
-Closing synthesis. 2-3 sentences that restate the core shift in thinking and point forward. This should feel like the final insight — the one thing the user takes away if they read nothing else.
-
-If the user answered a reflection question, open with their exact words in a blockquote. Then write 2-3 sentences that go FURTHER — connect dots they haven't connected. Name the real problem underneath the stated problem.
-
-If gap data was captured (Untangle tools), connect the tool's findings to the systemic constraint the participant identified. The reframe should help them see that the problem is shaped by the gap. e.g. "The five whys revealed slow decision-making as the root cause. But you told us your organisation rewards thoroughness over speed. The root cause isn't slow decisions — it's a system that makes fast ones feel dangerous."
-
-End with: "This session scratched the surface of [specific theme from session]. The pattern underneath it takes longer to see."
-
----
-
-### Go Further with Wade
-
-This section is visually separated from the user's work. It is the ONLY place in the report where Wade appears. Keep it brief and helpful — a postscript, not a sales pitch.
-
-**Suggested Reading**
-One article from the WADE_KNOWLEDGE_BLOCK that is relevant to the session's theme. Not a generic link — a specific article with a one-line explanation of why it's relevant to what this person worked on. If no relevant article exists, omit this subsection.
-
-**Recommended Programs**
-One Wade program recommendation, contextual to the session. One sentence connecting the session to the program, the program name, and a link.
-- For corporate users (CORPORATE INNOVATOR cluster): recommend Think Like an Entrepreneur or Bespoke Programs.
-- For founders: recommend Master of Entrepreneurship, Growth Engine, or the relevant program.
-- For investors: recommend VC Catalyst, VC Fundamentals, or Impact Catalyst.
-- For educators: recommend UpSchool Complete or Introduction.
-
-**Contact the Wade Team**
-A simple, warm invitation: "If you want to go deeper on what came up today, the Wade team can point you in the right direction. [Get in touch](https://wadeinstitute.org.au/contact)."
-
----
-*Generated by The Studio · Wade Institute of Entrepreneurship · [wadeinstitute.org.au](https://wadeinstitute.org.au)*
+ACTIONS RULES:
+- 3-5 actions. Each has bold (action title) and description (what to do + timeframe).
+- Every action traceable to a specific session moment. No generic advice.
+- Action 1 aligns with any 48-hour commitment from the session.
 
 {WADE_PROGRAMS_PLACEHOLDER}"""
 
 
 CONVERSATION_REPORT_PROMPT = """You are producing a coaching session summary for a conversation at The Studio, Wade Institute of Entrepreneurship.
 
-This was a freeform conversation — the user talked with their innovation coach without using a structured tool exercise. Your job is to distil the conversation into a valuable, actionable summary they can take with them.
+This was a freeform conversation — the user talked with their innovation coach without using a structured tool exercise. Your job is to distil the conversation into a valuable, actionable JSON summary.
 
-The tool-specific output section for a freeform conversation (placed after "Questions Worth Sitting With" in the report structure) is:
+TOOL-SPECIFIC EVIDENCE COMPONENTS:
+In the "evidence.components" array, include:
+[
+  {"type": "feature_list", "items": [
+    {"bold": "Theme title", "description": "One-sentence summary of what was explored"},
+    ...for each main topic discussed
+  ]},
+  {"type": "callout", "bold": "Key Decision", "text": "Any decision or commitment that emerged. If none, omit this component."}
+]
 
-### Workshop Board
-Since this was a freeform conversation (no structured tool), render the key themes and insights as a categorised list:
-
-#### Themes Explored
-Bullet-point list of the main topics discussed, each with a one-sentence summary.
-
-#### Key Decisions
-Any decisions or commitments that emerged during the conversation. If none, omit this subsection.
-
-{WADE_PROGRAMS_PLACEHOLDER}""" + UNIVERSAL_REPORT_SECTIONS
+{WADE_PROGRAMS_PLACEHOLDER}""" + UNIVERSAL_REPORT_JSON
 
 REPORT_PROMPT = """You are producing a workshop output for a session at The Studio, Wade Institute of Entrepreneurship.
 
-This is the LEAN CANVAS tool-specific report. The tool output section for this exercise is:
+This is the LEAN CANVAS tool-specific report. Output as JSON.
 
-### Your Lean Canvas
-Render the completed Lean Canvas as a markdown table. Fill every block with specific content from the conversation. If a block wasn't discussed, write "To explore." Mark weak/untested content with "(hypothesis — needs testing)."
+TOOL-SPECIFIC EVIDENCE COMPONENTS:
+In the "evidence.components" array, include:
+[
+  {"type": "canvas_grid", "blocks": [
+    {"label": "Problem", "content": "[from session]"},
+    {"label": "Solution", "content": "[from session]"},
+    {"label": "Unique Value Proposition", "content": "[from session]"},
+    {"label": "Unfair Advantage", "content": "[from session]"},
+    {"label": "Customer Segments", "content": "[from session]"},
+    {"label": "Key Metrics", "content": "[from session]"},
+    {"label": "Channels", "content": "[from session]"},
+    {"label": "Cost Structure", "content": "[from session]"},
+    {"label": "Revenue Streams", "content": "[from session]"}
+  ]}
+]
 
-| Problem | Solution | Unique Value Proposition | Unfair Advantage | Customer Segments |
-|---|---|---|---|---|
-| [from session] | [from session] | [from session] | [from session] | [from session] |
+Fill every block with specific content from the conversation. If a block wasn't discussed, write "To explore." Mark weak/untested content with "(hypothesis — needs testing)."
 
-| **Key Metrics** | **Channels** |
-|---|---|
-| [from session] | [from session] |
-
-| **Cost Structure** | **Revenue Streams** |
-|---|---|
-| [from session] | [from session] |
-
-Place this section after "Questions Worth Sitting With" and before "Recommended Actions" in the report structure defined below.
-
-{WADE_PROGRAMS_PLACEHOLDER}""" + UNIVERSAL_REPORT_SECTIONS
+{WADE_PROGRAMS_PLACEHOLDER}""" + UNIVERSAL_REPORT_JSON
 
 PITCH_REPORT_PROMPT = """You are producing a pitch builder session summary for The Studio at Wade Institute of Entrepreneurship.
 
-Write it concisely and directly. Use markdown. This is a 5-minute tool — the report should match that energy.
+This is a 5-minute tool — the report should match that energy. Output as JSON.
 
-The tool-specific output section (placed after "Questions Worth Sitting With" in the report structure) is:
+TOOL-SPECIFIC EVIDENCE COMPONENTS:
+In the "evidence.components" array, include:
+[
+  {"type": "callout", "bold": "Your Pitch", "text": "[The final assembled pitch sentence — complete and prominent]"},
+  {"type": "feature_list", "items": [
+    {"bold": "Target Customer", "description": "[their answer]"},
+    {"bold": "Problem/Need", "description": "[their answer]"},
+    {"bold": "Product/Service", "description": "[their answer — name and category]"},
+    {"bold": "Key Benefit", "description": "[their answer]"},
+    {"bold": "Differentiator", "description": "[their answer — what makes them different]"}
+  ]},
+  {"type": "callout", "bold": "Strength Check", "text": "Brief assessment: which components are sharp and specific, which need more work. 2-3 sentences. No Wade references."}
+]
 
-### Workshop Board
-
-#### Your Pitch
-Display the final assembled pitch sentence in a blockquote, large and prominent.
-
-#### The Five Components
-Break out each component with the user's specific answer:
-1. **Target Customer**: [their answer]
-2. **Problem/Need**: [their answer]
-3. **Product/Service**: [their answer — name and category]
-4. **Key Benefit**: [their answer]
-5. **Differentiator**: [their answer — what makes them different from alternatives]
-
-#### Strength Check
-Brief assessment: which components are sharp and specific, and which might need more work. Be honest but constructive. 2-3 sentences max. No Wade references.
-
-{WADE_PROGRAMS_PLACEHOLDER}""" + UNIVERSAL_REPORT_SECTIONS
+{WADE_PROGRAMS_PLACEHOLDER}""" + UNIVERSAL_REPORT_JSON
 
 # === TOOL-SPECIFIC REPORT PROMPTS (Section A — Core Output) ===
 
 FIVE_WHYS_REPORT = """You are producing a Five Whys session report for The Studio at Wade Institute of Entrepreneurship.
-Write clearly, directly, using markdown. Frame everything as the user's own thinking.
+Frame everything as the user's own thinking. Output as JSON.
 
-The tool-specific output section (placed after "Questions Worth Sitting With" in the report structure) is:
+TOOL-SPECIFIC EVIDENCE COMPONENTS:
+In the "evidence.components" array, include:
+[
+  {"type": "why_chain", "whys": [
+    {"number": 1, "question": "Original problem", "answer": "[what they started with]"},
+    {"number": 2, "question": "Why?", "answer": "[first answer]"},
+    {"number": 3, "question": "Why?", "answer": "[second answer]"},
+    {"number": 4, "question": "Why?", "answer": "[third answer]"},
+    {"number": 5, "question": "Why?", "answer": "[fourth answer]"},
+    {"number": 6, "question": "Root cause", "answer": "[what they uncovered]"}
+  ]},
+  {"type": "callout", "bold": "Reframed Problem Statement", "text": "The real problem isn't [original framing]. It's [root cause framing]."}
+]
 
-### Workshop Board
+If the session included opportunity sizing (Phase 2), also add:
+  {"type": "workshop_table", "headers": ["Dimension", "Assessment", "Rating"], "rows": [
+    ["Reach", "[user's estimate of affected people/orgs]", "HIGH / MEDIUM / LOW"],
+    ["Frequency", "[how often the problem occurs]", "HIGH / MEDIUM / LOW"],
+    ["Alternatives", "[what people do today]", "WEAK / MODERATE / STRONG"]
+  ]},
+  {"type": "callout", "bold": "Verdict: [Worth pursuing / Needs more evidence / Probably too small]", "text": "One sentence connecting reach, frequency, and alternative strength to the conclusion. Direct — a sizing call, not encouragement."}
 
-#### The Root Cause Chain
-Display the problem chain as a numbered cascade from the original problem to the root cause:
-
-1. **Original problem**: [what they started with]
-2. **Why?** [first answer]
-3. **Why?** [second answer]
-4. **Why?** [third answer]
-5. **Why?** [fourth answer]
-6. **Root cause**: [what they uncovered] — highlight this in bold
-
-#### Reframed Problem Statement
-The reframed version of the problem based on the root cause — one sentence. Frame as: "The real problem isn't [original framing]. It's [root cause framing]."
-
-#### Opportunity Scorecard
-If the session included opportunity sizing (Phase 2), include this section. If the session ended after root cause analysis without sizing, skip it.
-
-| Dimension | Assessment | Rating |
-|---|---|---|
-| **Reach** | [user's estimate of how many people/orgs have this problem, and basis] | HIGH / MEDIUM / LOW |
-| **Frequency** | [how often the problem occurs] | HIGH / MEDIUM / LOW |
-| **Alternatives** | [what people do today — workarounds, nothing, competitor solutions] | WEAK / MODERATE / STRONG |
-
-**Verdict:** [Worth pursuing / Needs more evidence / Probably too small]
-
-One sentence explaining the verdict: connect reach, frequency, and alternative strength to the conclusion. Be direct — this is a sizing call, not encouragement.
-""" + UNIVERSAL_REPORT_SECTIONS
+If the session ended after root cause analysis without sizing, omit the scorecard components.
+""" + UNIVERSAL_REPORT_JSON
 
 CRAZY_8S_REPORT = """You are producing a Crazy 8s session report for The Studio at Wade Institute of Entrepreneurship.
-Write clearly, directly, using markdown. Frame everything as the user's own thinking.
+Frame everything as the user's own thinking. Output as JSON.
 
-CRITICAL: Only include ideas that the user actually described during the exercise. Do NOT invent, fabricate, or pad the list. If fewer than 8 ideas were generated, list only the ones that were actually discussed — do not add placeholder text like "[not fully defined]". Ignore any quick-fire routing answers (e.g. "Idea Jam", "Napkin sketch", "Quick and scrappy") — these are UI navigation choices, not ideas.
+CRITICAL: Only include ideas the user actually described. Do NOT invent or pad the list. If fewer than 8, list only the real ones. Ignore UI navigation choices (e.g. "Idea Jam", "Napkin sketch"). If WORKSHOP_BOARD_CARDS are provided, use them as the authoritative list.
 
-If WORKSHOP_BOARD_CARDS are provided below, use them as the authoritative list of ideas — they were reviewed and edited by the user.
-
-The tool-specific output section (placed after "Questions Worth Sitting With" in the report structure) is:
-
-### Workshop Board
-
-#### Your Ideas
-List all ideas the user actually generated. Mark the user's top picks with bold:
-
-1. [idea]
-2. [idea]
-3. **[top pick]**
-...etc.
-
-#### Patterns
-One paragraph: what patterns emerged across the ideas? Were most ideas about automation? Customer experience? Cost reduction? Name the pattern — it reveals where the user's instincts point.
-
-#### Top Pick Analysis
-For each of the user's top 2-3 picks, one sentence on what makes it promising and one sentence on the biggest assumption to test.
-""" + UNIVERSAL_REPORT_SECTIONS
+TOOL-SPECIFIC EVIDENCE COMPONENTS:
+In the "evidence.components" array, include:
+[
+  {"type": "feature_list", "items": [
+    {"bold": "[idea name or summary]", "description": "[brief description]"},
+    ...for each idea. Mark top picks by prefixing bold with a star: "★ [top pick name]"
+  ]},
+  {"type": "callout", "bold": "Patterns", "text": "One paragraph: what patterns emerged across the ideas? Were most about automation? Customer experience? Cost reduction? Name the pattern — it reveals where instincts point."},
+  {"type": "feature_list", "items": [
+    {"bold": "Top Pick: [name]", "description": "One sentence on what makes it promising + one sentence on the biggest assumption to test."},
+    ...for the user's top 2-3 picks
+  ]}
+]
+""" + UNIVERSAL_REPORT_JSON
 
 HMW_REPORT = """You are producing a How Might We session report for The Studio at Wade Institute of Entrepreneurship.
-Write clearly, directly, using markdown. Frame everything as the user's own thinking.
+Frame everything as the user's own thinking. Output as JSON.
 
-The tool-specific output section (placed after "Questions Worth Sitting With" in the report structure) is:
-
-### Workshop Board
-
-#### Original Problem
-The problem statement they started with — one sentence.
-
-#### Your HMW Statements
-List all HMW statements generated (5-8). Bold the ones the user selected for deeper exploration:
-
-- How might we [statement]?
-- **How might we [selected statement]?**
-- ...
-
-#### Solutions Explored
-For each selected HMW statement:
-**HMW: [statement]**
-- Solution 1: [description]
-- Solution 2: [description]
-
-#### Recommended Direction
-Which solution direction has the most potential, and why. One paragraph.
-""" + UNIVERSAL_REPORT_SECTIONS
+TOOL-SPECIFIC EVIDENCE COMPONENTS:
+In the "evidence.components" array, include:
+[
+  {"type": "callout", "bold": "Original Problem", "text": "[The problem statement they started with — one sentence]"},
+  {"type": "feature_list", "items": [
+    {"bold": "How might we [statement]?", "description": ""},
+    {"bold": "★ How might we [selected statement]?", "description": "Selected for deeper exploration"},
+    ...for all HMW statements (5-8). Prefix selected ones with ★
+  ]},
+  {"type": "feature_list", "items": [
+    {"bold": "HMW: [selected statement]", "description": "Solution 1: [description]. Solution 2: [description]."},
+    ...for each selected HMW statement and its solutions
+  ]},
+  {"type": "callout", "bold": "Recommended Direction", "text": "Which solution direction has the most potential, and why. One paragraph."}
+]
+""" + UNIVERSAL_REPORT_JSON
 
 PREMORTEM_REPORT = """You are producing a Pre-Mortem session report for The Studio at Wade Institute of Entrepreneurship.
-Write clearly, directly, using markdown. Frame everything as the user's own thinking.
+Frame everything as the user's own thinking. Output as JSON.
 
-The tool-specific output section (placed after "Questions Worth Sitting With" in the report structure) is:
-
-### Workshop Board
-
-#### The Idea Being Tested
-One sentence describing what was stress-tested.
-
-#### Failure Scenarios
-Group all failure reasons by category. For each, show the risk and its severity:
-
-**Market Risk**
-- [failure scenario] — Likelihood: High/Medium/Low
-
-**Product Risk**
-- [failure scenario] — Likelihood: High/Medium/Low
-
-**Team Risk** / **Financial Risk** / **Competition Risk** / **Timing Risk**
-(same format for each that was discussed)
-
-#### The Biggest Risk
-The single most dangerous failure mode: both most likely AND most fatal. One sentence explaining why this is the one to watch.
-
-#### Mitigations
-For the top 2-3 risks, concrete actions to reduce each one. Frame as: "To reduce [risk]: [specific action by specific date]."
-""" + UNIVERSAL_REPORT_SECTIONS
+TOOL-SPECIFIC EVIDENCE COMPONENTS:
+In the "evidence.components" array, include:
+[
+  {"type": "callout", "bold": "The Idea Being Tested", "text": "[One sentence describing what was stress-tested]"},
+  {"type": "workshop_table", "headers": ["Risk Category", "Failure Scenario", "Likelihood"], "rows": [
+    ["Market Risk", "[failure scenario]", "High / Medium / Low"],
+    ["Product Risk", "[failure scenario]", "High / Medium / Low"],
+    ...include only categories that were discussed (Team, Financial, Competition, Timing)
+  ]},
+  {"type": "callout", "bold": "The Biggest Risk", "text": "[The single most dangerous failure mode — most likely AND most fatal. One sentence on why this is the one to watch.]"},
+  {"type": "feature_list", "items": [
+    {"bold": "To reduce [risk]:", "description": "[specific action by specific date]"},
+    ...for the top 2-3 risks
+  ]}
+]
+""" + UNIVERSAL_REPORT_JSON
 
 DEVILS_ADVOCATE_REPORT = """You are producing a Devil's Advocate session report for The Studio at Wade Institute of Entrepreneurship.
-Write clearly, directly, using markdown. Frame everything as the user's own thinking.
+Frame everything as the user's own thinking. Output as JSON.
 
-The tool-specific output section (placed after "Questions Worth Sitting With" in the report structure) is:
-
-### Workshop Board
-
-#### The Idea
-One sentence summary of what was defended.
-
-#### Adversary(s) Faced
-Name which adversary role(s) the user chose (The Churned Customer, The Confused User, The Tired Engineer, The Sceptical Investor, The Fast Follower) and which risk each targets (Value, Usability, Feasibility, Viability, All Four).
-
-#### Objection Log
-
-| # | Adversary | Objection | Defence | Rating |
-|---|---|---|---|---|
-| 1 | [adversary name] | [the attack] | [user's response] | Defended / Deflected / Exposed |
-| 2 | ... | ... | ... | ... |
-
-Include all objections from the session.
-
-#### Risk Heatmap
-Which of the four risks (Value, Usability, Feasibility, Viability) has the most Exposed ratings? State plainly.
-
-#### Danger Zone
-The single biggest vulnerability — stated plainly. "If I were betting against this idea, I'd bet on [specific weakness]."
-
-#### Suggested Next Step
-One specific action to address the top Exposed objection. Be concrete — who to talk to, what to test, what to measure.
-""" + UNIVERSAL_REPORT_SECTIONS
+TOOL-SPECIFIC EVIDENCE COMPONENTS:
+In the "evidence.components" array, include:
+[
+  {"type": "callout", "bold": "The Idea", "text": "[One sentence summary of what was defended]"},
+  {"type": "feature_list", "items": [
+    {"bold": "[Adversary name]", "description": "Targets [risk type: Value/Usability/Feasibility/Viability/All Four]"},
+    ...for each adversary faced
+  ]},
+  {"type": "workshop_table", "headers": ["#", "Adversary", "Objection", "Defence", "Rating"], "rows": [
+    ["1", "[adversary name]", "[the attack]", "[user's response]", "Defended / Deflected / Exposed"],
+    ...include ALL objections from the session
+  ]},
+  {"type": "callout", "bold": "Risk Heatmap", "text": "Which of the four risks (Value, Usability, Feasibility, Viability) has the most Exposed ratings? State plainly."},
+  {"type": "callout", "bold": "Danger Zone", "text": "If I were betting against this idea, I'd bet on [specific weakness]. [One specific action to address the top Exposed objection — who to talk to, what to test, what to measure.]"}
+]
+""" + UNIVERSAL_REPORT_JSON
 
 EFFECTUATION_REPORT = """You are producing an Effectuation session report for The Studio at Wade Institute of Entrepreneurship.
-Write clearly, directly, using markdown. Frame everything as the user's own thinking.
+Frame everything as the user's own thinking. Output as JSON.
 
-The tool-specific output section (placed after "Questions Worth Sitting With" in the report structure) is:
-
-### Workshop Board
-
-#### Your Means Inventory (Bird in Hand)
-What you already have — listed as bullet points:
-- **Who you are**: [identity, skills, abilities]
-- **What you know**: [expertise, experience]
-- **Who you know**: [network, contacts]
-
-#### Affordable Loss
-What you can afford to risk — time, money, reputation. One sentence.
-
-#### Crazy Quilt (Your Allies)
-3-5 people who could join or help, and what each would contribute:
-- [Person/type] — [what they bring]
-
-#### Lemonade (Surprises to Leverage)
-Setbacks or surprises that could be turned into advantages. Bullet points.
-
-#### First Move
-The specific, concrete action for the next 48 hours. One sentence, bold and prominent.
-""" + UNIVERSAL_REPORT_SECTIONS
+TOOL-SPECIFIC EVIDENCE COMPONENTS:
+In the "evidence.components" array, include:
+[
+  {"type": "feature_list", "items": [
+    {"bold": "Who you are", "description": "[identity, skills, abilities]"},
+    {"bold": "What you know", "description": "[expertise, experience]"},
+    {"bold": "Who you know", "description": "[network, contacts]"}
+  ]},
+  {"type": "callout", "bold": "Affordable Loss", "text": "[What they can afford to risk — time, money, reputation. One sentence.]"},
+  {"type": "feature_list", "items": [
+    {"bold": "[Person/type]", "description": "[what they bring]"},
+    ...for 3-5 allies (Crazy Quilt)
+  ]},
+  {"type": "feature_list", "items": [
+    {"bold": "Lemonade", "description": "[setback or surprise that could be turned into an advantage]"},
+    ...for each surprise to leverage
+  ]},
+  {"type": "callout", "bold": "First Move (next 48 hours)", "text": "[The specific, concrete action. One sentence, bold and prominent.]"}
+]
+""" + UNIVERSAL_REPORT_JSON
 
 JTBD_REPORT = """You are producing a Jobs to Be Done session report for The Studio at Wade Institute of Entrepreneurship.
-Write clearly, directly, using markdown. Frame everything as the user's own thinking.
+Frame everything as the user's own thinking. Output as JSON.
 
-The tool-specific output section (placed after "Questions Worth Sitting With" in the report structure) is:
-
-### Workshop Board
-
-#### The Customer
-Who they mapped — one sentence describing the person in a moment, not a demographic.
-
-#### The Job Story
-Display the completed job story in a blockquote:
-> "When I [situation], I want to [motivation], so I can [outcome]."
-
-#### The Four Forces
-| Force | Finding |
-|---|---|
-| **Push** (frustrations with status quo) | [from session] |
-| **Pull** (attraction to new solution) | [from session] |
-| **Anxiety** (fears about switching) | [from session] |
-| **Habit** (inertia keeping them stuck) | [from session] |
-
-#### The Three Jobs
-- **Functional**: [what they practically need to do]
-- **Emotional**: [how they want to feel]
-- **Social**: [how they want to be perceived]
-
-#### Gap Analysis
-Does the user's product actually solve this job? One paragraph on the fit — or misfit — between the job and the current solution.
-""" + UNIVERSAL_REPORT_SECTIONS
+TOOL-SPECIFIC EVIDENCE COMPONENTS:
+In the "evidence.components" array, include:
+[
+  {"type": "callout", "bold": "The Customer", "text": "[Who they mapped — one sentence describing the person in a moment, not a demographic]"},
+  {"type": "callout", "bold": "The Job Story", "text": "When I [situation], I want to [motivation], so I can [outcome]."},
+  {"type": "workshop_table", "headers": ["Force", "Finding"], "rows": [
+    ["Push (frustrations with status quo)", "[from session]"],
+    ["Pull (attraction to new solution)", "[from session]"],
+    ["Anxiety (fears about switching)", "[from session]"],
+    ["Habit (inertia keeping them stuck)", "[from session]"]
+  ]},
+  {"type": "feature_list", "items": [
+    {"bold": "Functional", "description": "[what they practically need to do]"},
+    {"bold": "Emotional", "description": "[how they want to feel]"},
+    {"bold": "Social", "description": "[how they want to be perceived]"}
+  ]},
+  {"type": "callout", "bold": "Gap Analysis", "text": "[Does the user's product solve this job? One paragraph on the fit or misfit between the job and the current solution.]"}
+]
+""" + UNIVERSAL_REPORT_JSON
 
 EMPATHY_MAP_REPORT = """You are producing an Empathy Map session report for The Studio at Wade Institute of Entrepreneurship.
-Write clearly, directly, using markdown. Frame everything as the user's own thinking.
+Frame everything as the user's own thinking. Output as JSON.
 
-The tool-specific output section (placed after "Questions Worth Sitting With" in the report structure) is:
-
-### Workshop Board
-
-#### The Person
-Who they mapped — name and context, one sentence.
-
-#### The Empathy Map
-| Says | Thinks |
-|---|---|
-| [key quotes and statements] | [unspoken thoughts and worries] |
-
-| Does | Feels |
-|---|---|
-| [observable behaviours and actions] | [core emotions driving them] |
-
-#### The Contradiction
-The gap between what this person says/does and what they think/feel — one paragraph explaining the tension and why it matters.
-
-#### The Insight
-The opportunity that lives in that gap — one sentence, bold and prominent.
-""" + UNIVERSAL_REPORT_SECTIONS
+TOOL-SPECIFIC EVIDENCE COMPONENTS:
+In the "evidence.components" array, include:
+[
+  {"type": "callout", "bold": "The Person", "text": "[Who they mapped — name and context, one sentence]"},
+  {"type": "canvas_grid", "blocks": [
+    {"label": "Says", "content": "[key quotes and statements]"},
+    {"label": "Thinks", "content": "[unspoken thoughts and worries]"},
+    {"label": "Does", "content": "[observable behaviours and actions]"},
+    {"label": "Feels", "content": "[core emotions driving them]"}
+  ]},
+  {"type": "callout", "bold": "The Contradiction", "text": "[The gap between says/does and thinks/feels — one paragraph explaining the tension and why it matters]"},
+  {"type": "callout", "bold": "The Insight", "text": "[The opportunity that lives in that gap — one sentence, bold and prominent]"}
+]
+""" + UNIVERSAL_REPORT_JSON
 
 SCAMPER_REPORT = """You are producing a SCAMPER session report for The Studio at Wade Institute of Entrepreneurship.
-Write clearly, directly, using markdown. Frame everything as the user's own thinking.
+Frame everything as the user's own thinking. Output as JSON.
 
-The tool-specific output section (placed after "Questions Worth Sitting With" in the report structure) is:
+TOOL-SPECIFIC EVIDENCE COMPONENTS:
+In the "evidence.components" array, include:
+[
+  {"type": "callout", "bold": "The Subject", "text": "[What they applied SCAMPER to — one sentence]"},
+  {"type": "workshop_table", "headers": ["Lens", "Idea"], "rows": [
+    ["S — Substitute", "[idea from session]"],
+    ["C — Combine", "[idea from session]"],
+    ["A — Adapt", "[idea from session]"],
+    ["M — Modify", "[idea from session]"],
+    ["P — Put to other uses", "[idea from session]"],
+    ["E — Eliminate", "[idea from session]"],
+    ["R — Reverse", "[idea from session]"]
+  ]},
+  {"type": "feature_list", "items": [
+    {"bold": "Top Pick: [name]", "description": "One sentence on why it's worth exploring + one sentence on the first assumption to test."},
+    ...for the 2-3 most promising ideas
+  ]}
+]
 
-### Workshop Board
-
-#### The Subject
-What they applied SCAMPER to — one sentence.
-
-#### Ideas by Lens
-For each SCAMPER lens that was explored, show the best idea generated:
-
-| Lens | Idea |
-|---|---|
-| **S — Substitute** | [idea from session] |
-| **C — Combine** | [idea from session] |
-| **A — Adapt** | [idea from session] |
-| **M — Modify** | [idea from session] |
-| **P — Put to other uses** | [idea from session] |
-| **E — Eliminate** | [idea from session] |
-| **R — Reverse** | [idea from session] |
-
-If a lens was not explored, omit it from the table.
-
-#### Top Picks
-The 2-3 ideas the user selected as most promising. For each, one sentence on why it's worth exploring and one sentence on the first assumption to test.
-""" + UNIVERSAL_REPORT_SECTIONS
+If a lens was not explored during the session, omit its row from the table.
+""" + UNIVERSAL_REPORT_JSON
 
 CUSTOMER_DISCOVERY_REPORT = """You are producing a Customer Discovery session report for The Studio at Wade Institute of Entrepreneurship.
-Write clearly, directly, using markdown. Frame everything as the user's own thinking.
+Frame everything as the user's own thinking. Output as JSON.
 
-The tool-specific output section (placed after "Questions Worth Sitting With" in the report structure) is:
-
-### Workshop Board
-
-#### Customer Persona
-The persona Pete adopted during the interview: Name, role, context, frustrations, and existing workarounds. Present as a brief character card.
-
-#### Interview Technique Scorecard
-
-| Dimension | Rating | Example |
-|---|---|---|
-| **Open vs. Leading Questions** | Strong / Needs Work / Weak | [specific example from the interview] |
-| **Follow-up Quality** | Strong / Needs Work / Weak | [specific example — did they chase the thread?] |
-| **Silence Tolerance** | Strong / Needs Work / Weak | [did they let the customer think?] |
-| **Signal Detection** | Strong / Needs Work / Weak | [signals caught vs missed] |
-| **Pitch Avoidance** | Strong / Needs Work / Weak | [how long before they started selling?] |
-
-#### Signals Planted vs Caught
-| Signal | Type | Caught? |
-|---|---|---|
-| [signal Pete dropped] | Workaround / Constraint / Frustration | Yes / No |
-
-For each missed signal, note what follow-up question would have uncovered it.
-
-#### Key Insight
-The most important thing Pete-as-customer revealed during the interview, and whether the user noticed it. One paragraph.
-
-#### The One Thing to Change
-The single most impactful behaviour change for the user's next customer interview. Be specific and actionable.
-""" + UNIVERSAL_REPORT_SECTIONS
+TOOL-SPECIFIC EVIDENCE COMPONENTS:
+In the "evidence.components" array, include:
+[
+  {"type": "callout", "bold": "Customer Persona", "text": "[The persona Pete adopted: Name, role, context, frustrations, existing workarounds. Brief character card.]"},
+  {"type": "workshop_table", "headers": ["Dimension", "Rating", "Example"], "rows": [
+    ["Open vs. Leading Questions", "Strong / Needs Work / Weak", "[specific example]"],
+    ["Follow-up Quality", "Strong / Needs Work / Weak", "[did they chase the thread?]"],
+    ["Silence Tolerance", "Strong / Needs Work / Weak", "[did they let the customer think?]"],
+    ["Signal Detection", "Strong / Needs Work / Weak", "[signals caught vs missed]"],
+    ["Pitch Avoidance", "Strong / Needs Work / Weak", "[how long before they started selling?]"]
+  ]},
+  {"type": "workshop_table", "headers": ["Signal", "Type", "Caught?"], "rows": [
+    ["[signal Pete dropped]", "Workaround / Constraint / Frustration", "Yes / No"],
+    ...for each signal. For missed signals, note the follow-up question that would have uncovered it.
+  ]},
+  {"type": "callout", "bold": "Key Insight", "text": "[The most important thing Pete-as-customer revealed, and whether the user noticed it. One paragraph.]"},
+  {"type": "callout", "bold": "The One Thing to Change", "text": "[The single most impactful behaviour change for their next customer interview. Specific and actionable.]"}
+]
+""" + UNIVERSAL_REPORT_JSON
 
 REALITY_CHECK_REPORT = """You are producing a Reality Check session report for The Studio at Wade Institute of Entrepreneurship.
-Write clearly, directly, using markdown. Frame everything as the user's own thinking.
+Frame everything as the user's own thinking. Output as JSON.
 
-The tool-specific output section (placed after "Questions Worth Sitting With" in the report structure) is:
-
-### Workshop Board
-
-#### Four-Risk Scorecard
-
-| Risk | Key Finding | Rating |
-|---|---|---|
-| **Value** — Will customers want this? | [key finding from value round] | GREEN / AMBER / RED |
-| **Usability** — Can they figure it out? | [key finding from usability round] | GREEN / AMBER / RED |
-| **Feasibility** — Can the team build it? | [key finding from feasibility round] | GREEN / AMBER / RED |
-| **Viability** — Does the business work? | [key finding from viability round] | GREEN / AMBER / RED |
-
-**Overall: [GREEN / AMBER / RED]** — weakest link rule (one RED = overall RED, all GREEN = overall GREEN, otherwise AMBER).
-
-#### Biggest Risk
-Name the single biggest risk identified. One paragraph explaining why this is the most dangerous gap and what evidence is missing. Be direct — this is a diagnostic, not encouragement.
-
-#### Suggested Test
-A specific, cheap test the user could run to address their biggest risk. Include: what to test, how to test it, who to test with, and how long it should take. Target: under 1 week.
-""" + UNIVERSAL_REPORT_SECTIONS
+TOOL-SPECIFIC EVIDENCE COMPONENTS:
+In the "evidence.components" array, include:
+[
+  {"type": "workshop_table", "headers": ["Risk", "Key Finding", "Rating"], "rows": [
+    ["Value — Will customers want this?", "[key finding from value round]", "GREEN / AMBER / RED"],
+    ["Usability — Can they figure it out?", "[key finding from usability round]", "GREEN / AMBER / RED"],
+    ["Feasibility — Can the team build it?", "[key finding from feasibility round]", "GREEN / AMBER / RED"],
+    ["Viability — Does the business work?", "[key finding from viability round]", "GREEN / AMBER / RED"]
+  ]},
+  {"type": "callout", "bold": "Overall: [GREEN / AMBER / RED]", "text": "Weakest link rule: one RED = overall RED, all GREEN = overall GREEN, otherwise AMBER."},
+  {"type": "callout", "bold": "Biggest Risk", "text": "[Name the single biggest risk. One paragraph on why it's the most dangerous gap and what evidence is missing. Direct diagnostic, not encouragement.]"},
+  {"type": "callout", "bold": "Suggested Test", "text": "[A specific, cheap test to address the biggest risk. What to test, how, who with, how long. Target: under 1 week.]"}
+]
+""" + UNIVERSAL_REPORT_JSON
 
 TRADE_OFF_REPORT = """You are producing a Trade-Off session report for The Studio at Wade Institute of Entrepreneurship.
-Write clearly, directly, using markdown. Frame everything as the user's own thinking.
+Frame everything as the user's own thinking. Output as JSON.
 
-The tool-specific output section (placed after "Questions Worth Sitting With" in the report structure) has 7 sections:
-
-### Workshop Board
-
-#### 1. Synopsis
-The headline insight in 2-3 sentences. What was the product tested? What did the data reveal about what customers actually value? What was the surprise? This is the section a founder reads aloud to their co-founder.
-
-#### 2. The Setup
-A clean table showing the 5 categories with their 3 levels, plus the price range:
-
-| Category | Level 1 | Level 2 | Level 3 |
-|---|---|---|---|
-| [Category name] | [Low] | [Mid] | [High] |
-
-Price range: $[min] — $[max]
-
-#### 3. The 10 Rounds
-A visual log of every round. For each round, show both packages with the chosen one marked:
-
-**Round N**: ✓ [Chosen package name] vs ✗ [Rejected package name]
-
-No commentary per round — just the choices. The pattern speaks for itself.
-
-#### 4. Feature Value Stack
-Rank all 5 categories by win rate, grouped into tiers:
-
-**Must-have (7-10/10 wins)**
-- [Category]: [winning level] — [N]/10
-
-**Nice-to-have (4-6/10 wins)**
-- [Category]: [mid level] — [N]/10
-
-**Expendable (0-3/10 wins)**
-- [Category]: [lowest level] — [N]/10
-
-#### 5. The Surprise
-A single paragraph identifying the most counter-intuitive finding with supporting data. Name the feature the user was most wrong about — what they assumed mattered vs what the rounds revealed.
-
-#### 6. Minimum Viable Offer
-The simplest bundle someone would pay for: winning level of must-haves, mid level of nice-to-haves, lowest level of expendables. Show as a clean list with the computed price.
-
-#### 7. What to Do Next
-Three specific, actionable next steps based on the findings. Tie each to the data. E.g., "Lead marketing with [must-have], not [expendable]" or "Test the $X price point with 5 real prospects this week."
-""" + UNIVERSAL_REPORT_SECTIONS
+TOOL-SPECIFIC EVIDENCE COMPONENTS:
+In the "evidence.components" array, include all 7 sections:
+[
+  {"type": "callout", "bold": "Synopsis", "text": "[The headline insight in 2-3 sentences. What product was tested? What did the data reveal about what customers actually value? What was the surprise? This is what a founder reads aloud to their co-founder.]"},
+  {"type": "workshop_table", "headers": ["Category", "Level 1", "Level 2", "Level 3"], "rows": [
+    ["[Category name]", "[Low]", "[Mid]", "[High]"],
+    ...for all 5 categories. Add a final row: ["Price range", "$[min]", "—", "$[max]"]
+  ]},
+  {"type": "round_cards", "rounds": [
+    {"tag": "Round 1", "matchup": "✓ [Chosen package] vs ✗ [Rejected package]", "quote": ""},
+    ...for all 10 rounds. No commentary — the pattern speaks for itself.
+  ]},
+  {"type": "value_stack", "tiers": [
+    {"name": "Must-haves", "tier_class": "must", "range": "Won 7-10 / 10 rounds", "items": [
+      {"name": "[Category]: [winning level]", "wins": "[N] / 10"}
+    ]},
+    {"name": "Nice-to-haves", "tier_class": "strong", "range": "Won 4-6 / 10 rounds", "items": [
+      {"name": "[Category]: [mid level]", "wins": "[N] / 10"}
+    ]},
+    {"name": "Expendable", "tier_class": "exp", "range": "Won 0-3 / 10 rounds", "items": [
+      {"name": "[Category]: [lowest level]", "wins": "[N] / 10"}
+    ]}
+  ]},
+  {"type": "callout", "bold": "The Surprise", "text": "[A single paragraph identifying the most counter-intuitive finding. Name the feature the user was most wrong about.]"},
+  {"type": "feature_list", "items": [
+    {"bold": "Minimum Viable Offer", "description": "[Winning level of must-haves + mid of nice-to-haves + lowest of expendables. Clean list with computed price.]"}
+  ]},
+  {"type": "callout", "bold": "What to Do Next", "text": "[Three specific, actionable next steps tied to the data. E.g. 'Lead marketing with [must-have], not [expendable]' or 'Test the $X price point with 5 real prospects this week.']"}
+]
+""" + UNIVERSAL_REPORT_JSON
 
 RAPID_EXPERIMENT_REPORT = """You are producing a Rapid Experiment session report for The Studio at Wade Institute of Entrepreneurship.
-Write clearly, directly, using markdown. Frame everything as the user's own thinking.
+Frame everything as the user's own thinking. Output as JSON.
 
-The tool-specific output section (placed after "Questions Worth Sitting With" in the report structure) is:
-
-### Workshop Board
-
-#### Assumption Inventory
-All assumptions surfaced during Phase 1, with confidence and consequence scores:
-
-| # | Assumption | Confidence (1-5) | Consequence (1-5) | Quadrant |
-|---|---|---|---|---|
-| 1 | [assumption text] | [score] | [score] | TEST NOW / MONITOR / WATCH / PARK |
-
-#### Risk Matrix
-Summarise the 2×2 matrix:
-- **TEST NOW** (low confidence, high consequence): [assumptions in this quadrant]
-- **MONITOR** (high confidence, high consequence): [assumptions]
-- **WATCH** (low confidence, low consequence): [assumptions]
-- **PARK** (high confidence, low consequence): [assumptions]
-
-**Riskiest assumption selected for testing:** [the one from TEST NOW with highest consequence and lowest confidence] — bold and prominent.
-
-#### Experiment Card
-| Element | Detail |
-|---|---|
-| **Hypothesis** | We believe [assumption]. We'll know we're right if [measurable signal]. |
-| **Method** | [experiment type — interview, landing page, concierge, Wizard of Oz, prototype, pre-sell, fake door] |
-| **Sample** | [who to test with, how many, how to recruit] |
-| **Success metric** | [specific pass/fail threshold — set before seeing data] |
-| **Timeline** | [how long — target: under 1 week] |
-
-#### First Step
-The one thing to do tomorrow morning to start the test. Be concrete.
-""" + UNIVERSAL_REPORT_SECTIONS
+TOOL-SPECIFIC EVIDENCE COMPONENTS:
+In the "evidence.components" array, include:
+[
+  {"type": "workshop_table", "headers": ["#", "Assumption", "Confidence (1-5)", "Consequence (1-5)", "Quadrant"], "rows": [
+    ["1", "[assumption text]", "[score]", "[score]", "TEST NOW / MONITOR / WATCH / PARK"],
+    ...for all assumptions surfaced
+  ]},
+  {"type": "feature_list", "items": [
+    {"bold": "TEST NOW (low confidence, high consequence)", "description": "[assumptions in this quadrant]"},
+    {"bold": "MONITOR (high confidence, high consequence)", "description": "[assumptions]"},
+    {"bold": "WATCH (low confidence, low consequence)", "description": "[assumptions]"},
+    {"bold": "PARK (high confidence, low consequence)", "description": "[assumptions]"}
+  ]},
+  {"type": "callout", "bold": "Riskiest assumption selected for testing", "text": "[The one from TEST NOW with highest consequence and lowest confidence]"},
+  {"type": "experiment_cards", "cards": [
+    {"label": "Hypothesis", "content": "We believe [assumption]. We'll know we're right if [measurable signal]."},
+    {"label": "Method", "content": "[experiment type — interview, landing page, concierge, Wizard of Oz, prototype, pre-sell, fake door]"},
+    {"label": "Sample", "content": "[who to test with, how many, how to recruit]"},
+    {"label": "Success metric", "content": "[specific pass/fail threshold — set before seeing data]"},
+    {"label": "Timeline", "content": "[how long — target: under 1 week]"}
+  ]},
+  {"type": "callout", "bold": "First Step", "text": "[The one thing to do tomorrow morning to start the test. Concrete.]"}
+]
+""" + UNIVERSAL_REPORT_JSON
 
 FLYWHEEL_REPORT = """You are producing a Flywheel session report for The Studio at Wade Institute of Entrepreneurship.
-Write clearly, directly, using markdown. Frame everything as the user's own thinking.
+Frame everything as the user's own thinking. Output as JSON.
 
-The tool-specific output section (placed after "Questions Worth Sitting With" in the report structure) is:
-
-### Workshop Board
-
-#### The Flywheel
-Display the components as a numbered loop, showing the reinforcing cycle:
-1. [Component A] →
-2. [Component B] →
-3. [Component C] →
-4. [Component D] →
-...back to 1.
-
-#### Connection Strength
-| Connection | Strength | Mechanism |
-|---|---|---|
-| A → B | Strong / Developing / Unproven | [how exactly A causes B] |
-| B → C | Strong / Developing / Unproven | [how exactly B causes C] |
-...continue for all connections.
-
-#### The Bottleneck
-The weakest connection in the loop — one sentence naming it and one sentence on why it matters more than the others.
-
-#### Acceleration Plan
-What it would take to make the bottleneck connection twice as strong in 90 days. One paragraph.
-""" + UNIVERSAL_REPORT_SECTIONS
+TOOL-SPECIFIC EVIDENCE COMPONENTS:
+In the "evidence.components" array, include:
+[
+  {"type": "feature_list", "items": [
+    {"bold": "1. [Component A]", "description": "→ leads to Component B"},
+    {"bold": "2. [Component B]", "description": "→ leads to Component C"},
+    {"bold": "3. [Component C]", "description": "→ leads to Component D"},
+    {"bold": "4. [Component D]", "description": "→ back to Component A"},
+    ...for all components in the loop
+  ]},
+  {"type": "workshop_table", "headers": ["Connection", "Strength", "Mechanism"], "rows": [
+    ["A → B", "Strong / Developing / Unproven", "[how exactly A causes B]"],
+    ["B → C", "Strong / Developing / Unproven", "[how exactly B causes C]"],
+    ...for all connections
+  ]},
+  {"type": "callout", "bold": "The Bottleneck", "text": "[The weakest connection — one sentence naming it and one sentence on why it matters more than the others.]"},
+  {"type": "callout", "bold": "Acceleration Plan", "text": "[What it would take to make the bottleneck connection twice as strong in 90 days. One paragraph.]"}
+]
+""" + UNIVERSAL_REPORT_JSON
 
 THEORY_OF_CHANGE_REPORT = """You are producing a Theory of Change session report for The Studio at Wade Institute of Entrepreneurship.
-Write clearly, directly, using markdown. Frame everything as the user's own thinking.
+Frame everything as the user's own thinking. Output as JSON.
 
-The tool-specific output section (placed after "Questions Worth Sitting With" in the report structure) is:
-
-### Workshop Board
-
-#### The Outcome
-The long-term observable change — one sentence describing what is different and for whom.
-
-#### The Causal Chain
-Display the pathway from activities to outcome, working left to right:
-
-**Activities** → **Preconditions** → **Outcome**
-
-For each precondition, show its sphere:
-- [precondition] — *Within Control*
-- [precondition] — *Within Influence*
-- [precondition] — *Outside Control*
-
-#### The Missing Middle
-Gaps in the causal chain that were exposed during the session — where the user jumped from activities to outcomes without specifying what must happen in between. Bullet points.
-
-#### The Weakest Link
-The connection with the least evidence — one sentence naming it and one sentence on what would happen if it broke.
-
-#### Activities Mapped
-For each precondition within control or influence, the specific activity designed to make it true:
-- [activity] → [precondition it creates]
-""" + UNIVERSAL_REPORT_SECTIONS
+TOOL-SPECIFIC EVIDENCE COMPONENTS:
+In the "evidence.components" array, include:
+[
+  {"type": "callout", "bold": "The Outcome", "text": "[The long-term observable change — one sentence describing what is different and for whom]"},
+  {"type": "feature_list", "items": [
+    {"bold": "[precondition]", "description": "Within Control / Within Influence / Outside Control"},
+    ...for each precondition in the causal chain
+  ]},
+  {"type": "feature_list", "items": [
+    {"bold": "Missing Middle", "description": "[gap where user jumped from activities to outcomes without specifying what must happen in between]"},
+    ...for each gap exposed during the session
+  ]},
+  {"type": "callout", "bold": "The Weakest Link", "text": "[The connection with the least evidence — one sentence naming it and one sentence on what would happen if it broke.]"},
+  {"type": "feature_list", "items": [
+    {"bold": "[activity]", "description": "→ [precondition it creates]"},
+    ...for each precondition within control or influence
+  ]}
+]
+""" + UNIVERSAL_REPORT_JSON
 
 ANALOGICAL_REPORT = """You are producing a Mash Up (Analogical Thinking) session report for The Studio at Wade Institute of Entrepreneurship.
-Write clearly, directly, using markdown. Frame everything as the user's own thinking.
+Frame everything as the user's own thinking. Output as JSON.
 
-The tool-specific output section (placed after "Questions Worth Sitting With" in the report structure) is:
-
-### Workshop Board
-
-#### The Challenge (Abstracted)
-The user's problem distilled to its fundamental form — one sentence. Show both the original framing and the abstracted version.
-
-#### Analogies Explored
-For each domain explored:
-
-**Nature / Biology**
-- Analogy: [what nature does]
-- Application: [how it could apply to their venture]
-
-**Different Industry**
-- Analogy: [what that industry does]
-- Application: [how it could apply to their venture]
-
-**Human Behaviour / Culture**
-- Analogy: [social ritual or cultural practice]
-- Application: [how it could apply to their venture]
-
-Only include domains that were actually explored in the session.
-
-#### The Breakthrough Analogy
-Which analogy gave the most unexpected insight — one paragraph on what it reveals and what assumption it breaks about how the user's industry currently works.
-""" + UNIVERSAL_REPORT_SECTIONS
+TOOL-SPECIFIC EVIDENCE COMPONENTS:
+In the "evidence.components" array, include:
+[
+  {"type": "callout", "bold": "The Challenge (Abstracted)", "text": "[The user's problem distilled to its fundamental form. Show both the original framing and the abstracted version.]"},
+  {"type": "feature_list", "items": [
+    {"bold": "[Domain name — e.g. Nature / Biology]", "description": "Analogy: [what it does]. Application: [how it could apply to their venture]"},
+    ...for each domain explored. Only include domains actually explored.
+  ]},
+  {"type": "callout", "bold": "The Breakthrough Analogy", "text": "[Which analogy gave the most unexpected insight — one paragraph on what it reveals and what assumption it breaks about how the user's industry currently works.]"}
+]
+""" + UNIVERSAL_REPORT_JSON
 
 SOCRATIC_REPORT = """You are producing a Socratic Questioning session report for The Studio at Wade Institute of Entrepreneurship.
-Write clearly, directly, using markdown. Frame everything as the user's own thinking.
+Frame everything as the user's own thinking. Output as JSON.
 
-The tool-specific output section (placed after "Questions Worth Sitting With" in the report structure) is:
-
-### Workshop Board
-
-#### The Belief Map
-Classify each claim surfaced during the session:
-
-| Belief | Classification | Evidence |
-|---|---|---|
-| [claim] | Verified / Assumed / Inherited | [evidence or source] |
-
-#### The Score
-Summary: "You walked in with N beliefs. X verified, Y assumed, Z inherited." One sentence.
-
-#### The Critical Assumption
-The single assumption that, if wrong, changes everything — one sentence in bold. Followed by one sentence on what would change.
-
-#### The Test
-The simplest way to test the critical assumption in the next two weeks. One specific, concrete action.
-""" + UNIVERSAL_REPORT_SECTIONS
+TOOL-SPECIFIC EVIDENCE COMPONENTS:
+In the "evidence.components" array, include:
+[
+  {"type": "workshop_table", "headers": ["Belief", "Classification", "Evidence"], "rows": [
+    ["[claim]", "Verified / Assumed / Inherited", "[evidence or source]"],
+    ...for each claim surfaced during the session
+  ]},
+  {"type": "callout", "bold": "The Score", "text": "You walked in with N beliefs. X verified, Y assumed, Z inherited."},
+  {"type": "callout", "bold": "The Critical Assumption", "text": "[The single assumption that, if wrong, changes everything. Followed by one sentence on what would change.]"},
+  {"type": "callout", "bold": "The Test", "text": "[The simplest way to test the critical assumption in the next two weeks. One specific, concrete action.]"}
+]
+""" + UNIVERSAL_REPORT_JSON
 
 ICEBERG_REPORT = """You are producing an Iceberg session report for The Studio at Wade Institute of Entrepreneurship.
-Write clearly, directly, using markdown. Frame everything as the user's own thinking.
+Frame everything as the user's own thinking. Output as JSON.
 
-The tool-specific output section (placed after "Questions Worth Sitting With" in the report structure) is:
-
-### Workshop Board
-
-#### The Iceberg
-Display the four levels as a descending structure:
-
-**Event** (surface)
-[the incident they described]
-
-**Patterns** (just below the surface)
-[recurring themes — bullet points]
-
-**Structures** (deep)
-[systemic causes — incentives, processes, power dynamics. Bullet points]
-
-**Mental Models** (deepest)
-[the unspoken beliefs holding the structure in place — bullet points]
-
-#### The Leverage Point
-Where in the iceberg the highest-leverage intervention sits — one sentence naming the level and the specific belief or structure to target.
-
-#### The Shift
-What it would look like to change the mental model — one paragraph on what changes if the belief changes, and how that cascades up through structures, patterns, and events.
-""" + UNIVERSAL_REPORT_SECTIONS
+TOOL-SPECIFIC EVIDENCE COMPONENTS:
+In the "evidence.components" array, include:
+[
+  {"type": "feature_list", "items": [
+    {"bold": "Event (surface)", "description": "[the incident they described]"},
+    {"bold": "Patterns (just below)", "description": "[recurring themes]"},
+    {"bold": "Structures (deep)", "description": "[systemic causes — incentives, processes, power dynamics]"},
+    {"bold": "Mental Models (deepest)", "description": "[the unspoken beliefs holding the structure in place]"}
+  ]},
+  {"type": "callout", "bold": "The Leverage Point", "text": "[Where in the iceberg the highest-leverage intervention sits — one sentence naming the level and the specific belief or structure to target.]"},
+  {"type": "callout", "bold": "The Shift", "text": "[What it would look like to change the mental model — one paragraph on what changes if the belief changes, and how that cascades up through structures, patterns, and events.]"}
+]
+""" + UNIVERSAL_REPORT_JSON
 
 CONSTRAINT_FLIP_REPORT = """You are producing a Constraint Flip session report for The Studio at Wade Institute of Entrepreneurship.
-Write clearly, directly, using markdown. Frame everything as the user's own thinking.
+Frame everything as the user's own thinking. Output as JSON.
 
-The tool-specific output section (placed after "Questions Worth Sitting With" in the report structure) is:
-
-### Workshop Board
-
-#### The Constraint
-The specific limitation they named — one sentence. Not vague ("limited resources") but concrete ("two-person team, no marketing budget, shipping from regional Australia").
-
-#### The Flip
-How the constraint becomes an advantage:
-- **What it forces**: [forced behaviour — focus, speed, creativity, intimacy]
-- **What it signals**: [to customers, investors, partners]
-- **What it enables**: [what becomes possible only because of the constraint]
-
-#### Constraint-Driven Ideas
-Ideas that only work BECAUSE of the constraint. For each:
-- [idea] — *Uses the constraint because: [explanation]*
-
-Only include ideas that pass the test: would this break if the constraint disappeared?
-
-#### The Moat Idea
-The idea that creates an advantage a well-funded competitor cannot easily copy — bold and prominent. One sentence on what makes it defensible.
-""" + UNIVERSAL_REPORT_SECTIONS
+TOOL-SPECIFIC EVIDENCE COMPONENTS:
+In the "evidence.components" array, include:
+[
+  {"type": "callout", "bold": "The Constraint", "text": "[The specific limitation — concrete, not vague. E.g. 'two-person team, no marketing budget, shipping from regional Australia']"},
+  {"type": "feature_list", "items": [
+    {"bold": "What it forces", "description": "[forced behaviour — focus, speed, creativity, intimacy]"},
+    {"bold": "What it signals", "description": "[to customers, investors, partners]"},
+    {"bold": "What it enables", "description": "[what becomes possible only because of the constraint]"}
+  ]},
+  {"type": "feature_list", "items": [
+    {"bold": "[idea name]", "description": "Uses the constraint because: [explanation]"},
+    ...for each constraint-driven idea. Only include ideas that would break if the constraint disappeared.
+  ]},
+  {"type": "callout", "bold": "The Moat Idea", "text": "[The idea that creates an advantage a well-funded competitor cannot easily copy. One sentence on what makes it defensible.]"}
+]
+""" + UNIVERSAL_REPORT_JSON
 
 EXERCISE_NAMES = {
     'five-whys': 'Five Whys',
@@ -4528,6 +4352,8 @@ def pre_report():
 
 @app.route('/api/report', methods=['POST'])
 def generate_report():
+    from report_template import render_report_html, EXERCISE_PATHWAY
+
     data = request.json
     mode = data.get('mode', 'untangle')
     exercise = data.get('exercise', '')
@@ -4539,11 +4365,11 @@ def generate_report():
     live_programs = fetch_wade_programs()
     fallback = (
         'Current programs:\n'
-        '- **[Think Like an Entrepreneur](https://wadeinstitute.org.au/programs/entrepreneurs/think-like-an-entrepreneur/)**\n'
-        '- **[Growth Engine](https://wadeinstitute.org.au/programs/entrepreneurs/growth-engine/)**\n'
-        '- **[The AI Conundrum](https://wadeinstitute.org.au/programs/entrepreneurs/the-ai-conundrum/)**\n'
-        '- **[In Residence](https://wadeinstitute.org.au/programs/entrepreneurs/in-residence/)**\n'
-        '- **[Master of Entrepreneurship](https://wadeinstitute.org.au/programs/entrepreneurs/master-of-entrepreneurship/)**'
+        '- Think Like an Entrepreneur (https://wadeinstitute.org.au/programs/entrepreneurs/think-like-an-entrepreneur/)\n'
+        '- Growth Engine (https://wadeinstitute.org.au/programs/entrepreneurs/growth-engine/)\n'
+        '- The AI Conundrum (https://wadeinstitute.org.au/programs/entrepreneurs/the-ai-conundrum/)\n'
+        '- In Residence (https://wadeinstitute.org.au/programs/entrepreneurs/in-residence/)\n'
+        '- Master of Entrepreneurship (https://wadeinstitute.org.au/programs/entrepreneurs/master-of-entrepreneurship/)'
     )
     programs_block = live_programs or fallback
 
@@ -4574,7 +4400,6 @@ def generate_report():
 
     # Select report prompt based on whether this was a tool session or conversation
     if not exercise or exercise in ('suggest', 'conversation'):
-        # Conversation-only report — no structured tool was used
         exercise_context = "This was a freeform coaching conversation — no structured tool was used.\n\n"
         report_template = CONVERSATION_REPORT_PROMPT
     else:
@@ -4615,18 +4440,18 @@ def generate_report():
     if report_messages and report_messages[-1].get('role') == 'assistant':
         report_messages.append({
             'role': 'user',
-            'content': 'Please generate my session report now.'
+            'content': 'Please generate my session report now as a JSON object.'
         })
 
     try:
-        print(f"[REPORT] Generating for {exercise_name} ({mode_name}), {len(report_messages)} messages, system prompt ~{len(system)} chars")
+        print(f"[REPORT] Generating JSON for {exercise_name} ({mode_name}), {len(report_messages)} messages, system prompt ~{len(system)} chars")
         response = client.messages.create(
             model="claude-sonnet-4-20250514",
             max_tokens=8000,
             system=system,
             messages=report_messages,
         )
-        # Safely extract text from response
+        # Extract text from response
         report_text = ''
         for block in response.content:
             if hasattr(block, 'text'):
@@ -4635,41 +4460,48 @@ def generate_report():
         if not report_text:
             return jsonify({'error': 'No report content generated'}), 500
 
-        # Generate synopsis card (fast, using Haiku)
-        synopsis = {'title': f'{exercise_name} Report', 'hook': '', 'bullets': []}
+        # Parse JSON from Claude's response
+        import json as _json
+        clean = report_text.strip()
+        if clean.startswith('```'):
+            clean = clean.split('\n', 1)[1].rsplit('```', 1)[0].strip()
         try:
-            synopsis_response = client.messages.create(
-                model="claude-haiku-4-5-20251001",
-                max_tokens=400,
-                system="""You create synopsis cards for workshop reports. The synopsis is 3 parts:
-
-Part 1 (title + hook): Name the core tension or finding in plain language specific to this person's situation. The subject is the idea, not the experience. Never reference the AI, the tool, or "your session." Never say "Pete identified" or "this session surfaced." Let the insight speak for itself.
-
-Part 2 (bullets): 3 specific findings from the report. Each should name a concrete thing the person discovered -- not a generic summary. Use the person's own language where it's sharp enough.
-
-TONE: Write as if you're a sharp, experienced colleague explaining what they noticed. Not an MBA summarising a case study. No jargon ("leveraging synergies"), no trendy language ("unlock," "game-changer"), no corporate speak. The Wade voice: credible, clear, direct, grounded. The intelligence is in the observation, not the vocabulary.
-
-Return EXACTLY this JSON format (no markdown, no code blocks):
-{"title": "A crisp 4-8 word title that names the specific insight (not 'Five Whys Report' -- something like 'The Consulting Trap Behind Your Talent Drain')", "hook": "1-2 sentences delivering the core finding and the reframe. The reader should think 'yes, that's exactly it.' Make this compelling enough that they want the full report.", "bullets": ["First specific finding -- concrete and named", "Second finding", "Third finding"]}""",
-                messages=[{'role': 'user', 'content': f'Generate a synopsis card for this report:\n\n{report_text[:3000]}'}]
-            )
-            import json as _json
-            synopsis_text = synopsis_response.content[0].text.strip()
-            # Handle potential markdown code blocks
-            if synopsis_text.startswith('```'):
-                synopsis_text = synopsis_text.split('\n', 1)[1].rsplit('```', 1)[0].strip()
-            synopsis = _json.loads(synopsis_text)
-            print(f"[REPORT] Synopsis generated: {synopsis.get('title', 'no title')}")
-        except Exception as syn_err:
-            print(f"[REPORT] Synopsis fallback: {syn_err}")
-            # Fallback — extract first heading and first paragraph
+            report_json = _json.loads(clean)
+        except _json.JSONDecodeError as je:
+            print(f"[REPORT] JSON parse failed: {je}. Falling back to markdown.")
+            # Fallback: return raw text as markdown (backwards compatibility)
             synopsis = {
                 'title': f'Your {exercise_name} Report',
                 'hook': 'Your session uncovered something worth reading closely.',
-                'bullets': ['The full root cause chain from your session', 'A reframed problem statement', 'Concrete next steps']
+                'bullets': ['Review the full report for detailed findings', 'Concrete next steps inside', 'Key moments captured']
             }
+            return jsonify({'report': report_text, 'synopsis': synopsis})
 
-        return jsonify({'report': report_text, 'synopsis': synopsis})
+        # Resolve pathway from exercise if mode wasn't specific
+        pathway = EXERCISE_PATHWAY.get(exercise, mode)
+
+        # Render structured JSON into branded HTML
+        report_html = render_report_html(report_json, pathway, exercise, board_cards=board_cards)
+        print(f"[REPORT] HTML rendered: {len(report_html)} chars")
+
+        # Build synopsis from the JSON directly (no Haiku call needed)
+        headline = report_json.get('headline', f'Your {exercise_name} Report')
+        subtitle = report_json.get('subtitle', '')
+        insights = report_json.get('insights', [])
+        synopsis = {
+            'title': headline,
+            'hook': subtitle,
+            'bullets': [f"{ins.get('number', '')} — {ins.get('description', '')}" for ins in insights[:3]]
+        }
+        print(f"[REPORT] Synopsis from JSON: {synopsis.get('title', 'no title')}")
+
+        return jsonify({
+            'report_html': report_html,
+            'report_json': report_json,
+            'synopsis': synopsis,
+            # Keep backwards-compatible 'report' key with a text summary
+            'report': f"# {headline}\n\n{subtitle}\n\n{report_json.get('opening', '')}\n\n{report_json.get('challenge', '')}"
+        })
     except Exception as e:
         print(f"[REPORT] ERROR: {str(e)}")
         return jsonify({'error': str(e)}), 500
@@ -6149,7 +5981,41 @@ FEEDBACK DATA:
     })
 
 
-# === BRANDED DOCX REPORT GENERATION ===
+# === HTML-AS-DOC REPORT EXPORT ===
+
+@app.route('/api/report/doc', methods=['POST'])
+def generate_report_doc():
+    """Export branded HTML report as .doc (HTML with MS Office XML namespaces)."""
+    from report_template import wrap_html_for_doc
+    import re
+
+    data = request.json
+    report_html = data.get('report_html', '')
+    headline = data.get('headline', 'Session Report')
+
+    if not report_html:
+        return jsonify({'error': 'No report HTML provided'}), 400
+
+    # Wrap in Office XML namespaces for Word compatibility
+    doc_html = wrap_html_for_doc(report_html)
+
+    # Build a clean filename from the headline
+    safe_name = re.sub(r'[^\w\s-]', '', headline)[:60].strip()
+    if not safe_name:
+        safe_name = 'Session Report'
+    filename = f"{safe_name} - The Studio.doc"
+
+    return Response(
+        doc_html,
+        mimetype='application/msword',
+        headers={
+            'Content-Disposition': f'attachment; filename="{filename}"',
+            'Content-Type': 'application/msword'
+        }
+    )
+
+
+# === BRANDED DOCX REPORT GENERATION (legacy) ===
 
 @app.route('/api/report/docx', methods=['POST'])
 def generate_branded_docx():

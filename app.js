@@ -2452,7 +2452,7 @@ async function generateReport() {
 
         const data = await res.json();
 
-        if (data.error || !data.report) {
+        if (data.error || (!data.report && !data.report_html)) {
             console.error('[Report] Error or empty:', data.error || 'empty report');
             progress.error();
             reportGenerating = false;
@@ -2462,10 +2462,12 @@ async function generateReport() {
         }
 
         progress.complete();
-        state.reportText = data.report;
+        state.reportText = data.report || '';
+        state.reportHtml = data.report_html || '';
+        state.reportJson = data.report_json || null;
         state.reportSynopsis = data.synopsis || {};
         state.reportGenerated = true;
-        console.log('[Report] Got report text, length:', data.report.length);
+        console.log('[Report] Got report', state.reportHtml ? `HTML: ${state.reportHtml.length} chars` : `text: ${state.reportText.length} chars`);
 
         // Close board so report has full width
         if (state.board.visible) {
@@ -2501,7 +2503,24 @@ async function generateReport() {
         reportCta.classList.add('hidden');
 
         // Prepare full report in background (hidden)
-        reportContent.innerHTML = renderMarkdown(state.reportText);
+        if (state.reportHtml) {
+            // Render branded HTML report in an iframe for style isolation
+            reportContent.innerHTML = '';
+            const iframe = document.createElement('iframe');
+            iframe.className = 'report-iframe';
+            iframe.style.cssText = 'width:100%;border:none;background:white;border-radius:8px;';
+            reportContent.appendChild(iframe);
+            iframe.srcdoc = state.reportHtml;
+            // Auto-resize iframe to content height
+            iframe.onload = () => {
+                try {
+                    const h = iframe.contentDocument.documentElement.scrollHeight;
+                    iframe.style.height = h + 'px';
+                } catch(e) { iframe.style.height = '2000px'; }
+            };
+        } else {
+            reportContent.innerHTML = renderMarkdown(state.reportText);
+        }
         populateReportMeta();
 
         // Scroll synopsis into view
@@ -2961,8 +2980,13 @@ document.querySelectorAll('.report-actions').forEach(bar => {
 // === DOWNLOAD AS PDF (primary) ===
 
 async function downloadReportPdf() {
-    if (!state.reportText) return;
+    // If we have branded HTML, use the new .doc export
+    if (state.reportHtml) {
+        return downloadReportDoc();
+    }
 
+    // Legacy fallback: use old PDF endpoint
+    if (!state.reportText) return;
     const synopsis = state.reportSynopsis || {};
 
     try {
@@ -2990,6 +3014,35 @@ async function downloadReportPdf() {
         URL.revokeObjectURL(url);
     } catch (err) {
         console.error('[Report] PDF download failed, using fallback:', err);
+        downloadReportWordFallback();
+    }
+}
+
+async function downloadReportDoc() {
+    if (!state.reportHtml) return downloadReportWordFallback();
+    const headline = state.reportJson?.headline || state.reportSynopsis?.title || 'Session Report';
+
+    try {
+        const resp = await fetch('/api/report/doc', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                report_html: state.reportHtml,
+                headline: headline
+            })
+        });
+
+        if (!resp.ok) throw new Error('Doc generation failed');
+        const blob = await resp.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        const safeName = headline.replace(/[^a-zA-Z0-9 _-]/g, '').trim().slice(0, 60) || 'Session Report';
+        a.href = url;
+        a.download = safeName + ' - The Studio.doc';
+        a.click();
+        URL.revokeObjectURL(url);
+    } catch (err) {
+        console.error('[Report] Doc download failed, using fallback:', err);
         downloadReportWordFallback();
     }
 }
@@ -3331,7 +3384,7 @@ async function startPostSessionFlow() {
     try {
         console.log('[PostSession] Waiting for report + reveal...');
         const [reportData, revealData] = await Promise.all([reportPromise, revealPromise]);
-        console.log('[PostSession] Report received:', !!reportData?.report);
+        console.log('[PostSession] Report received:', !!(reportData?.report_html || reportData?.report));
         console.log('[PostSession] Reveal received:', !!revealData?.headline);
         clearInterval(stepInterval);
 
@@ -3348,13 +3401,30 @@ async function startPostSessionFlow() {
 
         // Store report data
         state.reportText = reportData.report || '';
+        state.reportHtml = reportData.report_html || '';
+        state.reportJson = reportData.report_json || null;
         state.reportSynopsis = reportData.synopsis || {};
         state.reportGenerated = true;
         state._revealData = revealData;
         state._sessionDuration = sessionDuration;
 
         // Prepare full report in background (hidden card)
-        if (reportContent) reportContent.innerHTML = renderMarkdown(state.reportText);
+        if (reportContent && state.reportHtml) {
+            reportContent.innerHTML = '';
+            const iframe = document.createElement('iframe');
+            iframe.className = 'report-iframe';
+            iframe.style.cssText = 'width:100%;border:none;background:white;border-radius:8px;';
+            reportContent.appendChild(iframe);
+            iframe.srcdoc = state.reportHtml;
+            iframe.onload = () => {
+                try {
+                    const h = iframe.contentDocument.documentElement.scrollHeight;
+                    iframe.style.height = h + 'px';
+                } catch(e) { iframe.style.height = '2000px'; }
+            };
+        } else if (reportContent) {
+            reportContent.innerHTML = renderMarkdown(state.reportText);
+        }
         populateReportMeta();
 
         // Brief pause then transition to Screen 2
