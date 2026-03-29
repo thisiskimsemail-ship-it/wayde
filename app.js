@@ -2968,9 +2968,6 @@ async function downloadReportPdf() {
 
     const synopsis = state.reportSynopsis || {};
 
-    // SVG canvas removed — PDF uses the Workshop Board table instead
-    const svgData = '';
-
     try {
         const resp = await fetch('/api/report/pdf', {
             method: 'POST',
@@ -2980,8 +2977,7 @@ async function downloadReportPdf() {
                 synopsis: synopsis,
                 exercise: state.exercise || '',
                 mode: state.mode || '',
-                board_cards: state.board?.cards || [],
-                svg_data: svgData
+                board_cards: state.board?.cards || []
             })
         });
 
@@ -3064,47 +3060,7 @@ async function downloadReportPptx() {
     }
 }
 
-async function downloadSessionExport(format) {
-    const exName = EXERCISE_LABELS[state.exercise] || state.exercise;
-    const endpoint = format === 'svg' ? '/api/session/svg' : `/api/session/${format}`;
-
-    try {
-        if (format === 'svg') {
-            // SVG returns JSON with svg string — download as .svg file
-            const resp = await fetch(endpoint, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ exercise: state.exercise, board_cards: state.board?.cards || [] })
-            });
-            if (!resp.ok) throw new Error('SVG export failed');
-            const data = await resp.json();
-            const blob = new Blob([data.svg], { type: 'image/svg+xml' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `${exName} - The Studio.svg`;
-            a.click();
-            URL.revokeObjectURL(url);
-        } else {
-            // PNG/PDF return binary blobs
-            const resp = await fetch(endpoint, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ exercise: state.exercise, board_cards: state.board?.cards || [] })
-            });
-            if (!resp.ok) throw new Error(`${format.toUpperCase()} export failed`);
-            const blob = await resp.blob();
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `${exName} - The Studio.${format}`;
-            a.click();
-            URL.revokeObjectURL(url);
-        }
-    } catch (err) {
-        console.error(`[Export] ${format.toUpperCase()} download failed:`, err);
-    }
-}
+// downloadSessionExport (SVG/PNG) removed — HTML boards only
 
 // === EMAIL REPORT COPY ===
 
@@ -3529,9 +3485,7 @@ async function startPostSessionFlow() {
         // Wire format buttons
         document.getElementById('psFormatPdf')?.addEventListener('click', () => downloadReportPdf());
         document.getElementById('psFormatPptx')?.addEventListener('click', () => downloadReportPptx());
-        document.getElementById('psFormatSvg')?.addEventListener('click', () => downloadSessionExport('svg'));
-        document.getElementById('psFormatPng')?.addEventListener('click', () => downloadSessionExport('png'));
-        document.getElementById('psFormatWord')?.addEventListener('click', () => downloadReportWord());
+        // SVG/PNG/Word format buttons removed — PDF and PPTX only
 
         // Share buttons
         document.getElementById('psShareCopyLink')?.addEventListener('click', async () => {
@@ -4243,7 +4197,7 @@ function switchBoardLayout(mode) {
         if (zoneEl) renderBoardCard(card);
     });
     updateBoardCounts();
-    showCanvasToggle(); // Show/hide SVG canvas toggle based on tool
+    // SVG canvas toggle removed — HTML boards only
 }
 
 // === TRADE-OFF BUNDLE CARDS ===
@@ -4551,110 +4505,6 @@ function buildPostSessionBoard(exercise, cards) {
         <div class="ps-board-grid ${layout.gridClass || ''}">${zonesHtml}</div>
     </div>`;
 }
-
-// === SVG CANVAS VIEW (Lean Canvas only for now) ===
-
-const CANVAS_VIEW_TOOLS = ['lean-canvas']; // Tools that support SVG canvas view
-
-function showCanvasToggle() {
-    const btn = document.getElementById('boardCanvasToggle');
-    if (!btn) return;
-    btn.classList.toggle('hidden', !CANVAS_VIEW_TOOLS.includes(state.exercise));
-}
-
-function toggleCanvasView() {
-    const zonesEl = document.getElementById('boardZones');
-    const canvasEl = document.getElementById('boardCanvasView');
-    if (!zonesEl || !canvasEl) return;
-
-    const isCanvas = !canvasEl.classList.contains('hidden');
-    if (isCanvas) {
-        // Switch back to HTML board
-        canvasEl.classList.add('hidden');
-        zonesEl.classList.remove('hidden');
-        document.getElementById('boardCanvasToggle').textContent = '◫ Canvas';
-    } else {
-        // Switch to SVG canvas view
-        zonesEl.classList.add('hidden');
-        canvasEl.classList.remove('hidden');
-        document.getElementById('boardCanvasToggle').textContent = '☰ List';
-        renderCanvasSVG();
-    }
-}
-
-function renderCanvasSVG() {
-    const container = document.getElementById('boardCanvasView');
-    if (!container) return;
-
-    // Lean Canvas layout: 5 columns, 3 rows
-    const zones = [
-        { id: 'problem', name: 'PROBLEM', col: 0, row: 0, rowSpan: 2, colSpan: 1 },
-        { id: 'solution', name: 'SOLUTION', col: 1, row: 0, rowSpan: 1, colSpan: 1 },
-        { id: 'uvp', name: 'UNIQUE VALUE PROP', col: 2, row: 0, rowSpan: 2, colSpan: 1 },
-        { id: 'unfair', name: 'UNFAIR ADVANTAGE', col: 3, row: 0, rowSpan: 1, colSpan: 1 },
-        { id: 'segments', name: 'CUSTOMER SEGMENTS', col: 4, row: 0, rowSpan: 2, colSpan: 1 },
-        { id: 'metrics', name: 'KEY METRICS', col: 1, row: 1, rowSpan: 1, colSpan: 1 },
-        { id: 'channels', name: 'CHANNELS', col: 3, row: 1, rowSpan: 1, colSpan: 1 },
-        { id: 'costs', name: 'COST STRUCTURE', col: 0, row: 2, rowSpan: 1, colSpan: 2 },
-        { id: 'revenue', name: 'REVENUE STREAMS', col: 2, row: 2, rowSpan: 1, colSpan: 3 }
-    ];
-
-    const W = 900, H = 620;
-    const pad = 16, headerH = 50, gap = 6;
-    const colW = (W - pad * 2 - gap * 4) / 5;
-    const rowH = (H - headerH - pad - gap * 2) / 3;
-    const stageColor = '#E4E517'; // Build = yellow
-
-    let svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block;">`;
-
-    // Background
-    svg += `<rect width="${W}" height="${H}" fill="#12103a" rx="8"/>`;
-
-    // Header
-    svg += `<rect x="0" y="0" width="${W}" height="${headerH}" fill="#1a1750" rx="8"/>`;
-    svg += `<rect x="0" y="${headerH - 8}" width="${W}" height="8" fill="#1a1750"/>`;
-    svg += `<text x="${pad}" y="32" fill="${stageColor}" font-family="Arial,sans-serif" font-size="11" font-weight="bold" letter-spacing="2">LEAN CANVAS</text>`;
-
-    // Zones
-    zones.forEach(z => {
-        const x = pad + z.col * (colW + gap);
-        const y = headerH + z.row * (rowH + gap);
-        const w = z.colSpan * colW + (z.colSpan - 1) * gap;
-        const h = z.rowSpan * rowH + (z.rowSpan - 1) * gap;
-
-        // Zone background
-        svg += `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="#1a1750" rx="6" stroke="#2a2660" stroke-width="1"/>`;
-
-        // Zone label
-        svg += `<text x="${x + 8}" y="${y + 16}" fill="${stageColor}" font-family="Arial,sans-serif" font-size="9" font-weight="bold" letter-spacing="1.5">${z.name}</text>`;
-
-        // Cards for this zone
-        const cards = state.board.cards.filter(c => c.zone === z.id);
-        let cardY = y + 26;
-        cards.forEach(card => {
-            const text = card.text.length > 60 ? card.text.slice(0, 57) + '...' : card.text;
-            // Card background
-            svg += `<rect x="${x + 4}" y="${cardY}" width="${w - 8}" height="22" fill="rgba(255,255,255,0.05)" rx="3"/>`;
-            svg += `<text x="${x + 8}" y="${cardY + 15}" fill="#B8BCC8" font-family="Arial,sans-serif" font-size="10">${escapeHtml(text)}</text>`;
-            cardY += 26;
-        });
-
-        // Empty state
-        if (cards.length === 0) {
-            svg += `<text x="${x + 8}" y="${cardY + 10}" fill="#4a4670" font-family="Arial,sans-serif" font-size="9" font-style="italic">${BOARD_LAYOUTS['lean-canvas'].zones.find(bz => bz.id === z.id)?.hint || ''}</text>`;
-        }
-    });
-
-    svg += '</svg>';
-    container.innerHTML = svg;
-}
-
-function escapeHtml(text) {
-    return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-}
-
-// Wire up canvas toggle
-document.getElementById('boardCanvasToggle')?.addEventListener('click', toggleCanvasView);
 
 function toggleBoard() {
     const layout = document.getElementById('workshopLayout');
