@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="preload" href="fonts/GT-Walsheim-Regular.woff" as="font" type="font/woff" crossorigin>
-<title>Cold Open — Wade Innovation Toolbox</title>
+<title>Customer Discovery — Wade Innovation Toolbox</title>
 <style>
   @font-face { font-family: "GT Walsheim"; src: url("fonts/GT-Walsheim-Regular.woff") format("woff"), url("fonts/GT-Walsheim-Regular.ttf") format("truetype"); font-weight: 400; font-style: normal; font-display: swap; }
 
@@ -89,7 +89,7 @@
   .tool-headline {
     font-family: 'GT Walsheim', 'Space Grotesk', sans-serif;
     font-size: 24px; font-weight: 400; color: var(--cat-color);
-    font-style: italic; margin-bottom: 24px;
+    margin-bottom: 24px;
   }
 
   .tool-intro {
@@ -348,7 +348,7 @@
   .pete-label { font-size: 13px; font-weight: 600; color: var(--white); }
 
   .pete-text {
-    font-size: 14px; color: var(--text-body); line-height: 1.6; font-style: italic;
+    font-size: 14px; color: var(--text-body); line-height: 1.6;
   }
 
   /* ── BOTTOM CTA BAR ── */
@@ -433,10 +433,10 @@
 <header class="header">
   <a href="index.html"><img class="logo" src="logo.png" alt="Wade Institute"></a>
   <nav class="header-nav">
-    <a href="index.html" class="header-nav-link">The Studio</a>
-    <a href="toolbox.html" class="header-nav-link active">Toolbox</a>
-    <a href="sessions.html" class="header-nav-link">Sessions</a>
-    <a href="#" class="header-nav-link" onclick="document.getElementById('feedbackPanel')?.classList.toggle('hidden'); return false;">Feedback</a>
+    <a href="index.html" class="nav-pill">The Studio</a>
+    <a href="toolbox.html" class="nav-pill active">Toolbox</a>
+    <a href="sessions.html" class="nav-pill">Sessions</a>
+    <a href="#" class="nav-pill" onclick="document.getElementById('feedbackPanel')?.classList.toggle('hidden'); return false;">Feedback</a>
   </nav>
   <div class="header-controls">
     <button class="text-size-btn" onclick="document.documentElement.dataset.textSize=({'':'lg','lg':'xl','xl':''}[document.documentElement.dataset.textSize||''])||''" title="Adjust text size">Aa</button>
@@ -454,13 +454,13 @@
     <span>/</span>
     <a href="toolbox.html#test">The Test</a>
     <span>/</span>
-    Cold Open
+    Customer Discovery
   </div>
 
   <div class="tool-hero-grid">
     <div class="tool-hero-left">
       <div class="stage-badge">THE TEST</div>
-      <h1>Cold Open</h1>
+      <h1>Customer Discovery</h1>
       <p class="tool-headline">Can your message survive first contact with a stranger?</p>
       <p class="tool-intro">Pete plays someone who has no context, no patience, and no reason to care. You have 30 seconds to explain what you do and why it matters. Pete reacts honestly — confused, distracted, partially interested. Not a pitch practice tool — a message testing tool. The output is a diagnosis of where the message breaks down and a hierarchy of what to say first, second, and third.</p>
     </div>
@@ -489,7 +489,7 @@
           <span class="pathway-tag test">The Test</span>
         </div>
       </div>
-      <a href="index.html?tool=cold-open" class="qf-cta">Try Cold Open &rarr;</a>
+      <a href="index.html?tool=customer-discovery" class="qf-cta">Try Customer Discovery &rarr;</a>
     </div>
   </div>
 </section>
@@ -514,7 +514,7 @@
         <div class="steps-timeline">
           <div class="step-item">
             <div class="step-number">1</div>
-            <div class="step-title">The Cold Open</div>
+            <div class="step-title">The Discovery</div>
             <div class="step-desc">Pete plays a stranger. "Explain what you do. You've got 30 seconds." Pete reacts honestly — interrupts, gets confused, asks "why would I care?"</div>
           </div>
           <div class="step-item">
@@ -538,7 +538,7 @@
       <!-- SAMPLE OUTPUT -->
       <div class="section-block">
         <h2>Sample output</h2>
-        <p>Here's what a Cold Open message hierarchy looks like in practice:</p>
+        <p>Here's what a Customer Discovery interview looks like in practice:</p>
 
         <div class="sample-output">
           <div class="sample-label">Example: Enterprise SaaS Onboarding</div>
@@ -658,12 +658,12 @@
 <!-- BOTTOM CTA -->
 <div class="tool-bottom-cta">
   <div class="tool-bottom-left">
-    <h3>Try Cold Open?</h3>
+    <h3>Try Customer Discovery?</h3>
     <p>Pete will guide you. About 20 minutes, always free.</p>
   </div>
   <div class="tool-bottom-right">
     <a href="toolbox.html" class="back-link">&larr; Back to toolbox</a>
-    <a href="index.html?tool=cold-open" class="qf-cta" style="display:inline-block; width:auto;">Start Cold Open &rarr;</a>
+    <a href="index.html?tool=customer-discovery" class="qf-cta" style="display:inline-block; width:auto;">Start Customer Discovery &rarr;</a>
   </div>
 </div>
 

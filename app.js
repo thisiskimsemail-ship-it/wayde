@@ -140,7 +140,7 @@ function updateStageLogo(mode) {
 const STAGE_TOOLS = {
     untangle: ['five-whys', 'empathy-map', 'jtbd', 'socratic', 'iceberg'],
     spark: ['crazy-8s', 'hmw', 'scamper', 'mash-up', 'constraint-flip'],
-    test: ['pre-mortem', 'devils-advocate', 'cold-open', 'reality-check', 'trade-off'],
+    test: ['pre-mortem', 'devils-advocate', 'customer-discovery', 'reality-check', 'trade-off'],
     build: ['lean-canvas', 'effectuation', 'rapid-experiment', 'flywheel', 'theory-of-change']
 };
 
@@ -231,7 +231,7 @@ const EXERCISE_LABELS = {
     'effectuation': 'Effectuation',
     'flywheel': 'Flywheel',
     'socratic': 'Socratic Questioning',
-    'cold-open': 'Cold Open',
+    'customer-discovery': 'Customer Discovery',
     'reality-check': 'Reality Check',
     'theory-of-change': 'Theory of Change',
     'trade-off': 'The Trade-Off',
@@ -263,7 +263,7 @@ const EXERCISE_MODE = {
     'rapid-experiment': 'build',
     'flywheel': 'build',
     'socratic': 'untangle',
-    'cold-open': 'test',
+    'customer-discovery': 'test',
     'reality-check': 'test',
     'theory-of-change': 'build',
     'trade-off': 'test',
@@ -297,7 +297,7 @@ const EXERCISE_DESCS = {
     'analogical':       'Smash ideas from different industries together and see what comes out.',
     'flywheel':         'Map the reinforcing loop that drives your growth and find the bottleneck.',
     'socratic':         'Test whether your problem is built on facts or assumptions.',
-    'cold-open':         'Practise a customer interview — Pete plays the customer.',
+    'customer-discovery':         'Practise a customer interview — Pete plays the customer.',
     'reality-check':     'Pressure-test your idea against all four product risks.',
     'theory-of-change':  'Map the causal chain from what you do to the change you create.',
     'trade-off':         'Force trade-offs to reveal what customers actually value.',
@@ -320,7 +320,7 @@ const EXERCISE_HINTS = {
     'effectuation':     'Type, chat, or upload — e.g. "I have deep expertise in policy and a strong network"',
     'mash-up':          'Type, chat, or upload — e.g. "How might we reduce handoff delays like F1 pit stops?"',
     'analogical':       'Type, chat, or upload — e.g. "How might we reduce handoff delays like F1 pit stops?"',
-    'cold-open':        'Type, chat, or upload — e.g. "I need to explain what we do to investors"',
+    'customer-discovery':        'Type, chat, or upload — e.g. "I need to explain what we do to investors"',
     'iceberg':          'Type, chat, or upload — e.g. "We keep losing our best people and nothing fixes it"',
     'constraint-flip':  'Type, chat, or upload — e.g. "We have no marketing budget and competitors spend millions"',
     'trade-off':        'Type, chat, or upload — e.g. "We have seven features and every stakeholder says theirs is essential"',
@@ -350,7 +350,7 @@ const EXERCISE_ARCS = {
     'trade-off':        'Pete will force you to choose between your own features. The ones that survive every round are your core value.',
     'theory-of-change': 'We\'ll work backwards from the change you want to create, mapping every condition that has to be true, and find where the chain depends on things you can\'t control.',
     'reality-check':    'Pete will pressure-test your idea across four risk dimensions — value, usability, feasibility, and viability — and score each one.',
-    'cold-open':        'Pete will become your target customer and you\'ll practise a discovery interview. He\'ll respond like a real person — evasive, polite, distracted. Then he\'ll coach you on your technique.',
+    'customer-discovery':        'Pete will become your target customer and you\'ll practise a discovery interview. He\'ll respond like a real person — evasive, polite, distracted. Then he\'ll coach you on your technique.',
     'socratic':         'We\'ll examine every belief behind your problem — separating facts from assumptions — and find the one thing to test first.',
     'flywheel':         'We\'ll map the 3-5 things that reinforce each other in your business, test each connection, and find the bottleneck holding you back.'
 };
@@ -458,7 +458,7 @@ const TOOL_PROGRAM_MAP = {
         bridge: 'Rigorous thinking under pressure is what Wade\'s executive programs are designed to develop. If your team needs to make better decisions, Wade can help.',
         segment: 'corporate'
     },
-    'cold-open': {
+    'customer-discovery': {
         program: 'Master of Entrepreneurship',
         programUrl: 'https://wadeinstitute.org.au/programs/entrepreneurs/master-of-entrepreneurship/',
         bridge: 'Getting your message right is critical for founders. Wade\'s Master of Entrepreneurship includes pitch development, investor communication, and customer messaging as core curriculum.',
@@ -521,7 +521,7 @@ const EXERCISE_EXCHANGES = {
     'five-whys': 7, 'jtbd': 10, 'empathy-map': 10,
     'hmw': 8, 'scamper': 10, 'crazy-8s': 8,
     'pre-mortem': 10, 'devils-advocate': 10, 'rapid-experiment': 8,
-    'lean-canvas': 12, 'effectuation': 8, 'mash-up': 8, 'analogical': 8, 'flywheel': 10, 'socratic': 8, 'cold-open': 8, 'reality-check': 8, 'theory-of-change': 10, 'trade-off': 10, 'iceberg': 8, 'constraint-flip': 8
+    'lean-canvas': 12, 'effectuation': 8, 'mash-up': 8, 'analogical': 8, 'flywheel': 10, 'socratic': 8, 'customer-discovery': 8, 'reality-check': 8, 'theory-of-change': 10, 'trade-off': 10, 'iceberg': 8, 'constraint-flip': 8
 };
 
 // Human-readable time estimates per exercise
@@ -541,7 +541,7 @@ const EXERCISE_TIMES = {
     'analogical':     '20 min',
     'flywheel':       '25 min',
     'socratic':       '20 min',
-    'cold-open':      '20 min',
+    'customer-discovery':      '20 min',
     'reality-check':  '20 min',
     'theory-of-change':'25 min',
     'trade-off':      '25 min',
@@ -572,7 +572,7 @@ const STAGE_DEFAULT = {
 const TOOLS_BY_MODE = {
     untangle: ['five-whys', 'empathy-map', 'jtbd', 'socratic', 'iceberg'],
     spark:    ['crazy-8s', 'hmw', 'scamper', 'mash-up', 'constraint-flip'],
-    test:     ['pre-mortem', 'devils-advocate', 'cold-open', 'reality-check', 'trade-off'],
+    test:     ['pre-mortem', 'devils-advocate', 'customer-discovery', 'reality-check', 'trade-off'],
     build:    ['lean-canvas', 'effectuation', 'rapid-experiment', 'flywheel', 'theory-of-change']
 };
 
@@ -638,7 +638,7 @@ const TOOL_DETAIL_SLUG = {
     'mash-up': 'analogical-thinking',
     'analogical': 'analogical-thinking',
     'socratic': 'socratic-questioning',
-    'cold-open': 'cold-open',
+    'customer-discovery': 'customer-discovery',
     'reality-check': 'reality-check',
     'theory-of-change': 'theory-of-change',
     'trade-off': 'trade-off',
@@ -1015,7 +1015,7 @@ function startExercise(mode, exercise, startMsg = null) {
     routingBack.classList.add('hidden');
 
     // Switch board layout based on exercise — custom boards for structured tools
-    const customLayouts = ['lean-canvas', 'elevator-pitch', 'pre-mortem', 'effectuation', 'flywheel', 'cold-open', 'iceberg', 'constraint-flip', 'socratic', 'reality-check', 'theory-of-change', 'trade-off', 'five-whys', 'empathy-map', 'jtbd', 'crazy-8s', 'hmw', 'scamper', 'devils-advocate', 'rapid-experiment', 'mash-up', 'analogical'];
+    const customLayouts = ['lean-canvas', 'elevator-pitch', 'pre-mortem', 'effectuation', 'flywheel', 'customer-discovery', 'iceberg', 'constraint-flip', 'socratic', 'reality-check', 'theory-of-change', 'trade-off', 'five-whys', 'empathy-map', 'jtbd', 'crazy-8s', 'hmw', 'scamper', 'devils-advocate', 'rapid-experiment', 'mash-up', 'analogical'];
     if (customLayouts.includes(exercise)) {
         switchBoardLayout(exercise);
     } else {
@@ -1945,7 +1945,7 @@ async function streamResponse() {
                         if (breadcrumbStage) breadcrumbStage.textContent = (MODE_LABELS[autoMode] || autoMode).toUpperCase();
                         if (breadcrumbTool) breadcrumbTool.innerHTML = (EXERCISE_LABELS[autoKey] || autoKey) + ' <svg class="breadcrumb-chevron" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg>';
                         // Switch board layout
-                        const customLayouts = ['lean-canvas', 'elevator-pitch', 'pre-mortem', 'effectuation', 'flywheel', 'cold-open', 'iceberg', 'constraint-flip', 'socratic', 'reality-check', 'theory-of-change', 'trade-off', 'five-whys', 'empathy-map', 'jtbd', 'crazy-8s', 'hmw', 'scamper', 'devils-advocate', 'rapid-experiment', 'mash-up', 'analogical'];
+                        const customLayouts = ['lean-canvas', 'elevator-pitch', 'pre-mortem', 'effectuation', 'flywheel', 'customer-discovery', 'iceberg', 'constraint-flip', 'socratic', 'reality-check', 'theory-of-change', 'trade-off', 'five-whys', 'empathy-map', 'jtbd', 'crazy-8s', 'hmw', 'scamper', 'devils-advocate', 'rapid-experiment', 'mash-up', 'analogical'];
                         if (customLayouts.includes(autoKey)) {
                             switchBoardLayout(autoKey);
                         } else {
@@ -2183,7 +2183,14 @@ async function streamResponse() {
             }
         }
 
-        state.messages.push({ role: 'assistant', content: fullText });
+        // Store full text (with GAP tags intact for report generation)
+        const messageText = fullText;
+        // Strip [GAP_*] tags from visible display only
+        fullText = fullText.replace(/\n?\[GAP_(?:ESPOUSED|ACTUAL|CONSEQUENCE):\s*[^\]]+\]/g, '').trim();
+        fullText = fullText.replace(/\n?\[GAP_NONE\]/g, '').trim();
+        if (agentDiv && messageText !== fullText) agentDiv.innerHTML = renderMarkdown(fullText);
+
+        state.messages.push({ role: 'assistant', content: messageText });
 
         if (state.routing) {
             state.exchangeCount++;
@@ -2362,7 +2369,17 @@ function autoSaveSessionSummary() {
             messages: state.messages,
             board_cards: state.board.cards,  // save workshop board to memory
             session_db_id: _currentSessionDbId,  // null = create new, id = update existing
-            is_final: state.wrapped  // true = session complete, update profile patterns
+            is_final: state.wrapped,  // true = session complete, update profile patterns
+            session_data: {
+                messages: state.messages,
+                exchangeCount: state.exchangeCount,
+                projectContext: state.projectContext,
+                parkingLot: state.parkingLot,
+                board: state.board,
+                boardMode: state.boardMode,
+                reportGenerated: state.reportGenerated,
+                reportText: state.reportText
+            }
         })
     }).then(res => res.json())
       .then(data => {
@@ -2656,7 +2673,7 @@ p { margin: 0 0 10px; }
 ul, ol { padding-left: 20px; margin: 0 0 10px; }
 li { margin-bottom: 5px; }
 strong { font-weight: 700; color: #12103a; }
-em { font-style: italic; }
+em { font-style: normal; }
 hr { border: none; border-top: 1px solid #eee; margin: 14px 0; }
 /* Links show URL hint */
 a::after { content: " ↗"; font-size: 9px; opacity: 0.6; }
@@ -2680,7 +2697,7 @@ a::after { content: " ↗"; font-size: 9px; opacity: 0.6; }
   </div>
 </div>
 ${state.reportSynopsis?.title ? `<h2 style="font-family:Arial,sans-serif;font-size:18px;font-weight:700;color:#12103a;border-left:none;padding:0;margin:0 0 8px;text-align:center;">${state.reportSynopsis.title}</h2>` : ''}
-${state.reportSynopsis?.hook ? `<p style="font-style:italic;color:#666;text-align:center;margin:0 0 24px;font-size:13px;">${state.reportSynopsis.hook}</p>` : ''}
+${state.reportSynopsis?.hook ? `<p style="color:#666;text-align:center;margin:0 0 24px;font-size:13px;">${state.reportSynopsis.hook}</p>` : ''}
 ${reportContent.innerHTML}
 <div class="wade-cta-block">
   <div class="wade-cta-label">Ready to go deeper?</div>
@@ -2969,7 +2986,7 @@ function downloadReportWordFallback() {
     const date = new Date().toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' });
     const html = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
 <head><meta charset="utf-8"><title>${mName} \u00B7 ${exName} \u00B7 ${date}</title>
-<style>body{font-family:Arial,sans-serif;font-size:11pt;color:#333;line-height:1.5;max-width:700px;margin:0 auto;padding:2rem}h1{font-size:18pt;color:#1E194F}h2{font-size:14pt;color:#1E194F}h3{font-size:12pt;color:#1E194F}blockquote{border-left:3px solid #ED3694;padding-left:1em;color:#555;font-style:italic}</style></head><body>
+<style>body{font-family:Arial,sans-serif;font-size:11pt;color:#333;line-height:1.5;max-width:700px;margin:0 auto;padding:2rem}h1{font-size:18pt;color:#1E194F}h2{font-size:14pt;color:#1E194F}h3{font-size:12pt;color:#1E194F}blockquote{border-left:3px solid #ED3694;padding-left:1em;color:#555}</style></head><body>
 <h1>Studio Workshop Summary</h1>
 <p style="color:#888;font-size:9pt">${mName} \u00B7 ${exName} \u00B7 ${date}</p>
 ${content.innerHTML}
@@ -3943,7 +3960,7 @@ const BOARD_LAYOUTS = {
         ],
         gridClass: 'board-grid-trade-off'
     },
-    'cold-open': {
+    'customer-discovery': {
         zones: [
             { id: 'co-persona', name: 'Customer Persona', empty: 'Who Pete is playing', hint: 'Name, role, context, frustrations', colour: 'pink' },
             { id: 'co-exchanges', name: 'Interview Log', empty: 'Key Q&A moments', hint: 'What you asked, how they responded', colour: 'pink' },
@@ -3955,7 +3972,7 @@ const BOARD_LAYOUTS = {
             { id: 'co-insight', name: 'Key Insight', empty: 'The big reveal', hint: 'What the customer revealed and whether you noticed', colour: 'pink' },
             { id: 'actions', name: 'Actions', empty: 'One thing to change', hint: 'The behaviour to fix next time', colour: 'pink' }
         ],
-        gridClass: 'board-grid-cold-open'
+        gridClass: 'board-grid-customer-discovery'
     },
     'flywheel': {
         zones: [
@@ -4115,7 +4132,7 @@ const CONSTRAINT_TAG_MAP = {
     'flip': 'cf-flip', 'advantage': 'cf-flip',
     'idea': 'cf-ideas', 'moat': 'cf-moat'
 };
-const COLD_OPEN_TAG_MAP = {
+const CUSTOMER_DISCOVERY_TAG_MAP = {
     'persona': 'co-persona', 'customer': 'co-persona',
     'exchange': 'co-exchanges', 'interview': 'co-exchanges',
     'score-open': 'co-open', 'open': 'co-open',
@@ -4142,7 +4159,7 @@ var TOOL_TAG_MAPS = {
     'socratic': SOCRATIC_TAG_MAP, 'reality-check': REALITY_TAG_MAP,
     'theory-of-change': TOC_TAG_MAP, 'trade-off': TRADEOFF_TAG_MAP,
     'iceberg': ICEBERG_TAG_MAP, 'constraint-flip': CONSTRAINT_TAG_MAP,
-    'cold-open': COLD_OPEN_TAG_MAP,
+    'customer-discovery': CUSTOMER_DISCOVERY_TAG_MAP,
     'mash-up': MASHUP_TAG_MAP, 'analogical': MASHUP_TAG_MAP
 };
 
@@ -5100,6 +5117,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     email,
+                    device_id: state.deviceId,
+                    session_db_id: _currentSessionDbId,
                     mode: state.mode,
                     exercise: state.exercise,
                     messages: state.messages,
@@ -5452,7 +5471,7 @@ const TOOL_DESCRIPTIONS = {
     'constraint-flip': { desc: 'Pete will help you turn your biggest limitations into competitive advantages.', output: 'A constraints board and report with flipped strategies.' },
     'pre-mortem': { desc: 'Pete will help you imagine your plan has already failed and work backwards to find the risks.', output: 'A risk board and report with prioritised failure modes and mitigations.' },
     'devils-advocate': { desc: 'Pete becomes one of five adversaries — churned customer, confused user, tired engineer, sceptical investor, or fast follower — and attacks your idea from their risk angle.', output: 'An objection log with defence ratings, risk heatmap, and your biggest vulnerability identified.' },
-    'cold-open': { desc: 'Pete becomes your target customer and you practise a discovery interview. He\'ll be evasive, polite, and drop hidden signals. Then he\'ll score your technique.', output: 'A persona card, interview technique scorecard, and signals-caught analysis.' },
+    'customer-discovery': { desc: 'Pete becomes your target customer and you practise a discovery interview. He\'ll be evasive, polite, and drop hidden signals. Then he\'ll score your technique.', output: 'A persona card, interview technique scorecard, and signals-caught analysis.' },
     'reality-check': { desc: 'Pete will pressure-test your idea against all four product risks — value, usability, feasibility, and viability — and deliver a scorecard.', output: 'A four-risk scorecard and report identifying your biggest exposure.' },
     'trade-off': { desc: 'Pete will force you to choose between your own features. Each round requires a sacrifice. The features that survive every trade-off are your core value.', output: 'A feature value stack, side-by-side bundle comparison cards, and a Minimum Viable Offer.' },
     'lean-canvas': { desc: 'Pete will guide you through mapping your business model on a single page.', output: 'A completed Lean Canvas board and report with model analysis.' },

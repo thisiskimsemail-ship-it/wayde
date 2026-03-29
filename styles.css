@@ -76,7 +76,7 @@
 }
 .ps-board-card:last-child { border-bottom: none; }
 .ps-board-empty {
-    font-size: 0.72rem; color: rgba(255,255,255,0.2); font-style: italic;
+    font-size: 0.72rem; color: rgba(255,255,255,0.2);
     font-family: var(--font);
 }
 @media (max-width: 640px) {
@@ -176,7 +176,7 @@ html:not([data-theme="light"]) .bundle-price-row { border-top-color: rgba(255,25
 html:not([data-theme="light"]) .bundle-price-row .bundle-feature-val { color: var(--teal, #3DD6C8); }
 html:not([data-theme="light"]) .bundle-row-diff { border-left-color: var(--teal, #3DD6C8); }
 .bundle-nudge {
-    text-align: center; font-size: 0.8rem; font-style: italic;
+    text-align: center; font-size: 0.8rem;
     color: var(--teal, #3DD6C8); padding: 0.5rem 0; opacity: 0;
     animation: nudgeFadeIn 0.5s ease forwards;
 }
@@ -774,7 +774,7 @@ html[data-theme="light"] .progress-bar-track { background: rgba(30,25,79,0.08); 
     color: var(--text);
     opacity: 0.7;
     margin: 0;
-    font-style: italic;
+   
     font-family: var(--font);
 }
 html[data-theme="light"] .activity-brief {
@@ -1682,7 +1682,7 @@ body.in-session.session-complete .header-nav { display: flex; }
     margin-bottom: 0.75rem;
 }
 .lp-cat-badge { font-size: 1.4rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; display: block; margin-bottom: 0.5rem; }
-.lp-process-tagline { font-size: 1.1rem; font-style: italic; color: var(--text); line-height: 1.4; margin-bottom: 0.75rem; font-weight: 400; }
+.lp-process-tagline { font-size: 1.1rem; color: var(--text); line-height: 1.4; margin-bottom: 0.75rem; font-weight: 400; }
 .lp-process-card {
     background: var(--bg-light);
     border-radius: 10px;
@@ -2059,7 +2059,7 @@ body.in-session.session-complete .header-nav { display: flex; }
 
 .msg-agent em {
     color: var(--text);
-    font-style: italic;
+   
 }
 
 .msg-agent ul, .msg-agent ol {
@@ -2722,7 +2722,7 @@ html[data-theme="light"] .mic-btn:hover { border-color: rgba(30,25,79,0.3); colo
 .report-copy-notice {
     font-size: 0.8125rem;
     color: var(--text-muted);
-    font-style: italic;
+   
     margin-left: auto;
 }
 
@@ -2773,7 +2773,7 @@ html[data-theme="light"] .mic-btn:hover { border-color: rgba(30,25,79,0.3); colo
     font-size: 1.0625rem;
     color: var(--text-dim);
     margin-bottom: 0.75rem;
-    font-style: italic;
+   
     line-height: 1.5;
 }
 
@@ -3169,7 +3169,7 @@ html[data-theme="light"] .synopsis-close:hover { color: #1E194F; background: rgb
 }
 .synopsis-hook {
     font-size: 1rem; color: var(--text-muted); line-height: 1.6;
-    margin: 0 0 1.5rem; font-style: italic;
+    margin: 0 0 1.5rem;
 }
 .synopsis-bullets {
     text-align: left; list-style: none; padding: 0; margin: 0 0 2rem;
@@ -3327,7 +3327,7 @@ html[data-theme="light"] .report-synopsis {
     padding: 0.75rem 1rem;
     margin: 0.75rem 0;
     font-size: 1.05rem;
-    font-style: italic;
+   
     color: var(--text);
     background: rgba(241,90,34,0.04);
     border-radius: 0 6px 6px 0;
@@ -3346,7 +3346,7 @@ html[data-theme="light"] .report-synopsis {
 
 .report-content em {
     color: var(--text);
-    font-style: italic;
+   
 }
 
 .report-content ul, .report-content ol {
@@ -4549,7 +4549,7 @@ body[data-mode] .board-zone .zone-name { color: var(--stage-color); }
     color: rgba(255,255,255,0.35);
     margin-bottom: 0.4rem;
     line-height: 1.35;
-    font-style: italic;
+   
 }
 /* Hide hint when zone has cards — JS handles this via zone-hint class toggle */
 
@@ -4627,7 +4627,7 @@ body[data-mode] .board-zone .zone-name { color: var(--stage-color); }
 .zone-empty {
     font-size: 0.7rem;
     color: rgba(255,255,255,0.2);
-    font-style: italic;
+   
     padding: 0.25rem 0;
 }
 
@@ -5326,7 +5326,7 @@ body.light .feedback-input, html[data-theme="light"] .feedback-input { backgroun
 
 /* Compact text for all custom boards */
 .board-grid-trade-off .zone-name,
-.board-grid-cold-open .zone-name,
+.board-grid-customer-discovery .zone-name,
 .board-grid-socratic .zone-name,
 .board-grid-reality-check .zone-name,
 .board-grid-toc .zone-name,
@@ -5336,7 +5336,7 @@ body.light .feedback-input, html[data-theme="light"] .feedback-input { backgroun
 .board-grid-mash-up .zone-name { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
 
 .board-grid-trade-off .board-card-text,
-.board-grid-cold-open .board-card-text,
+.board-grid-customer-discovery .board-card-text,
 .board-grid-socratic .board-card-text,
 .board-grid-reality-check .board-card-text,
 .board-grid-toc .board-card-text,
@@ -5347,8 +5347,8 @@ body.light .feedback-input, html[data-theme="light"] .feedback-input { backgroun
 
 .board-grid-trade-off .zone-empty,
 .board-grid-trade-off .zone-hint,
-.board-grid-cold-open .zone-empty,
-.board-grid-cold-open .zone-hint,
+.board-grid-customer-discovery .zone-empty,
+.board-grid-customer-discovery .zone-hint,
 .board-grid-socratic .zone-empty,
 .board-grid-socratic .zone-hint,
 .board-grid-reality-check .zone-empty,
@@ -5912,7 +5912,7 @@ body.light .feedback-input, html[data-theme="light"] .feedback-input { backgroun
     margin-bottom: 0.15rem;
 }
 .ps-session-headline {
-    font-size: 0.82rem; font-style: italic;
+    font-size: 0.82rem;
     color: var(--yellow, #E4E517);
     margin-bottom: 0.25rem;
     line-height: 1.4;

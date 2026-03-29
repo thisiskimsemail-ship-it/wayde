@@ -30,7 +30,7 @@
   .tool-hero-grid { display: grid; grid-template-columns: 1fr 360px; gap: 60px; align-items: start; }
   .tool-hero-left .stage-badge { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; padding: 5px 14px; border-radius: 100px; background: var(--cat-color); color: var(--white); margin-bottom: 16px; }
   .tool-hero-left h1 { font-family: 'GT Walsheim', 'Space Grotesk', sans-serif; font-size: 56px; font-weight: 400; color: var(--white); line-height: 1.1; margin-bottom: 12px; }
-  .tool-headline { font-family: 'GT Walsheim', 'Space Grotesk', sans-serif; font-size: 24px; font-weight: 400; color: var(--cat-color); font-style: italic; margin-bottom: 24px; }
+  .tool-headline { font-family: 'GT Walsheim', 'Space Grotesk', sans-serif; font-size: 24px; font-weight: 400; color: var(--cat-color); margin-bottom: 24px; }
   .tool-intro { font-size: 18px; line-height: 1.7; color: var(--text-body); max-width: 600px; }
   .quick-facts { background: var(--card-bg); border-radius: 16px; border: 1px solid var(--border); padding: 32px; }
   .qf-title { font-size: 13px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--text-light); margin-bottom: 20px; }
@@ -91,7 +91,7 @@
   .pete-avatar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
   .pete-avatar { width: 32px; height: 32px; border-radius: 8px; background: var(--navy); display: flex; align-items: center; justify-content: center; color: var(--white); font-weight: 700; font-size: 13px; }
   .pete-label { font-size: 13px; font-weight: 600; color: var(--white); }
-  .pete-text { font-size: 14px; color: var(--text-body); line-height: 1.6; font-style: italic; }
+  .pete-text { font-size: 14px; color: var(--text-body); line-height: 1.6; }
   .tool-bottom-cta { padding: 60px; max-width: 1300px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border); }
   .tool-bottom-left h3 { font-family: 'GT Walsheim', 'Space Grotesk', sans-serif; font-size: 28px; font-weight: 400; color: var(--white); margin-bottom: 6px; }
   .tool-bottom-left p { font-size: 15px; color: var(--text-light); }
@@ -138,10 +138,10 @@
 <header class="header">
   <a href="index.html"><img class="logo" src="logo.png" alt="Wade Institute"></a>
   <nav class="header-nav">
-    <a href="index.html" class="header-nav-link">The Studio</a>
-    <a href="toolbox.html" class="header-nav-link active">Toolbox</a>
-    <a href="sessions.html" class="header-nav-link">Sessions</a>
-    <a href="#" class="header-nav-link" onclick="document.getElementById('feedbackPanel')?.classList.toggle('hidden'); return false;">Feedback</a>
+    <a href="index.html" class="nav-pill">The Studio</a>
+    <a href="toolbox.html" class="nav-pill active">Toolbox</a>
+    <a href="sessions.html" class="nav-pill">Sessions</a>
+    <a href="#" class="nav-pill" onclick="document.getElementById('feedbackPanel')?.classList.toggle('hidden'); return false;">Feedback</a>
   </nav>
   <div class="header-controls">
     <button class="text-size-btn" onclick="document.documentElement.dataset.textSize=({'':'lg','lg':'xl','xl':''}[document.documentElement.dataset.textSize||''])||''" title="Adjust text size">Aa</button>

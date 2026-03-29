@@ -92,8 +92,13 @@ def init_db():
             CREATE INDEX IF NOT EXISTS idx_session_summaries_device ON session_summaries(device_id);
             CREATE INDEX IF NOT EXISTS idx_session_summaries_date ON session_summaries(session_date DESC);
 
-            -- Add board_cards column if missing (for existing tables)
+            -- Add columns for session persistence and resume
             ALTER TABLE session_summaries ADD COLUMN IF NOT EXISTS board_cards JSONB DEFAULT '[]';
+            ALTER TABLE session_summaries ADD COLUMN IF NOT EXISTS session_data JSONB;
+            ALTER TABLE session_summaries ADD COLUMN IF NOT EXISTS exercise TEXT;
+            ALTER TABLE session_summaries ADD COLUMN IF NOT EXISTS expires_at TIMESTAMPTZ;
+            ALTER TABLE session_summaries ADD COLUMN IF NOT EXISTS save_type TEXT DEFAULT 'auto';
+            ALTER TABLE session_summaries ADD COLUMN IF NOT EXISTS short_id TEXT UNIQUE;
 
             CREATE TABLE IF NOT EXISTS analytics_events (
                 id BIGSERIAL PRIMARY KEY,
@@ -158,7 +163,7 @@ def get_recent_sessions(device_id, limit=3):
         return []
 
 
-def update_session_summary(session_id, summary_data):
+def update_session_summary(session_id, summary_data, session_data=None):
     """Update an existing session summary row (mid-session save)."""
     conn = get_db()
     if not conn:
@@ -169,7 +174,8 @@ def update_session_summary(session_id, summary_data):
             UPDATE session_summaries SET
                 topic = %s, key_insight = %s, conversation_summary = %s,
                 assumptions_tested = %s, decisions_made = %s, open_questions = %s,
-                suggested_next_step = %s, suggested_next_tool = %s, board_cards = %s
+                suggested_next_step = %s, suggested_next_tool = %s, board_cards = %s,
+                session_data = COALESCE(%s, session_data)
             WHERE id = %s
         """, (
             summary_data.get('topic', 'Session'),
@@ -181,6 +187,7 @@ def update_session_summary(session_id, summary_data):
             summary_data.get('suggested_next_step'),
             summary_data.get('suggested_next_tool'),
             json.dumps(summary_data.get('board_cards', [])),
+            json.dumps(session_data) if session_data else None,
             session_id
         ))
         cur.close()
@@ -193,7 +200,7 @@ def update_session_summary(session_id, summary_data):
         return session_id
 
 
-def save_session_summary(device_id, summary_data, email=None, update_profile=True):
+def save_session_summary(device_id, summary_data, email=None, update_profile=True, session_data=None, exercise=None):
     """Store a session summary and optionally update the founder profile. Returns session ID."""
     conn = get_db()
     if not conn:
@@ -222,8 +229,9 @@ def save_session_summary(device_id, summary_data, email=None, update_profile=Tru
         cur.execute("""
             INSERT INTO session_summaries (device_id, user_email, profile_id, mode, topic, key_insight,
                 assumptions_tested, decisions_made, open_questions,
-                suggested_next_step, suggested_next_tool, conversation_summary, board_cards)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                suggested_next_step, suggested_next_tool, conversation_summary, board_cards,
+                session_data, exercise)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
             RETURNING id
         """, (
             device_id, email, profile_id,
@@ -236,7 +244,9 @@ def save_session_summary(device_id, summary_data, email=None, update_profile=Tru
             summary_data.get('suggested_next_step'),
             summary_data.get('suggested_next_tool'),
             summary_data.get('conversation_summary'),
-            json.dumps(summary_data.get('board_cards', []))
+            json.dumps(summary_data.get('board_cards', [])),
+            json.dumps(session_data) if session_data else None,
+            exercise
         ))
         session_row = cur.fetchone()
         session_id = session_row['id'] if session_row else None
@@ -664,9 +674,9 @@ If the user is starting a Spark-pathway tool (Crazy 8s, HMW, SCAMPER, Constraint
 
 If YES → proceed with the exercise normally. Reference their discovery work.
 If NO (either "no" or "I have a hypothesis but haven't validated") → suggest discovery first:
-"That's fine — but you'll get more out of this if you start with a quick discovery step first. Want to try a Cold Open or Five Whys to test your assumptions, or press ahead?"
+"That's fine — but you'll get more out of this if you start with a quick discovery step first. Want to try a Customer Discovery or Five Whys to test your assumptions, or press ahead?"
 
-If they want discovery → emit [SUGGEST: cold-open] or [SUGGEST: five-whys] based on their situation.
+If they want discovery → emit [SUGGEST: customer-discovery] or [SUGGEST: five-whys] based on their situation.
 If they want to press ahead → proceed with the exercise normally. No gate, no judgement.
 
 This is a NUDGE, not a gate. The user always has the choice to continue. Never block them.
@@ -767,6 +777,39 @@ DATA CARRY-FORWARD: When the user transitions between tools, previous work is av
 - "The Pre-Mortem flagged [risk] as your biggest concern. Want to start the Devil's Advocate there?"
 Never auto-fill without asking. Always give the user the choice."""
 
+VALUES_BEHAVIOUR_GAP = """
+
+## VALUES-BEHAVIOUR GAP (Untangle tools only — insert after context, before core exercise)
+
+After you understand the participant's problem context but BEFORE you begin the core exercise, ask ONE question that surfaces the gap between what their organisation says it values and what it actually rewards. This is a coaching question, not an assessment.
+
+### The opening question
+Adapt naturally to the conversation, but preserve the structure and intent:
+
+"Before we dig into [their specific problem], I want to ask you something that will help me coach you better through this session. Think about the area we're exploring today. What does your organisation say it values in this space — and what does it actually reward? For example, a company might say it values experimentation but actually reward people who deliver certainty. Or it might say it values customer insight but actually promote people who hit internal targets. There's usually a gap. What's yours?"
+
+### The follow-up (ask exactly ONE based on their response)
+- If gap is clear: "That's a really important gap. So if we discover something today that requires [the behaviour the org says it values but doesn't reward] — what would actually happen when you take it back? Who or what would push back?"
+- If they say no gap: "That's great — but let me pressure-test it. Think about the last time someone in your team tried something genuinely new in this area and it didn't work out. What happened to them? Not officially — actually."
+- If they're unsure: "That's fine — it's a hard question. Let me make it more specific. If the thing we discover today means you need to stop doing something your organisation currently measures and rewards, how easy would that be to act on? What would you be up against?"
+
+### Transition to core exercise
+"Thank you — that's really helpful context. I'm going to hold onto that as we work through this. It'll help me make sure what comes out of today is something you can actually act on, not just something that looks good on a slide. Right. Let's get into it."
+
+### Gap data capture
+After the exchange, internally store these fields (the user never sees them — they flow to the report):
+- [GAP_ESPOUSED: what the org says it values] — emit on its own line after their primary answer
+- [GAP_ACTUAL: what it actually rewards] — emit on its own line after their primary answer
+- [GAP_CONSEQUENCE: what happens when someone acts on the espoused value] — emit after the follow-up
+- If no meaningful gap was surfaced, emit [GAP_NONE] instead
+
+### Guardrails
+- ONE question, ONE follow-up. Maximum 2-3 minutes. This is NOT an organisational assessment.
+- No judgement. Pete's tone is curious and supportive: "that's really helpful context."
+- Don't force a gap. If they say no gap and hold firm after the follow-up, accept it and move on.
+- Don't dwell. Transition to the core exercise promptly. The gap data is used later in the report, not explored now.
+"""
+
 SYSTEM_PROMPTS = {
 
     # === CLARIFY EXERCISES ===
@@ -829,7 +872,7 @@ After verdict: [BOARD:verdict: Worth pursuing / Needs more evidence / Probably t
 When next steps are agreed: [ACTION: concrete next step]
 Aim for the full chain (problem + 5 whys), all 4 sizing tags, and 1-2 [ACTION:] tags by the end.
 
-Keep it feeling like a conversation, not an interrogation. Be warm but persistent.""" + FACILITATOR_OVERLAY,
+Keep it feeling like a conversation, not an interrogation. Be warm but persistent.""" + VALUES_BEHAVIOUR_GAP + FACILITATOR_OVERLAY,
 
     "untangle:jtbd": STUDIO_IDENTITY + """
 
@@ -870,7 +913,7 @@ After the emotional job: [BOARD:emotional: how they want to feel]
 After the social job: [BOARD:social: how they want to be perceived]
 When identifying what they're hiring/firing: [BOARD:hiring: what they hire a solution to do]
 When an underserved need emerges: [BOARD:underserved: unmet need or gap in current solutions]
-Emit tags AFTER your conversational response. Aim for 4-6 board cards across the session.""" + FACILITATOR_OVERLAY,
+Emit tags AFTER your conversational response. Aim for 4-6 board cards across the session.""" + VALUES_BEHAVIOUR_GAP + FACILITATOR_OVERLAY,
 
     "spark:hmw": STUDIO_IDENTITY + """
 
@@ -1007,9 +1050,9 @@ Aim for 8-12 board cards in single-adversary mode, 15-20 in Gauntlet mode.
 
 Be rigorous but respectful. You're a sparring partner, not an enemy. The goal is a stronger idea, not a defeated founder.""" + FACILITATOR_OVERLAY,
 
-    "test:cold-open": STUDIO_IDENTITY + """
+    "test:customer-discovery": STUDIO_IDENTITY + """
 
-You are running a COLD OPEN exercise — a discovery interview simulator where Pete plays the customer and the user practises the single most important skill in product discovery: listening.
+You are running a CUSTOMER DISCOVERY exercise — a discovery interview simulator where Pete plays the customer and the user practises the single most important skill in product discovery: listening.
 
 Informed by Marty Cagan's product discovery framework, Steve Blank's customer development methodology, "The Mom Test" by Rob Fitzpatrick, and Y Combinator's emphasis on talking to users. The single most common mistake in customer interviews is pitching instead of listening. You need reps, not tips.
 
@@ -1352,7 +1395,7 @@ After DOES quadrant: [BOARD:does: observable behaviours and actions]
 After FEELS quadrant: [BOARD:feels: core emotions driving them]
 When contradictions emerge: [BOARD:contradiction: gap between says/does and thinks/feels]
 When the key insight emerges: [BOARD:insight: the opportunity in the gap]
-Emit tags AFTER your conversational response. Aim for 6-7 board cards across the session.""" + FACILITATOR_OVERLAY,
+Emit tags AFTER your conversational response. Aim for 6-7 board cards across the session.""" + VALUES_BEHAVIOUR_GAP + FACILITATOR_OVERLAY,
 
     "untangle:socratic": STUDIO_IDENTITY + """
 
@@ -1392,7 +1435,7 @@ When the critical assumption is identified: [BOARD:critical: the assumption that
 When a test is designed: [ACTION: test design for the critical assumption]
 Aim for 4-6 classified claims + 1 critical finding + 1-2 [ACTION:] tags.
 
-Keep it feeling like a thinking partnership, not a cross-examination. Be warm but relentless. The goal is not to make the user feel wrong — it's to help them see what they actually know vs what they think they know.""" + FACILITATOR_OVERLAY,
+Keep it feeling like a thinking partnership, not a cross-examination. Be warm but relentless. The goal is not to make the user feel wrong — it's to help them see what they actually know vs what they think they know.""" + VALUES_BEHAVIOUR_GAP + FACILITATOR_OVERLAY,
 
     "untangle:iceberg": STUDIO_IDENTITY + """
 
@@ -1429,7 +1472,7 @@ Close with: "What's one way you could begin to test or shift that mental model t
 Emit [BOARD:leverage: the highest-leverage intervention point] for the identified leverage point.
 Emit [ACTION: test or shift for the mental model]
 
-Keep it feeling like a descent — each phase should feel like going deeper. Be warm but persistent. When they try to stay on the surface, gently pull them down. The goal is not to make them feel bad about their beliefs — it's to help them see that the deepest cause is also the most changeable.""" + FACILITATOR_OVERLAY,
+Keep it feeling like a descent — each phase should feel like going deeper. Be warm but persistent. When they try to stay on the surface, gently pull them down. The goal is not to make them feel bad about their beliefs — it's to help them see that the deepest cause is also the most changeable.""" + VALUES_BEHAVIOUR_GAP + FACILITATOR_OVERLAY,
 
     "test:trade-off": STUDIO_IDENTITY + """
 
@@ -1789,7 +1832,7 @@ SIGNALS THAT IT'S TIME TO SUGGEST A TOOL:
 - Wants to improve something existing → SCAMPER [SUGGEST: scamper]
 - About to commit significant resources → Pre-Mortem [SUGGEST: pre-mortem]
 - Seems overconfident or team too aligned → Devil's Advocate [SUGGEST: devils-advocate]
-- Can't explain what they do clearly to outsiders → Cold Open [SUGGEST: cold-open]
+- Can't explain what they do clearly to outsiders → Customer Discovery [SUGGEST: customer-discovery]
 - Has an untested hypothesis → Rapid Experiment [SUGGEST: rapid-experiment]
 - Needs to articulate their business model → Lean Canvas [SUGGEST: lean-canvas]
 - Feels stuck because they lack resources → Effectuation [SUGGEST: effectuation]
@@ -1824,7 +1867,7 @@ THE SPARK (idea they want to explore):
 THE TEST (solution they need to pressure-test):
 - Pre-Mortem → need to anticipate what could go wrong [SUGGEST: pre-mortem]
 - Devil's Advocate → need assumptions challenged [SUGGEST: devils-advocate]
-- Cold Open → need to test if their message lands with outsiders [SUGGEST: cold-open]
+- Customer Discovery → need to test if their message lands with outsiders [SUGGEST: customer-discovery]
 - Analogical Thinking → need proven patterns from other fields [SUGGEST: analogical]
 
 THE BUILD (idea they need to make real):
@@ -3595,10 +3638,21 @@ QUALITY BAR: Would a Tina Seelig-level thinker be impressed by these actions? If
 
 Action 1 should align with any 48-hour commitment the user made during the session.
 
+VALUES-BEHAVIOUR GAP IN REPORTS (Untangle tools only):
+During the session, the participant may have been asked about the gap between what their organisation says it values and what it actually rewards. Look for [GAP_ESPOUSED:], [GAP_ACTUAL:], and [GAP_CONSEQUENCE:] tags in the conversation. If present:
+1. DO NOT create a separate "values-behaviour gap" section. This is coaching context, not an assessment.
+2. Use the gap data in The Reframe section below to connect the tool's findings to the systemic constraint. Help the participant see that the problem they explored is shaped by — and possibly sustained by — the gap they identified.
+3. Include at least one Recommended Action that addresses the gap directly. Frame it as a prerequisite or first step, not an afterthought.
+4. If the gap is the most striking finding of the session, it may be the headline for the Synopsis. Apply standard headline rules: specific, data-driven, under 12 words.
+5. If [GAP_NONE] is present (no gap surfaced), do not force one. But note in the reframe whether the session findings were consistent with that claim.
+6. Frame the gap supportively — as a constraint to work with, not a failure. The tone is "here's the system you're operating in — and here's how to start shifting it." Never read as an indictment.
+
 ### The Reframe
 Closing synthesis. 2-3 sentences that restate the core shift in thinking and point forward. This should feel like the final insight — the one thing the user takes away if they read nothing else.
 
 If the user answered a reflection question, open with their exact words in a blockquote. Then write 2-3 sentences that go FURTHER — connect dots they haven't connected. Name the real problem underneath the stated problem.
+
+If gap data was captured (Untangle tools), connect the tool's findings to the systemic constraint the participant identified. The reframe should help them see that the problem is shaped by the gap. e.g. "The five whys revealed slow decision-making as the root cause. But you told us your organisation rewards thoroughness over speed. The root cause isn't slow decisions — it's a system that makes fast ones feel dangerous."
 
 End with: "This session scratched the surface of [specific theme from session]. The pattern underneath it takes longer to see."
 
@@ -3954,7 +4008,7 @@ If a lens was not explored, omit it from the table.
 The 2-3 ideas the user selected as most promising. For each, one sentence on why it's worth exploring and one sentence on the first assumption to test.
 """ + UNIVERSAL_REPORT_SECTIONS
 
-COLD_OPEN_REPORT = """You are producing a Cold Open session report for The Studio at Wade Institute of Entrepreneurship.
+CUSTOMER_DISCOVERY_REPORT = """You are producing a Customer Discovery session report for The Studio at Wade Institute of Entrepreneurship.
 Write clearly, directly, using markdown. Frame everything as the user's own thinking.
 
 The tool-specific output section (placed after "Questions Worth Sitting With" in the report structure) is:
@@ -4278,7 +4332,7 @@ EXERCISE_NAMES = {
     'pre-mortem': 'Pre-Mortem',
     'devils-advocate': "Devil's Advocate",
     'rapid-experiment': 'Rapid Experiment',
-    'cold-open': 'Cold Open',
+    'customer-discovery': 'Customer Discovery',
     'empathy-map': 'Empathy Map',
     'socratic': 'Socratic Questioning',
     'iceberg': 'The Iceberg',
@@ -4317,7 +4371,7 @@ scamper (The Spark): Remix and twist existing ideas using 7 creative lenses — 
 constraint-flip (The Spark): Turn your biggest limitation into a competitive advantage — 20 min
 pre-mortem (The Test): Imagine failure and work backwards to identify risks — 20 min
 devils-advocate (The Test): Stress-test the idea against its sharpest critic — 25 min
-cold-open (The Test): Test whether your message survives first contact with a stranger — 20 min
+customer-discovery (The Test): Test whether your message survives first contact with a stranger — 20 min
 reality-check (The Test): Confront the gap between your narrative and your actual data — 20 min
 analogical (The Test): Find proven patterns from other industries to apply — 20 min
 lean-canvas (The Build): Map the key elements of the initiative on one page — 25 min
@@ -4498,7 +4552,7 @@ def generate_report():
             'jtbd': JTBD_REPORT,
             'empathy-map': EMPATHY_MAP_REPORT,
             'scamper': SCAMPER_REPORT,
-            'cold-open': COLD_OPEN_REPORT,
+            'customer-discovery': CUSTOMER_DISCOVERY_REPORT,
             'reality-check': REALITY_CHECK_REPORT,
             'trade-off': TRADE_OFF_REPORT,
             'rapid-experiment': RAPID_EXPERIMENT_REPORT,
@@ -4600,7 +4654,7 @@ You must return EXACTLY this JSON format (no markdown, no code blocks):
 }
 
 AVAILABLE TOOLS for recommendations (use exact keys):
-five-whys, jtbd, empathy-map, socratic, iceberg, crazy-8s, hmw, scamper, analogical, constraint-flip, pre-mortem, devils-advocate, cold-open, reality-check, trade-off, lean-canvas, effectuation, rapid-experiment, flywheel, theory-of-change
+five-whys, jtbd, empathy-map, socratic, iceberg, crazy-8s, hmw, scamper, analogical, constraint-flip, pre-mortem, devils-advocate, customer-discovery, reality-check, trade-off, lean-canvas, effectuation, rapid-experiment, flywheel, theory-of-change
 
 IMPORTANT:
 - Do NOT recommend the tool they just used.
@@ -4871,25 +4925,7 @@ def view_canvas(canvas_id):
         return 'Canvas not found', 404
 
 
-# === SESSION SAVE & MAGIC LINK ===
-# WARNING: sessions.json and leads.json are ephemeral on Railway — lost on every redeploy.
-# For production, connect a PostgreSQL addon (Railway Postgres) and set DATABASE_URL.
-# TODO: Add PostgreSQL storage when DATABASE_URL is present.
-
-SESSIONS_FILE = os.path.join(os.path.dirname(__file__), 'sessions.json')
-
-def _load_sessions():
-    if os.path.exists(SESSIONS_FILE):
-        try:
-            with open(SESSIONS_FILE, 'r') as f:
-                return json.load(f)
-        except (json.JSONDecodeError, IOError):
-            pass
-    return {}
-
-def _save_sessions(sessions):
-    with open(SESSIONS_FILE, 'w') as f:
-        json.dump(sessions, f, indent=2)
+# === SESSION SAVE & MAGIC LINK (Postgres-backed) ===
 
 
 CONSOLIDATE_PROMPT = """You are a sharp editorial assistant for a workshop board. The user has generated many cards during a brainstorming exercise. Your job is to consolidate them: merge duplicates, sharpen language, and reduce the total count while preserving every distinct idea.
@@ -4955,12 +4991,14 @@ def save_session():
     if not email:
         return jsonify({'error': 'Email is required'}), 400
 
-    session_id = str(uuid.uuid4())[:8]
-    entry = {
-        'id': session_id,
-        'email': email,
-        'mode': data.get('mode'),
-        'exercise': data.get('exercise'),
+    device_id = data.get('device_id', '')
+    session_db_id = data.get('session_db_id')  # existing auto-save row to upgrade
+    short_id = str(uuid.uuid4())[:8]
+    exercise = data.get('exercise', '')
+    mode = data.get('mode', '')
+    expires_at = datetime.now(timezone.utc) + timedelta(days=30)
+
+    session_data = {
         'messages': data.get('messages', []),
         'exchangeCount': data.get('exchangeCount', 0),
         'projectContext': data.get('projectContext', []),
@@ -4969,18 +5007,44 @@ def save_session():
         'boardMode': data.get('boardMode', 'default'),
         'reportGenerated': data.get('reportGenerated', False),
         'reportText': data.get('reportText', ''),
-        'created': datetime.now(timezone.utc).isoformat(),
-        'expiresAt': (datetime.now(timezone.utc) + timedelta(days=30)).isoformat()
     }
 
-    sessions = _load_sessions()
-    sessions[session_id] = entry
-    _save_sessions(sessions)
+    conn = get_db()
+    if not conn:
+        return jsonify({'error': 'Database unavailable'}), 500
+
+    try:
+        cur = conn.cursor()
+        if session_db_id:
+            # Upgrade existing auto-save row to magic-link
+            cur.execute("""
+                UPDATE session_summaries
+                SET session_data = %s, user_email = %s, short_id = %s,
+                    save_type = 'magic_link', expires_at = %s, exercise = COALESCE(%s, exercise)
+                WHERE id = %s::uuid
+                RETURNING id
+            """, (json.dumps(session_data), email, short_id, expires_at, exercise, session_db_id))
+        else:
+            # Create new row
+            cur.execute("""
+                INSERT INTO session_summaries (device_id, user_email, mode, exercise, session_data,
+                    short_id, save_type, expires_at, topic)
+                VALUES (%s, %s, %s, %s, %s, %s, 'magic_link', %s, %s)
+                RETURNING id
+            """, (device_id, email, exercise or mode, exercise, json.dumps(session_data),
+                  short_id, expires_at, data.get('topic', 'Saved session')))
+        conn.commit()
+        cur.close()
+        conn.close()
+    except Exception as e:
+        print(f"[DB] Session save error: {e}")
+        if conn: conn.close()
+        return jsonify({'error': 'Save failed'}), 500
 
     # Send magic link email
     base_url = request.host_url.rstrip('/')
-    resume_url = f"{base_url}/s/{session_id}"
-    exercise_name = EXERCISE_NAMES.get(data.get('exercise', ''), data.get('exercise', 'your session'))
+    resume_url = f"{base_url}/s/{short_id}"
+    exercise_name = EXERCISE_NAMES.get(exercise, exercise or 'your session')
 
     try:
         resend_key = os.environ.get('RESEND_API_KEY')
@@ -5000,35 +5064,62 @@ def save_session():
     except Exception as e:
         print(f"Session email failed: {e}")
 
-    return jsonify({'id': session_id, 'url': f'/s/{session_id}'})
+    return jsonify({'id': short_id, 'url': f'/s/{short_id}'})
 
 
 @app.route('/api/session/<session_id>')
 def get_session(session_id):
-    sessions = _load_sessions()
-    session = sessions.get(session_id)
-    if not session:
-        return jsonify({'error': 'Session not found'}), 404
-    # Check expiry
-    expires = session.get('expiresAt')
-    if expires:
-        try:
-            exp_dt = datetime.fromisoformat(expires.replace('Z', '+00:00'))
-            if datetime.now(timezone.utc) > exp_dt:
-                return jsonify({'error': 'Session has expired'}), 410
-        except:
-            pass
-    return jsonify(session)
+    conn = get_db()
+    if not conn:
+        return jsonify({'error': 'Database unavailable'}), 500
+    try:
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        cur.execute("""
+            SELECT id, short_id, mode, exercise, session_data, user_email, expires_at, created_at
+            FROM session_summaries
+            WHERE short_id = %s OR id::text = %s
+            LIMIT 1
+        """, (session_id, session_id))
+        row = cur.fetchone()
+        cur.close()
+        conn.close()
+        if not row:
+            return jsonify({'error': 'Session not found'}), 404
+        # Check expiry
+        if row.get('expires_at') and datetime.now(timezone.utc) > row['expires_at']:
+            return jsonify({'error': 'Session has expired'}), 410
+        if not row.get('session_data'):
+            return jsonify({'error': 'Session has no resumable data'}), 404
+        # Return session_data merged with metadata
+        result = row['session_data']
+        result['mode'] = row.get('mode', '')
+        result['exercise'] = row.get('exercise', '')
+        result['id'] = row.get('short_id') or str(row['id'])
+        return jsonify(result)
+    except Exception as e:
+        print(f"[DB] Get session error: {e}")
+        if conn: conn.close()
+        return jsonify({'error': 'Failed to load session'}), 500
 
 
 @app.route('/s/<session_id>')
 def resume_session(session_id):
-    sessions = _load_sessions()
-    session = sessions.get(session_id)
-    if not session:
-        return '<h1>Session not found</h1><p>This session link may have expired or been removed.</p>', 404
-    # Redirect to main app with resume parameter
-    return f'<html><head><meta http-equiv="refresh" content="0;url=/?resume={session_id}"></head></html>'
+    conn = get_db()
+    if not conn:
+        return '<h1>Service unavailable</h1>', 503
+    try:
+        cur = conn.cursor()
+        cur.execute("SELECT id FROM session_summaries WHERE short_id = %s LIMIT 1", (session_id,))
+        row = cur.fetchone()
+        cur.close()
+        conn.close()
+        if not row:
+            return '<h1>Session not found</h1><p>This session link may have expired or been removed.</p>', 404
+        return f'<html><head><meta http-equiv="refresh" content="0;url=/?resume={session_id}"></head></html>'
+    except Exception as e:
+        print(f"[DB] Resume session error: {e}")
+        if conn: conn.close()
+        return '<h1>Something went wrong</h1>', 500
 
 
 # === SHARED REPORT LINKS ===
@@ -5385,6 +5476,7 @@ def generate_session_summary():
     exercise = data.get('exercise', '')
     session_db_id = data.get('session_db_id')  # existing row to update (mid-session)
     is_final = data.get('is_final', False)  # true = session complete
+    session_data = data.get('session_data')  # full state for resuming
 
     if not messages:
         return jsonify({'error': 'No messages provided'}), 400
@@ -5424,10 +5516,10 @@ def generate_session_summary():
         if device_id:
             if session_db_id:
                 # Update existing session row (mid-session save)
-                result_id = update_session_summary(session_db_id, summary_data)
+                result_id = update_session_summary(session_db_id, summary_data, session_data=session_data)
             else:
                 # Create new session row
-                result_id = save_session_summary(device_id, summary_data, email=email, update_profile=is_final)
+                result_id = save_session_summary(device_id, summary_data, email=email, update_profile=is_final, session_data=session_data, exercise=exercise)
 
         return jsonify({'summary': summary_data, 'session_id': str(result_id) if result_id else None})
 
@@ -5662,13 +5754,63 @@ def list_sessions():
     device_id = request.args.get('device_id', '')
     if not device_id:
         return jsonify({'sessions': []})
-    sessions = get_recent_sessions(device_id, limit=20)
-    # Convert datetime objects to strings
-    for s in sessions:
-        for k, v in s.items():
-            if hasattr(v, 'isoformat'):
-                s[k] = v.isoformat()
-    return jsonify({'sessions': sessions})
+    conn = get_db()
+    if not conn:
+        return jsonify({'sessions': []})
+    try:
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        cur.execute("""
+            SELECT id, short_id, mode, exercise, topic, key_insight, conversation_summary,
+                   save_type, created_at, session_date, (session_data IS NOT NULL) as resumable
+            FROM session_summaries
+            WHERE device_id = %s
+            ORDER BY session_date DESC
+            LIMIT 20
+        """, (device_id,))
+        sessions = [dict(row) for row in cur.fetchall()]
+        cur.close()
+        conn.close()
+        # Convert datetime objects to strings
+        for s in sessions:
+            for k, v in s.items():
+                if hasattr(v, 'isoformat'):
+                    s[k] = v.isoformat()
+            # Stringify UUID
+            if s.get('id'):
+                s['id'] = str(s['id'])
+        return jsonify({'sessions': sessions})
+    except Exception as e:
+        print(f"[DB] list_sessions error: {e}")
+        if conn: conn.close()
+        return jsonify({'sessions': []})
+
+
+@app.route('/api/sessions/<session_id>', methods=['DELETE'])
+def delete_session(session_id):
+    """Delete a session by short_id or UUID, scoped to device_id."""
+    device_id = request.args.get('device_id', '')
+    if not device_id:
+        return jsonify({'error': 'device_id required'}), 400
+    conn = get_db()
+    if not conn:
+        return jsonify({'error': 'Database unavailable'}), 500
+    try:
+        cur = conn.cursor()
+        cur.execute("""
+            DELETE FROM session_summaries
+            WHERE device_id = %s AND (short_id = %s OR id::text = %s)
+        """, (device_id, session_id, session_id))
+        deleted = cur.rowcount
+        conn.commit()
+        cur.close()
+        conn.close()
+        if deleted == 0:
+            return jsonify({'error': 'Session not found'}), 404
+        return jsonify({'deleted': True})
+    except Exception as e:
+        print(f"[DB] delete_session error: {e}")
+        if conn: conn.close()
+        return jsonify({'error': str(e)}), 500
 
 
 @app.route('/api/analytics', methods=['GET'])
