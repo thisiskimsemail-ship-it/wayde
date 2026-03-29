@@ -1627,6 +1627,7 @@ body:not(.in-session) .input-area { display: none !important; }
 .header-nav-link:hover { color: var(--text); background: rgba(255,255,255,0.05); }
 .header-nav-link.active { color: var(--text); background: rgba(255,255,255,0.08); }
 body.in-session .header-nav { display: none; }
+body.in-session.session-complete .header-nav { display: flex; }
 
 /* Container */
 .lp-container { max-width: 1120px; margin: 0 auto; padding: 0 2rem; }
@@ -4258,11 +4259,11 @@ html[data-theme="light"] .tool-entry-time { background: rgba(30,25,79,0.05); }
 }
 
 .workshop-layout.board-active {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 6px 1fr;
 }
 /* Lean Canvas needs more board space */
 .workshop-layout.board-active.board-lean-canvas {
-    grid-template-columns: 40fr 60fr;
+    grid-template-columns: 40fr 6px 60fr;
 }
 
 .chat-pane {
@@ -4271,6 +4272,40 @@ html[data-theme="light"] .tool-entry-time { background: rgba(30,25,79,0.05); }
     padding-bottom: 6rem;
     min-width: 0;
 }
+
+.board-resize-handle {
+    display: none;
+    width: 6px;
+    cursor: col-resize;
+    background: transparent;
+    position: relative;
+    z-index: 10;
+    flex-shrink: 0;
+}
+.board-resize-handle::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 3px;
+    height: 40px;
+    border-radius: 3px;
+    background: rgba(255,255,255,0.15);
+    transition: background 0.2s, height 0.2s;
+}
+.board-resize-handle:hover::after,
+.board-resize-handle.dragging::after {
+    background: rgba(255,255,255,0.4);
+    height: 60px;
+}
+.workshop-layout.board-active .board-resize-handle {
+    display: block;
+}
+.workshop-layout.board-maximised .board-resize-handle {
+    display: none;
+}
+body.board-resizing { cursor: col-resize !important; user-select: none; }
 
 .board-pane {
     overflow-y: auto;
@@ -4327,7 +4362,7 @@ html[data-theme="light"] .tool-entry-time { background: rgba(30,25,79,0.05); }
 
 /* Full-screen board mode */
 .workshop-layout.board-maximised {
-    grid-template-columns: 0fr 1fr;
+    grid-template-columns: 0fr 0px 1fr;
 }
 .workshop-layout.board-maximised .chat-pane {
     overflow: hidden;
@@ -4705,6 +4740,9 @@ body[data-mode] .board-zone .zone-name { color: var(--stage-color); }
 }
 
 /* Light theme */
+html[data-theme="light"] .board-resize-handle::after { background: rgba(0,0,0,0.12); }
+html[data-theme="light"] .board-resize-handle:hover::after,
+html[data-theme="light"] .board-resize-handle.dragging::after { background: rgba(0,0,0,0.3); }
 html[data-theme="light"] .board-pane { background: rgba(0,0,0,0.015); border-left-color: rgba(0,0,0,0.08); }
 html[data-theme="light"] .board-zone { background: rgba(0,0,0,0.025); }
 html[data-theme="light"] .board-zone.drag-over { background: rgba(0,0,0,0.05); outline-color: rgba(0,0,0,0.15); }
@@ -6059,8 +6097,10 @@ body.light .feedback-input, html[data-theme="light"] .feedback-input { backgroun
 @media (max-width: 768px) {
     /* Prevent board/chat overlap — stack vertically */
     .workshop-layout.board-active {
+        grid-template-columns: 1fr !important;
         flex-direction: column;
     }
+    .workshop-layout.board-active .board-resize-handle { display: none !important; }
     .workshop-layout.board-active .chat-pane {
         width: 100%;
         min-height: 50vh;

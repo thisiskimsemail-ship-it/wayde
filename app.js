@@ -305,29 +305,29 @@ const EXERCISE_DESCS = {
     'constraint-flip':   'Turn your biggest limitation into your deepest advantage.'
 };
 
-// Suggested prompt framings shown as input placeholder
+// Placeholder text shown in the input field per exercise
 const EXERCISE_HINTS = {
-    'five-whys':        'e.g. "Our team keeps missing deadlines and no one really knows why"',
-    'jtbd':             'e.g. "I\'m redesigning our internal onboarding process for new staff"',
-    'empathy-map':      'e.g. "My stakeholder is a department head who keeps resisting the change we\'re proposing"',
-    'hmw':              'e.g. "People in our organisation aren\'t adopting the new process we rolled out"',
-    'scamper':          'e.g. "I want to reinvent how we run our quarterly planning meetings"',
-    'crazy-8s':         'e.g. "I need fresh ideas for improving collaboration between two teams that don\'t talk"',
-    'pre-mortem':       'e.g. "We\'re about to roll out a new programme across the whole organisation"',
-    'devils-advocate':  'e.g. "We\'re proposing a major shift in how we deliver services to clients"',
-    'rapid-experiment': 'e.g. "I think our clients would value a monthly insight briefing — but I\'m not sure"',
-    'lean-canvas':      'e.g. "I\'m developing a new service offering within our division"',
-    'effectuation':     'e.g. "I have deep expertise in policy and a strong network in government — where do I start?"',
-    'mash-up':          'e.g. "How might we reduce handoff delays between teams the way Formula 1 does pit stops?"',
-    'analogical':       'e.g. "How might we reduce handoff delays between teams the way Formula 1 does pit stops?"',
-    'cold-open':        'e.g. "I need to explain what we do to investors who have never heard of us"',
-    'iceberg':          'e.g. "We keep losing our best people and nothing we try seems to fix it"',
-    'constraint-flip':  'e.g. "We have no marketing budget and our competitors are spending millions"',
-    'trade-off':        'e.g. "We have seven features and every stakeholder says theirs is essential"',
-    'theory-of-change': 'e.g. "We built the platform but I can\'t explain how it actually leads to the impact we promise"',
-    'reality-check':    'e.g. "I keep telling investors we have product-market fit but I\'m not sure the numbers back it up"',
-    'socratic':         'e.g. "Everyone says the board will never approve this — but has anyone actually asked them?"',
-    'flywheel':         'e.g. "Our users love the product but growth has stalled — what\'s the engine underneath?"'
+    'five-whys':        'Type, chat, or upload — e.g. "Our team keeps missing deadlines and no one knows why"',
+    'jtbd':             'Type, chat, or upload — e.g. "I\'m redesigning our onboarding process for new staff"',
+    'empathy-map':      'Type, chat, or upload — e.g. "My stakeholder keeps resisting the change we\'re proposing"',
+    'hmw':              'Type, chat, or upload — e.g. "People aren\'t adopting the new process we rolled out"',
+    'scamper':          'Type, chat, or upload — e.g. "I want to reinvent how we run quarterly planning"',
+    'crazy-8s':         'Type, chat, or upload — e.g. "I need fresh ideas for improving team collaboration"',
+    'pre-mortem':       'Type, chat, or upload — e.g. "We\'re about to roll out a new programme organisation-wide"',
+    'devils-advocate':  'Type, chat, or upload — e.g. "We\'re proposing a major shift in how we deliver services"',
+    'rapid-experiment': 'Type, chat, or upload — e.g. "I think clients would value a monthly insight briefing"',
+    'lean-canvas':      'Type, chat, or upload — e.g. "I\'m developing a new service offering within our division"',
+    'effectuation':     'Type, chat, or upload — e.g. "I have deep expertise in policy and a strong network"',
+    'mash-up':          'Type, chat, or upload — e.g. "How might we reduce handoff delays like F1 pit stops?"',
+    'analogical':       'Type, chat, or upload — e.g. "How might we reduce handoff delays like F1 pit stops?"',
+    'cold-open':        'Type, chat, or upload — e.g. "I need to explain what we do to investors"',
+    'iceberg':          'Type, chat, or upload — e.g. "We keep losing our best people and nothing fixes it"',
+    'constraint-flip':  'Type, chat, or upload — e.g. "We have no marketing budget and competitors spend millions"',
+    'trade-off':        'Type, chat, or upload — e.g. "We have seven features and every stakeholder says theirs is essential"',
+    'theory-of-change': 'Type, chat, or upload — e.g. "I can\'t explain how our work leads to the impact we promise"',
+    'reality-check':    'Type, chat, or upload — e.g. "I keep saying we have product-market fit but the numbers are thin"',
+    'socratic':         'Type, chat, or upload — e.g. "Everyone says the board will never approve this"',
+    'flywheel':         'Type, chat, or upload — e.g. "Our users love it but growth has stalled"'
 };
 
 // Exercise arc descriptions for activity brief cards
@@ -514,30 +514,7 @@ const TOOL_PROGRAM_FALLBACK = {
     segment: 'founder'
 };
 
-// Tool-specific starter prompts (shown below input at session start)
-const STARTER_PROMPTS = {
-    'five-whys': ['Tell me about a problem that keeps coming back', 'Something in my team isn\'t working and I can\'t figure out why'],
-    'empathy-map': ['I need to understand how my customers actually feel', 'My stakeholders keep resisting a change I\'m proposing'],
-    'jtbd': ['I want to understand what job my product is really doing', 'Customers are using my product in ways I didn\'t expect'],
-    'socratic': ['Everyone says the board will never approve this', 'I\'ve been told our market is too small — but is it?'],
-    'iceberg': ['We keep losing our best people and nothing we try fixes it', 'The same kind of problem keeps happening no matter what we do'],
-    'crazy-8s': ['I need fresh ideas for a problem I\'ve been stuck on', 'Help me brainstorm — I want quantity, not quality'],
-    'hmw': ['I have a problem but I\'m not sure how to reframe it', 'Turn my frustration into an opportunity question'],
-    'scamper': ['I have an existing product I want to reinvent', 'Help me stretch this idea in unexpected directions'],
-    'mash-up': ['I keep solving this the same way and it\'s not working', 'My industry is stuck — I want a completely fresh angle'],
-    'analogical': ['I keep solving this the same way and it\'s not working', 'My industry is stuck — I want a completely fresh angle'],
-    'constraint-flip': ['We have no marketing budget and our competitors spend millions', 'I keep apologising for our limitations in pitches'],
-    'pre-mortem': ['We\'re about to launch — what could go wrong?', 'I need to stress-test this plan before we commit'],
-    'devils-advocate': ['I need someone to poke holes in this idea', 'I want to face all five adversaries — bring the gauntlet'],
-    'cold-open': ['I need to practise interviewing potential customers', 'I keep pitching when I should be listening'],
-    'reality-check': ['I need to know if this idea has any fatal flaws', 'Stress-test my product across value, usability, feasibility, and viability'],
-    'trade-off': ['We have too many features and can\'t prioritise', 'Every stakeholder says their feature is essential'],
-    'lean-canvas': ['I have a business idea I want to map out', 'Help me pressure-test my business model'],
-    'effectuation': ['I want to start something but don\'t know where', 'I have skills and connections but no clear plan'],
-    'rapid-experiment': ['I have an idea but I\'m not sure which assumption to test first', 'Help me find my riskiest assumption and design a test for it'],
-    'flywheel': ['Growth has stalled and I can\'t figure out why', 'I can describe what we do but not why it compounds'],
-    'theory-of-change': ['I need to show funders how our work creates impact', 'There\'s a gap between what we do and what we hope happens']
-};
+// Starter prompts removed — users type, chat, or upload directly
 
 // Expected exchange counts per exercise (for progress indicator)
 const EXERCISE_EXCHANGES = {
@@ -627,6 +604,7 @@ const state = {
     board: { cards: [], visible: false },  // workshop board state
     boardMode: 'default',  // 'default' | 'lean-canvas'
     pitch: { customer: null, problem: null, solution: null, benefit: null, differentiator: null },  // elevator pitch components
+    tradeOffRound: 0,  // counts BUNDLE tags rendered for trade-off progress
     wrapped: false,  // true when [WRAP] signal received — hides Help/Challenge buttons
     userEmail: localStorage.getItem('wade_user_email') || '',  // persisted for memory
     deviceId: localStorage.getItem('wade_device_id') || ''  // anonymous identity for memory
@@ -936,31 +914,7 @@ $$('.card-exercise-btn').forEach(btn => {
 });
 
 
-// Render tool-specific starter prompt pills below input
-function renderStarterPrompts(exercise) {
-    const existing = document.getElementById('starterPrompts');
-    if (existing) existing.remove();
-    const prompts = STARTER_PROMPTS[exercise];
-    if (!prompts || prompts.length === 0) return;
-    const container = document.createElement('div');
-    container.id = 'starterPrompts';
-    container.className = 'starter-prompts';
-    prompts.forEach(text => {
-        const btn = document.createElement('button');
-        btn.className = 'starter-prompt-pill';
-        btn.textContent = text;
-        btn.addEventListener('click', () => {
-            container.remove();
-            sendMessage(text);
-        });
-        container.appendChild(btn);
-    });
-    const inputForm = document.getElementById('inputForm');
-    if (inputForm) inputForm.parentNode.insertBefore(container, inputForm);
-    // Auto-remove after first user message
-    const removeOnMessage = () => { container.remove(); };
-    document.getElementById('inputForm')?.addEventListener('submit', removeOnMessage, { once: true });
-}
+// Starter prompts removed — users type, chat, or upload directly
 
 function startExercise(mode, exercise, startMsg = null) {
     trackEvent('tool_start', { tool: exercise });
@@ -1005,7 +959,7 @@ function startExercise(mode, exercise, startMsg = null) {
     state.mode = mode;
     state.exercise = exercise;
     state.messages = [];
-    state.exchangeCount = 0;
+    state.exchangeCount = 0; state.tradeOffRound = 0;
     state.reportGenerated = false;
     state.reportText = '';
     state.routing = false;
@@ -1059,9 +1013,6 @@ function startExercise(mode, exercise, startMsg = null) {
     document.querySelectorAll('.report-actions').forEach(bar => bar.classList.add('hidden'));
     $('#reportLinkedInBtn')?.classList.add('hidden');
     routingBack.classList.add('hidden');
-
-    // Show tool-specific starter prompts (expect card removed — activity brief is sufficient)
-    renderStarterPrompts(exercise);
 
     // Switch board layout based on exercise — custom boards for structured tools
     const customLayouts = ['lean-canvas', 'elevator-pitch', 'pre-mortem', 'effectuation', 'flywheel', 'cold-open', 'iceberg', 'constraint-flip', 'socratic', 'reality-check', 'theory-of-change', 'trade-off', 'five-whys', 'empathy-map', 'jtbd', 'crazy-8s', 'hmw', 'scamper', 'devils-advocate', 'rapid-experiment', 'mash-up', 'analogical'];
@@ -1122,7 +1073,7 @@ function forceCloseSession() {
     state.mode = null;
     state.exercise = null;
     state.messages = [];
-    state.exchangeCount = 0;
+    state.exchangeCount = 0; state.tradeOffRound = 0;
     state.reportGenerated = false;
     state.reportText = '';
     delete document.body.dataset.mode;
@@ -1136,7 +1087,7 @@ function forceCloseSession() {
     messagesEl.innerHTML = '';
     inputField.value = '';
     inputField.disabled = false;
-    inputField.placeholder = 'Describe your challenge or idea...';
+    inputField.placeholder = 'Type, chat, or upload your challenge...';
     sendBtn.disabled = true;
     modeLabel.textContent = 'The Studio · ';
     if (toolLearnLink) toolLearnLink.classList.add('hidden');
@@ -1184,7 +1135,7 @@ function forceCloseSession() {
     document.getElementById('postSessionScreen')?.remove();
     // Hide input bar on welcome
     if (inputArea) inputArea.style.display = 'none';
-    document.body.classList.remove('in-session', 'board-open');
+    document.body.classList.remove('in-session', 'board-open', 'session-complete');
     clearSession();
 }
 
@@ -1221,7 +1172,7 @@ function doCloseSession() {
     state.mode = null;
     state.exercise = null;
     state.messages = [];
-    state.exchangeCount = 0;
+    state.exchangeCount = 0; state.tradeOffRound = 0;
     state.reportGenerated = false;
     state.reportText = '';
     delete document.body.dataset.mode;
@@ -1255,7 +1206,7 @@ function doCloseSession() {
     // Clear messages, input, report elements, and project context
     messagesEl.innerHTML = '';
     inputField.value = ''; sendBtn.disabled = true;
-    inputField.placeholder = 'Describe your challenge or idea...';
+    inputField.placeholder = 'Type, chat, or upload your challenge...';
     modeLabel.textContent = 'The Studio · ';
     if (toolLearnLink) toolLearnLink.classList.add('hidden');
     state.rating = null;
@@ -1273,7 +1224,7 @@ function doCloseSession() {
     routingBack.classList.add('hidden');
     state.projectContext = [];
     state.routing = false;
-    document.body.classList.remove('in-session', 'board-open');
+    document.body.classList.remove('in-session', 'board-open', 'session-complete');
     clearSession();
 }
 
@@ -1287,7 +1238,7 @@ function swapToTool(mode, exercise, swapEl) {
     // Update state (keep projectContext and routing as-is)
     state.mode = mode;
     state.exercise = exercise;
-    state.exchangeCount = 0;
+    state.exchangeCount = 0; state.tradeOffRound = 0;
     state.reportGenerated = false;
     state.reportText = '';
 
@@ -1352,7 +1303,7 @@ function enterStudio() {
     state.exercise = 'suggest';
     state.routing = true;
     state.messages = [];
-    state.exchangeCount = 0;
+    state.exchangeCount = 0; state.tradeOffRound = 0;
     state.reportGenerated = false;
     state.reportText = '';
 
@@ -1367,7 +1318,7 @@ function enterStudio() {
     moveInputToSession();
     modeLabel.textContent = 'The Studio · ';
     if (toolLearnLink) toolLearnLink.classList.add('hidden');
-    inputField.placeholder = 'Type your response...';
+    inputField.placeholder = 'Type, chat, or upload...';
 
     // Send a silent kickoff — never shown to user
     state.messages.push({ role: 'user', content: '[SYSTEM] User has just entered The Studio. Welcome them as Pete and run an icebreaker. Do not reference this message.' });
@@ -1378,8 +1329,7 @@ function enterStudio() {
     streamResponse().then(() => {
         // Show input after Pete's first message arrives
         if (inputArea) inputArea.style.display = '';
-        // Show routing prompt pills for generic entry
-        renderRoutingPrompts();
+        // Prompt pills removed — user types directly
     });
 }
 
@@ -1423,7 +1373,7 @@ function startRouting(text) {
     state.exercise = 'suggest';
     state.routing = true;
     state.messages = [];
-    state.exchangeCount = 0;
+    state.exchangeCount = 0; state.tradeOffRound = 0;
     state.reportGenerated = false;
     state.reportText = '';
 
@@ -1453,7 +1403,7 @@ routingBackBtn.addEventListener('click', () => {
     state.mode = null;
     state.exercise = null;
     state.messages = [];
-    state.exchangeCount = 0;
+    state.exchangeCount = 0; state.tradeOffRound = 0;
     state.reportGenerated = false;
     state.reportText = '';
     state.routing = false;
@@ -1462,7 +1412,7 @@ routingBackBtn.addEventListener('click', () => {
     moveInputToWelcome();
     messagesEl.innerHTML = '';
     inputField.value = ''; sendBtn.disabled = true;
-    inputField.placeholder = 'Describe your challenge or idea...';
+    inputField.placeholder = 'Type, chat, or upload your challenge...';
     modeLabel.textContent = 'The Studio · ';
     if (toolLearnLink) toolLearnLink.classList.add('hidden');
     routingBack.classList.add('hidden');
@@ -2012,7 +1962,6 @@ async function streamResponse() {
                         updateBreadcrumbDropdown();
                         // Hide report CTA during exercise
                         reportCta.classList.add('hidden');
-                        // Remove starter prompts if any
                         document.getElementById('starterPrompts')?.remove();
                         saveSession();
                         suggestedKeys = []; // Don't render buttons — already started
@@ -2183,6 +2132,12 @@ async function streamResponse() {
                 const tagKey = tm[1].trim().toLowerCase();
                 const tagText = tm[2].trim();
                 const zone = toolMap[tagKey] || tagKey;
+                // Tally zone: replace content instead of accumulating
+                if (zone === 'to-tally') {
+                    state.board.cards = state.board.cards.filter(c => c.zone !== 'to-tally');
+                    const zoneEl = document.querySelector(`.zone-cards[data-zone="to-tally"]`);
+                    if (zoneEl) zoneEl.innerHTML = '';
+                }
                 addBoardCard(tagText, zone, state.mode, EXERCISE_LABELS[state.exercise] || state.exercise);
             }
             fullText = fullText.replace(/\n?\[BOARD:[a-z0-9_-]+:\s*[^\]]+\]/g, '').trim();
@@ -2193,6 +2148,8 @@ async function streamResponse() {
         const bundleRegex = /\[BUNDLE:([^\]]+)\]/g;
         for (const bm of fullText.matchAll(bundleRegex)) {
             renderBundleCards(bm[1].trim(), messagesEl);
+            state.tradeOffRound++;
+            updateProgressIndicator();
         }
         fullText = fullText.replace(/\n?\[BUNDLE:[^\]]+\]/g, '').trim();
 
@@ -3365,6 +3322,7 @@ async function startPostSessionFlow() {
         loadingScreen.classList.add('hidden');
 
         // ---- Screen 2: Reveal ----
+        document.body.classList.add('session-complete');
         const revealScreen = document.getElementById('postSessionReveal');
         revealScreen.classList.remove('hidden');
         revealScreen.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -3552,7 +3510,7 @@ function transitionToPostDownload() {
 
     // Confirmation subtitle
     const confirmSub = document.getElementById('psConfirmSubtitle');
-    if (confirmSub && email) confirmSub.textContent = `Word report, PowerPoint deck, and SVG sent to ${email}`;
+    if (confirmSub && email) confirmSub.textContent = `PDF report sent to ${email}`;
 
     // Pete Recommends Next — 3 tool cards
     const nextTools = document.getElementById('psNextTools');
@@ -3701,6 +3659,20 @@ function updatePhaseIndicator(phase) {
 function updateProgressIndicator() {
     const el = document.getElementById('progressIndicator');
     if (!el || !state.exercise) return;
+
+    // Trade-Off: show round-based progress instead of exchange count
+    if (state.exercise === 'trade-off') {
+        const round = state.tradeOffRound;
+        if (round === 0) {
+            el.innerHTML = `<span class="progress-count">Setup</span><div class="progress-bar-track"><div class="progress-bar-fill" style="width:0%"></div></div>`;
+        } else {
+            const pct = Math.min(100, Math.round((round / 10) * 100));
+            el.innerHTML = `<span class="progress-count">Round ${round} of 10</span><div class="progress-bar-track"><div class="progress-bar-fill" style="width:${pct}%"></div></div>`;
+        }
+        el.classList.remove('hidden');
+        return;
+    }
+
     const expected = EXERCISE_EXCHANGES[state.exercise] || 8;
     const current = state.exchangeCount;
     const pct = Math.min(100, Math.round((current / expected) * 100));
@@ -3960,6 +3932,7 @@ const BOARD_LAYOUTS = {
     'trade-off': {
         zones: [
             { id: 'to-features', name: 'All Features', empty: 'The full offer, deconstructed', hint: '5 dimensions with 3 levels each', colour: 'pink' },
+            { id: 'to-tally', name: 'Running Tally', empty: 'Win counts update after each round', hint: 'Which features are winning?', colour: 'pink' },
             { id: 'to-rounds', name: 'Trade-Off Rounds', empty: 'Package A vs Package B', hint: 'Each round forces a sacrifice', colour: 'pink' },
             { id: 'to-musthave', name: 'Must-Have', empty: 'Won 7-10 rounds', hint: 'Core value — customers always choose this', colour: 'pink' },
             { id: 'to-nicetohave', name: 'Nice-to-Have', empty: 'Won 4-6 rounds', hint: 'Valuable but tradeable', colour: 'pink' },
@@ -4126,7 +4099,7 @@ const TOC_TAG_MAP = {
     'activity': 'toc-activities', 'weakest': 'toc-weakest'
 };
 const TRADEOFF_TAG_MAP = {
-    'feature': 'to-features', 'round': 'to-rounds',
+    'feature': 'to-features', 'round': 'to-rounds', 'tally': 'to-tally',
     'must-have': 'to-musthave', 'nice-to-have': 'to-nicetohave',
     'expendable': 'to-expendable', 'surprise': 'to-surprise',
     'mvo': 'to-mvo', 'minimum-viable': 'to-mvo'
@@ -4566,6 +4539,7 @@ function toggleBoard() {
         renderBoard();
     } else {
         layout.classList.remove('board-active');
+        layout.style.gridTemplateColumns = '';
         boardPane.classList.add('hidden');
         toggleBtn?.classList.remove('active');
         document.body.classList.remove('board-open');
@@ -4665,6 +4639,39 @@ document.addEventListener('DOMContentLoaded', () => {
         boardMaxBtn.textContent = isMax ? '⛶' : '⛶';
         boardMaxBtn.title = isMax ? 'Restore board' : 'Maximise board';
     });
+
+    // Board resize handle
+    const resizeHandle = document.getElementById('boardResizeHandle');
+    if (resizeHandle) {
+        let startX = 0, startChatWidth = 0, layoutWidth = 0;
+        const onMouseMove = (e) => {
+            const dx = e.clientX - startX;
+            const chatFr = Math.max(0.2, Math.min(0.8, (startChatWidth + dx) / layoutWidth));
+            const boardFr = 1 - chatFr;
+            const layout = document.getElementById('workshopLayout');
+            if (layout) layout.style.gridTemplateColumns = `${chatFr}fr 6px ${boardFr}fr`;
+        };
+        const onMouseUp = () => {
+            document.removeEventListener('mousemove', onMouseMove);
+            document.removeEventListener('mouseup', onMouseUp);
+            document.body.classList.remove('board-resizing');
+            resizeHandle.classList.remove('dragging');
+        };
+        resizeHandle.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            const layout = document.getElementById('workshopLayout');
+            if (!layout) return;
+            const chatPane = document.getElementById('chatPane');
+            if (!chatPane) return;
+            startX = e.clientX;
+            startChatWidth = chatPane.getBoundingClientRect().width;
+            layoutWidth = layout.getBoundingClientRect().width;
+            document.body.classList.add('board-resizing');
+            resizeHandle.classList.add('dragging');
+            document.addEventListener('mousemove', onMouseMove);
+            document.addEventListener('mouseup', onMouseUp);
+        });
+    }
 
     // Init drag-drop on default zones
     initBoardDragDrop();
@@ -5457,34 +5464,7 @@ const TOOL_DESCRIPTIONS = {
 
 // showExpectCard removed — activity-brief card is the single intro card
 
-// === GENERIC ROUTING PROMPT PILLS ===
-const ROUTING_PROMPTS = [
-    { text: 'I have a problem I can\'t get to the bottom of', category: 'untangle' },
-    { text: 'I need fresh ideas for something I\'m working on', category: 'spark' },
-    { text: 'I have a plan and I want to stress-test it', category: 'test' }
-];
-
-function renderRoutingPrompts() {
-    const existing = document.getElementById('starterPrompts');
-    if (existing) existing.remove();
-    const container = document.createElement('div');
-    container.id = 'starterPrompts';
-    container.className = 'starter-prompts';
-    ROUTING_PROMPTS.forEach(p => {
-        const btn = document.createElement('button');
-        btn.className = 'starter-prompt-pill';
-        btn.textContent = p.text;
-        btn.addEventListener('click', () => {
-            container.remove();
-            sendMessage(p.text);
-        });
-        container.appendChild(btn);
-    });
-    const inputForm = document.getElementById('inputForm');
-    if (inputForm) inputForm.parentNode.insertBefore(container, inputForm);
-    // Auto-remove after first user message
-    inputForm?.addEventListener('submit', () => container.remove(), { once: true });
-}
+// Routing prompt pills removed — users type directly
 
 // === BOARD NUDGE ===
 let boardNudgeShown = false;

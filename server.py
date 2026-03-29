@@ -1500,15 +1500,29 @@ ROUND DIFFICULTY PROGRESSION:
 - Round 10: The killer round. Strip everything to the bone — bare minimum vs. one premium feature at a steep price.
 
 PETE'S SCRIPT DURING ROUNDS:
-- Before Round 1: "10 rounds. Quick choices. Pick the one your customer would actually buy. Let's go." Then immediately present Round 1.
-- After each user choice: say ONLY "Round N." and present the next bundle. NO analysis, NO "interesting", NO "why did you choose that", NO observations. The silence is the design.
-- After Round 5: "Halfway. Keep going." Then immediately present Round 6.
+- Before Round 1: "10 rounds. Quick choices. Pick the one your customer would actually buy. Let's go." Then immediately present Round 1's [BUNDLE:...] tag IN THE SAME MESSAGE.
+- After each user choice: say ONLY "Round N." and present the next [BUNDLE:...] tag IN THE SAME MESSAGE. NO analysis, NO "interesting", NO "why did you choose that", NO observations. The silence is the design.
+- After Round 5: "Halfway. Keep going." Then immediately present Round 6's [BUNDLE:...] tag IN THE SAME MESSAGE.
 - If the user hesitates or starts explaining: ignore the explanation and present the next round immediately. Do NOT acknowledge explanations.
 - After Round 10 choice: "Done. 10 rounds, 10 choices. Let me show you what the pattern says."
 
+CRITICAL — EVERY ROUND MESSAGE MUST CONTAIN A [BUNDLE:...] TAG:
+- Never send a round announcement without its bundle. "Round 7." alone is NOT acceptable.
+- The round label and the [BUNDLE:...] tag must be in ONE response. Never split them across messages.
+- If you're about to write "Round N." — the [BUNDLE:...] tag MUST immediately follow in the same message.
+- ALL 10 rounds must emit a [BUNDLE:...] tag. No exceptions. Rounds 7-10 are just as critical as Rounds 1-6.
+
+AMBIGUOUS INPUT DURING ROUNDS:
+- Valid round responses are ONLY messages that clearly indicate Package A or Package B (e.g., "Package A", "The Lean Build", "I'd choose the first one").
+- If the user's message does NOT clearly select a package (e.g., "show me round 7", "continue", "what's next", "tell me more"), do NOT interpret it as a selection. Instead, re-present the current round's [BUNDLE:...] tag.
+- NEVER fabricate or infer a choice the user did not make. If unclear, ask: "Which package — A or B?"
+
 TRACKING: Track wins internally. For each round, note which bundle was chosen and which was rejected. For each category, count how many times the user chose the bundle containing the HIGHER level of that category.
 
-After the user's Round 10 choice, emit:
+After EACH round choice (not just Round 10), emit a running tally tag:
+[BOARD:tally: Round N — Cat1: X wins, Cat2: X wins, Cat3: X wins, Cat4: X wins, Cat5: X wins]
+
+After the user's Round 10 choice, also emit:
 [BOARD:round: Rounds complete — 10 trade-offs recorded]
 
 ## PHASE 3: THE ANALYSIS (~3 minutes, single message)
@@ -5257,7 +5271,7 @@ def _notify_wade(lead):
     <p style="margin:3px 0 0;color:rgba(255,255,255,0.85);font-size:12px;">{lead['mode']} &middot; {lead['exercise']}</p>
   </div>
   <div style="border:1px solid #e0e0e0;border-top:none;border-radius:0 0 6px 6px;padding:22px;">
-    <p style="font-size:14px;color:#444;margin:0 0 18px;">Hi {user_name}, here's your Wade Studio workshop session. Your Word report, PowerPoint deck, and SVG visual were downloaded during your session &mdash; this email has your full report for reference.</p>
+    <p style="font-size:14px;color:#444;margin:0 0 18px;">Hi {user_name}, here's your Wade Studio workshop session. Your PDF report was downloaded during your session &mdash; this email has your full report for reference.</p>
     <div style="font-family:Georgia,serif;font-size:13.5px;line-height:1.7;color:#222;">{report_html}</div>
     <div style="margin-top:28px;padding:16px 18px;border:1.5px solid #F15A22;border-radius:5px;background:#fdf9f7;">
       <p style="font-size:8.5px;font-weight:bold;letter-spacing:0.12em;text-transform:uppercase;color:#F15A22;margin:0 0 6px;">Ready to go deeper?</p>
