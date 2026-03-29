@@ -615,6 +615,20 @@ html[data-theme="light"] .breadcrumb-toolbox-link { border-top-color: rgba(0,0,0
     color: var(--text-dim);
 }
 
+.session-save-icon {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-dim);
+    padding: 0.3rem;
+    margin-left: 0.5rem;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+    display: flex;
+    align-items: center;
+}
+.session-save-icon:hover { opacity: 1; color: var(--accent); }
+
 .session-close {
     background: none;
     border: 1px solid rgba(255,255,255,0.1);

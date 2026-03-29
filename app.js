@@ -1670,7 +1670,9 @@ function restoreSession(session) {
         parkingLot: session.parkingLot || [],
         board: session.board || { cards: [], visible: false },
         routing: false,
-        rating: null
+        rating: null,
+        resumed: true,
+        resumedExchangeCount: session.exchangeCount || 0
     });
     // Migrate old parking lot items to board if board has no parking cards
     if (state.parkingLot.length > 0 && !state.board.cards.some(c => c.zone === 'parking')) {
@@ -1829,7 +1831,9 @@ async function streamResponse() {
                 project_context: state.projectContext,
                 push_harder: state.pushHarder,
                 user_email: state.userEmail,
-                device_id: state.deviceId
+                device_id: state.deviceId,
+                resumed: state.resumed || false,
+                resumed_exchange_count: state.resumedExchangeCount || 0
             })
         });
 
@@ -1910,6 +1914,12 @@ async function streamResponse() {
             agentDiv.after(chipRow);
             scrollToBottom();
         }
+    }
+
+    // Clear resumed flag after first response so subsequent messages are normal
+    if (state.resumed) {
+        state.resumed = false;
+        state.resumedExchangeCount = 0;
     }
 
     // Save assistant response
@@ -2498,6 +2508,19 @@ async function generateReport() {
         setTimeout(() => {
             synopsisCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }, 200);
+
+        // Post-report save prompt — offer to email session link if no email on file
+        if (!state.userEmail) {
+            setTimeout(() => {
+                const saveOverlay = document.getElementById('saveModalOverlay');
+                const saveEmail = document.getElementById('saveModalEmail');
+                if (saveOverlay) { saveOverlay.classList.remove('hidden'); saveOverlay.setAttribute('aria-hidden', 'false'); }
+                if (saveEmail) saveEmail.focus();
+            }, 2500);
+        }
+
+        // Final auto-save with report status
+        autoSaveSessionSummary();
 
     } catch (err) {
         progress.error();
@@ -5096,6 +5119,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if (emailInput) emailInput.focus();
     });
 
+    // Save icon in session bar — also opens save modal
+    const saveIcon = document.getElementById('sessionSaveIcon');
+    if (saveIcon) saveIcon.addEventListener('click', () => {
+        if (overlay) { overlay.classList.remove('hidden'); overlay.setAttribute('aria-hidden', 'false'); }
+        if (emailInput) emailInput.focus();
+    });
+
     // Close modal
     function closeSaveModal() {
         if (overlay) { overlay.classList.add('hidden'); overlay.setAttribute('aria-hidden', 'true'); }
@@ -5784,9 +5814,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Exit protection — warn before closing tab during active session
 window.addEventListener('beforeunload', (e) => {
-    if (state.mode && state.mode !== 'routing' && state.messages.length > 2 && !state.reportGenerated) {
-        e.preventDefault();
-        e.returnValue = '';
+    if (state.mode && state.mode !== 'routing' && state.messages.length > 2) {
+        autoSaveSessionSummary(); // fire-and-forget save before leaving
+        if (!state.reportGenerated) {
+            e.preventDefault();
+            e.returnValue = '';
+        }
     }
 });
 

@@ -139,10 +139,21 @@
     </style>
 </head>
 <body>
-    <div class="tool-page-header">
-        <a href="/"><img src="logo.png" alt="Wade Institute of Entrepreneurship"></a>
-        <a href="toolbox.html">&larr; All tools</a>
-    </div>
+    <header class="header">
+        <a href="index.html"><img class="logo" src="logo.png" alt="Wade Institute"></a>
+        <nav class="header-nav">
+            <a class="header-nav-link" href="index.html">The Studio</a>
+            <a class="header-nav-link active" href="toolbox.html">Toolbox</a>
+            <a class="header-nav-link" href="sessions.html">Sessions</a>
+            <a class="header-nav-link" href="#" id="navFeedbackBtn">Feedback</a>
+        </nav>
+        <div class="header-controls">
+            <button class="text-size-btn" id="textSizeToggle" title="Adjust text size">Aa</button>
+            <button class="theme-toggle" id="themeToggle" title="Toggle light/dark mode" aria-label="Toggle light/dark mode">
+                <span class="theme-icon">☀</span>
+            </button>
+        </div>
+    </header>
 
     <div class="tool-page" id="toolPage">
         <!-- Populated by JS -->

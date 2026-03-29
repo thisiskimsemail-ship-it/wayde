@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link rel="preload" href="fonts/GT-Walsheim-Regular.woff" as="font" type="font/woff" crossorigin>
     <link rel="preload" href="banner.webp" as="image" type="image/webp">
-    <link rel="stylesheet" href="styles.css?v=166">
+    <link rel="stylesheet" href="styles.css?v=167">
 </head>
 <body>
 
@@ -66,9 +66,6 @@
                     <a class="help-menu-item" href="https://wadeinstitute.org.au/contact" target="_blank" rel="noopener" role="menuitem">Contact Wade Institute</a>
                 </div>
             </div>
-            <button class="header-save-btn hidden" id="saveSessionBtn" title="Save session" aria-label="Save session">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-            </button>
         </div>
     </header>
 
@@ -98,6 +95,9 @@
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
             <span class="board-label">Board</span>
             <span class="board-count hidden" id="boardCount">0</span>
+        </button>
+        <button class="session-save-icon" id="sessionSaveIcon" title="Save session to email" aria-label="Save session">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
         </button>
         <button class="session-close" id="sessionClose" title="Back to menu" aria-label="Close session">✕</button>
     </div>
@@ -820,6 +820,6 @@
         <button class="feedback-submit" id="feedbackSubmit">Send feedback</button>
     </div>
 
-    <script src="app.js?v=187"></script>
+    <script src="app.js?v=188"></script>
 </body>
 </html>

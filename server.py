@@ -99,6 +99,7 @@ def init_db():
             ALTER TABLE session_summaries ADD COLUMN IF NOT EXISTS expires_at TIMESTAMPTZ;
             ALTER TABLE session_summaries ADD COLUMN IF NOT EXISTS save_type TEXT DEFAULT 'auto';
             ALTER TABLE session_summaries ADD COLUMN IF NOT EXISTS short_id TEXT UNIQUE;
+            ALTER TABLE session_summaries ADD COLUMN IF NOT EXISTS status TEXT DEFAULT 'active';
 
             CREATE TABLE IF NOT EXISTS analytics_events (
                 id BIGSERIAL PRIMARY KEY,
@@ -161,6 +162,30 @@ def get_recent_sessions(device_id, limit=3):
         print(f"[DB] get_sessions error: {e}")
         if conn: conn.close()
         return []
+
+
+def get_email_for_device(device_id):
+    """Get email from founder_profiles or session_summaries for a device."""
+    conn = get_db()
+    if not conn:
+        return None
+    try:
+        cur = conn.cursor()
+        cur.execute("SELECT user_email FROM founder_profiles WHERE device_id = %s AND user_email IS NOT NULL", (device_id,))
+        row = cur.fetchone()
+        if row and row[0]:
+            cur.close()
+            conn.close()
+            return row[0]
+        cur.execute("SELECT user_email FROM session_summaries WHERE device_id = %s AND user_email IS NOT NULL ORDER BY session_date DESC LIMIT 1", (device_id,))
+        row = cur.fetchone()
+        cur.close()
+        conn.close()
+        return row[0] if row else None
+    except Exception as e:
+        print(f"[DB] get_email_for_device error: {e}")
+        if conn: conn.close()
+        return None
 
 
 def update_session_summary(session_id, summary_data, session_data=None):
@@ -230,8 +255,8 @@ def save_session_summary(device_id, summary_data, email=None, update_profile=Tru
             INSERT INTO session_summaries (device_id, user_email, profile_id, mode, topic, key_insight,
                 assumptions_tested, decisions_made, open_questions,
                 suggested_next_step, suggested_next_tool, conversation_summary, board_cards,
-                session_data, exercise)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                session_data, exercise, expires_at)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, now() + interval '30 days')
             RETURNING id
         """, (
             device_id, email, profile_id,
@@ -2294,6 +2319,20 @@ def chat():
         memory_block = format_memory_for_prompt(device_id)
         if memory_block:
             system_prompt += memory_block
+
+    # Resumed session — inject context so Pete acknowledges where they left off
+    resumed = data.get('resumed', False)
+    if resumed:
+        resumed_exchanges = data.get('resumed_exchange_count', 0)
+        system_prompt += (
+            "\n\n---\n\nRESUMED SESSION: This user is returning to a session they started earlier. "
+            f"They had {resumed_exchanges} exchanges before leaving. "
+            "The full conversation history is in the messages array. "
+            "Welcome them back warmly and briefly. Reference where they left off — "
+            "name the specific topic or question you were exploring. "
+            "Then ask if they want to pick up from there or take a different direction. "
+            "Do NOT re-introduce the exercise or repeat your opening. Keep it concise."
+        )
 
     # In routing mode: force a recommendation after the user has replied once
     if mode == 'routing' and len([m for m in messages if m.get('role') == 'user']) >= 2:
@@ -5521,6 +5560,19 @@ def generate_session_summary():
                 # Create new session row
                 result_id = save_session_summary(device_id, summary_data, email=email, update_profile=is_final, session_data=session_data, exercise=exercise)
 
+            # Mark session as completed when report is generated
+            if is_final and result_id:
+                try:
+                    conn2 = get_db()
+                    if conn2:
+                        cur2 = conn2.cursor()
+                        cur2.execute("UPDATE session_summaries SET status = 'completed' WHERE id = %s", (result_id,))
+                        conn2.commit()
+                        cur2.close()
+                        conn2.close()
+                except Exception as e2:
+                    print(f"[DB] status update error: {e2}")
+
         return jsonify({'summary': summary_data, 'session_id': str(result_id) if result_id else None})
 
     except json.JSONDecodeError as e:
@@ -5761,7 +5813,9 @@ def list_sessions():
         cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
         cur.execute("""
             SELECT id, short_id, mode, exercise, topic, key_insight, conversation_summary,
-                   save_type, created_at, session_date, (session_data IS NOT NULL) as resumable
+                   save_type, status, created_at, session_date, (session_data IS NOT NULL) as resumable,
+                   COALESCE(session_data->>'exchangeCount', '0') as exchange_count,
+                   COALESCE((session_data->>'reportGenerated')::boolean, false) as has_report
             FROM session_summaries
             WHERE device_id = %s
             ORDER BY session_date DESC
@@ -5809,6 +5863,107 @@ def delete_session(session_id):
         return jsonify({'deleted': True})
     except Exception as e:
         print(f"[DB] delete_session error: {e}")
+        if conn: conn.close()
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/cron/expire-sessions', methods=['POST'])
+def expire_old_sessions():
+    """Mark expired sessions and clean up old data. Called by external cron."""
+    auth = request.headers.get('Authorization', '')
+    if auth != f"Bearer {os.environ.get('CRON_SECRET', '')}":
+        return jsonify({'error': 'unauthorized'}), 401
+    conn = get_db()
+    if not conn:
+        return jsonify({'error': 'Database unavailable'}), 500
+    try:
+        cur = conn.cursor()
+        # Mark sessions past expires_at as expired
+        cur.execute("""
+            UPDATE session_summaries SET status = 'expired'
+            WHERE expires_at IS NOT NULL AND expires_at < now() AND status != 'expired'
+        """)
+        expired = cur.rowcount
+        # Clear session_data for sessions older than 90 days (keep summary row for analytics)
+        cur.execute("""
+            UPDATE session_summaries SET session_data = NULL
+            WHERE created_at < now() - interval '90 days' AND session_data IS NOT NULL
+        """)
+        cleaned = cur.rowcount
+        conn.commit()
+        cur.close()
+        conn.close()
+        print(f"[CRON] Expired {expired} sessions, cleaned {cleaned} old data")
+        return jsonify({'expired': expired, 'cleaned': cleaned})
+    except Exception as e:
+        print(f"[CRON] expire error: {e}")
+        if conn: conn.close()
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/cron/abandoned-sessions', methods=['POST'])
+def send_abandoned_session_emails():
+    """Send follow-up emails for sessions with auto-save data but no report after 24h."""
+    auth = request.headers.get('Authorization', '')
+    if auth != f"Bearer {os.environ.get('CRON_SECRET', '')}":
+        return jsonify({'error': 'unauthorized'}), 401
+    conn = get_db()
+    if not conn:
+        return jsonify({'error': 'Database unavailable'}), 500
+    try:
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        cur.execute("""
+            SELECT id, device_id, exercise, topic, short_id, session_data
+            FROM session_summaries
+            WHERE status = 'active'
+              AND session_data IS NOT NULL
+              AND COALESCE((session_data->>'reportGenerated')::boolean, false) = false
+              AND created_at < now() - interval '24 hours'
+              AND created_at > now() - interval '48 hours'
+              AND save_type = 'magic_link'
+              AND COALESCE(session_data->>'abandonedEmailSent', '') != 'true'
+        """)
+        sessions = cur.fetchall()
+        sent = 0
+        resend_key = os.environ.get('RESEND_API_KEY', '')
+        if not resend_key:
+            cur.close()
+            conn.close()
+            return jsonify({'error': 'RESEND_API_KEY not configured', 'sent': 0})
+
+        for s in sessions:
+            email = get_email_for_device(s['device_id'])
+            if not email:
+                continue
+            short_id = s['short_id'] or str(s['id'])
+            tool_name = EXERCISE_NAMES.get(s['exercise'], s.get('exercise') or 'your session')
+            topic = s.get('topic', '')
+            resume_url = f"{request.host_url}s/{short_id}"
+
+            subject = f"Pick up where you left off — {tool_name}"
+            html = (
+                f'<p>You started a <strong>{tool_name}</strong> session'
+                f'{(" on &ldquo;" + topic + "&rdquo;") if topic else ""} but didn\'t finish.</p>'
+                f'<p><a href="{resume_url}">Resume your session →</a></p>'
+                f'<p>Your progress is saved — Pete remembers exactly where you were.</p>'
+            )
+
+            _resend_send_email(resend_key, 'enquiries@wadeinstitute.org.au', email, subject, html)
+            # Mark as sent so we don't email again
+            cur.execute("""
+                UPDATE session_summaries
+                SET session_data = jsonb_set(COALESCE(session_data, '{}'), '{abandonedEmailSent}', '"true"')
+                WHERE id = %s
+            """, (s['id'],))
+            sent += 1
+
+        conn.commit()
+        cur.close()
+        conn.close()
+        print(f"[CRON] Sent {sent} abandoned session emails")
+        return jsonify({'sent': sent})
+    except Exception as e:
+        print(f"[CRON] abandoned email error: {e}")
         if conn: conn.close()
         return jsonify({'error': str(e)}), 500
 

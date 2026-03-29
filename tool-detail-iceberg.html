@@ -45,10 +45,10 @@
     display: flex; align-items: center; justify-content: space-between;
   }
   .logo { height: 72px; width: auto; }
-  .header-nav { display: flex; gap: 12px; align-items: center; }
-  .nav-pill { font-size: 14px; font-weight: 500; padding: 8px 20px; border-radius: 100px; border: 1.5px solid rgba(255,255,255,0.25); background: transparent; color: var(--white); cursor: pointer; text-decoration: none; transition: all 0.2s; font-family: 'GT Walsheim', 'Space Grotesk', sans-serif; }
-  .nav-pill:hover { background: rgba(255,255,255,0.1); }
-  .nav-pill.active { background: var(--white); color: var(--navy); border-color: var(--white); }
+  .header-nav { display: flex; border: 1px solid rgba(255,255,255,0.12); border-radius: 999px; overflow: hidden; margin-left: auto; margin-right: 1rem; }
+  .header-nav-link { padding: 0.4rem 1.1rem; font-size: 0.8rem; font-weight: 500; color: rgba(255,255,255,0.5); text-decoration: none; transition: all 0.2s; white-space: nowrap; }
+  .header-nav-link:hover { color: #fff; background: rgba(255,255,255,0.05); }
+  .header-nav-link.active { color: #fff; background: rgba(255,255,255,0.08); }
   .nav-icon { width: 36px; height: 36px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,0.25); display: flex; align-items: center; justify-content: center; color: var(--white); font-size: 14px; text-decoration: none; }
 
   /* ── TOOL HERO ── */
@@ -411,9 +411,9 @@
   html[data-theme="light"] body { background: #f8f7f5; color: #444; }
   html[data-theme="light"] header { background: #f8f7f5; border-bottom-color: var(--orange); }
   html[data-theme="light"] .logo { color: var(--orange); }
-  html[data-theme="light"] .nav-pill { color: #1E194F; border-color: rgba(0,0,0,0.15); }
-  html[data-theme="light"] .nav-pill:hover { background: rgba(0,0,0,0.04); }
-  html[data-theme="light"] .nav-pill.active { background: #1E194F; color: #fff; border-color: #1E194F; }
+  html[data-theme="light"] .header-nav-link { color: rgba(30,25,79,0.65); }
+  html[data-theme="light"] .header-nav-link:hover { color: #1E194F; background: rgba(30,25,79,0.04); }
+  html[data-theme="light"] .header-nav-link.active { color: #1E194F; background: rgba(30,25,79,0.07); }
   html[data-theme="light"] .nav-icon { color: #1E194F; border-color: rgba(0,0,0,0.15); }
   html[data-theme="light"] .tool-hero { color: #333; }
   html[data-theme="light"] .tool-hero h1 { color: #1E194F; }
@@ -437,10 +437,10 @@
 <header class="header">
   <a href="index.html"><img class="logo" src="logo.png" alt="Wade Institute"></a>
   <nav class="header-nav">
-    <a href="index.html" class="nav-pill">The Studio</a>
-    <a href="toolbox.html" class="nav-pill active">Toolbox</a>
-    <a href="sessions.html" class="nav-pill">Sessions</a>
-    <a href="#" class="nav-pill" onclick="document.getElementById('feedbackPanel')?.classList.toggle('hidden'); return false;">Feedback</a>
+    <a href="index.html" class="header-nav-link">The Studio</a>
+    <a href="toolbox.html" class="header-nav-link active">Toolbox</a>
+    <a href="sessions.html" class="header-nav-link">Sessions</a>
+    <a href="#" class="header-nav-link" onclick="document.getElementById('feedbackPanel')?.classList.toggle('hidden'); return false;">Feedback</a>
   </nav>
   <div class="header-controls">
     <button class="text-size-btn" onclick="document.documentElement.dataset.textSize=({'':'lg','lg':'xl','xl':''}[document.documentElement.dataset.textSize||''])||''" title="Adjust text size">Aa</button>
