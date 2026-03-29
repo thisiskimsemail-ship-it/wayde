@@ -13,6 +13,92 @@
 }
 .lp-sample-link:hover { opacity: 1; text-decoration: underline; }
 
+/* === REPORT GATE MODAL === */
+.report-gate-overlay {
+    position: fixed; inset: 0; z-index: 10000;
+    background: rgba(0,0,0,0.55); display: flex; align-items: center; justify-content: center;
+}
+.report-gate-modal {
+    background: var(--bg, #fff); border-radius: 1rem; padding: 2rem;
+    max-width: 420px; width: 90%; box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+    text-align: center;
+}
+.report-gate-modal h3 { margin: 0 0 0.75rem; font-size: 1.2rem; }
+.report-gate-modal p { margin: 0 0 1.5rem; font-size: 0.95rem; opacity: 0.8; line-height: 1.5; }
+.report-gate-actions { display: flex; gap: 0.75rem; justify-content: center; }
+.report-gate-btn {
+    padding: 0.65rem 1.25rem; border-radius: 0.5rem; border: none;
+    font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: opacity 0.2s;
+}
+.report-gate-btn:hover { opacity: 0.85; }
+.report-gate-generate { background: var(--orange, #F15A22); color: #fff; }
+.report-gate-skip { background: transparent; color: var(--fg, #333); border: 1px solid var(--border, #ddd); }
+[data-mode="spark"] .report-gate-generate { background: var(--pink, #ED3694); }
+[data-mode="test"] .report-gate-generate { background: var(--teal, #27BDBE); }
+[data-mode="build"] .report-gate-generate { background: var(--yellow, #E4E517); color: #1E194F; }
+
+/* === POST-SESSION HTML BOARD === */
+.ps-board {
+    background: var(--navy, #1E194F); border-radius: 12px; overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.08);
+}
+.ps-board-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1rem 1.25rem; border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.ps-board-title {
+    font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em;
+    color: var(--orange, #F15A22); font-family: var(--font);
+}
+.ps-board-meta {
+    font-size: 0.65rem; color: rgba(255,255,255,0.4); font-family: var(--font);
+}
+.ps-board-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px;
+    background: rgba(255,255,255,0.04);
+}
+.ps-board-zone {
+    background: var(--navy, #1E194F); padding: 0.85rem 1rem;
+    min-height: 60px;
+}
+.ps-board-zone-label {
+    font-size: 0.6rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.08em; color: var(--stage-color, var(--orange));
+    margin-bottom: 0.4rem; font-family: var(--font);
+}
+[data-mode="spark"] .ps-board-zone-label { color: var(--pink, #ED3694); }
+[data-mode="test"] .ps-board-zone-label { color: var(--pink, #ED3694); }
+[data-mode="build"] .ps-board-zone-label { color: var(--yellow, #E4E517); }
+.ps-board-card {
+    font-size: 0.78rem; color: rgba(255,255,255,0.85); line-height: 1.45;
+    padding: 0.35rem 0; border-bottom: 1px solid rgba(255,255,255,0.04);
+    font-family: var(--font);
+}
+.ps-board-card:last-child { border-bottom: none; }
+.ps-board-empty {
+    font-size: 0.72rem; color: rgba(255,255,255,0.2); font-style: italic;
+    font-family: var(--font);
+}
+@media (max-width: 640px) {
+    .ps-board-grid { grid-template-columns: 1fr; }
+}
+html[data-theme="light"] .ps-board { background: #fff; border-color: rgba(0,0,0,0.08); }
+html[data-theme="light"] .ps-board-header { border-bottom-color: rgba(0,0,0,0.06); }
+html[data-theme="light"] .ps-board-grid { background: rgba(0,0,0,0.03); }
+html[data-theme="light"] .ps-board-zone { background: #fff; }
+html[data-theme="light"] .ps-board-card { color: #333; border-bottom-color: rgba(0,0,0,0.05); }
+html[data-theme="light"] .ps-board-empty { color: rgba(0,0,0,0.25); }
+
+/* === REDUCED MOTION (WCAG 2.1 AA) === */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
 /* === TRADE-OFF BOARD MOCKUP === */
 .lp-board-mock-tradeoff {
     display: grid !important; grid-template-columns: repeat(3, 1fr) !important;
@@ -57,10 +143,11 @@
 .bundle-row-alt { background: #F7F8FA; }
 .bundle-feature-name { font-weight: 500; color: #4A5568; }
 .bundle-feature-val { font-weight: 600; color: #1B2A4A; text-align: right; }
+.bundle-row-diff { border-left: 3px solid var(--teal, #3DD6C8); }
 .bundle-price-row {
     border-top: 1px solid #E0E4EB; padding: 0.6rem 0.75rem;
 }
-.bundle-price-row .bundle-feature-val { font-size: 1.1rem; font-weight: 700; color: #1B2A4A; }
+.bundle-price-row .bundle-feature-val { font-size: 1.1rem; font-weight: 700; color: var(--teal, #3DD6C8); }
 .bundle-vs {
     display: flex; align-items: center; justify-content: center;
     font-size: 0.8rem; font-weight: 600; color: var(--text-dim);
@@ -86,7 +173,14 @@ html:not([data-theme="light"]) .bundle-row-alt { background: rgba(255,255,255,0.
 html:not([data-theme="light"]) .bundle-feature-name { color: var(--text-dim); }
 html:not([data-theme="light"]) .bundle-feature-val { color: var(--text); }
 html:not([data-theme="light"]) .bundle-price-row { border-top-color: rgba(255,255,255,0.08); }
-html:not([data-theme="light"]) .bundle-price-row .bundle-feature-val { color: var(--text); }
+html:not([data-theme="light"]) .bundle-price-row .bundle-feature-val { color: var(--teal, #3DD6C8); }
+html:not([data-theme="light"]) .bundle-row-diff { border-left-color: var(--teal, #3DD6C8); }
+.bundle-nudge {
+    text-align: center; font-size: 0.8rem; font-style: italic;
+    color: var(--teal, #3DD6C8); padding: 0.5rem 0; opacity: 0;
+    animation: nudgeFadeIn 0.5s ease forwards;
+}
+@keyframes nudgeFadeIn { to { opacity: 1; } }
 
 /* === SKIP NAV (accessibility) === */
 .skip-nav {
@@ -323,7 +417,7 @@ body[data-mode] .report-cta-btn { color: var(--stage-color); border-color: var(-
 
 /* Board toggle — always stage colour */
 body[data-mode] .board-toggle { border-color: var(--stage-color); color: var(--stage-color); }
-body[data-mode] .board-toggle.active { border-color: var(--stage-color); color: var(--stage-color); }
+body[data-mode] .board-toggle.active { background: var(--stage-color); border-color: var(--stage-color); color: #1E194F; }
 
 /* Help me / Challenge me hover */
 body[data-mode] .chat-action-btn:hover { border-color: var(--stage-color); color: var(--stage-color); }
@@ -635,8 +729,9 @@ html[data-theme="light"] .progress-bar-track { background: rgba(30,25,79,0.08); 
     border-radius: 12px;
     padding: 1.25rem 1.5rem;
     margin-bottom: 1rem;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.08);
+    background: var(--bg-light, #1a1750);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-left: 3px solid var(--stage-color, var(--teal));
 }
 .activity-brief-header {
     display: flex;
@@ -4322,7 +4417,7 @@ body.board-maximised > .input-area {
 .board-toggle.active {
     background: var(--stage-color, var(--orange));
     border-color: var(--stage-color, var(--orange));
-    color: #fff;
+    color: #1E194F;
 }
 .board-count {
     position: absolute;

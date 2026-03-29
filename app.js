@@ -3950,11 +3950,11 @@ const BOARD_LAYOUTS = {
     },
     'trade-off': {
         zones: [
-            { id: 'to-features', name: 'All Features', empty: 'The full offer, deconstructed', hint: '5-7 dimensions with levels', colour: 'pink' },
+            { id: 'to-features', name: 'All Features', empty: 'The full offer, deconstructed', hint: '5 dimensions with 3 levels each', colour: 'pink' },
             { id: 'to-rounds', name: 'Trade-Off Rounds', empty: 'Package A vs Package B', hint: 'Each round forces a sacrifice', colour: 'pink' },
-            { id: 'to-musthave', name: 'Must-Have', empty: 'Won 5-6+ rounds', hint: 'Core value — customers always choose this', colour: 'pink' },
-            { id: 'to-nicetohave', name: 'Nice-to-Have', empty: 'Won 2-4 rounds', hint: 'Valuable but tradeable', colour: 'pink' },
-            { id: 'to-expendable', name: 'Expendable', empty: 'Won 0-1 rounds', hint: 'You care more than your customer does', colour: 'pink' },
+            { id: 'to-musthave', name: 'Must-Have', empty: 'Won 7-10 rounds', hint: 'Core value — customers always choose this', colour: 'pink' },
+            { id: 'to-nicetohave', name: 'Nice-to-Have', empty: 'Won 4-6 rounds', hint: 'Valuable but tradeable', colour: 'pink' },
+            { id: 'to-expendable', name: 'Expendable', empty: 'Won 0-3 rounds', hint: 'You care more than your customer does', colour: 'pink' },
             { id: 'to-surprise', name: 'The Surprise', empty: 'The feature you were most wrong about', hint: 'Overvalued or undervalued going in', colour: 'pink' },
             { id: 'to-mvo', name: 'Minimum Viable Offer', empty: 'Survivors only — the simplest version someone would pay for', hint: 'Strip everything else away', colour: 'pink' },
             { id: 'actions', name: 'Actions', empty: 'What changes because of this', hint: 'Roadmap, pricing, or positioning shift', colour: 'pink' }
@@ -4216,6 +4216,15 @@ function renderBundleCards(bundleStr, container) {
     const featuresA = parseFeatures(featStrA);
     const featuresB = parseFeatures(featStrB);
 
+    // Build a map of which features differ between the two cards
+    const diffSet = new Set();
+    const mapB = {};
+    featuresB.forEach(f => { mapB[f.key.toLowerCase()] = f.val; });
+    featuresA.forEach(f => {
+        const bVal = mapB[f.key.toLowerCase()];
+        if (bVal && bVal !== f.val) diffSet.add(f.key.toLowerCase());
+    });
+
     const wrapper = document.createElement('div');
     wrapper.className = 'bundle-round';
 
@@ -4241,8 +4250,12 @@ function renderBundleCards(bundleStr, container) {
         body.className = 'bundle-card-body';
         features.forEach((f, i) => {
             const isPrice = f.key.toLowerCase().startsWith('price');
+            const isDiff = diffSet.has(f.key.toLowerCase());
             const row = document.createElement('div');
-            row.className = 'bundle-feature-row' + (isPrice ? ' bundle-price-row' : '') + (i % 2 === 1 ? ' bundle-row-alt' : '');
+            row.className = 'bundle-feature-row'
+                + (isPrice ? ' bundle-price-row' : '')
+                + (i % 2 === 1 && !isPrice ? ' bundle-row-alt' : '')
+                + (isDiff && !isPrice ? ' bundle-row-diff' : '');
             row.innerHTML = `<span class="bundle-feature-name">${f.key}</span><span class="bundle-feature-val">${f.val}</span>`;
             body.appendChild(row);
         });
@@ -4274,6 +4287,17 @@ function renderBundleCards(bundleStr, container) {
 
     container.appendChild(wrapper);
     scrollToBottom();
+
+    // Hesitation nudge: if user hasn't chosen after 15s, show a gentle prompt
+    const nudgeTimer = setTimeout(() => {
+        if (wrapper.querySelector('.bundle-chosen')) return; // already chose
+        const nudge = document.createElement('div');
+        nudge.className = 'bundle-nudge';
+        nudge.textContent = 'Gut reaction. Don\u2019t overthink it.';
+        wrapper.appendChild(nudge);
+    }, 15000);
+    // Clear timer if user clicks a card
+    wrapper.addEventListener('click', () => clearTimeout(nudgeTimer), { once: true });
 }
 
 function addBoardCard(text, zone, stage, source) {
