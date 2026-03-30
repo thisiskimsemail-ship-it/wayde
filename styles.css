@@ -349,6 +349,19 @@ body {
     flex-direction: column;
     overflow: hidden;
 }
+/* Landing page: let content scroll naturally on mobile */
+body:not(.in-session) .app-shell {
+    height: auto;
+    min-height: 100vh;
+}
+body:not(.in-session) .workshop-layout {
+    overflow: visible;
+    height: auto;
+}
+body:not(.in-session) .chat-pane {
+    overflow: visible;
+    padding-bottom: 0;
+}
 
 /* === HEADER === */
 .header {
@@ -1293,7 +1306,7 @@ body:not(.in-session) .input-area { display: none !important; }
     text-align: left;
     padding: 0;
     position: relative;
-    overflow: hidden;
+    overflow: visible;
 }
 
 /* Wade diagonal accent — top-right corner, follows polygon's signature diagonal */
@@ -1689,6 +1702,7 @@ html[data-theme="light"] .account-dropdown-item:hover { background: rgba(0,0,0,0
 
 /* Mobile account */
 .mobile-account-info { padding: 0.5rem 1.2rem; }
+.mobile-account-info.hidden { display: none !important; }
 .mobile-account-email { display: block; font-size: 0.78rem; color: var(--text-dim); margin-bottom: 0.3rem; }
 
 /* Container */

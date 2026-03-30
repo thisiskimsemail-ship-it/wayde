@@ -643,6 +643,8 @@ async function checkAuth() {
         updateAccountMenu();
     } catch (e) {
         console.warn('[Auth] check failed:', e);
+        state.authenticated = false;
+        updateAccountMenu();
     }
 }
 
@@ -661,14 +663,14 @@ function updateAccountMenu() {
         const initial = (state.displayName || state.authEmail || '?')[0].toUpperCase();
         if (accountAvatar) accountAvatar.textContent = initial;
         if (accountEmail) accountEmail.textContent = state.authEmail;
-        if (mobileSignIn) mobileSignIn.classList.add('hidden');
-        if (mobileAccountInfo) mobileAccountInfo.classList.remove('hidden');
+        if (mobileSignIn) { mobileSignIn.classList.add('hidden'); mobileSignIn.style.display = 'none'; }
+        if (mobileAccountInfo) { mobileAccountInfo.classList.remove('hidden'); mobileAccountInfo.style.display = ''; }
         if (mobileAccountEmail) mobileAccountEmail.textContent = state.authEmail;
     } else {
         if (signInLink) signInLink.classList.remove('hidden');
         if (accountMenu) accountMenu.classList.add('hidden');
-        if (mobileSignIn) mobileSignIn.classList.remove('hidden');
-        if (mobileAccountInfo) mobileAccountInfo.classList.add('hidden');
+        if (mobileSignIn) { mobileSignIn.classList.remove('hidden'); mobileSignIn.style.display = ''; }
+        if (mobileAccountInfo) { mobileAccountInfo.classList.add('hidden'); mobileAccountInfo.style.display = 'none'; }
     }
 }
 
@@ -745,7 +747,7 @@ async function logout() {
 const $ = (sel) => document.querySelector(sel);
 const $$ = (sel) => document.querySelectorAll(sel);
 
-const chatArea = $('#chatArea');
+const chatArea = $('#mainContent');
 const messagesEl = $('#messages');
 const welcome = $('#welcome');
 const inputForm = $('#inputForm');
@@ -1263,6 +1265,7 @@ function forceCloseSession() {
     if (inputArea) inputArea.style.display = 'none';
     document.body.classList.remove('in-session', 'board-open', 'session-complete');
     clearSession();
+    window.scrollTo(0, 0);
 }
 
 sessionClose.addEventListener('click', () => {
@@ -1352,6 +1355,7 @@ function doCloseSession() {
     state.routing = false;
     document.body.classList.remove('in-session', 'board-open', 'session-complete');
     clearSession();
+    window.scrollTo(0, 0);
 }
 
 // === SWAP TOOLS ===
@@ -1817,6 +1821,8 @@ function restoreSession(session) {
     renderBoard();
 
     welcome.classList.add('hidden');
+    document.body.classList.add('in-session');
+    document.body.dataset.mode = state.mode;
     moveInputToSession();
     sessionBar.classList.remove('hidden');
     sessionBar.dataset.mode = state.mode;
@@ -3101,13 +3107,7 @@ async function downloadReportPdf() {
     _downloadInProgress = true;
     setTimeout(() => { _downloadInProgress = false; }, 3000);
 
-    // If we have branded HTML, use the new .doc export
-    if (state.reportHtml) {
-        return downloadReportDoc();
-    }
-
-    // Legacy fallback: use old PDF endpoint
-    if (!state.reportText) return;
+    if (!state.reportText && !state.reportHtml) return;
     const synopsis = state.reportSynopsis || {};
 
     try {
@@ -3115,7 +3115,9 @@ async function downloadReportPdf() {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                report: state.reportText,
+                report: state.reportText || '',
+                report_html: state.reportHtml || '',
+                report_json: state.reportJson || {},
                 synopsis: synopsis,
                 exercise: state.exercise || '',
                 mode: state.mode || '',
@@ -3134,8 +3136,8 @@ async function downloadReportPdf() {
         a.click();
         URL.revokeObjectURL(url);
     } catch (err) {
-        console.error('[Report] PDF download failed, using fallback:', err);
-        downloadReportWordFallback();
+        console.error('[Report] PDF download failed, using HTML fallback:', err);
+        downloadReportDoc();
     }
 }
 
@@ -6018,7 +6020,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (chatPane && state.board && state.board.visible) {
                     chatPane.scrollTop = chatPane.scrollHeight;
                 }
-                const chatArea = document.getElementById('chatArea');
+                const chatArea = document.getElementById('mainContent');
                 if (chatArea) chatArea.scrollTop = chatArea.scrollHeight;
             });
         } else if (!isKeyboard && keyboardOpen) {
