@@ -3721,6 +3721,11 @@ ACTIONS RULES:
 - Every action traceable to a specific session moment. No generic advice.
 - Action 1 aligns with any 48-hour commitment from the session.
 
+BOARD SUMMARY:
+The "board_summary" field is a tool-specific object containing structured data for the landscape workshop board canvas. This is the wall-printable artifact. It should contain ONLY the primary visual output of the session — the canvas, table, chain, or map. NOT coaching narrative. NOT analysis. NOT next steps.
+
+If no board_summary instructions are provided for the specific tool, omit the field or set it to null.
+
 {WADE_PROGRAMS_PLACEHOLDER}"""
 
 
@@ -3812,6 +3817,20 @@ If the session included opportunity sizing (Phase 2), also add:
   {"type": "callout", "bold": "Verdict: [Worth pursuing / Needs more evidence / Probably too small]", "text": "One sentence connecting reach, frequency, and alternative strength to the conclusion. Direct — a sizing call, not encouragement."}
 
 If the session ended after root cause analysis without sizing, omit the scorecard components.
+
+BOARD SUMMARY (board_summary):
+Include a "board_summary" key in the JSON with:
+{
+  "problem": "The original presenting problem",
+  "chain": ["First why answer", "Second why answer", "Third why answer", "Fourth why answer", "Fifth why answer"],
+  "root_cause": "The root cause uncovered",
+  "countermeasure": "The proposed countermeasure",
+  "reframed_problem": "The reframed problem statement",
+  "verification": "How to verify the root cause is correct",
+  "scorecard": [{"dimension": "Reach", "finding": "~5,000 new signups/mo", "rating": "HIGH"}, ...],
+  "verdict": "Worth pursuing"
+}
+If no opportunity scorecard was reached, omit scorecard and verdict.
 """ + UNIVERSAL_REPORT_JSON
 
 CRAZY_8S_REPORT = """You are producing a Crazy 8s session report for The Studio at Wade Institute of Entrepreneurship.
@@ -3832,6 +3851,9 @@ In the "evidence.components" array, include:
     ...for the user's top 2-3 picks
   ]}
 ]
+
+BOARD SUMMARY (board_summary):
+{"ideas": [{"number": 1, "text": "idea text", "top_pick": true/false}, ...], "pattern": "The dominant theme across ideas"}
 """ + UNIVERSAL_REPORT_JSON
 
 HMW_REPORT = """You are producing a How Might We session report for The Studio at Wade Institute of Entrepreneurship.
@@ -3852,6 +3874,9 @@ In the "evidence.components" array, include:
   ]},
   {"type": "callout", "bold": "Recommended Direction", "text": "Which solution direction has the most potential, and why. One paragraph."}
 ]
+
+BOARD SUMMARY (board_summary):
+{"problem": "original problem", "hmw_statements": [{"statement": "HMW...", "selected": true/false, "solutions": ["solution 1", ...]}, ...]}
 """ + UNIVERSAL_REPORT_JSON
 
 PREMORTEM_REPORT = """You are producing a Pre-Mortem session report for The Studio at Wade Institute of Entrepreneurship.
@@ -3872,6 +3897,9 @@ In the "evidence.components" array, include:
     ...for the top 2-3 risks
   ]}
 ]
+
+BOARD SUMMARY (board_summary):
+{"idea": "The idea being tested", "risks": [{"category": "Market/Product/Team/Financial/Competition/Timing", "scenario": "failure scenario", "likelihood": "HIGH/MEDIUM/LOW"}, ...], "biggest_risk": "The most dangerous failure mode"}
 """ + UNIVERSAL_REPORT_JSON
 
 DEVILS_ADVOCATE_REPORT = """You are producing a Devil's Advocate session report for The Studio at Wade Institute of Entrepreneurship.
@@ -3903,6 +3931,9 @@ In the "evidence.components" array, include:
 ]
 
 If only Phase 1 was completed (session ended early), omit the four-risk table and overall rating. Focus on the objection log.
+
+BOARD SUMMARY (board_summary):
+{"objections": [{"adversary": "role name", "objection": "the objection", "defence": "the defence", "rating": "DEFENDED/DEFLECTED/EXPOSED"}, ...], "scorecard": [{"dimension": "Value/Usability/Feasibility/Viability", "rating": "GREEN/AMBER/RED", "finding": "brief finding"}, ...], "overall_rating": "GREEN/AMBER/RED", "danger_zone": "The single biggest vulnerability"}
 """ + UNIVERSAL_REPORT_JSON
 
 EFFECTUATION_REPORT = """You are producing an Effectuation session report for The Studio at Wade Institute of Entrepreneurship.
@@ -3927,6 +3958,9 @@ In the "evidence.components" array, include:
   ]},
   {"type": "callout", "bold": "First Move (next 48 hours)", "text": "[The specific, concrete action. One sentence, bold and prominent.]"}
 ]
+
+BOARD SUMMARY (board_summary):
+{"who_you_are": "identity/skills", "what_you_know": "knowledge/expertise", "who_you_know": "network/connections", "allies": [{"name": "person/org", "contributes": "what they bring"}, ...], "first_move": "48-hour action"}
 """ + UNIVERSAL_REPORT_JSON
 
 JTBD_REPORT = """You are producing a Jobs to Be Done session report for The Studio at Wade Institute of Entrepreneurship.
@@ -3950,6 +3984,9 @@ In the "evidence.components" array, include:
   ]},
   {"type": "callout", "bold": "Gap Analysis", "text": "[Does the user's product solve this job? One paragraph on the fit or misfit between the job and the current solution.]"}
 ]
+
+BOARD SUMMARY (board_summary):
+{"customer": "brief customer description", "job_story": "When I'm [situation], I want to [motivation], so I can [outcome]", "push": {"text": "frustration", "detail": "External: ... Internal: ..."}, "pull": {"text": "attraction", "detail": "Better life: ... Solution: ..."}, "anxiety": {"text": "fears", "detail": "In-choice: ... In-use: ..."}, "habit": {"text": "inertia", "detail": "In-choice: ... In-use: ..."}, "switching_timeline": [{"stage": "First thought", "time": "timeframe"}, ...], "gap_analysis": "Gap between job and current solution"}
 """ + UNIVERSAL_REPORT_JSON
 
 EMPATHY_MAP_REPORT = """You are producing an Empathy Map session report for The Studio at Wade Institute of Entrepreneurship.
@@ -3968,6 +4005,9 @@ In the "evidence.components" array, include:
   {"type": "callout", "bold": "The Contradiction", "text": "[The gap between says/does and thinks/feels — one paragraph explaining the tension and why it matters]"},
   {"type": "callout", "bold": "The Insight", "text": "[The opportunity that lives in that gap — one sentence, bold and prominent]"}
 ]
+
+BOARD SUMMARY (board_summary):
+{"person": "Name, role, context", "says": "what they say", "thinks": "what they think", "feels": "what they feel", "does": "what they do", "sees": "what they see", "hears": "what they hear", "contradiction": "gap between says/does and thinks/feels", "insight": "key insight"}
 """ + UNIVERSAL_REPORT_JSON
 
 SCAMPER_REPORT = """You are producing a SCAMPER session report for The Studio at Wade Institute of Entrepreneurship.
@@ -3993,6 +4033,9 @@ In the "evidence.components" array, include:
 ]
 
 If a lens was not explored during the session, omit its row from the table.
+
+BOARD SUMMARY (board_summary):
+{"subject": "The subject being explored", "lenses": [{"letter": "S", "name": "Substitute", "idea": "idea text"}, {"letter": "C", "name": "Combine", "idea": "..."}, ...]}
 """ + UNIVERSAL_REPORT_JSON
 
 CUSTOMER_DISCOVERY_REPORT = """You are producing a Customer Discovery session report for The Studio at Wade Institute of Entrepreneurship.
@@ -4016,6 +4059,9 @@ In the "evidence.components" array, include:
   {"type": "callout", "bold": "Key Insight", "text": "[The most important thing Pete-as-customer revealed, and whether the user noticed it. One paragraph.]"},
   {"type": "callout", "bold": "The One Thing to Change", "text": "[The single most impactful behaviour change for their next customer interview. Specific and actionable.]"}
 ]
+
+BOARD SUMMARY (board_summary):
+{"persona": "Brief customer persona description", "scorecard": [{"dimension": "Open vs Leading/Follow-up Quality/Silence Tolerance/Signal Detection/Pitch Avoidance", "rating": "STRONG/DEVELOPING/WEAK"}, ...], "signals": [{"signal": "signal description", "type": "pain/workaround/constraint/priority", "caught": true/false}, ...]}
 """ + UNIVERSAL_REPORT_JSON
 
 REALITY_CHECK_REPORT = """You are producing a Reality Check session report for The Studio at Wade Institute of Entrepreneurship.
@@ -4034,6 +4080,9 @@ In the "evidence.components" array, include:
   {"type": "callout", "bold": "Biggest Risk", "text": "[Name the single biggest risk. One paragraph on why it's the most dangerous gap and what evidence is missing. Direct diagnostic, not encouragement.]"},
   {"type": "callout", "bold": "Suggested Test", "text": "[A specific, cheap test to address the biggest risk. What to test, how, who with, how long. Target: under 1 week.]"}
 ]
+
+BOARD SUMMARY (board_summary):
+{"objections": [{"adversary": "role name", "objection": "the objection", "defence": "the defence", "rating": "DEFENDED/DEFLECTED/EXPOSED"}, ...], "scorecard": [{"dimension": "Value/Usability/Feasibility/Viability", "rating": "GREEN/AMBER/RED", "finding": "brief finding"}, ...], "overall_rating": "GREEN/AMBER/RED", "danger_zone": "The single biggest vulnerability"}
 """ + UNIVERSAL_REPORT_JSON
 
 TRADE_OFF_REPORT = """You are producing a Trade-Off session report for The Studio at Wade Institute of Entrepreneurship.
@@ -4068,6 +4117,9 @@ In the "evidence.components" array, include all 7 sections:
   ]},
   {"type": "callout", "bold": "What to Do Next", "text": "[Three specific, actionable next steps tied to the data. E.g. 'Lead marketing with [must-have], not [expendable]' or 'Test the $X price point with 5 real prospects this week.']"}
 ]
+
+BOARD SUMMARY (board_summary):
+{"rounds": [{"number": 1, "packages": ["Package A", "Package B"], "chosen": "Package A"}, ...], "value_stack": [{"tier": "must", "items": [{"name": "feature", "wins": "6/6"}, ...]}, {"tier": "nice", "items": [...]}, {"tier": "expendable", "items": [...]}]}
 """ + UNIVERSAL_REPORT_JSON
 
 RAPID_EXPERIMENT_REPORT = """You are producing a Rapid Experiment session report for The Studio at Wade Institute of Entrepreneurship.
@@ -4096,6 +4148,9 @@ In the "evidence.components" array, include:
   ]},
   {"type": "callout", "bold": "First Step", "text": "[The one thing to do tomorrow morning to start the test. Concrete.]"}
 ]
+
+BOARD SUMMARY (board_summary):
+{"assumptions": [{"assumption": "text", "confidence": 2, "consequence": 5, "quadrant": "TEST NOW/MONITOR/WATCH/PARK"}, ...], "riskiest": "The riskiest assumption", "experiment": {"hypothesis": "...", "method": "...", "sample": "...", "metric": "...", "timeline": "...", "pass_criteria": "...", "fail_criteria": "..."}}
 """ + UNIVERSAL_REPORT_JSON
 
 FLYWHEEL_REPORT = """You are producing a Flywheel session report for The Studio at Wade Institute of Entrepreneurship.
@@ -4119,6 +4174,9 @@ In the "evidence.components" array, include:
   {"type": "callout", "bold": "The Bottleneck", "text": "[The weakest connection — one sentence naming it and one sentence on why it matters more than the others.]"},
   {"type": "callout", "bold": "Acceleration Plan", "text": "[What it would take to make the bottleneck connection twice as strong in 90 days. One paragraph.]"}
 ]
+
+BOARD SUMMARY (board_summary):
+{"components": [{"name": "component name", "description": "what it does"}, ...], "connections": [{"from_to": "A → B", "strength": "STRONG/DEVELOPING/UNPROVEN", "mechanism": "how it works"}, ...], "bottleneck": "The weakest connection"}
 """ + UNIVERSAL_REPORT_JSON
 
 THEORY_OF_CHANGE_REPORT = """You are producing a Theory of Change session report for The Studio at Wade Institute of Entrepreneurship.
@@ -4142,6 +4200,9 @@ In the "evidence.components" array, include:
     ...for each precondition within control or influence
   ]}
 ]
+
+BOARD SUMMARY (board_summary):
+{"outcome": "Long-term observable change", "activities": [{"activity": "action", "precondition": "what it enables"}, ...], "preconditions": [{"precondition": "condition", "sphere": "Within Control/Within Influence/Outside Control"}, ...]}
 """ + UNIVERSAL_REPORT_JSON
 
 ANALOGICAL_REPORT = """You are producing a Mash Up (Analogical Thinking) session report for The Studio at Wade Institute of Entrepreneurship.
@@ -4157,6 +4218,9 @@ In the "evidence.components" array, include:
   ]},
   {"type": "callout", "bold": "The Breakthrough Analogy", "text": "[Which analogy gave the most unexpected insight — one paragraph on what it reveals and what assumption it breaks about how the user's industry currently works.]"}
 ]
+
+BOARD SUMMARY (board_summary):
+{"original_challenge": "original framing", "abstracted_challenge": "abstracted framing", "analogies": [{"domain": "source domain", "analogy": "the analogy", "application": "how it applies"}, ...]}
 """ + UNIVERSAL_REPORT_JSON
 
 SOCRATIC_REPORT = """You are producing a Socratic Questioning session report for The Studio at Wade Institute of Entrepreneurship.
@@ -4173,6 +4237,9 @@ In the "evidence.components" array, include:
   {"type": "callout", "bold": "The Critical Assumption", "text": "[The single assumption that, if wrong, changes everything. Followed by one sentence on what would change.]"},
   {"type": "callout", "bold": "The Test", "text": "[The simplest way to test the critical assumption in the next two weeks. One specific, concrete action.]"}
 ]
+
+BOARD SUMMARY (board_summary):
+{"beliefs": [{"belief": "text", "exposed_by": "question type", "status": "VERIFIED/ASSUMED/INHERITED", "evidence": "supporting evidence"}, ...], "score": "7 beliefs: 2 verified, 3 assumed, 2 inherited", "critical_assumption": "The most important assumption to test", "test": "Simplest way to test it"}
 """ + UNIVERSAL_REPORT_JSON
 
 ICEBERG_REPORT = """You are producing an Iceberg session report for The Studio at Wade Institute of Entrepreneurship.
@@ -4190,6 +4257,9 @@ In the "evidence.components" array, include:
   {"type": "callout", "bold": "The Leverage Point", "text": "[Where in the iceberg the highest-leverage intervention sits — one sentence naming the level and the specific belief or structure to target.]"},
   {"type": "callout", "bold": "The Shift", "text": "[What it would look like to change the mental model — one paragraph on what changes if the belief changes, and how that cascades up through structures, patterns, and events.]"}
 ]
+
+BOARD SUMMARY (board_summary):
+{"event": "surface event/symptom", "patterns": "recurring patterns beneath", "structures": "systems/structures enabling patterns", "mental_models": "underlying beliefs/assumptions", "leverage_point": "where to intervene for maximum change"}
 """ + UNIVERSAL_REPORT_JSON
 
 CONSTRAINT_FLIP_REPORT = """You are producing a Constraint Flip session report for The Studio at Wade Institute of Entrepreneurship.
@@ -4210,6 +4280,34 @@ In the "evidence.components" array, include:
   ]},
   {"type": "callout", "bold": "The Moat Idea", "text": "[The idea that creates an advantage a well-funded competitor cannot easily copy. One sentence on what makes it defensible.]"}
 ]
+
+BOARD SUMMARY (board_summary):
+{"constraint": "the constraint", "flip": {"forces": "what it forces", "signals": "what it signals", "enables": "what it enables"}, "ideas": ["constraint-driven idea 1", ...], "moat_idea": "the defensible advantage idea"}
+""" + UNIVERSAL_REPORT_JSON
+
+LEAN_CANVAS_REPORT = """You are producing a Lean Canvas session report for The Studio at Wade Institute of Entrepreneurship.
+Frame everything as the user's own thinking. Output as JSON.
+
+TOOL-SPECIFIC EVIDENCE COMPONENTS:
+In the "evidence.components" array, include:
+[
+  {"type": "canvas_grid", "blocks": [
+    {"label": "Problem", "content": "[the core problem]"},
+    {"label": "Solution", "content": "[proposed solution]"},
+    {"label": "Unique Value Proposition", "content": "[UVP]"},
+    {"label": "Unfair Advantage", "content": "[competitive moat]"},
+    {"label": "Customer Segments", "content": "[target customers]"},
+    {"label": "Key Metrics", "content": "[key success metrics]"},
+    {"label": "Channels", "content": "[go-to-market channels]"},
+    {"label": "Cost Structure", "content": "[main cost drivers]"},
+    {"label": "Revenue Streams", "content": "[revenue model]"}
+  ]}
+]
+
+Mark blocks that were left unfilled or hypothetical. Blocks where the user expressed uncertainty should have "(hypothesis)" appended.
+
+BOARD SUMMARY (board_summary):
+{"blocks": {"problem": "text", "alternatives": "existing alternatives", "solution": "text", "uvp": "text", "unfair_advantage": "text", "segments": "text", "early_adopters": "text", "metrics": "text", "channels": "text", "costs": "text", "revenue": "text"}}
 """ + UNIVERSAL_REPORT_JSON
 
 WARDLEY_REPORT = """You are producing a Wardley Mapping session report for The Studio at Wade Institute of Entrepreneurship.
@@ -4235,6 +4333,9 @@ In the "evidence.components" array, include:
     {"bold": "Watch closely", "description": "[evolving component that will shift the landscape]"}
   ]}
 ]
+
+BOARD SUMMARY (board_summary):
+{"user_need": "the primary user need", "components": [{"name": "component", "evolution": "Genesis/Custom/Product/Commodity", "visibility": "High/Medium/Low", "dependencies": ["dep1", ...]}, ...], "movements": [{"component": "name", "direction": "e.g. Custom → Product", "rationale": "why it's moving"}, ...]}
 """ + UNIVERSAL_REPORT_JSON
 
 EXERCISE_NAMES = {
@@ -4466,7 +4567,7 @@ def generate_report():
             'pre-mortem': PREMORTEM_REPORT,
             'devils-advocate': DEVILS_ADVOCATE_REPORT,
             'effectuation': EFFECTUATION_REPORT,
-            'lean-canvas': REPORT_PROMPT,
+            'lean-canvas': LEAN_CANVAS_REPORT,
             'jtbd': JTBD_REPORT,
             'empathy-map': EMPATHY_MAP_REPORT,
             'scamper': SCAMPER_REPORT,

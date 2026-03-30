@@ -197,6 +197,51 @@ REPORT_CSS = r"""
   .div { height: 1px; background: var(--grey-2); margin: 20px 0; border: none; }
 
   .page--landscape { width: 297mm; min-height: 210mm; }
+
+  /* ── Canvas board styles (landscape page) ── */
+  .canvas { background: white; overflow: hidden; position: relative; color: var(--grey-4); height: 100%; }
+  .canvas * { font-family: var(--font); }
+  .c-strip { display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; background: var(--navy); }
+  .c-strip .c-title { font-size: 16px; font-weight: 700; color: white; }
+  .c-strip .c-badge { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: white; padding: 3px 10px; border-radius: 3px; }
+  .c-strip .c-dur { font-size: 10px; color: rgba(255,255,255,0.7); }
+  .c-strip .c-source { font-size: 9px; color: rgba(255,255,255,0.4); font-style: italic; }
+  .c-cell { padding: 10px 14px; overflow: hidden; }
+  .c-label { font-size: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+  .c-text { font-size: 9px; color: var(--grey-4); line-height: 1.45; }
+  .c-text b { color: var(--navy); }
+  .c-text.sm { font-size: 8px; }
+  .ct { width: 100%; border-collapse: collapse; font-size: 9px; }
+  .ct th { padding: 5px 8px; text-align: left; font-size: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px; background: var(--navy); color: white; }
+  .ct td { padding: 5px 8px; border-bottom: 1px solid var(--grey-2); vertical-align: top; }
+  .ct tr:last-child td { border-bottom: none; }
+  .tag { display: inline-block; padding: 1px 7px; border-radius: 2px; font-size: 8px; font-weight: 600; }
+  .tag-green { background: #E8F5E9; color: #2E7D32; }
+  .tag-amber { background: #FFF8E1; color: #F57F17; }
+  .tag-red { background: #FFEBEE; color: #C62828; }
+  .tag-navy { background: #EEEDF4; color: var(--navy); }
+  .tag-teal { background: #E0F7F7; color: #1a8a8a; }
+  .v-tier { padding: 6px 12px; border-radius: 3px; font-size: 9px; font-weight: 600; margin-bottom: 3px; }
+  .v-must { background: #E8F5E9; color: #2E7D32; border-left: 4px solid #2E7D32; }
+  .v-nice { background: #FFF8E1; color: #F57F17; border-left: 4px solid #F57F17; }
+  .v-exp { background: #FFEBEE; color: #C62828; border-left: 4px solid #C62828; }
+  .rounds { display: grid; grid-template-columns: repeat(5, 1fr); gap: 3px; }
+  .rnd { background: var(--grey-1); border: 1px solid var(--grey-2); border-radius: 3px; padding: 4px; text-align: center; font-size: 7px; }
+  .rnd .rn { font-weight: 700; font-size: 9px; color: var(--navy); }
+  .rnd.picked { border-color: var(--accent); background: white; }
+  .exp-card { background: var(--grey-1); border-radius: 4px; padding: 10px 12px; }
+  .exp-row { display: flex; gap: 6px; margin-bottom: 3px; font-size: 9px; }
+  .exp-lbl { font-weight: 700; color: var(--navy); min-width: 65px; font-size: 8px; flex-shrink: 0; }
+  .sc-row { display: flex; align-items: center; gap: 6px; margin-bottom: 3px; }
+  .sc-dim { font-size: 9px; font-weight: 600; color: var(--navy); width: 100px; flex-shrink: 0; }
+  .risk-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; }
+  .risk-cell { padding: 8px; border-radius: 3px; font-size: 10px; font-weight: 600; text-align: center; }
+  .risk-cell .rsub { font-size: 7px; font-weight: 400; margin-top: 2px; }
+  .callout-strip { padding: 8px 14px; border-radius: 4px; font-size: 10px; font-weight: 600; text-align: center; margin-top: 6px; }
+  .chain-node { display: flex; align-items: center; gap: 10px; margin-bottom: 2px; }
+  .chain-circle { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; flex-shrink: 0; }
+  .chain-text { flex: 1; padding: 6px 14px; font-size: 9px; color: var(--grey-4); }
+  .chain-arrow { text-align: center; color: var(--grey-3); font-size: 14px; line-height: 1; margin: 1px 0; }
 """
 
 
@@ -566,6 +611,1132 @@ def _render_wardley_grid(components):
 
 
 # ══════════════════════════════════════════════════════════════
+# LANDSCAPE CANVAS BOARD RENDERERS (one per tool)
+# ══════════════════════════════════════════════════════════════
+
+# Shared helpers for canvas boards
+
+CANVAS_SOURCES = {
+    'five-whys': 'Sakichi Toyoda · Toyota Production System · Taiichi Ohno',
+    'jtbd': 'Christensen · Klement (Four Forces) · Ulwick · Moesta (Switch)',
+    'empathy-map': 'Dave Gray · XPLANE (2008) · 6-segment canonical layout',
+    'socratic': 'Richard Paul · 6 Types of Socratic Questions · Foundation for Critical Thinking',
+    'iceberg': 'Donella Meadows · Thinking in Systems · Peter Senge · The Waters Foundation',
+    'hmw': 'Min Basadur · P&G (1970s) · IDEO · Google Design Sprints',
+    'scamper': 'Bob Eberle (1971) · Alex Osborn\'s brainstorming checklist (1953)',
+    'crazy-8s': 'Jake Knapp · Google Ventures Design Sprint',
+    'mash-up': 'Gentner, Structure-Mapping (1983) · Gordon, Synectics (1961)',
+    'constraint-flip': 'd.school · Cooperrider (Appreciative Inquiry) · Goldratt (Theory of Constraints)',
+    'pre-mortem': 'Gary Klein · Performing a Project Premortem (HBR, 2007)',
+    'devils-advocate': 'Janis (1972) · Nemeth · Phase 2: IDEO four-risk lens',
+    'customer-discovery': 'Steve Blank · Rob Fitzpatrick, The Mom Test',
+    'trade-off': 'Green & Rao, Conjoint Analysis (1971) · Choice-based conjoint',
+    'rapid-experiment': 'Ries · Bland & Osterwalder · Ash Maurya',
+    'lean-canvas': 'Ash Maurya · Running Lean (2012) · Adapted from Osterwalder BMC',
+    'effectuation': 'Saras Sarasvathy · Darden School (2001) · 5 Principles',
+    'flywheel': 'Jim Collins · Good to Great (2001) · Turning the Flywheel (2019)',
+    'theory-of-change': 'Carol Weiss (1995) · Aspen Institute · ActKnowledge',
+    'wardley': 'Simon Wardley (2005+) · CC-BY-SA',
+    'reality-check': 'Janis (1972) · Nemeth · Phase 2: IDEO four-risk lens',
+    'analogical': 'Gentner, Structure-Mapping (1983) · Gordon, Synectics (1961)',
+}
+
+PATHWAY_COLOURS = {
+    'untangle': '#27BDBE', 'spark': '#F15A22',
+    'test': '#ED3694', 'build': '#E4E517',
+}
+
+PATHWAY_GRADIENTS = {
+    'untangle': 'linear-gradient(135deg, #27BDBE, #1a8a8a)',
+    'spark': 'linear-gradient(135deg, #F15A22, #c44a1a)',
+    'test': 'linear-gradient(135deg, #ED3694, #c42d7a)',
+    'build': 'linear-gradient(135deg, #E4E517, #b8b812)',
+}
+
+
+def _canvas_strip(title, exercise, pathway, duration=None):
+    """Render the top coloured strip of a canvas board."""
+    gradient = PATHWAY_GRADIENTS.get(pathway, PATHWAY_GRADIENTS['untangle'])
+    source = _e(CANVAS_SOURCES.get(exercise, ''))
+    dur = f'<span class="c-dur">{_e(duration)}</span>' if duration else ''
+    src = f'<span class="c-source">{source}</span>' if source else ''
+    return f'''<div class="c-strip" style="background:{gradient}; color:white;">
+      <span class="c-title" style="color:white;">{_e(title)}</span>
+      <span style="display:flex;gap:12px;align-items:center;">{src}{dur}</span>
+    </div>'''
+
+
+def _tag_html(value, colour=None):
+    """Render a coloured tag chip."""
+    if not value:
+        return ''
+    tag_map = {
+        'HIGH': 'tag-green', 'STRONG': 'tag-green', 'GREEN': 'tag-green', 'VERIFIED': 'tag-green',
+        'MEDIUM': 'tag-amber', 'DEVELOPING': 'tag-amber', 'AMBER': 'tag-amber', 'ASSUMED': 'tag-amber',
+        'LOW': 'tag-red', 'WEAK': 'tag-red', 'RED': 'tag-red', 'INHERITED': 'tag-red', 'EXPOSED': 'tag-red',
+        'DEFENDED': 'tag-green', 'DEFLECTED': 'tag-amber',
+    }
+    cls = colour or tag_map.get(str(value).upper(), 'tag-navy')
+    return f'<span class="tag {cls}">{_e(value)}</span>'
+
+
+def _callout(text, bg='#EEEDF4', colour='var(--navy)', border=None):
+    """Render a callout strip at the bottom of a canvas section."""
+    border_css = f'border-left:3px solid {border};' if border else ''
+    return f'<div class="callout-strip" style="background:{bg};color:{colour};{border_css}">{_e(text)}</div>'
+
+
+# ── 1. FIVE WHYS ──
+
+def _render_board_five_whys(board, pathway):
+    """Five Whys: root cause chain + reframed problem + opportunity scorecard."""
+    chain = board.get('chain', [])
+    problem = board.get('problem', '')
+    root_cause = board.get('root_cause', '')
+    countermeasure = board.get('countermeasure', '')
+    reframed = board.get('reframed_problem', '')
+    verification = board.get('verification', '')
+    scorecard = board.get('scorecard', [])  # [{dimension, finding, rating}]
+    verdict = board.get('verdict', '')
+    accent = PATHWAY_COLOURS.get(pathway, '#27BDBE')
+
+    # Left: the chain
+    chain_html = ''
+    if problem:
+        chain_html += f'''<div class="chain-node">
+          <div class="chain-circle" style="background:{accent};color:white;">P</div>
+          <div class="chain-text" style="background:var(--grey-1);border-left:3px solid {accent};border-radius:4px;padding:8px 14px;">
+            <div style="font-size:10px;font-weight:600;color:var(--navy);">Original Problem</div>
+            <div style="font-size:9px;color:var(--grey-4);">{_e(problem)}</div>
+          </div>
+        </div>
+        <div class="chain-arrow">&#x2193;</div>'''
+
+    for i, w in enumerate(chain, 1):
+        q = w if isinstance(w, str) else w.get('answer', w.get('question', ''))
+        chain_html += f'''<div class="chain-node">
+          <div class="chain-circle" style="background:var(--grey-1);color:var(--grey-4);">{i}</div>
+          <div class="chain-text">{_e(q)}</div>
+        </div>
+        <div class="chain-arrow">&#x2193;</div>'''
+
+    if root_cause:
+        chain_html += f'''<div class="chain-node">
+          <div class="chain-circle" style="background:var(--navy);color:white;">R</div>
+          <div class="chain-text" style="background:#EEEDF4;border-left:3px solid var(--navy);border-radius:4px;padding:8px 14px;">
+            <div style="font-size:10px;font-weight:700;color:var(--navy);">Root Cause</div>
+            <div style="font-size:9px;color:var(--grey-4);">{_e(root_cause)}</div>
+          </div>
+        </div>
+        <div class="chain-arrow">&#x2193;</div>'''
+
+    if countermeasure:
+        chain_html += f'''<div class="chain-node">
+          <div class="chain-circle" style="background:#2E7D32;color:white;">C</div>
+          <div class="chain-text" style="background:#E8F5E9;border-left:3px solid #2E7D32;border-radius:4px;padding:8px 14px;">
+            <div style="font-size:10px;font-weight:700;color:#2E7D32;">Countermeasure</div>
+            <div style="font-size:9px;color:var(--grey-4);">{_e(countermeasure)}</div>
+          </div>
+        </div>'''
+
+    # Right: reframe + verification + scorecard
+    right_parts = ''
+    if reframed:
+        right_parts += f'''<div class="c-cell" style="background:white;flex:1;">
+          <div class="c-label" style="color:{accent};">Reframed Problem</div>
+          <div class="c-text" style="font-size:11px;font-style:italic;color:var(--navy);padding:8px 0;">"{_e(reframed)}"</div>
+        </div>'''
+    if verification:
+        right_parts += f'''<div class="c-cell" style="background:white;flex:1;">
+          <div class="c-label" style="color:#2E7D32;">Verification</div>
+          <div class="c-text">{_e(verification)}</div>
+        </div>'''
+    if scorecard:
+        sc_rows = ''
+        for s in scorecard:
+            sc_rows += f'<tr><td style="font-weight:600;width:70px;">{_e(s.get("dimension", ""))}</td><td>{_e(s.get("finding", ""))}</td><td>{_tag_html(s.get("rating", ""))}</td></tr>'
+        verdict_html = f'<div style="margin-top:6px;padding:6px 10px;background:var(--navy);color:white;border-radius:3px;font-size:9px;font-weight:600;text-align:center;">{_e(verdict)}</div>' if verdict else ''
+        right_parts += f'''<div class="c-cell" style="background:white;flex:1;">
+          <div class="c-label" style="color:var(--navy);">Opportunity Scorecard</div>
+          <table class="ct">{sc_rows}</table>
+          {verdict_html}
+        </div>'''
+
+    return f'''<div style="display:grid;grid-template-columns:2fr 1fr;height:calc(100% - 44px);">
+      <div style="padding:16px 20px;display:flex;flex-direction:column;justify-content:center;gap:2px;">
+        <div style="font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--grey-3);margin-bottom:6px;">The Problem → Root Cause → Countermeasure</div>
+        {chain_html}
+      </div>
+      <div style="background:var(--grey-1);display:flex;flex-direction:column;gap:1px;">
+        {right_parts}
+      </div>
+    </div>'''
+
+
+# ── 2. JOBS TO BE DONE ──
+
+def _render_board_jtbd(board, pathway):
+    """JTBD: Job story + Four Forces (Push/Pull/Anxiety/Habit) + Switching Timeline + Gap."""
+    customer = board.get('customer', '')
+    job_story = board.get('job_story', '')
+    push = board.get('push', {})
+    pull = board.get('pull', {})
+    anxiety = board.get('anxiety', {})
+    habit = board.get('habit', {})
+    timeline = board.get('switching_timeline', [])
+    gap = board.get('gap_analysis', '')
+    accent = PATHWAY_COLOURS.get(pathway, '#27BDBE')
+
+    # Job story row
+    tl_html = ''
+    if timeline:
+        steps = ''
+        for i, step in enumerate(timeline):
+            label = step.get('stage', '')
+            time = step.get('time', '')
+            is_last = (i == len(timeline) - 1)
+            bg = f'{accent}' if is_last else 'var(--grey-1)'
+            color = 'white' if is_last else 'inherit'
+            steps += f'''{'<span style="color:var(--grey-3);font-size:10px;">→</span>' if i > 0 else ''}
+            <div style="background:{bg};color:{color};padding:4px 8px;border-radius:3px;font-size:8px;text-align:center;flex:1;"><b>{_e(label)}</b><br>{_e(time)}</div>'''
+        tl_html = f'''<div style="flex:1;">
+          <div class="c-label" style="color:{accent};">Switching Timeline</div>
+          <div style="display:flex;align-items:center;gap:4px;margin-top:4px;">{steps}</div>
+        </div>'''
+
+    gap_html = f'''<div style="flex:0.8;">
+        <div class="c-label" style="color:var(--navy);">Gap Analysis</div>
+        <div class="c-text">{_e(gap)}</div>
+      </div>''' if gap else ''
+
+    def _force_cell(label, icon_colour, text, detail=''):
+        detail_html = f'<div class="c-text sm" style="color:var(--grey-3);margin-top:4px;">{_e(detail)}</div>' if detail else ''
+        t = text if isinstance(text, str) else text.get('text', '')
+        d = detail if detail else (text.get('detail', '') if isinstance(text, dict) else '')
+        if d:
+            detail_html = f'<div class="c-text sm" style="color:var(--grey-3);margin-top:4px;">{_e(d)}</div>'
+        return f'''<div style="background:white;" class="c-cell">
+          <div class="c-label" style="color:{icon_colour};">{_e(label)}</div>
+          <div class="c-text">{_e(t)}</div>
+          {detail_html}
+        </div>'''
+
+    push_text = push if isinstance(push, str) else push.get('text', '')
+    push_detail = '' if isinstance(push, str) else push.get('detail', '')
+    pull_text = pull if isinstance(pull, str) else pull.get('text', '')
+    pull_detail = '' if isinstance(pull, str) else pull.get('detail', '')
+    anx_text = anxiety if isinstance(anxiety, str) else anxiety.get('text', '')
+    anx_detail = '' if isinstance(anxiety, str) else anxiety.get('detail', '')
+    hab_text = habit if isinstance(habit, str) else habit.get('text', '')
+    hab_detail = '' if isinstance(habit, str) else habit.get('detail', '')
+
+    return f'''<div style="display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto 1fr auto;height:calc(100% - 44px);gap:1px;background:var(--grey-2);">
+      <div style="grid-column:1/3;background:white;padding:10px 20px;">
+        <div class="c-label" style="color:{accent};">The Customer</div>
+        <div style="font-size:9px;color:var(--grey-4);margin-bottom:6px;">{_e(customer)}</div>
+        <div style="background:var(--grey-1);padding:10px 16px;border-left:3px solid {accent};border-radius:3px;">
+          <div style="font-size:8px;font-weight:700;color:{accent};text-transform:uppercase;letter-spacing:0.3px;margin-bottom:2px;">Job Story</div>
+          <div style="font-size:11px;font-style:italic;color:var(--navy);">{_e(job_story)}</div>
+        </div>
+      </div>
+      {_force_cell('Push — Frustrations with status quo', '#C62828', push_text, push_detail)}
+      {_force_cell('Pull — Attraction to new solution', '#2E7D32', pull_text, pull_detail)}
+      {_force_cell('Anxiety — Fears about switching', '#F57F17', anx_text, anx_detail)}
+      {_force_cell('Habit — Inertia keeping them stuck', 'var(--navy)', hab_text, hab_detail)}
+      <div style="grid-column:1/3;background:white;padding:10px 20px;display:flex;gap:20px;">
+        {tl_html}{gap_html}
+      </div>
+    </div>'''
+
+
+# ── 3. EMPATHY MAP ──
+
+def _render_board_empathy_map(board, pathway):
+    """Empathy Map: person + 6-segment grid + contradiction + insight."""
+    person = board.get('person', '')
+    says = board.get('says', '')
+    thinks = board.get('thinks', '')
+    feels = board.get('feels', '')
+    does = board.get('does', '')
+    sees = board.get('sees', '')
+    hears = board.get('hears', '')
+    contradiction = board.get('contradiction', '')
+    insight = board.get('insight', '')
+    accent = PATHWAY_COLOURS.get(pathway, '#27BDBE')
+
+    def _seg(label, colour, text):
+        return f'''<div style="background:white;" class="c-cell">
+          <div class="c-label" style="color:{colour};">{_e(label)}</div>
+          <div class="c-text">{_e(text)}</div>
+        </div>'''
+
+    return f'''<div style="height:calc(100% - 44px);display:grid;grid-template-columns:1fr;grid-template-rows:auto 1fr 1fr auto;gap:1px;background:var(--grey-2);">
+      <div style="background:white;padding:10px 20px;">
+        <div class="c-label" style="color:{accent};">The Person</div>
+        <div style="font-size:11px;color:var(--navy);font-weight:600;">{_e(person)}</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;">
+        {_seg('Says', accent, says)}
+        {_seg('Thinks', 'var(--navy)', thinks)}
+        {_seg('Feels', '#ED3694', feels)}
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;">
+        {_seg('Does', '#F15A22', does)}
+        {_seg('Sees', '#2E7D32', sees)}
+        {_seg('Hears', '#F57F17', hears)}
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;">
+        <div style="background:var(--navy);padding:10px 20px;">
+          <div class="c-label" style="color:rgba(255,255,255,0.6);">Contradiction</div>
+          <div class="c-text" style="color:rgba(255,255,255,0.8);">{_e(contradiction)}</div>
+        </div>
+        <div style="background:white;padding:10px 20px;">
+          <div class="c-label" style="color:{accent};">Insight</div>
+          <div style="font-size:11px;font-weight:600;color:var(--navy);">{_e(insight)}</div>
+        </div>
+      </div>
+    </div>'''
+
+
+# ── 4. SOCRATIC QUESTIONING ──
+
+def _render_board_socratic(board, pathway):
+    """Socratic Questioning: belief table + score + critical assumption."""
+    beliefs = board.get('beliefs', [])  # [{belief, exposed_by, status, evidence}]
+    score = board.get('score', '')
+    critical = board.get('critical_assumption', '')
+    test = board.get('test', '')
+    accent = PATHWAY_COLOURS.get(pathway, '#27BDBE')
+
+    rows = ''
+    for b in beliefs:
+        status = b.get('status', 'Assumed')
+        rows += f'''<tr>
+          <td>{_e(b.get('belief', ''))}</td>
+          <td>{_e(b.get('exposed_by', ''))}</td>
+          <td>{_tag_html(status)}</td>
+          <td class="c-text sm">{_e(b.get('evidence', ''))}</td>
+        </tr>'''
+
+    return f'''<div style="height:calc(100% - 44px);display:grid;grid-template-columns:1fr;grid-template-rows:1fr auto auto;gap:1px;background:var(--grey-2);">
+      <div style="background:white;padding:10px 14px;overflow:auto;">
+        <table class="ct">
+          <tr><th>Belief</th><th>Exposed By</th><th>Status</th><th>Evidence</th></tr>
+          {rows}
+        </table>
+      </div>
+      <div style="background:white;padding:10px 20px;display:flex;gap:20px;align-items:center;">
+        <div class="c-label" style="color:var(--grey-3);margin:0;">Score</div>
+        <div style="font-size:11px;font-weight:600;color:var(--navy);">{_e(score)}</div>
+      </div>
+      <div style="background:white;padding:10px 20px;display:flex;gap:20px;">
+        <div style="flex:1;background:#EEEDF4;padding:8px 14px;border-left:3px solid var(--navy);border-radius:3px;">
+          <div style="font-size:8px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:0.3px;">Critical Assumption</div>
+          <div style="font-size:11px;font-weight:600;color:var(--navy);">{_e(critical)}</div>
+        </div>
+        <div style="flex:1;background:#E8F5E9;padding:8px 14px;border-left:3px solid #2E7D32;border-radius:3px;">
+          <div style="font-size:8px;font-weight:700;color:#2E7D32;text-transform:uppercase;letter-spacing:0.3px;">The Test</div>
+          <div style="font-size:9px;color:var(--grey-4);">{_e(test)}</div>
+        </div>
+      </div>
+    </div>'''
+
+
+# ── 5. THE ICEBERG ──
+
+def _render_board_iceberg(board, pathway):
+    """Iceberg: four-level descending structure + leverage point."""
+    event = board.get('event', '')
+    patterns = board.get('patterns', '')
+    structures = board.get('structures', '')
+    mental_models = board.get('mental_models', '')
+    leverage = board.get('leverage_point', '')
+    accent = PATHWAY_COLOURS.get(pathway, '#27BDBE')
+
+    levels = [
+        ('The Event', event, '100%', accent, 'white'),
+        ('Patterns', patterns, '85%', '#4a9a9b', 'white'),
+        ('Structures', structures, '70%', 'var(--navy)', 'white'),
+        ('Mental Models', mental_models, '55%', '#0D0B1A', 'white'),
+    ]
+    level_html = ''
+    for label, text, width, bg, color in levels:
+        if text:
+            level_html += f'''<div style="width:{width};margin:0 auto;background:{bg};color:{color};padding:12px 20px;border-radius:6px;margin-bottom:4px;">
+              <div style="font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;opacity:0.7;margin-bottom:2px;">{_e(label)}</div>
+              <div style="font-size:10px;line-height:1.45;">{_e(text)}</div>
+            </div>'''
+
+    leverage_html = ''
+    if leverage:
+        leverage_html = f'''<div style="background:#EEEDF4;padding:10px 20px;border-left:3px solid var(--navy);border-radius:4px;margin:8px 20px;">
+          <div style="font-size:8px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:0.3px;">Leverage Point</div>
+          <div style="font-size:11px;font-weight:600;color:var(--navy);">{_e(leverage)}</div>
+        </div>'''
+
+    return f'''<div style="height:calc(100% - 44px);padding:20px;display:flex;flex-direction:column;justify-content:center;">
+      <div style="font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--grey-3);margin-bottom:12px;text-align:center;">Surface → Deep Structure</div>
+      {level_html}
+      {leverage_html}
+    </div>'''
+
+
+# ── 6. HOW MIGHT WE ──
+
+def _render_board_hmw(board, pathway):
+    """HMW: original problem + HMW statements + solutions explored."""
+    problem = board.get('problem', '')
+    hmws = board.get('hmw_statements', [])  # [{statement, selected, solutions}]
+    accent = PATHWAY_COLOURS.get(pathway, '#F15A22')
+
+    hmw_html = ''
+    for h in hmws:
+        stmt = h if isinstance(h, str) else h.get('statement', '')
+        selected = False if isinstance(h, str) else h.get('selected', False)
+        solutions = [] if isinstance(h, str) else h.get('solutions', [])
+        bold = 'font-weight:600;color:var(--navy);' if selected else ''
+        sol_html = ''
+        if solutions:
+            sol_items = ''.join(f'<div style="font-size:8px;color:var(--grey-4);padding:3px 0;border-bottom:1px solid var(--grey-2);">• {_e(s)}</div>' for s in solutions)
+            sol_html = f'<div style="margin-top:4px;padding-left:12px;">{sol_items}</div>'
+        hmw_html += f'''<div style="padding:6px 0;border-bottom:1px solid var(--grey-2);">
+          <div style="font-size:10px;{bold}">{_e(stmt)}</div>
+          {sol_html}
+        </div>'''
+
+    return f'''<div style="height:calc(100% - 44px);display:grid;grid-template-columns:1fr;grid-template-rows:auto 1fr;gap:1px;background:var(--grey-2);">
+      <div style="background:white;padding:12px 20px;">
+        <div class="c-label" style="color:{accent};">Original Problem</div>
+        <div style="font-size:11px;color:var(--navy);font-weight:600;">{_e(problem)}</div>
+      </div>
+      <div style="background:white;padding:12px 20px;overflow:auto;">
+        <div class="c-label" style="color:{accent};">HMW Statements &amp; Solutions</div>
+        {hmw_html}
+      </div>
+    </div>'''
+
+
+# ── 7. SCAMPER ──
+
+def _render_board_scamper(board, pathway):
+    """SCAMPER: 7-lens table with ideas per lens."""
+    subject = board.get('subject', '')
+    lenses = board.get('lenses', [])  # [{letter, name, idea}]
+    accent = PATHWAY_COLOURS.get(pathway, '#F15A22')
+
+    rows = ''
+    for l in lenses:
+        letter = l.get('letter', '')
+        name = l.get('name', '')
+        idea = l.get('idea', '')
+        rows += f'<tr><td style="font-weight:700;color:{accent};width:20px;text-align:center;">{_e(letter)}</td><td style="font-weight:600;color:var(--navy);width:120px;">{_e(name)}</td><td>{_e(idea)}</td></tr>'
+
+    return f'''<div style="height:calc(100% - 44px);display:grid;grid-template-columns:1fr;grid-template-rows:auto 1fr;gap:1px;background:var(--grey-2);">
+      <div style="background:white;padding:12px 20px;">
+        <div class="c-label" style="color:{accent};">The Subject</div>
+        <div style="font-size:11px;color:var(--navy);font-weight:600;">{_e(subject)}</div>
+      </div>
+      <div style="background:white;padding:12px 14px;overflow:auto;">
+        <table class="ct">
+          <tr><th></th><th>Lens</th><th>Idea</th></tr>
+          {rows}
+        </table>
+      </div>
+    </div>'''
+
+
+# ── 8. CRAZY 8S ──
+
+def _render_board_crazy_8s(board, pathway):
+    """Crazy 8s: numbered idea grid with top picks bolded + pattern callout."""
+    ideas = board.get('ideas', [])  # [{number, text, top_pick}]
+    pattern = board.get('pattern', '')
+    accent = PATHWAY_COLOURS.get(pathway, '#F15A22')
+
+    cards = ''
+    for idea in ideas:
+        num = idea.get('number', '') if isinstance(idea, dict) else ''
+        text = idea.get('text', idea) if isinstance(idea, dict) else idea
+        top = idea.get('top_pick', False) if isinstance(idea, dict) else False
+        border = f'border:2px solid {accent};' if top else 'border:1px solid var(--grey-2);'
+        bold = 'font-weight:600;color:var(--navy);' if top else ''
+        star = ' ★' if top else ''
+        cards += f'''<div style="background:var(--grey-1);{border}border-radius:4px;padding:10px;text-align:center;">
+          <div style="font-size:14px;font-weight:700;color:var(--navy);margin-bottom:4px;">{_e(str(num))}</div>
+          <div style="font-size:9px;{bold}">{_e(text)}{star}</div>
+        </div>'''
+
+    pattern_html = _callout(pattern, bg=f'{accent}20', colour=accent) if pattern else ''
+
+    return f'''<div style="height:calc(100% - 44px);padding:16px 20px;display:flex;flex-direction:column;">
+      <div class="c-label" style="color:{accent};margin-bottom:8px;">Your Ideas</div>
+      <div style="display:grid;grid-template-columns:repeat(4, 1fr);gap:6px;flex:1;">
+        {cards}
+      </div>
+      {pattern_html}
+    </div>'''
+
+
+# ── 9. MASH UP ──
+
+def _render_board_mash_up(board, pathway):
+    """Mash Up: abstracted challenge + analogies explored."""
+    original = board.get('original_challenge', '')
+    abstracted = board.get('abstracted_challenge', '')
+    analogies = board.get('analogies', [])  # [{domain, analogy, application}]
+    accent = PATHWAY_COLOURS.get(pathway, '#F15A22')
+
+    rows = ''
+    for a in analogies:
+        rows += f'<tr><td style="font-weight:600;color:var(--navy);">{_e(a.get("domain", ""))}</td><td>{_e(a.get("analogy", ""))}</td><td>{_e(a.get("application", ""))}</td></tr>'
+
+    return f'''<div style="height:calc(100% - 44px);display:grid;grid-template-columns:1fr;grid-template-rows:auto 1fr;gap:1px;background:var(--grey-2);">
+      <div style="background:white;padding:12px 20px;">
+        <div class="c-label" style="color:{accent};">The Challenge</div>
+        <div style="font-size:9px;color:var(--grey-4);margin-bottom:4px;">{_e(original)}</div>
+        <div style="background:var(--grey-1);padding:8px 14px;border-left:3px solid {accent};border-radius:3px;">
+          <div style="font-size:8px;font-weight:700;color:{accent};text-transform:uppercase;letter-spacing:0.3px;">Abstracted</div>
+          <div style="font-size:11px;font-weight:600;color:var(--navy);">{_e(abstracted)}</div>
+        </div>
+      </div>
+      <div style="background:white;padding:12px 14px;overflow:auto;">
+        <div class="c-label" style="color:{accent};margin-bottom:6px;">Analogies Explored</div>
+        <table class="ct">
+          <tr><th>Domain</th><th>Analogy</th><th>Application</th></tr>
+          {rows}
+        </table>
+      </div>
+    </div>'''
+
+
+# ── 10. CONSTRAINT FLIP ──
+
+def _render_board_constraint_flip(board, pathway):
+    """Constraint Flip: constraint + flip dimensions + ideas + moat."""
+    constraint = board.get('constraint', '')
+    forces = board.get('flip', '')  # or {forces, signals, enables}
+    ideas = board.get('ideas', [])
+    moat = board.get('moat_idea', '')
+    accent = PATHWAY_COLOURS.get(pathway, '#F15A22')
+
+    # Flip section
+    flip_html = ''
+    if isinstance(forces, dict):
+        for key, label in [('forces', 'What it forces'), ('signals', 'What it signals'), ('enables', 'What it enables')]:
+            v = forces.get(key, '')
+            if v:
+                flip_html += f'<div style="padding:6px 0;border-bottom:1px solid var(--grey-2);"><span style="font-size:8px;font-weight:700;color:{accent};text-transform:uppercase;">{label}:</span> <span style="font-size:9px;">{_e(v)}</span></div>'
+    elif forces:
+        flip_html = f'<div class="c-text">{_e(forces)}</div>'
+
+    ideas_html = ''
+    for idea in ideas:
+        t = idea if isinstance(idea, str) else idea.get('text', '')
+        ideas_html += f'<div style="padding:4px 0;border-bottom:1px solid var(--grey-2);font-size:9px;">• {_e(t)}</div>'
+
+    moat_html = ''
+    if moat:
+        moat_html = f'''<div style="background:var(--navy);padding:10px 16px;border-radius:4px;margin-top:8px;">
+          <div style="font-size:8px;font-weight:700;color:{accent};text-transform:uppercase;letter-spacing:0.3px;">The Moat Idea</div>
+          <div style="font-size:11px;font-weight:600;color:white;">{_e(moat)}</div>
+        </div>'''
+
+    return f'''<div style="height:calc(100% - 44px);display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto 1fr auto;gap:1px;background:var(--grey-2);">
+      <div style="grid-column:1/3;background:white;padding:12px 20px;">
+        <div class="c-label" style="color:{accent};">The Constraint</div>
+        <div style="font-size:11px;font-weight:600;color:var(--navy);">{_e(constraint)}</div>
+      </div>
+      <div style="background:white;padding:12px 14px;">
+        <div class="c-label" style="color:{accent};">The Flip</div>
+        {flip_html}
+      </div>
+      <div style="background:white;padding:12px 14px;">
+        <div class="c-label" style="color:{accent};">Constraint-Driven Ideas</div>
+        {ideas_html}
+      </div>
+      <div style="grid-column:1/3;background:white;padding:8px 20px;">
+        {moat_html}
+      </div>
+    </div>'''
+
+
+# ── 11. PRE-MORTEM ──
+
+def _render_board_pre_mortem(board, pathway):
+    """Pre-Mortem: idea + categorised risks + biggest risk callout."""
+    idea = board.get('idea', '')
+    risks = board.get('risks', [])  # [{category, scenario, likelihood}]
+    biggest = board.get('biggest_risk', '')
+    accent = PATHWAY_COLOURS.get(pathway, '#ED3694')
+
+    rows = ''
+    for r in risks:
+        rows += f'<tr><td style="font-weight:600;">{_e(r.get("category", ""))}</td><td>{_e(r.get("scenario", ""))}</td><td>{_tag_html(r.get("likelihood", ""))}</td></tr>'
+
+    biggest_html = ''
+    if biggest:
+        biggest_html = f'''<div style="background:var(--navy);padding:10px 20px;border-radius:4px;">
+          <div style="font-size:8px;font-weight:700;color:{accent};text-transform:uppercase;letter-spacing:0.3px;">Biggest Risk</div>
+          <div style="font-size:11px;font-weight:600;color:white;">{_e(biggest)}</div>
+        </div>'''
+
+    return f'''<div style="height:calc(100% - 44px);display:grid;grid-template-columns:1fr;grid-template-rows:auto 1fr auto;gap:1px;background:var(--grey-2);">
+      <div style="background:white;padding:12px 20px;">
+        <div class="c-label" style="color:{accent};">The Idea Being Tested</div>
+        <div style="font-size:11px;font-weight:600;color:var(--navy);">{_e(idea)}</div>
+      </div>
+      <div style="background:white;padding:12px 14px;overflow:auto;">
+        <div class="c-label" style="color:{accent};margin-bottom:4px;">Failure Scenarios</div>
+        <table class="ct">
+          <tr><th>Category</th><th>Scenario</th><th>Likelihood</th></tr>
+          {rows}
+        </table>
+      </div>
+      <div style="background:white;padding:8px 14px;">{biggest_html}</div>
+    </div>'''
+
+
+# ── 12. DEVIL'S ADVOCATE ──
+
+def _render_board_devils_advocate(board, pathway):
+    """Devil's Advocate: Phase 1 objection log + Phase 2 four-risk scorecard + callouts."""
+    objections = board.get('objections', [])  # [{adversary, objection, defence, rating}]
+    scorecard = board.get('scorecard', [])  # [{dimension, rating, finding}]
+    overall = board.get('overall_rating', '')
+    danger = board.get('danger_zone', '')
+    accent = PATHWAY_COLOURS.get(pathway, '#ED3694')
+
+    # Phase 1: Objection Log
+    obj_rows = ''
+    for i, o in enumerate(objections, 1):
+        obj_rows += f'<tr><td style="font-weight:700;text-align:center;">{i}</td><td style="font-weight:600;">{_e(o.get("adversary", ""))}</td><td>{_e(o.get("objection", ""))}</td><td>{_e(o.get("defence", ""))}</td><td>{_tag_html(o.get("rating", ""))}</td></tr>'
+
+    # Phase 2: Scorecard
+    sc_html = ''
+    for s in scorecard:
+        dim = s.get('dimension', '')
+        rating = s.get('rating', '')
+        finding = s.get('finding', '')
+        sc_html += f'''<div class="sc-row">
+          <div class="sc-dim">{_e(dim)}</div>
+          {_tag_html(rating)}
+          <div class="c-text" style="flex:1;margin-left:6px;">{_e(finding)}</div>
+        </div>'''
+
+    overall_html = ''
+    if overall:
+        colour_map = {'GREEN': '#E8F5E9', 'AMBER': '#FFF8E1', 'RED': '#FFEBEE'}
+        text_map = {'GREEN': '#2E7D32', 'AMBER': '#F57F17', 'RED': '#C62828'}
+        bg = colour_map.get(overall.upper(), '#EEEDF4')
+        tc = text_map.get(overall.upper(), 'var(--navy)')
+        overall_html = f'<div style="padding:6px 10px;background:{bg};color:{tc};border-radius:3px;font-size:10px;font-weight:700;text-align:center;margin-top:6px;">Overall: {_e(overall)}</div>'
+
+    danger_html = ''
+    if danger:
+        danger_html = f'''<div style="background:var(--navy);padding:8px 14px;border-radius:4px;">
+          <div style="font-size:8px;font-weight:700;color:{accent};text-transform:uppercase;">Danger Zone</div>
+          <div style="font-size:10px;font-weight:600;color:white;">{_e(danger)}</div>
+        </div>'''
+
+    return f'''<div style="height:calc(100% - 44px);display:grid;grid-template-columns:1.3fr 0.7fr;grid-template-rows:1fr auto;gap:1px;background:var(--grey-2);">
+      <div style="background:white;padding:10px 14px;overflow:auto;">
+        <div class="c-label" style="color:{accent};">Phase 1 — Adversary Attack: Objection Log</div>
+        <table class="ct">
+          <tr><th>#</th><th>Adversary</th><th>Objection</th><th>Defence</th><th>Rating</th></tr>
+          {obj_rows}
+        </table>
+      </div>
+      <div style="background:white;padding:10px 14px;">
+        <div class="c-label" style="color:{accent};">Phase 2 — Reality Check: Scorecard</div>
+        {sc_html}
+        {overall_html}
+      </div>
+      <div style="grid-column:1/3;background:white;padding:8px 14px;">
+        {danger_html}
+      </div>
+    </div>'''
+
+
+# ── 13. CUSTOMER DISCOVERY ──
+
+def _render_board_customer_discovery(board, pathway):
+    """Customer Discovery: persona + scorecard + signals table."""
+    persona = board.get('persona', '')
+    scorecard = board.get('scorecard', [])  # [{dimension, rating}]
+    signals = board.get('signals', [])  # [{signal, type, caught}]
+    accent = PATHWAY_COLOURS.get(pathway, '#ED3694')
+
+    sc_rows = ''
+    for s in scorecard:
+        sc_rows += f'<tr><td style="font-weight:600;">{_e(s.get("dimension", ""))}</td><td>{_tag_html(s.get("rating", ""))}</td></tr>'
+
+    sig_rows = ''
+    for s in signals:
+        caught = s.get('caught', False)
+        icon = '✓' if caught else '✗'
+        colour = '#2E7D32' if caught else '#C62828'
+        sig_rows += f'<tr><td>{_e(s.get("signal", ""))}</td><td>{_e(s.get("type", ""))}</td><td style="color:{colour};font-weight:700;text-align:center;">{icon}</td></tr>'
+
+    return f'''<div style="height:calc(100% - 44px);display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto 1fr;gap:1px;background:var(--grey-2);">
+      <div style="grid-column:1/3;background:white;padding:10px 20px;">
+        <div class="c-label" style="color:{accent};">Customer Persona</div>
+        <div class="c-text">{_e(persona)}</div>
+      </div>
+      <div style="background:white;padding:10px 14px;">
+        <div class="c-label" style="color:{accent};margin-bottom:4px;">Interview Technique Scorecard</div>
+        <table class="ct">
+          <tr><th>Dimension</th><th>Rating</th></tr>
+          {sc_rows}
+        </table>
+      </div>
+      <div style="background:white;padding:10px 14px;">
+        <div class="c-label" style="color:{accent};margin-bottom:4px;">Signals Planted vs Caught</div>
+        <table class="ct">
+          <tr><th>Signal</th><th>Type</th><th>Caught</th></tr>
+          {sig_rows}
+        </table>
+      </div>
+    </div>'''
+
+
+# ── 14. THE TRADE-OFF ──
+
+def _render_board_trade_off(board, pathway):
+    """Trade-Off: setup + 10 round cards + feature value stack."""
+    setup = board.get('setup', [])  # [{category, levels, price_range}]
+    rounds = board.get('rounds', [])  # [{number, packages, chosen}]
+    tiers = board.get('value_stack', [])  # [{tier, items}]  tier=must/nice/expendable
+    accent = PATHWAY_COLOURS.get(pathway, '#ED3694')
+
+    # Round cards
+    round_html = ''
+    for r in rounds:
+        num = r.get('number', '')
+        chosen = r.get('chosen', '')
+        pkgs = r.get('packages', [])
+        picked_cls = 'picked' if chosen else ''
+        pkg_text = ' vs '.join(str(p) for p in pkgs) if pkgs else ''
+        chosen_text = f'<div style="font-size:7px;font-weight:700;color:{accent};">{_e(chosen)}</div>' if chosen else ''
+        round_html += f'''<div class="rnd {picked_cls}">
+          <div class="rn">R{_e(str(num))}</div>
+          <div style="font-size:7px;color:var(--grey-4);">{_e(pkg_text)}</div>
+          {chosen_text}
+        </div>'''
+
+    # Value stack
+    tier_colours = {'must': ('var(--navy)', 'white'), 'nice': ('var(--grey-4)', 'white'), 'expendable': ('var(--grey-2)', 'var(--grey-4)')}
+    stack_html = ''
+    for t in tiers:
+        tier_name = t.get('tier', 'must')
+        items = t.get('items', [])
+        bg, color = tier_colours.get(tier_name, ('var(--grey-1)', 'var(--grey-4)'))
+        hd_label = tier_name.replace('-', ' ').title()
+        item_rows = ''
+        for item in items:
+            name = item if isinstance(item, str) else item.get('name', '')
+            wins = '' if isinstance(item, str) else item.get('wins', '')
+            wins_html = f'<span style="font-size:8px;color:var(--grey-3);">{_e(wins)}</span>' if wins else ''
+            item_rows += f'<div style="display:flex;justify-content:space-between;padding:4px 14px;font-size:9px;border-bottom:1px solid var(--grey-2);">{_e(name)} {wins_html}</div>'
+        stack_html += f'''<div style="border-radius:4px;overflow:hidden;margin-bottom:4px;">
+          <div style="background:{bg};color:{color};padding:5px 14px;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.3px;">{_e(hd_label)}</div>
+          <div style="background:var(--grey-1);">{item_rows}</div>
+        </div>'''
+
+    return f'''<div style="height:calc(100% - 44px);display:grid;grid-template-columns:1.3fr 0.7fr;grid-template-rows:1fr;gap:1px;background:var(--grey-2);">
+      <div style="background:white;padding:12px 14px;overflow:auto;">
+        <div class="c-label" style="color:{accent};margin-bottom:8px;">The 10 Rounds</div>
+        <div class="rounds">{round_html}</div>
+      </div>
+      <div style="background:white;padding:12px 14px;overflow:auto;">
+        <div class="c-label" style="color:{accent};margin-bottom:8px;">Feature Value Stack</div>
+        {stack_html}
+      </div>
+    </div>'''
+
+
+# ── 15. RAPID EXPERIMENT ──
+
+def _render_board_rapid_experiment(board, pathway):
+    """Rapid Experiment: assumption map (2x2) + experiment card."""
+    assumptions = board.get('assumptions', [])  # [{assumption, confidence, consequence, quadrant}]
+    riskiest = board.get('riskiest', '')
+    experiment = board.get('experiment', {})  # {hypothesis, method, sample, metric, timeline, pass_criteria, fail_criteria}
+    accent = PATHWAY_COLOURS.get(pathway, '#ED3694')
+
+    # Assumption map as 2x2
+    quadrants = {'TEST NOW': [], 'MONITOR': [], 'WATCH': [], 'PARK': []}
+    for a in assumptions:
+        q = a.get('quadrant', 'TEST NOW').upper()
+        if q in quadrants:
+            quadrants[q].append(a.get('assumption', ''))
+    q_colours = {'TEST NOW': '#FFEBEE', 'MONITOR': '#FFF8E1', 'WATCH': '#E8F5E9', 'PARK': '#EEEDF4'}
+    q_text = {'TEST NOW': '#C62828', 'MONITOR': '#F57F17', 'WATCH': '#2E7D32', 'PARK': 'var(--navy)'}
+    map_html = ''
+    for qname in ['TEST NOW', 'MONITOR', 'WATCH', 'PARK']:
+        items = quadrants[qname]
+        items_html = ''.join(f'<div style="font-size:8px;padding:2px 0;border-bottom:1px solid rgba(0,0,0,0.05);">• {_e(i)}</div>' for i in items)
+        map_html += f'''<div style="background:{q_colours[qname]};padding:8px;border-radius:3px;">
+          <div style="font-size:8px;font-weight:700;color:{q_text[qname]};text-transform:uppercase;margin-bottom:3px;">{qname}</div>
+          {items_html}
+        </div>'''
+
+    # Experiment card
+    exp = experiment
+    exp_html = ''
+    for key, label in [('hypothesis', 'Hypothesis'), ('method', 'Method'), ('sample', 'Sample'), ('metric', 'Success Metric'), ('timeline', 'Timeline')]:
+        v = exp.get(key, '')
+        if v:
+            exp_html += f'<div class="exp-row"><div class="exp-lbl">{label}</div><div>{_e(v)}</div></div>'
+
+    pass_c = exp.get('pass_criteria', '')
+    fail_c = exp.get('fail_criteria', '')
+    criteria_html = ''
+    if pass_c or fail_c:
+        criteria_html = f'''<div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:6px;">
+          <div style="background:#E8F5E9;padding:6px 8px;border-radius:3px;"><div style="font-size:8px;font-weight:700;color:#2E7D32;">PASS</div><div style="font-size:8px;">{_e(pass_c)}</div></div>
+          <div style="background:#FFEBEE;padding:6px 8px;border-radius:3px;"><div style="font-size:8px;font-weight:700;color:#C62828;">FAIL</div><div style="font-size:8px;">{_e(fail_c)}</div></div>
+        </div>'''
+
+    riskiest_html = ''
+    if riskiest:
+        riskiest_html = f'''<div style="background:var(--navy);padding:6px 10px;border-radius:3px;margin-top:6px;">
+          <div style="font-size:8px;font-weight:700;color:{accent};">RISKIEST ASSUMPTION</div>
+          <div style="font-size:10px;font-weight:600;color:white;">{_e(riskiest)}</div>
+        </div>'''
+
+    return f'''<div style="height:calc(100% - 44px);display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--grey-2);">
+      <div style="background:white;padding:12px 14px;">
+        <div class="c-label" style="color:{accent};margin-bottom:6px;">Assumption Map</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px;">{map_html}</div>
+        {riskiest_html}
+      </div>
+      <div style="background:white;padding:12px 14px;">
+        <div class="c-label" style="color:{accent};margin-bottom:6px;">Experiment Card</div>
+        <div class="exp-card">{exp_html}{criteria_html}</div>
+      </div>
+    </div>'''
+
+
+# ── 16. LEAN CANVAS ──
+
+def _render_board_lean_canvas(board, pathway):
+    """Lean Canvas: 9-block grid matching the canonical layout."""
+    blocks = board.get('blocks', {})
+    accent = PATHWAY_COLOURS.get(pathway, '#E4E517')
+
+    def _block(label, key, style=''):
+        text = blocks.get(key, '')
+        hyp = ' <span style="font-size:7px;color:var(--grey-3);font-style:italic;">(hypothesis)</span>' if isinstance(text, dict) and text.get('hypothesis') else ''
+        content = text if isinstance(text, str) else text.get('text', '') if isinstance(text, dict) else ''
+        return f'''<div style="background:white;padding:8px 12px;{style}">
+          <div class="c-label" style="color:{accent};">{_e(label)}</div>
+          <div class="c-text">{_e(content)}{hyp}</div>
+        </div>'''
+
+    return f'''<div style="height:calc(100% - 44px);display:grid;grid-template-columns:1fr 0.5fr 1fr 0.5fr 1fr;grid-template-rows:1.2fr 0.8fr 0.5fr;gap:1px;background:var(--grey-2);">
+      <div style="grid-row:1/3;background:white;padding:8px 12px;">
+        <div class="c-label" style="color:{accent};">Problem</div>
+        <div class="c-text">{_e(blocks.get('problem', ''))}</div>
+        <div style="margin-top:8px;border-top:1px solid var(--grey-2);padding-top:6px;">
+          <div class="c-label" style="color:var(--grey-3);">Existing Alternatives</div>
+          <div class="c-text sm">{_e(blocks.get('alternatives', ''))}</div>
+        </div>
+      </div>
+      {_block('Solution', 'solution')}
+      <div style="grid-row:1/3;background:white;padding:8px 12px;">
+        <div class="c-label" style="color:{accent};">Unique Value Proposition</div>
+        <div class="c-text" style="font-size:10px;font-weight:600;color:var(--navy);">{_e(blocks.get('uvp', ''))}</div>
+      </div>
+      {_block('Unfair Advantage', 'unfair_advantage')}
+      <div style="grid-row:1/3;background:white;padding:8px 12px;">
+        <div class="c-label" style="color:{accent};">Customer Segments</div>
+        <div class="c-text">{_e(blocks.get('segments', ''))}</div>
+        <div style="margin-top:8px;border-top:1px solid var(--grey-2);padding-top:6px;">
+          <div class="c-label" style="color:var(--grey-3);">Early Adopters</div>
+          <div class="c-text sm">{_e(blocks.get('early_adopters', ''))}</div>
+        </div>
+      </div>
+      {_block('Key Metrics', 'metrics')}
+      {_block('Channels', 'channels')}
+      <div style="grid-column:1/3;background:white;padding:8px 12px;">
+        <div class="c-label" style="color:{accent};">Cost Structure</div>
+        <div class="c-text">{_e(blocks.get('costs', ''))}</div>
+      </div>
+      <div style="grid-column:3/6;background:white;padding:8px 12px;">
+        <div class="c-label" style="color:{accent};">Revenue Streams</div>
+        <div class="c-text">{_e(blocks.get('revenue', ''))}</div>
+      </div>
+    </div>'''
+
+
+# ── 17. EFFECTUATION ──
+
+def _render_board_effectuation(board, pathway):
+    """Effectuation: means + allies + first move."""
+    who = board.get('who_you_are', '')
+    what = board.get('what_you_know', '')
+    who_know = board.get('who_you_know', '')
+    allies = board.get('allies', [])  # [{name, contributes}]
+    first_move = board.get('first_move', '')
+    accent = PATHWAY_COLOURS.get(pathway, '#E4E517')
+
+    allies_html = ''
+    for a in allies:
+        allies_html += f'<div style="display:flex;gap:8px;padding:4px 0;border-bottom:1px solid var(--grey-2);font-size:9px;"><span style="font-weight:600;color:var(--navy);min-width:80px;">{_e(a.get("name", ""))}</span><span>{_e(a.get("contributes", ""))}</span></div>'
+
+    return f'''<div style="height:calc(100% - 44px);display:grid;grid-template-columns:1fr 1fr 1fr;grid-template-rows:1fr auto;gap:1px;background:var(--grey-2);">
+      <div style="background:white;padding:10px 14px;">
+        <div class="c-label" style="color:{accent};">Who You Are</div>
+        <div class="c-text">{_e(who)}</div>
+      </div>
+      <div style="background:white;padding:10px 14px;">
+        <div class="c-label" style="color:{accent};">What You Know</div>
+        <div class="c-text">{_e(what)}</div>
+      </div>
+      <div style="background:white;padding:10px 14px;">
+        <div class="c-label" style="color:{accent};">Who You Know</div>
+        <div class="c-text">{_e(who_know)}</div>
+      </div>
+      <div style="grid-column:1/3;background:white;padding:10px 14px;">
+        <div class="c-label" style="color:{accent};">Crazy Quilt — Your Allies</div>
+        {allies_html}
+      </div>
+      <div style="background:white;padding:10px 14px;">
+        <div style="background:var(--navy);padding:10px 14px;border-radius:4px;height:100%;display:flex;flex-direction:column;justify-content:center;">
+          <div style="font-size:8px;font-weight:700;color:{accent};text-transform:uppercase;letter-spacing:0.3px;">First Move — 48 Hours</div>
+          <div style="font-size:11px;font-weight:600;color:white;margin-top:4px;">{_e(first_move)}</div>
+        </div>
+      </div>
+    </div>'''
+
+
+# ── 18. FLYWHEEL ──
+
+def _render_board_flywheel(board, pathway):
+    """Flywheel: loop components + connection table + bottleneck."""
+    components = board.get('components', [])  # [{name, description}]
+    connections = board.get('connections', [])  # [{from_to, strength, mechanism}]
+    bottleneck = board.get('bottleneck', '')
+    accent = PATHWAY_COLOURS.get(pathway, '#E4E517')
+
+    # Loop as numbered sequence
+    loop_html = ''
+    for i, c in enumerate(components):
+        name = c if isinstance(c, str) else c.get('name', '')
+        desc = '' if isinstance(c, str) else c.get('description', '')
+        desc_html = f'<div style="font-size:8px;color:var(--grey-4);">{_e(desc)}</div>' if desc else ''
+        arrow = f'<div style="text-align:center;color:{accent};font-size:16px;margin:2px 0;">↓</div>' if i < len(components) - 1 else f'<div style="text-align:center;color:{accent};font-size:10px;margin:2px 0;">↻ back to 1</div>'
+        loop_html += f'''<div style="display:flex;align-items:center;gap:8px;">
+          <div style="width:24px;height:24px;border-radius:50%;background:{accent};color:var(--navy);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;">{i+1}</div>
+          <div><div style="font-size:10px;font-weight:600;color:var(--navy);">{_e(name)}</div>{desc_html}</div>
+        </div>{arrow}'''
+
+    # Connection table
+    conn_rows = ''
+    for c in connections:
+        conn_rows += f'<tr><td style="font-weight:600;">{_e(c.get("from_to", ""))}</td><td>{_tag_html(c.get("strength", ""))}</td><td class="c-text sm">{_e(c.get("mechanism", ""))}</td></tr>'
+
+    bottleneck_html = ''
+    if bottleneck:
+        bottleneck_html = f'''<div style="background:var(--navy);padding:8px 14px;border-radius:4px;">
+          <div style="font-size:8px;font-weight:700;color:{accent};text-transform:uppercase;">The Bottleneck</div>
+          <div style="font-size:10px;font-weight:600;color:white;">{_e(bottleneck)}</div>
+        </div>'''
+
+    return f'''<div style="height:calc(100% - 44px);display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr auto;gap:1px;background:var(--grey-2);">
+      <div style="background:white;padding:12px 14px;">
+        <div class="c-label" style="color:{accent};margin-bottom:8px;">The Flywheel</div>
+        {loop_html}
+      </div>
+      <div style="background:white;padding:12px 14px;overflow:auto;">
+        <div class="c-label" style="color:{accent};margin-bottom:4px;">Connection Strength</div>
+        <table class="ct">
+          <tr><th>Connection</th><th>Strength</th><th>Mechanism</th></tr>
+          {conn_rows}
+        </table>
+      </div>
+      <div style="grid-column:1/3;background:white;padding:8px 14px;">{bottleneck_html}</div>
+    </div>'''
+
+
+# ── 19. THEORY OF CHANGE ──
+
+def _render_board_theory_of_change(board, pathway):
+    """Theory of Change: causal chain flow + sphere classification."""
+    outcome = board.get('outcome', '')
+    activities = board.get('activities', [])  # [{activity, precondition, sphere}]
+    preconditions = board.get('preconditions', [])  # [{precondition, sphere}]
+    accent = PATHWAY_COLOURS.get(pathway, '#E4E517')
+    sphere_colours = {'Within Control': '#E8F5E9', 'Within Influence': '#FFF8E1', 'Outside Control': '#FFEBEE'}
+    sphere_text = {'Within Control': '#2E7D32', 'Within Influence': '#F57F17', 'Outside Control': '#C62828'}
+
+    # Activities → Preconditions flow
+    act_html = ''
+    for a in activities:
+        act = a if isinstance(a, str) else a.get('activity', '')
+        pre = '' if isinstance(a, str) else a.get('precondition', '')
+        act_html += f'''<div style="display:flex;align-items:center;gap:6px;padding:4px 0;border-bottom:1px solid var(--grey-2);font-size:9px;">
+          <span style="font-weight:600;color:var(--navy);min-width:120px;">{_e(act)}</span>
+          <span style="color:var(--grey-3);">→</span>
+          <span>{_e(pre)}</span>
+        </div>'''
+
+    # Preconditions with sphere classification
+    pre_html = ''
+    for p in preconditions:
+        name = p if isinstance(p, str) else p.get('precondition', '')
+        sphere = '' if isinstance(p, str) else p.get('sphere', 'Within Control')
+        bg = sphere_colours.get(sphere, '#EEEDF4')
+        tc = sphere_text.get(sphere, 'var(--navy)')
+        pre_html += f'''<div style="display:flex;align-items:center;gap:6px;padding:4px 0;border-bottom:1px solid var(--grey-2);font-size:9px;">
+          <span style="flex:1;">{_e(name)}</span>
+          <span class="tag" style="background:{bg};color:{tc};">{_e(sphere)}</span>
+        </div>'''
+
+    outcome_html = ''
+    if outcome:
+        outcome_html = f'''<div style="background:var(--navy);padding:10px 16px;border-radius:4px;">
+          <div style="font-size:8px;font-weight:700;color:{accent};text-transform:uppercase;">The Outcome</div>
+          <div style="font-size:11px;font-weight:600;color:white;">{_e(outcome)}</div>
+        </div>'''
+
+    return f'''<div style="height:calc(100% - 44px);display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr auto;gap:1px;background:var(--grey-2);">
+      <div style="background:white;padding:12px 14px;">
+        <div class="c-label" style="color:{accent};margin-bottom:4px;">Activities → Preconditions</div>
+        {act_html}
+      </div>
+      <div style="background:white;padding:12px 14px;">
+        <div class="c-label" style="color:{accent};margin-bottom:4px;">Preconditions — Sphere Classification</div>
+        {pre_html}
+      </div>
+      <div style="grid-column:1/3;background:white;padding:8px 14px;">{outcome_html}</div>
+    </div>'''
+
+
+# ── 20. WARDLEY MAPPING ──
+
+def _render_board_wardley(board, pathway):
+    """Wardley Map: two-axis component grid with evolution stages."""
+    user_need = board.get('user_need', '')
+    components = board.get('components', [])  # [{name, evolution, visibility, dependencies}]
+    movements = board.get('movements', [])  # [{component, direction, rationale}]
+    accent = PATHWAY_COLOURS.get(pathway, '#E4E517')
+
+    evolution_bg = {'Genesis': '#fff0f0', 'Custom': '#fff8e0', 'Product': '#e8f5e9', 'Commodity': '#e3f2fd'}
+    evolution_colour = {'Genesis': '#C62828', 'Custom': '#F57F17', 'Product': '#2E7D32', 'Commodity': '#1565C0'}
+
+    # Component table
+    comp_rows = ''
+    for c in components:
+        evo = c.get('evolution', 'Custom')
+        bg = evolution_bg.get(evo, 'white')
+        ec = evolution_colour.get(evo, 'var(--navy)')
+        deps = ', '.join(c.get('dependencies', [])) if c.get('dependencies') else ''
+        comp_rows += f'''<tr>
+          <td style="font-weight:600;color:var(--navy);">{_e(c.get('name', ''))}</td>
+          <td style="background:{bg};"><span style="color:{ec};font-weight:600;">{_e(evo)}</span></td>
+          <td>{_e(c.get('visibility', ''))}</td>
+          <td class="c-text sm">{_e(deps)}</td>
+        </tr>'''
+
+    # Movements
+    mov_html = ''
+    for m in movements:
+        mov_html += f'''<div style="padding:4px 0;border-bottom:1px solid var(--grey-2);font-size:9px;">
+          <span style="font-weight:600;color:var(--navy);">{_e(m.get('component', ''))}</span>
+          <span style="color:var(--grey-3);">→</span>
+          <span>{_e(m.get('direction', ''))}</span>
+          <span class="c-text sm" style="color:var(--grey-3);margin-left:4px;">{_e(m.get('rationale', ''))}</span>
+        </div>'''
+
+    return f'''<div style="height:calc(100% - 44px);display:grid;grid-template-columns:1.5fr 0.5fr;grid-template-rows:auto 1fr;gap:1px;background:var(--grey-2);">
+      <div style="grid-column:1/3;background:white;padding:10px 20px;">
+        <div class="c-label" style="color:{accent};">User Need</div>
+        <div style="font-size:11px;font-weight:600;color:var(--navy);">{_e(user_need)}</div>
+      </div>
+      <div style="background:white;padding:10px 14px;overflow:auto;">
+        <div class="c-label" style="color:{accent};margin-bottom:4px;">Component Map</div>
+        <table class="ct">
+          <tr><th>Component</th><th>Evolution</th><th>Visibility</th><th>Dependencies</th></tr>
+          {comp_rows}
+        </table>
+      </div>
+      <div style="background:white;padding:10px 14px;">
+        <div class="c-label" style="color:{accent};margin-bottom:4px;">Movements</div>
+        {mov_html}
+      </div>
+    </div>'''
+
+
+# ══════════════════════════════════════════════════════════════
+# CANVAS BOARD DISPATCHER
+# ══════════════════════════════════════════════════════════════
+
+BOARD_RENDERERS = {
+    'five-whys': _render_board_five_whys,
+    'jtbd': _render_board_jtbd,
+    'empathy-map': _render_board_empathy_map,
+    'socratic': _render_board_socratic,
+    'iceberg': _render_board_iceberg,
+    'hmw': _render_board_hmw,
+    'scamper': _render_board_scamper,
+    'crazy-8s': _render_board_crazy_8s,
+    'mash-up': _render_board_mash_up,
+    'analogical': _render_board_mash_up,
+    'constraint-flip': _render_board_constraint_flip,
+    'pre-mortem': _render_board_pre_mortem,
+    'devils-advocate': _render_board_devils_advocate,
+    'reality-check': _render_board_devils_advocate,
+    'customer-discovery': _render_board_customer_discovery,
+    'trade-off': _render_board_trade_off,
+    'rapid-experiment': _render_board_rapid_experiment,
+    'lean-canvas': _render_board_lean_canvas,
+    'effectuation': _render_board_effectuation,
+    'flywheel': _render_board_flywheel,
+    'theory-of-change': _render_board_theory_of_change,
+    'wardley': _render_board_wardley,
+}
+
+CANVAS_DURATIONS = {
+    'five-whys': '15 min', 'jtbd': '20 min', 'empathy-map': '15 min',
+    'socratic': '20 min', 'iceberg': '20 min',
+    'hmw': '20 min', 'scamper': '15 min', 'crazy-8s': '15 min',
+    'mash-up': '20 min', 'constraint-flip': '20 min',
+    'pre-mortem': '20 min', 'devils-advocate': '30 min', 'customer-discovery': '20 min',
+    'trade-off': '25 min', 'rapid-experiment': '15 min',
+    'lean-canvas': '25 min', 'effectuation': '20 min', 'flywheel': '25 min',
+    'theory-of-change': '25 min', 'wardley': '25 min',
+}
+
+
+def render_board_canvas(board_data, exercise, pathway):
+    """
+    Render a tool-specific landscape canvas board page.
+
+    Args:
+        board_data: dict with tool-specific board fields
+        exercise: exercise key (five-whys, lean-canvas, etc.)
+        pathway: pathway key (untangle, spark, test, build)
+
+    Returns:
+        HTML string for the landscape board page content (inside .canvas div)
+    """
+    renderer = BOARD_RENDERERS.get(exercise)
+    if not renderer or not board_data:
+        return ''
+
+    title = EXERCISE_DISPLAY.get(exercise, exercise)
+    duration = CANVAS_DURATIONS.get(exercise, '')
+    strip = _canvas_strip(title, exercise, pathway, duration)
+    inner = renderer(board_data, pathway)
+
+    return f'''<div class="canvas" style="aspect-ratio:297/210;">
+      {strip}
+      {inner}
+    </div>'''
+
+
+# ══════════════════════════════════════════════════════════════
 # MAIN RENDERER
 # ══════════════════════════════════════════════════════════════
 
@@ -674,22 +1845,24 @@ def render_report_html(report_json, mode, exercise, board_cards=None):
   {{footer_3}}
 </div>''')
 
-    # ── PAGE 4: Workshop Board + Go Further ──
-    board_html = ''
-    if board_summary:
-        board_html = f'''<div class="sec">
-      {_render_section_heading("Workshop board", "Summary")}
-      {_render_workshop_table(board_summary)}
-    </div>
-    <hr class="div">'''
-
+    # ── PAGE 4: Go Further (portrait) ──
     pages.append(f'''<div class="page">
   {_render_header(pathway, exercise, date_str, include_date=False)}
   <div class="page-body">
-    {board_html}
     {_render_cta(go_further)}
   </div>
   {{footer_4}}
+</div>''')
+
+    # ── PAGE 5: Workshop Board Canvas (landscape) ──
+    canvas_html = render_board_canvas(board_summary, exercise, pathway)
+    if canvas_html:
+        pages.append(f'''<div class="page page--landscape">
+  {_render_header(pathway, exercise, date_str, include_date=False)}
+  <div style="padding:8px var(--page-x);height:calc(100% - 44px - 40px);">
+    {canvas_html}
+  </div>
+  {{footer_5}}
 </div>''')
 
     total_pages = len(pages)
