@@ -1,0 +1,744 @@
+<html xmlns:o="urn:schemas-microsoft-com:office:office"
+      xmlns:w="urn:schemas-microsoft-com:office:word"
+      xmlns="http://www.w3.org/TR/REC-html40">
+<head>
+<meta charset="utf-8">
+<meta name="ProgId" content="Word.Document">
+<meta name="Generator" content="The Studio">
+<!--[if gte mso 9]>
+<xml>
+  <o:DocumentProperties>
+    <o:Title>Workshop Board Specifications — The Studio</o:Title>
+  </o:DocumentProperties>
+  <w:WordDocument>
+    <w:View>Print</w:View>
+    <w:Zoom>100</w:Zoom>
+    <w:DoNotOptimizeForBrowser/>
+  </w:WordDocument>
+</xml>
+<![endif]-->
+<style>
+  @page { size: A4; margin: 2.5cm 2.5cm 2.5cm 2.5cm; }
+  body { font-family: 'GT Walsheim', Arial, Helvetica, sans-serif; font-size: 11pt; line-height: 1.6; color: #49474D; }
+  h1 { font-size: 24pt; font-weight: 400; color: #1E194F; margin-bottom: 6pt; page-break-before: auto; }
+  h2 { font-size: 16pt; font-weight: 500; color: #1E194F; margin-top: 28pt; margin-bottom: 8pt; padding-bottom: 4pt; border-bottom: 2px solid #E7E6E5; page-break-after: avoid; }
+  h3 { font-size: 12pt; font-weight: 500; color: #49474D; margin-top: 14pt; margin-bottom: 4pt; }
+  h4 { font-size: 10.5pt; font-weight: 700; color: #49474D; margin-top: 10pt; margin-bottom: 2pt; }
+  p { margin-bottom: 6pt; }
+  .subtitle { font-size: 13pt; color: #A8A4A5; margin-bottom: 20pt; }
+  .pathway-badge { display: inline-block; padding: 2px 10px; border-radius: 100px; font-size: 9pt; font-weight: 500; text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 6pt; }
+  .badge-untangle { background: #E8F8F8; color: #27BDBE; }
+  .badge-spark { background: #FDF0EB; color: #F15A22; }
+  .badge-test { background: #FDE8F3; color: #ED3694; }
+  .badge-build { background: #FAFBE8; color: #1E194F; }
+  .tool-card { margin-bottom: 24pt; padding: 14pt 18pt; background: #F6F5F5; border-radius: 6px; border-left: 4px solid #1E194F; page-break-inside: avoid; }
+  .tool-name { font-size: 14pt; font-weight: 500; color: #1E194F; margin-bottom: 4pt; }
+  .section-label { font-size: 9pt; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #A8A4A5; margin-top: 10pt; margin-bottom: 2pt; }
+  .spec-text { font-size: 10pt; color: #49474D; line-height: 1.5; }
+  table { border-collapse: collapse; width: 100%; margin: 8pt 0; font-size: 10pt; }
+  th { background: #1E194F; color: white; padding: 6px 10px; text-align: left; font-weight: 500; font-size: 9pt; text-transform: uppercase; letter-spacing: 0.3px; }
+  td { padding: 6px 10px; border-bottom: 1px solid #E7E6E5; vertical-align: top; }
+  tr:nth-child(even) { background: #F6F5F5; }
+  .component-type { display: inline-block; padding: 1px 8px; border-radius: 100px; font-size: 8.5pt; font-weight: 500; background: #EEEDF4; color: #1E194F; margin-right: 4pt; }
+  .divider { height: 1px; background: #E7E6E5; margin: 24pt 0; border: none; }
+  ul { margin: 4pt 0 8pt 18pt; }
+  li { margin-bottom: 3pt; font-size: 10pt; }
+  blockquote { border-left: 3px solid #A8A4A5; padding: 6pt 12pt; margin: 8pt 0; font-style: italic; color: #49474D; background: #F6F5F5; font-size: 10pt; }
+  .toc { margin: 16pt 0 24pt; }
+  .toc a { color: #1E194F; text-decoration: none; font-size: 10.5pt; }
+  .toc li { margin-bottom: 4pt; list-style: none; }
+  .toc .pathway-group { font-weight: 700; font-size: 11pt; color: #1E194F; margin-top: 10pt; margin-bottom: 4pt; }
+  .footer { text-align: center; font-size: 8.5pt; color: #A8A4A5; margin-top: 36pt; padding-top: 12pt; border-top: 1px solid #E7E6E5; }
+</style>
+<title>Workshop Board Specifications — The Studio</title>
+</head>
+<body>
+
+<h1>Workshop Board Specifications</h1>
+<p class="subtitle">The Studio — Wade Institute of Entrepreneurship<br>20 tools across 4 pathways · March 2026</p>
+
+<p>Each tool in The Studio generates a <strong>Workshop Board</strong> section in the session report. This document defines the exact structure, subsections, and data format for every tool's board output.</p>
+
+<p>The Workshop Board sits between <em>Questions Worth Sitting With</em> and <em>Recommended Actions</em> in the universal report structure.</p>
+
+<hr class="divider">
+
+<!-- ═══════════════ TABLE OF CONTENTS ═══════════════ -->
+
+<h2>Contents</h2>
+<div class="toc">
+<p class="pathway-group"><span class="pathway-badge badge-untangle">The Untangle</span></p>
+<ul>
+  <li>1. Five Whys</li>
+  <li>2. Jobs to Be Done</li>
+  <li>3. Empathy Map</li>
+  <li>4. Socratic Questioning</li>
+  <li>5. The Iceberg</li>
+</ul>
+<p class="pathway-group"><span class="pathway-badge badge-spark">The Spark</span></p>
+<ul>
+  <li>6. How Might We</li>
+  <li>7. SCAMPER</li>
+  <li>8. Crazy 8s</li>
+  <li>9. Mash Up</li>
+  <li>10. Constraint Flip</li>
+</ul>
+<p class="pathway-group"><span class="pathway-badge badge-test">The Test</span></p>
+<ul>
+  <li>11. Pre-Mortem</li>
+  <li>12. Devil's Advocate</li>
+  <li>13. Cold Open</li>
+  <li>14. Reality Check</li>
+  <li>15. The Trade-Off</li>
+</ul>
+<p class="pathway-group"><span class="pathway-badge badge-build">The Build</span></p>
+<ul>
+  <li>16. Lean Canvas</li>
+  <li>17. Effectuation</li>
+  <li>18. Rapid Experiment</li>
+  <li>19. Flywheel</li>
+  <li>20. Theory of Change</li>
+</ul>
+</div>
+
+<hr class="divider">
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- THE UNTANGLE                                       -->
+<!-- ═══════════════════════════════════════════════════ -->
+
+<h2><span class="pathway-badge badge-untangle">The Untangle</span></h2>
+
+<!-- ─── 1. FIVE WHYS ─── -->
+<div class="tool-card" style="border-left-color: #27BDBE;">
+<p class="tool-name">1. Five Whys</p>
+<p class="spec-text">Ask "why?" five times to find root causes. Duration: 15 min.</p>
+
+<p class="section-label">Subsection: The Root Cause Chain</p>
+<p class="spec-text">Display the problem chain as a numbered cascade from the original problem to the root cause:</p>
+<ol class="spec-text" style="margin-left: 18pt;">
+  <li><strong>Original problem:</strong> [what they started with]</li>
+  <li><strong>Why?</strong> [first answer]</li>
+  <li><strong>Why?</strong> [second answer]</li>
+  <li><strong>Why?</strong> [third answer]</li>
+  <li><strong>Why?</strong> [fourth answer]</li>
+  <li><strong>Root cause:</strong> [what they uncovered] — highlighted in bold</li>
+</ol>
+
+<p class="section-label">Subsection: Reframed Problem Statement</p>
+<p class="spec-text">The reframed version of the problem based on the root cause — one sentence. Format: "The real problem isn't [original framing]. It's [root cause framing]."</p>
+
+<p class="section-label">Subsection: Opportunity Scorecard (conditional)</p>
+<p class="spec-text">Only included if the session reached Phase 2 (opportunity sizing). Otherwise omitted.</p>
+<table>
+  <tr><th>Dimension</th><th>Assessment</th><th>Rating</th></tr>
+  <tr><td><strong>Reach</strong></td><td>[user's estimate of affected people/orgs]</td><td>HIGH / MEDIUM / LOW</td></tr>
+  <tr><td><strong>Frequency</strong></td><td>[how often the problem occurs]</td><td>HIGH / MEDIUM / LOW</td></tr>
+  <tr><td><strong>Alternatives</strong></td><td>[what people do today]</td><td>WEAK / MODERATE / STRONG</td></tr>
+</table>
+<p class="spec-text"><strong>Verdict:</strong> Worth pursuing / Needs more evidence / Probably too small — with one sentence connecting reach, frequency, and alternative strength.</p>
+
+<p class="section-label">Report template component</p>
+<p class="spec-text"><span class="component-type">why_chain</span> Numbered chain with question/answer pairs</p>
+</div>
+
+<!-- ─── 2. JOBS TO BE DONE ─── -->
+<div class="tool-card" style="border-left-color: #27BDBE;">
+<p class="tool-name">2. Jobs to Be Done</p>
+<p class="spec-text">Discover what people are really hiring your product to do. Duration: 20 min.</p>
+
+<p class="section-label">Subsection: The Customer</p>
+<p class="spec-text">Who they mapped — one sentence describing the person in a moment, not a demographic.</p>
+
+<p class="section-label">Subsection: The Job Story</p>
+<p class="spec-text">Display the completed job story as a blockquote:</p>
+<blockquote>"When I [situation], I want to [motivation], so I can [outcome]."</blockquote>
+
+<p class="section-label">Subsection: The Four Forces</p>
+<table>
+  <tr><th>Force</th><th>Finding</th></tr>
+  <tr><td><strong>Push</strong> (frustrations with status quo)</td><td>[from session]</td></tr>
+  <tr><td><strong>Pull</strong> (attraction to new solution)</td><td>[from session]</td></tr>
+  <tr><td><strong>Anxiety</strong> (fears about switching)</td><td>[from session]</td></tr>
+  <tr><td><strong>Habit</strong> (inertia keeping them stuck)</td><td>[from session]</td></tr>
+</table>
+
+<p class="section-label">Subsection: The Three Jobs</p>
+<ul>
+  <li><strong>Functional:</strong> what they practically need to do</li>
+  <li><strong>Emotional:</strong> how they want to feel</li>
+  <li><strong>Social:</strong> how they want to be perceived</li>
+</ul>
+
+<p class="section-label">Subsection: Gap Analysis</p>
+<p class="spec-text">Does the user's product actually solve this job? One paragraph on the fit — or misfit — between the job and the current solution.</p>
+
+<p class="section-label">Report template component</p>
+<p class="spec-text"><span class="component-type">workshop_table</span> Forces table + feature list</p>
+</div>
+
+<!-- ─── 3. EMPATHY MAP ─── -->
+<div class="tool-card" style="border-left-color: #27BDBE;">
+<p class="tool-name">3. Empathy Map</p>
+<p class="spec-text">Map what stakeholders think, feel, say, and do. Duration: 15 min.</p>
+
+<p class="section-label">Subsection: The Person</p>
+<p class="spec-text">Who they mapped — name and context, one sentence.</p>
+
+<p class="section-label">Subsection: The Empathy Map</p>
+<table>
+  <tr><th>Says</th><th>Thinks</th></tr>
+  <tr><td>[key quotes and statements]</td><td>[unspoken thoughts and worries]</td></tr>
+</table>
+<table>
+  <tr><th>Does</th><th>Feels</th></tr>
+  <tr><td>[observable behaviours and actions]</td><td>[core emotions driving them]</td></tr>
+</table>
+
+<p class="section-label">Subsection: The Contradiction</p>
+<p class="spec-text">The gap between what this person says/does and what they think/feel — one paragraph explaining the tension and why it matters.</p>
+
+<p class="section-label">Subsection: The Insight</p>
+<p class="spec-text">The opportunity that lives in that gap — one sentence, bold and prominent.</p>
+
+<p class="section-label">Report template component</p>
+<p class="spec-text"><span class="component-type">canvas_grid</span> 2×2 quadrant grid</p>
+</div>
+
+<!-- ─── 4. SOCRATIC QUESTIONING ─── -->
+<div class="tool-card" style="border-left-color: #27BDBE;">
+<p class="tool-name">4. Socratic Questioning</p>
+<p class="spec-text">Test whether beliefs are facts, assumptions, or inherited. Duration: 20 min.</p>
+
+<p class="section-label">Subsection: The Belief Map</p>
+<table>
+  <tr><th>Belief</th><th>Classification</th><th>Evidence</th></tr>
+  <tr><td>[claim]</td><td>Verified / Assumed / Inherited</td><td>[evidence or source]</td></tr>
+</table>
+
+<p class="section-label">Subsection: The Score</p>
+<p class="spec-text">Summary: "You walked in with N beliefs. X verified, Y assumed, Z inherited." One sentence.</p>
+
+<p class="section-label">Subsection: The Critical Assumption</p>
+<p class="spec-text">The single assumption that, if wrong, changes everything — one sentence in bold. Followed by one sentence on what would change.</p>
+
+<p class="section-label">Subsection: The Test</p>
+<p class="spec-text">The simplest way to test the critical assumption in the next two weeks. One specific, concrete action.</p>
+
+<p class="section-label">Report template component</p>
+<p class="spec-text"><span class="component-type">workshop_table</span> Belief classification table</p>
+</div>
+
+<!-- ─── 5. THE ICEBERG ─── -->
+<div class="tool-card" style="border-left-color: #27BDBE;">
+<p class="tool-name">5. The Iceberg</p>
+<p class="spec-text">Go beneath events to find patterns, structures, and mental models. Duration: 20 min.</p>
+
+<p class="section-label">Subsection: The Iceberg</p>
+<p class="spec-text">Display the four levels as a descending structure:</p>
+<ul>
+  <li><strong>Event</strong> (surface) — the incident they described</li>
+  <li><strong>Patterns</strong> (just below the surface) — recurring themes, bullet points</li>
+  <li><strong>Structures</strong> (deep) — systemic causes: incentives, processes, power dynamics. Bullet points</li>
+  <li><strong>Mental Models</strong> (deepest) — the unspoken beliefs holding the structure in place. Bullet points</li>
+</ul>
+
+<p class="section-label">Subsection: The Leverage Point</p>
+<p class="spec-text">Where in the iceberg the highest-leverage intervention sits — one sentence naming the level and the specific belief or structure to target.</p>
+
+<p class="section-label">Subsection: The Shift</p>
+<p class="spec-text">What it would look like to change the mental model — one paragraph on what changes if the belief changes, and how that cascades up through structures, patterns, and events.</p>
+
+<p class="section-label">Report template component</p>
+<p class="spec-text"><span class="component-type">feature_list</span> Tiered list (4 levels)</p>
+</div>
+
+<hr class="divider">
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- THE SPARK                                          -->
+<!-- ═══════════════════════════════════════════════════ -->
+
+<h2><span class="pathway-badge badge-spark">The Spark</span></h2>
+
+<!-- ─── 6. HOW MIGHT WE ─── -->
+<div class="tool-card" style="border-left-color: #F15A22;">
+<p class="tool-name">6. How Might We</p>
+<p class="spec-text">Reframe the problem as "How Might We...?" questions. Duration: 20 min.</p>
+
+<p class="section-label">Subsection: Original Problem</p>
+<p class="spec-text">The problem statement they started with — one sentence.</p>
+
+<p class="section-label">Subsection: Your HMW Statements</p>
+<p class="spec-text">List all HMW statements generated (5-8). Bold the ones selected for deeper exploration:</p>
+<ul>
+  <li>How might we [statement]?</li>
+  <li><strong>How might we [selected statement]?</strong></li>
+</ul>
+
+<p class="section-label">Subsection: Solutions Explored</p>
+<p class="spec-text">For each selected HMW statement, show the solutions generated:</p>
+<ul>
+  <li><strong>HMW: [statement]</strong> — Solution 1: [description], Solution 2: [description]</li>
+</ul>
+
+<p class="section-label">Subsection: Recommended Direction</p>
+<p class="spec-text">Which solution direction has the most potential, and why. One paragraph.</p>
+
+<p class="section-label">Report template component</p>
+<p class="spec-text"><span class="component-type">feature_list</span> HMW statements + solutions</p>
+</div>
+
+<!-- ─── 7. SCAMPER ─── -->
+<div class="tool-card" style="border-left-color: #F15A22;">
+<p class="tool-name">7. SCAMPER</p>
+<p class="spec-text">Remix and twist existing ideas using 7 creative lenses. Duration: 15 min.</p>
+
+<p class="section-label">Subsection: The Subject</p>
+<p class="spec-text">What they applied SCAMPER to — one sentence.</p>
+
+<p class="section-label">Subsection: Ideas by Lens</p>
+<table>
+  <tr><th>Lens</th><th>Idea</th></tr>
+  <tr><td><strong>S — Substitute</strong></td><td>[idea from session]</td></tr>
+  <tr><td><strong>C — Combine</strong></td><td>[idea from session]</td></tr>
+  <tr><td><strong>A — Adapt</strong></td><td>[idea from session]</td></tr>
+  <tr><td><strong>M — Modify</strong></td><td>[idea from session]</td></tr>
+  <tr><td><strong>P — Put to other uses</strong></td><td>[idea from session]</td></tr>
+  <tr><td><strong>E — Eliminate</strong></td><td>[idea from session]</td></tr>
+  <tr><td><strong>R — Reverse</strong></td><td>[idea from session]</td></tr>
+</table>
+<p class="spec-text">If a lens was not explored, omit it from the table.</p>
+
+<p class="section-label">Subsection: Top Picks</p>
+<p class="spec-text">The 2-3 ideas the user selected as most promising. For each, one sentence on why it's worth exploring and one sentence on the first assumption to test.</p>
+
+<p class="section-label">Report template component</p>
+<p class="spec-text"><span class="component-type">workshop_table</span> Lens × idea table</p>
+</div>
+
+<!-- ─── 8. CRAZY 8S ─── -->
+<div class="tool-card" style="border-left-color: #F15A22;">
+<p class="tool-name">8. Crazy 8s</p>
+<p class="spec-text">Generate 8 distinct ideas fast. Duration: 15 min.</p>
+
+<p class="section-label">Subsection: Your Ideas</p>
+<p class="spec-text">List all ideas the user actually generated. Mark the user's top picks with bold. Only include ideas actually described — never fabricate or pad the list. If fewer than 8 were generated, list only the real ones.</p>
+<ol>
+  <li>[idea]</li>
+  <li>[idea]</li>
+  <li><strong>[top pick]</strong></li>
+</ol>
+
+<p class="section-label">Subsection: Patterns</p>
+<p class="spec-text">One paragraph: what patterns emerged across the ideas? Were most about automation? Customer experience? Cost reduction? Name the pattern — it reveals where the user's instincts point.</p>
+
+<p class="section-label">Subsection: Top Pick Analysis</p>
+<p class="spec-text">For each of the user's top 2-3 picks, one sentence on what makes it promising and one sentence on the biggest assumption to test.</p>
+
+<p class="section-label">Report template component</p>
+<p class="spec-text"><span class="component-type">feature_list</span> Numbered idea list with bold top picks</p>
+</div>
+
+<!-- ─── 9. MASH UP ─── -->
+<div class="tool-card" style="border-left-color: #F15A22;">
+<p class="tool-name">9. Mash Up (Analogical Thinking)</p>
+<p class="spec-text">Find proven patterns from other industries to apply. Duration: 20 min.</p>
+
+<p class="section-label">Subsection: The Challenge (Abstracted)</p>
+<p class="spec-text">The user's problem distilled to its fundamental form — one sentence. Show both the original framing and the abstracted version.</p>
+
+<p class="section-label">Subsection: Analogies Explored</p>
+<p class="spec-text">For each domain explored, show the analogy and its application. Only include domains that were actually explored:</p>
+<ul>
+  <li><strong>Nature / Biology</strong> — Analogy: [what nature does]. Application: [how it could apply]</li>
+  <li><strong>Different Industry</strong> — Analogy: [what that industry does]. Application: [how it could apply]</li>
+  <li><strong>Human Behaviour / Culture</strong> — Analogy: [social ritual or practice]. Application: [how it could apply]</li>
+</ul>
+
+<p class="section-label">Subsection: The Breakthrough Analogy</p>
+<p class="spec-text">Which analogy gave the most unexpected insight — one paragraph on what it reveals and what assumption it breaks about how the user's industry currently works.</p>
+
+<p class="section-label">Report template component</p>
+<p class="spec-text"><span class="component-type">feature_list</span> Domain-analogy-application list</p>
+</div>
+
+<!-- ─── 10. CONSTRAINT FLIP ─── -->
+<div class="tool-card" style="border-left-color: #F15A22;">
+<p class="tool-name">10. Constraint Flip</p>
+<p class="spec-text">Turn your biggest limitation into a competitive advantage. Duration: 20 min.</p>
+
+<p class="section-label">Subsection: The Constraint</p>
+<p class="spec-text">The specific limitation they named — one sentence. Must be concrete ("two-person team, no marketing budget, shipping from regional Australia"), not vague ("limited resources").</p>
+
+<p class="section-label">Subsection: The Flip</p>
+<ul>
+  <li><strong>What it forces:</strong> [forced behaviour — focus, speed, creativity, intimacy]</li>
+  <li><strong>What it signals:</strong> [to customers, investors, partners]</li>
+  <li><strong>What it enables:</strong> [what becomes possible only because of the constraint]</li>
+</ul>
+
+<p class="section-label">Subsection: Constraint-Driven Ideas</p>
+<p class="spec-text">Ideas that only work BECAUSE of the constraint. For each:</p>
+<ul>
+  <li>[idea] — <em>Uses the constraint because: [explanation]</em></li>
+</ul>
+<p class="spec-text">Only include ideas that pass the test: would this break if the constraint disappeared?</p>
+
+<p class="section-label">Subsection: The Moat Idea</p>
+<p class="spec-text">The idea that creates an advantage a well-funded competitor cannot easily copy — bold and prominent. One sentence on what makes it defensible.</p>
+
+<p class="section-label">Report template component</p>
+<p class="spec-text"><span class="component-type">feature_list</span> Flip dimensions + constrained ideas</p>
+</div>
+
+<hr class="divider">
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- THE TEST                                           -->
+<!-- ═══════════════════════════════════════════════════ -->
+
+<h2><span class="pathway-badge badge-test">The Test</span></h2>
+
+<!-- ─── 11. PRE-MORTEM ─── -->
+<div class="tool-card" style="border-left-color: #ED3694;">
+<p class="tool-name">11. Pre-Mortem</p>
+<p class="spec-text">Imagine failure and work backwards to identify risks. Duration: 20 min.</p>
+
+<p class="section-label">Subsection: The Idea Being Tested</p>
+<p class="spec-text">One sentence describing what was stress-tested.</p>
+
+<p class="section-label">Subsection: Failure Scenarios</p>
+<p class="spec-text">Group all failure reasons by category. For each, show the risk and its severity:</p>
+<ul>
+  <li><strong>Market Risk</strong> — [failure scenario] — Likelihood: High/Medium/Low</li>
+  <li><strong>Product Risk</strong> — [failure scenario] — Likelihood: High/Medium/Low</li>
+  <li><strong>Team Risk</strong> — [failure scenario] — Likelihood: High/Medium/Low</li>
+  <li><strong>Financial Risk</strong> — [failure scenario] — Likelihood: High/Medium/Low</li>
+  <li><strong>Competition Risk</strong> — [failure scenario] — Likelihood: High/Medium/Low</li>
+  <li><strong>Timing Risk</strong> — [failure scenario] — Likelihood: High/Medium/Low</li>
+</ul>
+<p class="spec-text">Include only categories that were discussed.</p>
+
+<p class="section-label">Subsection: The Biggest Risk</p>
+<p class="spec-text">The single most dangerous failure mode: both most likely AND most fatal. One sentence explaining why this is the one to watch.</p>
+
+<p class="section-label">Subsection: Mitigations</p>
+<p class="spec-text">For the top 2-3 risks, concrete actions to reduce each one. Format: "To reduce [risk]: [specific action by specific date]."</p>
+
+<p class="section-label">Report template component</p>
+<p class="spec-text"><span class="component-type">feature_list</span> Categorised risk list + mitigations</p>
+</div>
+
+<!-- ─── 12. DEVIL'S ADVOCATE ─── -->
+<div class="tool-card" style="border-left-color: #ED3694;">
+<p class="tool-name">12. Devil's Advocate</p>
+<p class="spec-text">Stress-test the idea against its sharpest critic. Duration: 25 min.</p>
+
+<p class="section-label">Subsection: The Idea</p>
+<p class="spec-text">One sentence summary of what was defended.</p>
+
+<p class="section-label">Subsection: Adversary(s) Faced</p>
+<p class="spec-text">Name which adversary role(s) the user chose and which risk each targets:</p>
+<ul>
+  <li>The Churned Customer — Value risk</li>
+  <li>The Confused User — Usability risk</li>
+  <li>The Tired Engineer — Feasibility risk</li>
+  <li>The Sceptical Investor — Viability risk</li>
+  <li>The Fast Follower — All Four risks</li>
+</ul>
+
+<p class="section-label">Subsection: Objection Log</p>
+<table>
+  <tr><th>#</th><th>Adversary</th><th>Objection</th><th>Defence</th><th>Rating</th></tr>
+  <tr><td>1</td><td>[adversary name]</td><td>[the attack]</td><td>[user's response]</td><td>Defended / Deflected / Exposed</td></tr>
+</table>
+<p class="spec-text">Include all objections from the session.</p>
+
+<p class="section-label">Subsection: Risk Heatmap</p>
+<p class="spec-text">Which of the four risks (Value, Usability, Feasibility, Viability) has the most Exposed ratings? State plainly.</p>
+
+<p class="section-label">Subsection: Danger Zone</p>
+<p class="spec-text">The single biggest vulnerability — stated plainly. "If I were betting against this idea, I'd bet on [specific weakness]."</p>
+
+<p class="section-label">Subsection: Suggested Next Step</p>
+<p class="spec-text">One specific action to address the top Exposed objection. Concrete: who to talk to, what to test, what to measure.</p>
+
+<p class="section-label">Report template component</p>
+<p class="spec-text"><span class="component-type">workshop_table</span> Objection log table + <span class="component-type">callout</span> Danger zone</p>
+</div>
+
+<!-- ─── 13. CUSTOMER DISCOVERY ─── -->
+<div class="tool-card" style="border-left-color: #ED3694;">
+<p class="tool-name">13. Cold Open</p>
+<p class="spec-text">Test whether your message survives first contact with a stranger. Duration: 20 min.</p>
+
+<p class="section-label">Subsection: Customer Persona</p>
+<p class="spec-text">The persona Pete adopted during the interview: Name, role, context, frustrations, and existing workarounds. Presented as a brief character card.</p>
+
+<p class="section-label">Subsection: Interview Technique Scorecard</p>
+<table>
+  <tr><th>Dimension</th><th>Rating</th><th>Example</th></tr>
+  <tr><td><strong>Open vs. Leading Questions</strong></td><td>Strong / Needs Work / Weak</td><td>[specific example]</td></tr>
+  <tr><td><strong>Follow-up Quality</strong></td><td>Strong / Needs Work / Weak</td><td>[did they chase the thread?]</td></tr>
+  <tr><td><strong>Silence Tolerance</strong></td><td>Strong / Needs Work / Weak</td><td>[did they let the customer think?]</td></tr>
+  <tr><td><strong>Signal Detection</strong></td><td>Strong / Needs Work / Weak</td><td>[signals caught vs missed]</td></tr>
+  <tr><td><strong>Pitch Avoidance</strong></td><td>Strong / Needs Work / Weak</td><td>[how long before they started selling?]</td></tr>
+</table>
+
+<p class="section-label">Subsection: Signals Planted vs Caught</p>
+<table>
+  <tr><th>Signal</th><th>Type</th><th>Caught?</th></tr>
+  <tr><td>[signal Pete dropped]</td><td>Workaround / Constraint / Frustration</td><td>Yes / No</td></tr>
+</table>
+<p class="spec-text">For each missed signal, note what follow-up question would have uncovered it.</p>
+
+<p class="section-label">Subsection: Key Insight</p>
+<p class="spec-text">The most important thing Pete-as-customer revealed during the interview, and whether the user noticed it. One paragraph.</p>
+
+<p class="section-label">Subsection: The One Thing to Change</p>
+<p class="spec-text">The single most impactful behaviour change for the user's next customer interview. Specific and actionable.</p>
+
+<p class="section-label">Report template component</p>
+<p class="spec-text"><span class="component-type">workshop_table</span> Scorecard table + Signals table</p>
+</div>
+
+<!-- ─── 14. REALITY CHECK ─── -->
+<div class="tool-card" style="border-left-color: #ED3694;">
+<p class="tool-name">14. Reality Check</p>
+<p class="spec-text">Confront the gap between your narrative and your actual data. Duration: 20 min.</p>
+
+<p class="section-label">Subsection: Four-Risk Scorecard</p>
+<table>
+  <tr><th>Risk</th><th>Key Finding</th><th>Rating</th></tr>
+  <tr><td><strong>Value</strong> — Will customers want this?</td><td>[key finding]</td><td>GREEN / AMBER / RED</td></tr>
+  <tr><td><strong>Usability</strong> — Can they figure it out?</td><td>[key finding]</td><td>GREEN / AMBER / RED</td></tr>
+  <tr><td><strong>Feasibility</strong> — Can the team build it?</td><td>[key finding]</td><td>GREEN / AMBER / RED</td></tr>
+  <tr><td><strong>Viability</strong> — Does the business work?</td><td>[key finding]</td><td>GREEN / AMBER / RED</td></tr>
+</table>
+<p class="spec-text"><strong>Overall:</strong> Weakest link rule — one RED = overall RED, all GREEN = overall GREEN, otherwise AMBER.</p>
+
+<p class="section-label">Subsection: Biggest Risk</p>
+<p class="spec-text">Name the single biggest risk identified. One paragraph explaining why it's the most dangerous gap and what evidence is missing. Direct diagnostic, not encouragement.</p>
+
+<p class="section-label">Subsection: Suggested Test</p>
+<p class="spec-text">A specific, cheap test to address the biggest risk. Include: what to test, how to test it, who to test with, how long it should take. Target: under 1 week.</p>
+
+<p class="section-label">Report template component</p>
+<p class="spec-text"><span class="component-type">workshop_table</span> Four-risk scorecard table</p>
+</div>
+
+<!-- ─── 15. THE TRADE-OFF ─── -->
+<div class="tool-card" style="border-left-color: #ED3694;">
+<p class="tool-name">15. The Trade-Off</p>
+<p class="spec-text">Forced-choice feature prioritisation through 10 rounds. Duration: 25 min.</p>
+
+<p class="section-label">Subsection: 1. Synopsis</p>
+<p class="spec-text">The headline insight in 2-3 sentences. What was the product? What did the data reveal about what customers actually value? What was the surprise?</p>
+
+<p class="section-label">Subsection: 2. The Setup</p>
+<table>
+  <tr><th>Category</th><th>Level 1</th><th>Level 2</th><th>Level 3</th></tr>
+  <tr><td>[Category name]</td><td>[Low]</td><td>[Mid]</td><td>[High]</td></tr>
+</table>
+<p class="spec-text">Price range: $[min] — $[max]</p>
+
+<p class="section-label">Subsection: 3. The 10 Rounds</p>
+<p class="spec-text">A visual log of every round showing both packages with chosen one marked. No commentary — the pattern speaks for itself.</p>
+
+<p class="section-label">Subsection: 4. Feature Value Stack</p>
+<p class="spec-text">Rank all 5 categories by win rate, grouped into tiers:</p>
+<ul>
+  <li><strong>Must-have (7-10/10 wins)</strong> — [Category]: [winning level] — [N]/10</li>
+  <li><strong>Nice-to-have (4-6/10 wins)</strong> — [Category]: [mid level] — [N]/10</li>
+  <li><strong>Expendable (0-3/10 wins)</strong> — [Category]: [lowest level] — [N]/10</li>
+</ul>
+
+<p class="section-label">Subsection: 5. The Surprise</p>
+<p class="spec-text">A single paragraph identifying the most counter-intuitive finding. Name the feature the user was most wrong about.</p>
+
+<p class="section-label">Subsection: 6. Minimum Viable Offer</p>
+<p class="spec-text">The simplest bundle someone would pay for: winning level of must-haves, mid of nice-to-haves, lowest of expendables. Show as a clean list with the computed price.</p>
+
+<p class="section-label">Subsection: 7. What to Do Next</p>
+<p class="spec-text">Three specific, actionable next steps tied to the data.</p>
+
+<p class="section-label">Report template component</p>
+<p class="spec-text"><span class="component-type">value_stack</span> Tiered value stack + <span class="component-type">round_cards</span> 10 round cards</p>
+</div>
+
+<hr class="divider">
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- THE BUILD                                          -->
+<!-- ═══════════════════════════════════════════════════ -->
+
+<h2><span class="pathway-badge badge-build">The Build</span></h2>
+
+<!-- ─── 16. LEAN CANVAS ─── -->
+<div class="tool-card" style="border-left-color: #E4E517;">
+<p class="tool-name">16. Lean Canvas</p>
+<p class="spec-text">Map the key elements of the initiative on one page. Duration: 25 min.</p>
+
+<p class="section-label">Subsection: Your Lean Canvas</p>
+<p class="spec-text">The completed canvas rendered as a table. Every block filled with specific content from the conversation. Unfilled blocks marked "To explore." Weak/untested content marked "(hypothesis — needs testing)."</p>
+<table>
+  <tr><th>Problem</th><th>Solution</th><th>Unique Value Proposition</th><th>Unfair Advantage</th><th>Customer Segments</th></tr>
+  <tr><td>[from session]</td><td>[from session]</td><td>[from session]</td><td>[from session]</td><td>[from session]</td></tr>
+</table>
+<table>
+  <tr><th>Key Metrics</th><th>Channels</th></tr>
+  <tr><td>[from session]</td><td>[from session]</td></tr>
+</table>
+<table>
+  <tr><th>Cost Structure</th><th>Revenue Streams</th></tr>
+  <tr><td>[from session]</td><td>[from session]</td></tr>
+</table>
+
+<p class="section-label">Report template component</p>
+<p class="spec-text"><span class="component-type">canvas_grid</span> 9-block canvas grid</p>
+</div>
+
+<!-- ─── 17. EFFECTUATION ─── -->
+<div class="tool-card" style="border-left-color: #E4E517;">
+<p class="tool-name">17. Effectuation</p>
+<p class="spec-text">Start with what you have, not a goal. Duration: 20 min.</p>
+
+<p class="section-label">Subsection: Your Means Inventory (Bird in Hand)</p>
+<ul>
+  <li><strong>Who you are:</strong> identity, skills, abilities</li>
+  <li><strong>What you know:</strong> expertise, experience</li>
+  <li><strong>Who you know:</strong> network, contacts</li>
+</ul>
+
+<p class="section-label">Subsection: Affordable Loss</p>
+<p class="spec-text">What you can afford to risk — time, money, reputation. One sentence.</p>
+
+<p class="section-label">Subsection: Crazy Quilt (Your Allies)</p>
+<p class="spec-text">3-5 people who could join or help, and what each would contribute:</p>
+<ul>
+  <li>[Person/type] — [what they bring]</li>
+</ul>
+
+<p class="section-label">Subsection: Lemonade (Surprises to Leverage)</p>
+<p class="spec-text">Setbacks or surprises that could be turned into advantages. Bullet points.</p>
+
+<p class="section-label">Subsection: First Move</p>
+<p class="spec-text">The specific, concrete action for the next 48 hours. One sentence, bold and prominent.</p>
+
+<p class="section-label">Report template component</p>
+<p class="spec-text"><span class="component-type">feature_list</span> Means inventory + allies list</p>
+</div>
+
+<!-- ─── 18. RAPID EXPERIMENT ─── -->
+<div class="tool-card" style="border-left-color: #E4E517;">
+<p class="tool-name">18. Rapid Experiment</p>
+<p class="spec-text">Design the cheapest, fastest test for your riskiest assumption. Duration: 15 min.</p>
+
+<p class="section-label">Subsection: Assumption Inventory</p>
+<table>
+  <tr><th>#</th><th>Assumption</th><th>Confidence (1-5)</th><th>Consequence (1-5)</th><th>Quadrant</th></tr>
+  <tr><td>1</td><td>[assumption text]</td><td>[score]</td><td>[score]</td><td>TEST NOW / MONITOR / WATCH / PARK</td></tr>
+</table>
+
+<p class="section-label">Subsection: Risk Matrix</p>
+<p class="spec-text">Summarise the 2×2 matrix:</p>
+<ul>
+  <li><strong>TEST NOW</strong> (low confidence, high consequence): [assumptions]</li>
+  <li><strong>MONITOR</strong> (high confidence, high consequence): [assumptions]</li>
+  <li><strong>WATCH</strong> (low confidence, low consequence): [assumptions]</li>
+  <li><strong>PARK</strong> (high confidence, low consequence): [assumptions]</li>
+</ul>
+<p class="spec-text"><strong>Riskiest assumption selected for testing:</strong> [the one from TEST NOW with highest consequence and lowest confidence] — bold and prominent.</p>
+
+<p class="section-label">Subsection: Experiment Card</p>
+<table>
+  <tr><th>Element</th><th>Detail</th></tr>
+  <tr><td><strong>Hypothesis</strong></td><td>We believe [assumption]. We'll know we're right if [measurable signal].</td></tr>
+  <tr><td><strong>Method</strong></td><td>[experiment type — interview, landing page, concierge, Wizard of Oz, prototype, pre-sell, fake door]</td></tr>
+  <tr><td><strong>Sample</strong></td><td>[who to test with, how many, how to recruit]</td></tr>
+  <tr><td><strong>Success metric</strong></td><td>[specific pass/fail threshold — set before seeing data]</td></tr>
+  <tr><td><strong>Timeline</strong></td><td>[how long — target: under 1 week]</td></tr>
+</table>
+
+<p class="section-label">Subsection: First Step</p>
+<p class="spec-text">The one thing to do tomorrow morning to start the test. Concrete.</p>
+
+<p class="section-label">Report template component</p>
+<p class="spec-text"><span class="component-type">experiment_cards</span> Experiment design cards + <span class="component-type">workshop_table</span> Assumption matrix</p>
+</div>
+
+<!-- ─── 19. FLYWHEEL ─── -->
+<div class="tool-card" style="border-left-color: #E4E517;">
+<p class="tool-name">19. Flywheel</p>
+<p class="spec-text">Map the reinforcing loop that drives growth and find the bottleneck. Duration: 25 min.</p>
+
+<p class="section-label">Subsection: The Flywheel</p>
+<p class="spec-text">Display the components as a numbered loop showing the reinforcing cycle:</p>
+<ol>
+  <li>[Component A] &rarr;</li>
+  <li>[Component B] &rarr;</li>
+  <li>[Component C] &rarr;</li>
+  <li>[Component D] &rarr; ...back to 1.</li>
+</ol>
+
+<p class="section-label">Subsection: Connection Strength</p>
+<table>
+  <tr><th>Connection</th><th>Strength</th><th>Mechanism</th></tr>
+  <tr><td>A &rarr; B</td><td>Strong / Developing / Unproven</td><td>[how exactly A causes B]</td></tr>
+  <tr><td>B &rarr; C</td><td>Strong / Developing / Unproven</td><td>[how exactly B causes C]</td></tr>
+</table>
+<p class="spec-text">Continue for all connections in the loop.</p>
+
+<p class="section-label">Subsection: The Bottleneck</p>
+<p class="spec-text">The weakest connection in the loop — one sentence naming it and one sentence on why it matters more than the others.</p>
+
+<p class="section-label">Subsection: Acceleration Plan</p>
+<p class="spec-text">What it would take to make the bottleneck connection twice as strong in 90 days. One paragraph.</p>
+
+<p class="section-label">Report template component</p>
+<p class="spec-text"><span class="component-type">workshop_table</span> Connection strength table + <span class="component-type">callout</span> Bottleneck</p>
+</div>
+
+<!-- ─── 20. THEORY OF CHANGE ─── -->
+<div class="tool-card" style="border-left-color: #E4E517;">
+<p class="tool-name">20. Theory of Change</p>
+<p class="spec-text">Map the causal chain from activities to long-term impact. Duration: 25 min.</p>
+
+<p class="section-label">Subsection: The Outcome</p>
+<p class="spec-text">The long-term observable change — one sentence describing what is different and for whom.</p>
+
+<p class="section-label">Subsection: The Causal Chain</p>
+<p class="spec-text">Display the pathway from activities to outcome:</p>
+<p class="spec-text"><strong>Activities</strong> &rarr; <strong>Preconditions</strong> &rarr; <strong>Outcome</strong></p>
+<p class="spec-text">For each precondition, show its sphere:</p>
+<ul>
+  <li>[precondition] — <em>Within Control</em></li>
+  <li>[precondition] — <em>Within Influence</em></li>
+  <li>[precondition] — <em>Outside Control</em></li>
+</ul>
+
+<p class="section-label">Subsection: The Missing Middle</p>
+<p class="spec-text">Gaps in the causal chain exposed during the session — where the user jumped from activities to outcomes without specifying what must happen in between. Bullet points.</p>
+
+<p class="section-label">Subsection: The Weakest Link</p>
+<p class="spec-text">The connection with the least evidence — one sentence naming it and one sentence on what would happen if it broke.</p>
+
+<p class="section-label">Subsection: Activities Mapped</p>
+<p class="spec-text">For each precondition within control or influence, the specific activity designed to make it true:</p>
+<ul>
+  <li>[activity] &rarr; [precondition it creates]</li>
+</ul>
+
+<p class="section-label">Report template component</p>
+<p class="spec-text"><span class="component-type">feature_list</span> Causal chain + sphere classification</p>
+</div>
+
+<hr class="divider">
+
+<div class="footer">
+  <p>Workshop Board Specifications &middot; The Studio &middot; Wade Institute of Entrepreneurship &middot; March 2026</p>
+</div>
+
+</body>
+</html>

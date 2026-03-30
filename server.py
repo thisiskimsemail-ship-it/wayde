@@ -760,9 +760,9 @@ If the user is starting a Spark-pathway tool (Crazy 8s, HMW, SCAMPER, Constraint
 
 If YES → proceed with the exercise normally. Reference their discovery work.
 If NO (either "no" or "I have a hypothesis but haven't validated") → suggest discovery first:
-"That's fine — but you'll get more out of this if you start with a quick discovery step first. Want to try a Customer Discovery or Five Whys to test your assumptions, or press ahead?"
+"That's fine — but you'll get more out of this if you start with a quick discovery step first. Want to try a Cold Open or Five Whys to test your assumptions, or press ahead?"
 
-If they want discovery → emit [SUGGEST: customer-discovery] or [SUGGEST: five-whys] based on their situation.
+If they want discovery → emit [SUGGEST: cold-open] or [SUGGEST: five-whys] based on their situation.
 If they want to press ahead → proceed with the exercise normally. No gate, no judgement.
 
 This is a NUDGE, not a gate. The user always has the choice to continue. Never block them.
@@ -1176,11 +1176,11 @@ Aim for 15-20 board cards total.
 
 Be rigorous but respectful. You're a sparring partner, not an enemy. The goal is a stronger idea, not a defeated founder.""" + FACILITATOR_OVERLAY,
 
-    "test:customer-discovery": STUDIO_IDENTITY + """
+    "test:cold-open": STUDIO_IDENTITY + """
 
-You are running a CUSTOMER DISCOVERY exercise — a discovery interview simulator where Pete plays the customer and the user practises the single most important skill in product discovery: listening.
+You are running a COLD OPEN exercise — a message testing simulator where Pete plays a stranger and the user tests whether their message survives first contact.
 
-Informed by Marty Cagan's product discovery framework, Steve Blank's customer development methodology, "The Mom Test" by Rob Fitzpatrick, and Y Combinator's emphasis on talking to users. The single most common mistake in customer interviews is pitching instead of listening. You need reps, not tips.
+Inspired by TV cold opens (Breaking Bad, The West Wing), George Lakoff's framing theory, Chip & Dan Heath's "Made to Stick", and Steve Krug's "Don't Make Me Think". The single most common mistake in communication is leading with features instead of outcomes. You need reps, not tips.
 
 Work conversationally. Do NOT dump everything at once.
 
@@ -1240,7 +1240,7 @@ Phase 2: [BOARD:exchange: key Q&A moments] — aim for 3-5
 Phase 3: [BOARD:score-open:], [BOARD:score-followup:], [BOARD:score-silence:], [BOARD:score-signals:], [BOARD:score-pitch:], [BOARD:insight:], [ACTION:]
 Aim for 10-12 board cards total across the session.
 
-Be honest but warm in the debrief. You're coaching interview technique, not judging the person. The goal is a founder who listens better next time.""" + FACILITATOR_OVERLAY,
+Be honest but warm in the debrief. You're coaching cold open technique, not judging the person. The goal is a founder who listens better next time.""" + FACILITATOR_OVERLAY,
 
     # reality-check merged into devils-advocate as Phase 2 — alias set after dict
 
@@ -1903,7 +1903,7 @@ SIGNALS THAT IT'S TIME TO SUGGEST A TOOL:
 - Wants to improve something existing → SCAMPER [SUGGEST: scamper]
 - About to commit significant resources → Pre-Mortem [SUGGEST: pre-mortem]
 - Seems overconfident or team too aligned → Devil's Advocate [SUGGEST: devils-advocate]
-- Can't explain what they do clearly to outsiders → Customer Discovery [SUGGEST: customer-discovery]
+- Can't explain what they do clearly to outsiders → Cold Open [SUGGEST: cold-open]
 - Has an untested hypothesis → Rapid Experiment [SUGGEST: rapid-experiment]
 - Needs to articulate their business model → Lean Canvas [SUGGEST: lean-canvas]
 - Feels stuck because they lack resources → Effectuation [SUGGEST: effectuation]
@@ -1939,7 +1939,7 @@ THE SPARK (idea they want to explore):
 THE TEST (solution they need to pressure-test):
 - Pre-Mortem → need to anticipate what could go wrong [SUGGEST: pre-mortem]
 - Devil's Advocate → need assumptions challenged + operational stress-test [SUGGEST: devils-advocate]
-- Customer Discovery → need to test if their message lands with outsiders [SUGGEST: customer-discovery]
+- Cold Open → need to test if their message lands with outsiders [SUGGEST: cold-open]
 - Rapid Experiment → need to map assumptions and design a quick validation test [SUGGEST: rapid-experiment]
 - Analogical Thinking → need proven patterns from other fields [SUGGEST: analogical]
 
@@ -4099,7 +4099,7 @@ BOARD SUMMARY (board_summary):
 {"subject": "The subject being explored", "lenses": [{"letter": "S", "name": "Substitute", "idea": "idea text"}, {"letter": "C", "name": "Combine", "idea": "..."}, ...]}
 """ + UNIVERSAL_REPORT_JSON
 
-CUSTOMER_DISCOVERY_REPORT = """You are producing a Customer Discovery session report for The Studio at Wade Institute of Entrepreneurship.
+COLD_OPEN_REPORT = """You are producing a Cold Open session report for The Studio at Wade Institute of Entrepreneurship.
 Frame everything as the user's own thinking. Output as JSON.
 
 TOOL-SPECIFIC EVIDENCE COMPONENTS:
@@ -4118,7 +4118,7 @@ In the "evidence.components" array, include:
     ...for each signal. For missed signals, note the follow-up question that would have uncovered it.
   ]},
   {"type": "callout", "bold": "Key Insight", "text": "[The most important thing Pete-as-customer revealed, and whether the user noticed it. One paragraph.]"},
-  {"type": "callout", "bold": "The One Thing to Change", "text": "[The single most impactful behaviour change for their next customer interview. Specific and actionable.]"}
+  {"type": "callout", "bold": "The One Thing to Change", "text": "[The single most impactful behaviour change for their next cold open. Specific and actionable.]"}
 ]
 
 BOARD SUMMARY (board_summary):
@@ -4410,7 +4410,7 @@ EXERCISE_NAMES = {
     'pre-mortem': 'Pre-Mortem',
     'devils-advocate': "Devil's Advocate",
     'rapid-experiment': 'Rapid Experiment',
-    'customer-discovery': 'Customer Discovery',
+    'cold-open': 'Cold Open',
     'empathy-map': 'Empathy Map',
     'socratic': 'Socratic Questioning',
     'iceberg': 'The Iceberg',
@@ -4450,7 +4450,7 @@ scamper (The Spark): Remix and twist existing ideas using 7 creative lenses — 
 constraint-flip (The Spark): Turn your biggest limitation into a competitive advantage — 20 min
 pre-mortem (The Test): Imagine failure and work backwards to identify risks — 20 min
 devils-advocate (The Test): Two-phase stress-test — Phase 1: adversary role-play challenges logic and assumptions, Phase 2: four-risk operational assessment — 30 min
-customer-discovery (The Test): Test whether your message survives first contact with a stranger — 20 min
+cold-open (The Test): Test whether your message survives first contact with a stranger — 20 min
 rapid-experiment (The Test): Map your assumptions, find the riskiest one, design the cheapest fastest test — 20 min
 analogical (The Test): Find proven patterns from other industries to apply — 20 min
 lean-canvas (The Build): Map the key elements of the initiative on one page — 25 min
@@ -4632,7 +4632,7 @@ def generate_report():
             'jtbd': JTBD_REPORT,
             'empathy-map': EMPATHY_MAP_REPORT,
             'scamper': SCAMPER_REPORT,
-            'customer-discovery': CUSTOMER_DISCOVERY_REPORT,
+            'cold-open': COLD_OPEN_REPORT,
             'reality-check': REALITY_CHECK_REPORT,
             'trade-off': TRADE_OFF_REPORT,
             'rapid-experiment': RAPID_EXPERIMENT_REPORT,
@@ -4766,7 +4766,7 @@ You must return EXACTLY this JSON format (no markdown, no code blocks):
 }
 
 AVAILABLE TOOLS for recommendations (use exact keys):
-five-whys, jtbd, empathy-map, socratic, iceberg, crazy-8s, hmw, scamper, analogical, constraint-flip, pre-mortem, devils-advocate, customer-discovery, trade-off, rapid-experiment, lean-canvas, effectuation, wardley, flywheel, theory-of-change
+five-whys, jtbd, empathy-map, socratic, iceberg, crazy-8s, hmw, scamper, analogical, constraint-flip, pre-mortem, devils-advocate, cold-open, trade-off, rapid-experiment, lean-canvas, effectuation, wardley, flywheel, theory-of-change
 
 IMPORTANT:
 - Do NOT recommend the tool they just used.

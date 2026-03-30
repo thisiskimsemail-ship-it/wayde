@@ -29,7 +29,7 @@ EXERCISE_DISPLAY = {
     'scamper': 'SCAMPER', 'crazy-8s': 'Crazy 8s', 'mash-up': 'Mash Up',
     'analogical': 'Mash Up', 'pre-mortem': 'Pre-Mortem',
     'devils-advocate': "Devil's Advocate", 'rapid-experiment': 'Rapid Experiment',
-    'customer-discovery': 'Customer Discovery', 'empathy-map': 'Empathy Map',
+    'cold-open': 'Cold Open', 'empathy-map': 'Empathy Map',
     'socratic': 'Socratic Questioning', 'iceberg': 'The Iceberg',
     'lean-canvas': 'Lean Canvas', 'effectuation': 'Effectuation',
     'flywheel': 'Flywheel', 'reality-check': 'Reality Check',
@@ -42,7 +42,7 @@ EXERCISE_PATHWAY = {
     'socratic': 'untangle', 'iceberg': 'untangle',
     'hmw': 'spark', 'scamper': 'spark', 'crazy-8s': 'spark',
     'mash-up': 'spark', 'analogical': 'spark', 'constraint-flip': 'spark',
-    'pre-mortem': 'test', 'devils-advocate': 'test', 'customer-discovery': 'test',
+    'pre-mortem': 'test', 'devils-advocate': 'test', 'cold-open': 'test',
     'trade-off': 'test', 'rapid-experiment': 'test',
     'lean-canvas': 'build', 'effectuation': 'build', 'wardley': 'build',
     'flywheel': 'build', 'theory-of-change': 'build',
@@ -631,7 +631,7 @@ CANVAS_SOURCES = {
     'constraint-flip': 'd.school · Cooperrider (Appreciative Inquiry) · Goldratt (Theory of Constraints)',
     'pre-mortem': 'Gary Klein · Performing a Project Premortem (HBR, 2007)',
     'devils-advocate': 'Janis (1972) · Nemeth · Phase 2: IDEO four-risk lens',
-    'customer-discovery': 'Steve Blank · Rob Fitzpatrick, The Mom Test',
+    'cold-open': 'TV cold opens · Lakoff, Framing (2004) · Heath Brothers, Made to Stick (2007)',
     'trade-off': 'Green & Rao, Conjoint Analysis (1971) · Choice-based conjoint',
     'rapid-experiment': 'Ries · Bland & Osterwalder · Ash Maurya',
     'lean-canvas': 'Ash Maurya · Running Lean (2012) · Adapted from Osterwalder BMC',
@@ -1261,10 +1261,10 @@ def _render_board_devils_advocate(board, pathway):
     </div>'''
 
 
-# ── 13. CUSTOMER DISCOVERY ──
+# ── 13. COLD OPEN ──
 
-def _render_board_customer_discovery(board, pathway):
-    """Customer Discovery: persona + scorecard + signals table."""
+def _render_board_cold_open(board, pathway):
+    """Cold Open: persona + scorecard + signals table."""
     persona = board.get('persona', '')
     scorecard = board.get('scorecard', [])  # [{dimension, rating}]
     signals = board.get('signals', [])  # [{signal, type, caught}]
@@ -1759,7 +1759,7 @@ BOARD_RENDERERS = {
     'pre-mortem': _render_board_pre_mortem,
     'devils-advocate': _render_board_devils_advocate,
     'reality-check': _render_board_reality_check,
-    'customer-discovery': _render_board_customer_discovery,
+    'cold-open': _render_board_cold_open,
     'trade-off': _render_board_trade_off,
     'rapid-experiment': _render_board_rapid_experiment,
     'lean-canvas': _render_board_lean_canvas,
@@ -1774,7 +1774,7 @@ CANVAS_DURATIONS = {
     'socratic': '20 min', 'iceberg': '20 min',
     'hmw': '20 min', 'scamper': '15 min', 'crazy-8s': '15 min',
     'mash-up': '20 min', 'constraint-flip': '20 min',
-    'pre-mortem': '20 min', 'devils-advocate': '30 min', 'customer-discovery': '20 min',
+    'pre-mortem': '20 min', 'devils-advocate': '30 min', 'cold-open': '20 min',
     'trade-off': '25 min', 'rapid-experiment': '15 min',
     'lean-canvas': '25 min', 'effectuation': '20 min', 'flywheel': '25 min',
     'theory-of-change': '25 min', 'wardley': '25 min',

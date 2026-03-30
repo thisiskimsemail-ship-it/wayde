@@ -140,7 +140,7 @@ function updateStageLogo(mode) {
 const STAGE_TOOLS = {
     untangle: ['five-whys', 'empathy-map', 'jtbd', 'socratic', 'iceberg'],
     spark: ['crazy-8s', 'hmw', 'scamper', 'mash-up', 'constraint-flip'],
-    test: ['pre-mortem', 'devils-advocate', 'customer-discovery', 'rapid-experiment', 'trade-off'],
+    test: ['pre-mortem', 'devils-advocate', 'cold-open', 'rapid-experiment', 'trade-off'],
     build: ['lean-canvas', 'effectuation', 'wardley', 'flywheel', 'theory-of-change']
 };
 
@@ -231,7 +231,7 @@ const EXERCISE_LABELS = {
     'effectuation': 'Effectuation',
     'flywheel': 'Flywheel',
     'socratic': 'Socratic Questioning',
-    'customer-discovery': 'Customer Discovery',
+    'cold-open': 'Cold Open',
     'reality-check': "Devil's Advocate",
     'theory-of-change': 'Theory of Change',
     'trade-off': 'The Trade-Off',
@@ -264,7 +264,7 @@ const EXERCISE_MODE = {
     'rapid-experiment': 'test',
     'flywheel': 'build',
     'socratic': 'untangle',
-    'customer-discovery': 'test',
+    'cold-open': 'test',
     'reality-check': 'test',
     'wardley': 'build',
     'theory-of-change': 'build',
@@ -300,7 +300,7 @@ const EXERCISE_DESCS = {
     'analogical':       'Smash ideas from different industries together and see what comes out.',
     'flywheel':         'Map the reinforcing loop that drives your growth and find the bottleneck.',
     'socratic':         'Test whether your problem is built on facts or assumptions.',
-    'customer-discovery':         'Practise a customer interview — Pete plays the customer.',
+    'cold-open':         'Practise your pitch on a stranger — Pete plays the stranger.',
     'reality-check':     'Two-phase stress-test: adversary role-play, then four-risk operational assessment.',
     'theory-of-change':  'Map the causal chain from what you do to the change you create.',
     'trade-off':         'Force trade-offs to reveal what customers actually value.',
@@ -323,7 +323,7 @@ const EXERCISE_HINTS = {
     'effectuation':     'Type, chat, or upload — e.g. "I have deep expertise in policy and a strong network"',
     'mash-up':          'Type, chat, or upload — e.g. "How might we reduce handoff delays like F1 pit stops?"',
     'analogical':       'Type, chat, or upload — e.g. "How might we reduce handoff delays like F1 pit stops?"',
-    'customer-discovery':        'Type, chat, or upload — e.g. "I need to explain what we do to investors"',
+    'cold-open':        'Type, chat, or upload — e.g. "I need to explain what we do to investors"',
     'iceberg':          'Type, chat, or upload — e.g. "We keep losing our best people and nothing fixes it"',
     'constraint-flip':  'Type, chat, or upload — e.g. "We have no marketing budget and competitors spend millions"',
     'trade-off':        'Type, chat, or upload — e.g. "We have seven features and every stakeholder says theirs is essential"',
@@ -355,7 +355,7 @@ const EXERCISE_ARCS = {
     'trade-off':        'Pete will force you to choose between your own features. The ones that survive every round are your core value.',
     'theory-of-change': 'We\'ll work backwards from the change you want to create, mapping every condition that has to be true, and find where the chain depends on things you can\'t control.',
     'reality-check':    'Phase 1: Pete becomes an adversary and attacks your idea. Phase 2: a four-risk operational assessment. You defend on both fronts.',
-    'customer-discovery':        'Pete will become your target customer and you\'ll practise a discovery interview. He\'ll respond like a real person — evasive, polite, distracted. Then he\'ll coach you on your technique.',
+    'cold-open':        'Pete will become a stranger and you\'ll practise a cold open conversation. He\'ll respond like a real person — skeptical, busy, distracted. Then he\'ll coach you on your technique.',
     'socratic':         'We\'ll examine every belief behind your problem — separating facts from assumptions — and find the one thing to test first.',
     'flywheel':         'We\'ll map the 3-5 things that reinforce each other in your business, test each connection, and find the bottleneck holding you back.'
 };
@@ -463,7 +463,7 @@ const TOOL_PROGRAM_MAP = {
         bridge: 'Rigorous thinking under pressure is what Wade\'s executive programs are designed to develop. If your team needs to make better decisions, Wade can help.',
         segment: 'corporate'
     },
-    'customer-discovery': {
+    'cold-open': {
         program: 'Master of Entrepreneurship',
         programUrl: 'https://wadeinstitute.org.au/programs/entrepreneurs/master-of-entrepreneurship/',
         bridge: 'Getting your message right is critical for founders. Wade\'s Master of Entrepreneurship includes pitch development, investor communication, and customer messaging as core curriculum.',
@@ -532,7 +532,7 @@ const EXERCISE_EXCHANGES = {
     'five-whys': 7, 'jtbd': 10, 'empathy-map': 10,
     'hmw': 8, 'scamper': 10, 'crazy-8s': 8,
     'pre-mortem': 10, 'devils-advocate': 14, 'rapid-experiment': 10,
-    'lean-canvas': 12, 'effectuation': 8, 'mash-up': 8, 'analogical': 8, 'flywheel': 10, 'socratic': 8, 'customer-discovery': 8, 'reality-check': 14, 'wardley': 12, 'theory-of-change': 10, 'trade-off': 10, 'iceberg': 8, 'constraint-flip': 8
+    'lean-canvas': 12, 'effectuation': 8, 'mash-up': 8, 'analogical': 8, 'flywheel': 10, 'socratic': 8, 'cold-open': 8, 'reality-check': 14, 'wardley': 12, 'theory-of-change': 10, 'trade-off': 10, 'iceberg': 8, 'constraint-flip': 8
 };
 
 // Human-readable time estimates per exercise
@@ -553,7 +553,7 @@ const EXERCISE_TIMES = {
     'analogical':     '20 min',
     'flywheel':       '25 min',
     'socratic':       '20 min',
-    'customer-discovery':      '20 min',
+    'cold-open':      '20 min',
     'reality-check':  '30 min',
     'theory-of-change':'25 min',
     'trade-off':      '25 min',
@@ -584,7 +584,7 @@ const STAGE_DEFAULT = {
 const TOOLS_BY_MODE = {
     untangle: ['five-whys', 'empathy-map', 'jtbd', 'socratic', 'iceberg'],
     spark:    ['crazy-8s', 'hmw', 'scamper', 'mash-up', 'constraint-flip'],
-    test:     ['pre-mortem', 'devils-advocate', 'customer-discovery', 'rapid-experiment', 'trade-off'],
+    test:     ['pre-mortem', 'devils-advocate', 'cold-open', 'rapid-experiment', 'trade-off'],
     build:    ['lean-canvas', 'effectuation', 'wardley', 'flywheel', 'theory-of-change']
 };
 
@@ -765,7 +765,7 @@ const TOOL_DETAIL_SLUG = {
     'mash-up': 'analogical-thinking',
     'analogical': 'analogical-thinking',
     'socratic': 'socratic-questioning',
-    'customer-discovery': 'customer-discovery',
+    'cold-open': 'cold-open',
     'reality-check': 'reality-check',
     'theory-of-change': 'theory-of-change',
     'trade-off': 'trade-off',
@@ -1143,7 +1143,7 @@ function startExercise(mode, exercise, startMsg = null) {
     routingBack.classList.add('hidden');
 
     // Switch board layout based on exercise — custom boards for structured tools
-    const customLayouts = ['lean-canvas', 'elevator-pitch', 'pre-mortem', 'effectuation', 'flywheel', 'customer-discovery', 'iceberg', 'constraint-flip', 'socratic', 'reality-check', 'theory-of-change', 'trade-off', 'five-whys', 'empathy-map', 'jtbd', 'crazy-8s', 'hmw', 'scamper', 'devils-advocate', 'rapid-experiment', 'mash-up', 'analogical', 'wardley'];
+    const customLayouts = ['lean-canvas', 'elevator-pitch', 'pre-mortem', 'effectuation', 'flywheel', 'cold-open', 'iceberg', 'constraint-flip', 'socratic', 'reality-check', 'theory-of-change', 'trade-off', 'five-whys', 'empathy-map', 'jtbd', 'crazy-8s', 'hmw', 'scamper', 'devils-advocate', 'rapid-experiment', 'mash-up', 'analogical', 'wardley'];
     if (customLayouts.includes(exercise)) {
         switchBoardLayout(exercise);
     } else {
@@ -1818,6 +1818,14 @@ function restoreSession(session) {
         });
     }
     updateParkingLot();
+
+    // Restore custom board layout before rendering cards
+    const customLayouts = ['lean-canvas', 'elevator-pitch', 'pre-mortem', 'effectuation', 'flywheel', 'cold-open', 'iceberg', 'constraint-flip', 'socratic', 'reality-check', 'theory-of-change', 'trade-off', 'five-whys', 'empathy-map', 'jtbd', 'crazy-8s', 'hmw', 'scamper', 'devils-advocate', 'rapid-experiment', 'mash-up', 'analogical', 'wardley'];
+    if (customLayouts.includes(state.exercise)) {
+        switchBoardLayout(state.exercise);
+    } else {
+        switchBoardLayout('default');
+    }
     renderBoard();
 
     welcome.classList.add('hidden');
@@ -2087,7 +2095,7 @@ async function streamResponse() {
                         if (breadcrumbStage) breadcrumbStage.textContent = (MODE_LABELS[autoMode] || autoMode).toUpperCase();
                         if (breadcrumbTool) breadcrumbTool.innerHTML = (EXERCISE_LABELS[autoKey] || autoKey) + ' <svg class="breadcrumb-chevron" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg>';
                         // Switch board layout
-                        const customLayouts = ['lean-canvas', 'elevator-pitch', 'pre-mortem', 'effectuation', 'flywheel', 'customer-discovery', 'iceberg', 'constraint-flip', 'socratic', 'reality-check', 'theory-of-change', 'trade-off', 'five-whys', 'empathy-map', 'jtbd', 'crazy-8s', 'hmw', 'scamper', 'devils-advocate', 'rapid-experiment', 'mash-up', 'analogical', 'wardley'];
+                        const customLayouts = ['lean-canvas', 'elevator-pitch', 'pre-mortem', 'effectuation', 'flywheel', 'cold-open', 'iceberg', 'constraint-flip', 'socratic', 'reality-check', 'theory-of-change', 'trade-off', 'five-whys', 'empathy-map', 'jtbd', 'crazy-8s', 'hmw', 'scamper', 'devils-advocate', 'rapid-experiment', 'mash-up', 'analogical', 'wardley'];
                         if (customLayouts.includes(autoKey)) {
                             switchBoardLayout(autoKey);
                         } else {
@@ -4171,18 +4179,18 @@ const BOARD_LAYOUTS = {
         ],
         gridClass: 'board-grid-trade-off'
     },
-    'customer-discovery': {
+    'cold-open': {
         zones: [
-            { id: 'co-persona', name: 'Customer Persona', empty: 'Who Pete is playing', hint: 'Name, role, context, frustrations', colour: 'pink' },
+            { id: 'co-persona', name: 'Stranger Persona', empty: 'Who Pete is playing', hint: 'Name, role, context, frustrations', colour: 'pink' },
             { id: 'co-open', name: 'Open vs Leading', empty: 'Question quality', hint: 'Did you explore or pitch?', colour: 'pink' },
             { id: 'co-followup', name: 'Follow-up Quality', empty: 'Thread chasing', hint: 'Did you pursue the interesting threads?', colour: 'pink' },
             { id: 'co-silence', name: 'Silence Tolerance', empty: 'Space for thinking', hint: 'Did you let them think?', colour: 'pink' },
             { id: 'co-signals', name: 'Signals Planted vs Caught', empty: 'Hints dropped and whether you followed up', hint: 'Signal | Type | Caught?', colour: 'pink' },
             { id: 'co-pitch', name: 'Pitch Avoidance', empty: 'How long before selling?', hint: 'Lower is better', colour: 'pink' },
-            { id: 'co-insight', name: 'Key Insight', empty: 'The big reveal', hint: 'What the customer revealed and whether you noticed', colour: 'pink' },
+            { id: 'co-insight', name: 'Key Insight', empty: 'The big reveal', hint: 'What the stranger revealed and whether you noticed', colour: 'pink' },
             { id: 'actions', name: 'One Thing to Change', empty: 'The single most impactful behaviour change', hint: 'What to do differently next time', colour: 'pink' }
         ],
-        gridClass: 'board-grid-customer-discovery'
+        gridClass: 'board-grid-cold-open'
     },
     'flywheel': {
         zones: [
@@ -4359,7 +4367,7 @@ const CONSTRAINT_TAG_MAP = {
     'flip': 'cf-forces',
     'idea': 'cf-ideas', 'moat': 'cf-moat'
 };
-const CUSTOMER_DISCOVERY_TAG_MAP = {
+const COLD_OPEN_TAG_MAP = {
     'persona': 'co-persona', 'customer': 'co-persona',
     'score-open': 'co-open', 'open': 'co-open',
     'score-followup': 'co-followup', 'followup': 'co-followup', 'follow-up': 'co-followup',
@@ -4397,7 +4405,7 @@ var TOOL_TAG_MAPS = {
     'socratic': SOCRATIC_TAG_MAP, 'reality-check': REALITY_TAG_MAP,
     'theory-of-change': TOC_TAG_MAP, 'trade-off': TRADEOFF_TAG_MAP,
     'iceberg': ICEBERG_TAG_MAP, 'constraint-flip': CONSTRAINT_TAG_MAP,
-    'customer-discovery': CUSTOMER_DISCOVERY_TAG_MAP,
+    'cold-open': COLD_OPEN_TAG_MAP,
     'mash-up': MASHUP_TAG_MAP, 'analogical': MASHUP_TAG_MAP,
     'wardley': WARDLEY_TAG_MAP
 };
@@ -5721,7 +5729,7 @@ const TOOL_DESCRIPTIONS = {
     'constraint-flip': { desc: 'Pete will help you turn your biggest limitations into competitive advantages.', output: 'A constraints board and report with flipped strategies.' },
     'pre-mortem': { desc: 'Pete will help you imagine your plan has already failed and work backwards to find the risks.', output: 'A risk board and report with prioritised failure modes and mitigations.' },
     'devils-advocate': { desc: 'Phase 1: Pete becomes an adversary and attacks your idea. Phase 2: a four-risk operational assessment of value, usability, feasibility, and viability.', output: 'An objection log, defence ratings, four-risk scorecard, and combined diagnosis of your biggest vulnerability.' },
-    'customer-discovery': { desc: 'Pete becomes your target customer and you practise a discovery interview. He\'ll be evasive, polite, and drop hidden signals. Then he\'ll score your technique.', output: 'A persona card, interview technique scorecard, and signals-caught analysis.' },
+    'cold-open': { desc: 'Pete becomes a stranger and you practise a cold open conversation. He\'ll be skeptical, busy, and drop hidden signals. Then he\'ll score your technique.', output: 'A persona card, pitch technique scorecard, and signals-caught analysis.' },
     'reality-check': { desc: 'Phase 1: Pete becomes an adversary and attacks your idea. Phase 2: a four-risk operational assessment of value, usability, feasibility, and viability.', output: 'An objection log, defence ratings, four-risk scorecard, and combined diagnosis of your biggest vulnerability.' },
     'trade-off': { desc: 'Pete will force you to choose between your own features. Each round requires a sacrifice. The features that survive every trade-off are your core value.', output: 'A feature value stack, side-by-side bundle comparison cards, and a Minimum Viable Offer.' },
     'lean-canvas': { desc: 'Pete will guide you through mapping your business model on a single page.', output: 'A completed Lean Canvas board and report with model analysis.' },

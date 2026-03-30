@@ -5422,7 +5422,7 @@ body.light .feedback-input, html[data-theme="light"] .feedback-input { backgroun
 
 /* Compact text for all custom boards */
 .board-grid-trade-off .zone-name,
-.board-grid-customer-discovery .zone-name,
+.board-grid-cold-open .zone-name,
 .board-grid-socratic .zone-name,
 .board-grid-reality-check .zone-name,
 .board-grid-toc .zone-name,
@@ -5432,7 +5432,7 @@ body.light .feedback-input, html[data-theme="light"] .feedback-input { backgroun
 .board-grid-mash-up .zone-name { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
 
 .board-grid-trade-off .board-card-text,
-.board-grid-customer-discovery .board-card-text,
+.board-grid-cold-open .board-card-text,
 .board-grid-socratic .board-card-text,
 .board-grid-reality-check .board-card-text,
 .board-grid-toc .board-card-text,
@@ -5443,8 +5443,8 @@ body.light .feedback-input, html[data-theme="light"] .feedback-input { backgroun
 
 .board-grid-trade-off .zone-empty,
 .board-grid-trade-off .zone-hint,
-.board-grid-customer-discovery .zone-empty,
-.board-grid-customer-discovery .zone-hint,
+.board-grid-cold-open .zone-empty,
+.board-grid-cold-open .zone-hint,
 .board-grid-socratic .zone-empty,
 .board-grid-socratic .zone-hint,
 .board-grid-reality-check .zone-empty,
