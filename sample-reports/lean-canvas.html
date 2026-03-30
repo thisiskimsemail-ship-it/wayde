@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your canvas has three untested blocks that could collapse the whole model — The Studio Report</title>
+<style>
+  @font-face { font-family: 'GT Walsheim'; src: local('GT Walsheim Pro Light'), local('GT-Walsheim-Pro-Light'), local('GTWalsheimPro-Light'); font-weight: 300; }
+  @font-face { font-family: 'GT Walsheim'; src: local('GT Walsheim Pro Regular'), local('GT-Walsheim-Pro-Regular'), local('GTWalsheimPro-Regular'); font-weight: 400; }
+  @font-face { font-family: 'GT Walsheim'; src: local('GT Walsheim Pro Medium'), local('GT-Walsheim-Pro-Medium'), local('GTWalsheimPro-Medium'); font-weight: 500; }
+  @font-face { font-family: 'GT Walsheim'; src: local('GT Walsheim Pro Bold'), local('GT-Walsheim-Pro-Bold'), local('GTWalsheimPro-Bold'); font-weight: 700; }
+
+  :root {
+    --navy: #1E194F; --orange: #F15A22; --teal: #27BDBE; --pink: #ED3694; --yellow: #E4E517;
+    --grey-1: #F6F5F5; --grey-2: #E7E6E5; --grey-3: #A8A4A5; --grey-4: #49474D;
+    --font: 'GT Walsheim', Arial, Helvetica, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --page-x: 48px;
+  }
+
+  body.pathway-untangle { --accent: #27BDBE; --accent-light: #E8F8F8; --accent-on-dark: #27BDBE; --accent-text: #27BDBE; }
+  body.pathway-spark    { --accent: #F15A22; --accent-light: #FDF0EB; --accent-on-dark: #F15A22; --accent-text: #F15A22; }
+  body.pathway-test     { --accent: #ED3694; --accent-light: #FDE8F3; --accent-on-dark: #ED3694; --accent-text: #ED3694; }
+  body.pathway-build    { --accent: #E4E517; --accent-light: #FAFBE8; --accent-on-dark: #E4E517; --accent-text: #1E194F; }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  @page { size: A4; margin: 0; }
+  @media print {
+    body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .page { break-after: page; box-shadow: none; margin: 0 auto; }
+    .no-break { break-inside: avoid; }
+  }
+
+  body { font-family: var(--font); font-weight: 300; font-size: 13.5px; line-height: 1.65; color: var(--grey-4); background: white; -webkit-font-smoothing: antialiased; }
+  .page { width: 210mm; min-height: 297mm; background: white; margin: 0 auto; position: relative; overflow: hidden; }
+  .page-body { padding: 28px var(--page-x) 60px; }
+
+  .hdr { background: var(--navy); padding: 14px var(--page-x); display: flex; align-items: center; justify-content: space-between; }
+  .hdr-left { display: flex; align-items: center; gap: 14px; }
+  .hdr-logo { font-weight: 700; font-size: 13px; color: var(--orange); line-height: 1.15; text-transform: uppercase; letter-spacing: 0.5px; }
+  .hdr-pipe { width: 1px; height: 18px; background: rgba(255,255,255,0.15); }
+  .hdr-studio { font-size: 12px; font-weight: 500; color: rgba(255,255,255,0.6); letter-spacing: 0.2px; }
+  .hdr-right { font-size: 10px; font-weight: 400; color: rgba(255,255,255,0.4); letter-spacing: 0.4px; text-transform: uppercase; display: flex; gap: 14px; align-items: center; }
+  .hdr-pathway { display: flex; align-items: center; gap: 6px; color: var(--accent-on-dark); font-weight: 500; }
+  .hdr-pathway svg { width: 16px; height: 16px; }
+
+  .ftr { position: absolute; bottom: 0; left: 0; right: 0; padding: 14px var(--page-x); display: flex; justify-content: space-between; align-items: center; font-size: 9.5px; font-weight: 300; color: var(--grey-3); border-top: 1px solid var(--grey-2); }
+  .ftr-page { font-weight: 500; color: var(--grey-3); }
+
+  .hero { padding: 36px var(--page-x) 28px; }
+  .hero-top { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+  .hero-icon { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--accent-text); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .hero-icon svg { width: 20px; height: 20px; color: var(--accent-text); }
+  .hero-badge { display: inline-block; padding: 4px 14px; border-radius: 100px; font-size: 10.5px; font-weight: 500; letter-spacing: 0.3px; text-transform: uppercase; background: var(--accent-light); color: var(--accent-text); }
+  .hero h1 { font-size: 28px; font-weight: 400; line-height: 1.25; color: var(--navy); margin-bottom: 12px; max-width: 520px; }
+  .hero-sub { font-size: 14.5px; font-weight: 300; line-height: 1.6; color: var(--grey-4); max-width: 520px; }
+
+  .insights { display: flex; margin: 0 var(--page-x); border-top: 3px solid var(--accent); border-bottom: 1px solid var(--grey-2); }
+  .ins { flex: 1; padding: 18px 20px 16px; }
+  .ins:not(:last-child) { border-right: 1px solid var(--grey-2); }
+  .ins-label { font-size: 9.5px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; color: var(--grey-3); margin-bottom: 5px; }
+  .ins-big { font-size: 30px; font-weight: 700; color: var(--navy); line-height: 1; margin-bottom: 3px; }
+  .ins-text { font-size: 12px; font-weight: 300; color: var(--grey-4); line-height: 1.4; }
+
+  .sh { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid var(--grey-2); }
+  .sh-bar { width: 3px; height: 18px; border-radius: 2px; flex-shrink: 0; background: var(--accent); }
+  .sh h2 { font-size: 17px; font-weight: 400; color: var(--navy); flex: 1; }
+  .sh-num { font-size: 9.5px; font-weight: 500; color: var(--grey-3); text-transform: uppercase; letter-spacing: 0.5px; }
+  .sec { margin-bottom: 28px; }
+  p { margin-bottom: 10px; }
+  p:last-child { margin-bottom: 0; }
+  strong { color: var(--navy); font-weight: 500; }
+
+  blockquote { border-left: 3px solid var(--accent); padding: 10px 16px; margin: 10px 0; background: var(--accent-light); border-radius: 0 4px 4px 0; font-size: 13px; font-weight: 300; font-style: italic; color: var(--navy); line-height: 1.55; }
+  blockquote strong { font-weight: 500; font-style: normal; color: var(--grey-4); font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.3px; display: block; margin-bottom: 2px; }
+
+  .fl li { list-style: none; padding: 7px 0; border-bottom: 1px solid var(--grey-1); font-size: 13px; display: flex; align-items: baseline; gap: 8px; }
+  .fl li:last-child { border-bottom: none; }
+  .fl .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); flex-shrink: 0; margin-top: 6px; }
+
+  .rd { background: var(--grey-1); border-radius: 6px; padding: 12px 14px; margin-bottom: 7px; display: flex; gap: 12px; align-items: start; }
+  .rd-n { font-size: 18px; font-weight: 700; color: var(--grey-3); min-width: 32px; text-align: center; padding-top: 1px; }
+  .rd-body { flex: 1; }
+  .rd-vs { font-size: 12.5px; color: var(--grey-4); margin-bottom: 3px; line-height: 1.45; }
+  .rd-tag { display: inline-block; padding: 2px 8px; border-radius: 100px; font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.2px; background: var(--accent-light); color: var(--accent-text); margin-bottom: 3px; }
+  .rd-q { font-size: 12px; font-weight: 300; color: var(--grey-4); font-style: italic; line-height: 1.45; }
+
+  .vs { margin-bottom: 14px; }
+  .tier { border-radius: 6px; overflow: hidden; margin-bottom: 7px; }
+  .tier-hd { padding: 7px 14px; display: flex; justify-content: space-between; align-items: center; }
+  .tier-hd h4 { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.4px; color: white; }
+  .tier-hd span { font-size: 10px; font-weight: 300; color: rgba(255,255,255,0.7); }
+  .tier--must .tier-hd { background: var(--navy); }
+  .tier--strong .tier-hd { background: var(--grey-4); }
+  .tier--exp .tier-hd { background: var(--grey-2); }
+  .tier--exp .tier-hd h4 { color: var(--grey-4); }
+  .tier--exp .tier-hd span { color: var(--grey-3); }
+  .tier-body { background: var(--grey-1); }
+  .tier-row { display: flex; justify-content: space-between; padding: 6px 14px; font-size: 12.5px; font-weight: 300; border-bottom: 1px solid var(--grey-2); }
+  .tier-row:last-child { border-bottom: none; }
+  .tier-row .wc { font-weight: 500; font-size: 11px; color: var(--grey-3); }
+
+  .co { display: flex; border-radius: 6px; overflow: hidden; margin-bottom: 14px; }
+  .co-bar { width: 3px; flex-shrink: 0; background: var(--accent); }
+  .co-body { padding: 14px 16px; flex: 1; font-size: 13px; font-weight: 300; line-height: 1.6; background: var(--accent-light); color: var(--navy); }
+
+  .qgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+  .qc { background: var(--grey-1); border-radius: 6px; padding: 14px 16px; border-left: 3px solid var(--accent); }
+  .qc-tag { font-size: 9px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; color: var(--accent-text); margin-bottom: 4px; }
+  .qc p { font-size: 13px; font-weight: 300; font-style: italic; color: var(--navy); line-height: 1.5; margin: 0; }
+
+  .steps { list-style: none; counter-reset: s; }
+  .steps li { counter-increment: s; display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--grey-2); font-size: 13px; font-weight: 300; line-height: 1.55; }
+  .steps li:last-child { border-bottom: none; }
+  .steps li::before { content: counter(s); display: flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: var(--navy); color: white; font-size: 10px; font-weight: 700; flex-shrink: 0; margin-top: 2px; }
+
+  .reframe { background: var(--grey-1); border-radius: 8px; padding: 24px 28px; margin-bottom: 20px; border-left: 4px solid var(--navy); }
+  .reframe h3 { font-size: 15px; font-weight: 400; color: var(--navy); margin-bottom: 8px; }
+  .reframe p { font-size: 14px; font-weight: 300; line-height: 1.65; color: var(--grey-4); }
+
+  .cta { background: var(--navy); border-radius: 8px; padding: 24px 28px; margin-bottom: 14px; }
+  .cta h2 { font-size: 17px; font-weight: 400; color: white; margin-bottom: 6px; }
+  .cta > p { color: rgba(255,255,255,0.5); font-size: 12.5px; font-weight: 300; margin-bottom: 14px; }
+  .cta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .cta-card { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); border-radius: 6px; padding: 14px; }
+  .cta-card h4 { font-size: 11px; font-weight: 500; color: var(--accent-on-dark); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.3px; }
+  .cta-card p { font-size: 12px; font-weight: 300; color: rgba(255,255,255,0.5); margin: 0; line-height: 1.45; }
+
+  .wb { width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 14px; }
+  .wb thead th { background: var(--navy); color: white; padding: 7px 12px; text-align: left; font-weight: 500; font-size: 10px; text-transform: uppercase; letter-spacing: 0.4px; }
+  .wb td { padding: 7px 12px; border-bottom: 1px solid var(--grey-2); vertical-align: top; font-weight: 300; }
+  .wb tr:nth-child(even) { background: var(--grey-1); }
+  .tl { display: inline-block; padding: 2px 8px; border-radius: 100px; font-size: 9.5px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.2px; }
+  .tl--must { background: #EEEDF4; color: var(--navy); }
+  .tl--strong { background: var(--grey-2); color: var(--grey-4); }
+  .tl--exp { background: var(--accent-light); color: var(--accent-text); }
+  .tl--cut { background: #F5E6E6; color: #8B3A3A; }
+
+  .div { height: 1px; background: var(--grey-2); margin: 20px 0; border: none; }
+
+  .page--landscape { width: 297mm; min-height: 210mm; }
+
+  /* ── Canvas board styles (landscape page) ── */
+  .canvas { background: white; overflow: hidden; position: relative; color: var(--grey-4); height: 100%; display: flex; flex-direction: column; }
+  .canvas * { font-family: var(--font); }
+  .c-headline { font-size: 22px; font-weight: 700; color: var(--navy); padding: 16px 20px 12px; line-height: 1.25; }
+  .c-strip { display: flex; align-items: center; justify-content: space-between; padding: 8px 20px; }
+  .c-strip-left { display: flex; align-items: center; gap: 16px; flex: 1; }
+  .c-strip .c-tool { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; }
+  .c-strip .c-dur { font-size: 9px; color: rgba(255,255,255,0.5); }
+  .c-strip .c-source { font-size: 8px; color: rgba(255,255,255,0.4); font-style: italic; }
+  .c-strip-right { display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
+  .c-cell { padding: 14px 18px; overflow: hidden; }
+  .c-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+  .c-text { font-size: 12px; color: var(--grey-4); line-height: 1.5; }
+  .c-text b { color: var(--navy); }
+  .c-text.sm { font-size: 10px; }
+  .ct { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .ct th { padding: 8px 12px; text-align: left; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px; background: var(--navy); color: white; }
+  .ct td { padding: 8px 12px; border-bottom: 1px solid var(--grey-2); vertical-align: top; }
+  .ct tr:last-child td { border-bottom: none; }
+  .tag { display: inline-block; padding: 2px 10px; border-radius: 3px; font-size: 10px; font-weight: 600; }
+  .tag-green { background: #E0F7F7; color: #1a8a8a; }
+  .tag-amber { background: #FFF8E1; color: #F57F17; }
+  .tag-red { background: #FFEBEE; color: #C62828; }
+  .tag-navy { background: #EEEDF4; color: var(--navy); }
+  .tag-teal { background: #E0F7F7; color: #1a8a8a; }
+  .v-tier { padding: 8px 14px; border-radius: 4px; font-size: 12px; font-weight: 600; margin-bottom: 4px; }
+  .v-must { background: #E0F7F7; color: #1a8a8a; border-left: 4px solid #27BDBE; }
+  .v-nice { background: #FFF8E1; color: #F57F17; border-left: 4px solid #F57F17; }
+  .v-exp { background: #FFEBEE; color: #C62828; border-left: 4px solid #C62828; }
+  .rounds { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; }
+  .rnd { background: var(--grey-1); border: 1px solid var(--grey-2); border-radius: 4px; padding: 6px; text-align: center; font-size: 9px; }
+  .rnd .rn { font-weight: 700; font-size: 11px; color: var(--navy); }
+  .rnd.picked { border-color: var(--accent); background: white; }
+  .exp-card { background: var(--grey-1); border-radius: 6px; padding: 14px 16px; }
+  .exp-row { display: flex; gap: 8px; margin-bottom: 5px; font-size: 12px; }
+  .exp-lbl { font-weight: 700; color: var(--navy); min-width: 80px; font-size: 10px; flex-shrink: 0; }
+  .sc-row { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+  .sc-dim { font-size: 12px; font-weight: 600; color: var(--navy); width: 110px; flex-shrink: 0; }
+  .risk-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .risk-cell { padding: 12px; border-radius: 4px; font-size: 12px; font-weight: 600; text-align: center; }
+  .risk-cell .rsub { font-size: 9px; font-weight: 400; margin-top: 3px; }
+  .callout-strip { padding: 10px 16px; border-radius: 4px; font-size: 12px; font-weight: 600; text-align: center; margin-top: 8px; }
+  .chain-node { display: flex; align-items: center; gap: 14px; margin-bottom: 3px; }
+  .chain-circle { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; }
+  .chain-text { flex: 1; padding: 8px 16px; font-size: 12px; color: var(--grey-4); line-height: 1.45; }
+  .chain-arrow { text-align: center; color: var(--grey-3); font-size: 16px; line-height: 1; margin: 2px 0; }
+</style>
+</head>
+<body class="pathway-build">
+<div class="page">
+  <div class="hdr">
+    <div class="hdr-left">
+      <div class="hdr-logo">Wade<br>Institute</div>
+      <div class="hdr-pipe"></div>
+      <div class="hdr-studio">The Studio</div>
+    </div>
+    <div class="hdr-right">
+      <span class="hdr-pathway"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg> The Build</span>
+      <span>Lean Canvas</span>
+      <span>March 2026</span>
+    </div>
+  </div>
+  <div class="hero">
+    <div class="hero-top">
+      <div class="hero-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg></div>
+      <div class="hero-badge">Lean Canvas</div>
+    </div>
+    <h1>Your canvas has three untested blocks that could collapse the whole model</h1>
+    <p class="hero-sub">Lean Canvas mapping revealed where assumptions are hiding as facts.</p>
+  </div>
+  <div class="insights"><div class="ins">
+      <div class="ins-label">Insight 1</div>
+      <div class="ins-big">3x</div>
+      <div class="ins-text">Key finding from the session</div>
+    </div><div class="ins">
+      <div class="ins-label">Insight 2</div>
+      <div class="ins-big">47%</div>
+      <div class="ins-text">Supporting metric discovered</div>
+    </div><div class="ins">
+      <div class="ins-label">Insight 3</div>
+      <div class="ins-big">12</div>
+      <div class="ins-text">Actions identified for next steps</div>
+    </div></div>
+  <div class="page-body"><div class="sec"><p>Filling the canvas forced clarity. Three blocks had zero evidence behind them.</p></div>
+    <div class="sec">
+      <div class="sh">
+      <div class="sh-bar"></div>
+      <h2>The challenge</h2>
+      
+    </div>
+      <p>Need to articulate the business model clearly for investor conversations.</p>
+    </div></div>
+  <div class="ftr">
+    <span>Generated by The Studio · Wade Institute of Entrepreneurship</span>
+    <span class="ftr-page">1 / 5</span>
+  </div>
+</div>
+
+<div class="page">
+  <div class="hdr">
+    <div class="hdr-left">
+      <div class="hdr-logo">Wade<br>Institute</div>
+      <div class="hdr-pipe"></div>
+      <div class="hdr-studio">The Studio</div>
+    </div>
+    <div class="hdr-right">
+      <span class="hdr-pathway"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg> The Build</span>
+      <span>Lean Canvas</span>
+      
+    </div>
+  </div>
+  <div class="page-body">
+    <div class="sec">
+      <div class="sh">
+      <div class="sh-bar"></div>
+      <h2>What emerged</h2>
+      
+    </div>
+      
+    </div>
+    <hr class="div">
+    <div class="sec">
+      <div class="sh">
+      <div class="sh-bar"></div>
+      <h2>Key moments</h2>
+      
+    </div>
+      <p>These were the statements that shifted the conversation:</p>
+      <blockquote>
+      <strong></strong>
+      
+    </blockquote>
+<blockquote>
+      <strong></strong>
+      
+    </blockquote>
+    </div>
+  </div>
+  <div class="ftr">
+    <span>Generated by The Studio · Wade Institute of Entrepreneurship</span>
+    <span class="ftr-page">2 / 5</span>
+  </div>
+</div>
+
+<div class="page">
+  <div class="hdr">
+    <div class="hdr-left">
+      <div class="hdr-logo">Wade<br>Institute</div>
+      <div class="hdr-pipe"></div>
+      <div class="hdr-studio">The Studio</div>
+    </div>
+    <div class="hdr-right">
+      <span class="hdr-pathway"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg> The Build</span>
+      <span>Lean Canvas</span>
+      
+    </div>
+  </div>
+  <div class="page-body">
+    <div class="sec"><div class="reframe">
+      <h3>The reframe</h3>
+      
+    </div></div><div class="sec">
+      <div class="sh">
+      <div class="sh-bar"></div>
+      <h2>Questions worth sitting with</h2>
+      
+    </div>
+      <div class="qgrid"><div class="qc">
+        <div class="qc-tag">Model</div>
+        <p>What is your unfair advantage — and can you build one?</p>
+      </div><div class="qc">
+        <div class="qc-tag">Pricing</div>
+        <p>Have you tested your pricing with actual willingness-to-pay data?</p>
+      </div><div class="qc">
+        <div class="qc-tag">Metrics</div>
+        <p>What are the 3 metrics that prove this model works?</p>
+      </div></div>
+    </div><hr class="div">
+    <div class="sec">
+      <div class="sh">
+      <div class="sh-bar"></div>
+      <h2>What to do next</h2>
+      
+    </div>
+      <ol class="steps"><li><strong></strong> </li>
+<li><strong></strong> </li>
+<li><strong></strong> </li>
+</ol>
+    </div>
+  </div>
+  <div class="ftr">
+    <span>Generated by The Studio · Wade Institute of Entrepreneurship</span>
+    <span class="ftr-page">3 / 5</span>
+  </div>
+</div>
+
+<div class="page">
+  <div class="hdr">
+    <div class="hdr-left">
+      <div class="hdr-logo">Wade<br>Institute</div>
+      <div class="hdr-pipe"></div>
+      <div class="hdr-studio">The Studio</div>
+    </div>
+    <div class="hdr-right">
+      <span class="hdr-pathway"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg> The Build</span>
+      <span>Lean Canvas</span>
+      
+    </div>
+  </div>
+  <div class="page-body">
+    <div class="cta">
+      <h2>Go further with Wade</h2>
+      <p>This report was generated by The Studio, a product of the Wade Institute of Entrepreneurship.</p>
+      <div class="cta-grid"><div class="cta-card">
+        <h4>Recommended reading</h4>
+        <p>Explore more tools in The Studio to pressure-test your assumptions, validate demand, and build with confidence.</p>
+      </div><div class="cta-card">
+        <h4>Wade programs</h4>
+        <p>Wade&#x27;s flagship program takes you beyond the tools. Build your venture with a cohort of founders, expert mentors, and structured support.</p>
+      </div></div>
+    </div>
+  </div>
+  <div class="ftr">
+    <span>Generated by The Studio · Wade Institute of Entrepreneurship</span>
+    <span class="ftr-page">4 / 5</span>
+  </div>
+</div>
+
+<div class="page page--landscape">
+  <div class="hdr">
+    <div class="hdr-left">
+      <div class="hdr-logo">Wade<br>Institute</div>
+      <div class="hdr-pipe"></div>
+      <div class="hdr-studio">The Studio</div>
+    </div>
+    <div class="hdr-right">
+      <span class="hdr-pathway"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg> The Build</span>
+      <span>Lean Canvas</span>
+      
+    </div>
+  </div>
+  <div style="padding:0 var(--page-x);flex:1;overflow:hidden;">
+    <div class="canvas">
+      <div class="c-headline">Your canvas has three untested blocks that could collapse the whole model</div>
+      <div style="flex:1;display:grid;grid-template-columns:1fr 0.5fr 1fr 0.5fr 1fr;grid-template-rows:1.2fr 0.8fr 0.5fr;gap:1px;background:var(--grey-2);">
+      <div style="grid-row:1/3;background:white;padding:8px 12px;">
+        <div class="c-label" style="color:#E4E517;">Problem</div>
+        <div class="c-text">Operations managers spend 6+ hours per week manually compiling reports from 4-5 different tools.</div>
+        <div style="margin-top:8px;border-top:1px solid var(--grey-2);padding-top:6px;">
+          <div class="c-label" style="color:var(--grey-3);">Existing Alternatives</div>
+          <div class="c-text sm">Manual spreadsheets, Notion dashboards, hiring a data analyst.</div>
+        </div>
+      </div>
+      <div style="background:white;padding:8px 12px;">
+          <div class="c-label" style="color:#E4E517;">Solution</div>
+          <div class="c-text">Unified dashboard that auto-pulls data from existing tools and generates board-ready reports.</div>
+        </div>
+      <div style="grid-row:1/3;background:white;padding:8px 12px;">
+        <div class="c-label" style="color:#E4E517;">Unique Value Proposition</div>
+        <div class="c-text" style="font-size:10px;font-weight:600;color:var(--navy);">Board-ready reports in 10 minutes, not 6 hours.</div>
+      </div>
+      <div style="background:white;padding:8px 12px;">
+          <div class="c-label" style="color:#E4E517;">Unfair Advantage</div>
+          <div class="c-text">TBD — need to develop a data moat or network effect. <span style="font-size:7px;color:var(--grey-3);font-style:italic;">(hypothesis)</span></div>
+        </div>
+      <div style="grid-row:1/3;background:white;padding:8px 12px;">
+        <div class="c-label" style="color:#E4E517;">Customer Segments</div>
+        <div class="c-text">Series A-B SaaS companies with 20-100 employees.</div>
+        <div style="margin-top:8px;border-top:1px solid var(--grey-2);padding-top:6px;">
+          <div class="c-label" style="color:var(--grey-3);">Early Adopters</div>
+          <div class="c-text sm">Operations managers at SaaS companies who report to a board quarterly.</div>
+        </div>
+      </div>
+      <div style="background:white;padding:8px 12px;">
+          <div class="c-label" style="color:#E4E517;">Key Metrics</div>
+          <div class="c-text">Key metrics not yet defined. <span style="font-size:7px;color:var(--grey-3);font-style:italic;">(hypothesis)</span></div>
+        </div>
+      <div style="background:white;padding:8px 12px;">
+          <div class="c-label" style="color:#E4E517;">Channels</div>
+          <div class="c-text">Content marketing (SEO) + founder-led sales for first 50 customers.</div>
+        </div>
+      <div style="grid-column:1/3;background:white;padding:8px 12px;">
+        <div class="c-label" style="color:#E4E517;">Cost Structure</div>
+        <div class="c-text">Engineering team ($40K/mo), infrastructure ($2K/mo), marketing ($5K/mo).</div>
+      </div>
+      <div style="grid-column:3/6;background:white;padding:8px 12px;">
+        <div class="c-label" style="color:#E4E517;">Revenue Streams</div>
+        <div class="c-text">{&#x27;text&#x27;: &#x27;$99/mo per workspace, targeting 500 workspaces by month 18.&#x27;, &#x27;hypothesis&#x27;: &#x27;UNTESTED&#x27;}</div>
+      </div>
+    </div>
+    </div>
+  </div>
+  <div class="ftr">
+    <span>Framework: Ash Maurya · Running Lean (2012) · Adapted from Osterwalder BMC · March 2026</span>
+    <span class="ftr-page">5 / 5</span>
+  </div>
+</div>
+</body>
+</html>
