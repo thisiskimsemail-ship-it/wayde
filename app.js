@@ -140,8 +140,8 @@ function updateStageLogo(mode) {
 const STAGE_TOOLS = {
     untangle: ['five-whys', 'empathy-map', 'jtbd', 'socratic', 'iceberg'],
     spark: ['crazy-8s', 'hmw', 'scamper', 'mash-up', 'constraint-flip'],
-    test: ['pre-mortem', 'devils-advocate', 'customer-discovery', 'reality-check', 'trade-off'],
-    build: ['lean-canvas', 'effectuation', 'rapid-experiment', 'flywheel', 'theory-of-change']
+    test: ['pre-mortem', 'devils-advocate', 'customer-discovery', 'rapid-experiment', 'trade-off'],
+    build: ['lean-canvas', 'effectuation', 'wardley', 'flywheel', 'theory-of-change']
 };
 
 function updateBreadcrumbDropdown(currentMode, currentExercise) {
@@ -232,11 +232,12 @@ const EXERCISE_LABELS = {
     'flywheel': 'Flywheel',
     'socratic': 'Socratic Questioning',
     'customer-discovery': 'Customer Discovery',
-    'reality-check': 'Reality Check',
+    'reality-check': "Devil's Advocate",
     'theory-of-change': 'Theory of Change',
     'trade-off': 'The Trade-Off',
     'iceberg': 'The Iceberg',
-    'constraint-flip': 'Constraint Flip'
+    'constraint-flip': 'Constraint Flip',
+    'wardley': 'Wardley Mapping'
 };
 
 const MODE_LABELS = {
@@ -260,11 +261,12 @@ const EXERCISE_MODE = {
     'analogical':       'spark',
     'lean-canvas':      'build',
     'effectuation':     'build',
-    'rapid-experiment': 'build',
+    'rapid-experiment': 'test',
     'flywheel': 'build',
     'socratic': 'untangle',
     'customer-discovery': 'test',
     'reality-check': 'test',
+    'wardley': 'build',
     'theory-of-change': 'build',
     'trade-off': 'test',
     'iceberg': 'untangle',
@@ -289,8 +291,9 @@ const EXERCISE_DESCS = {
     'scamper':          'Stretch an idea by substituting, combining, adapting and more.',
     'crazy-8s':         'Rapidly sketch eight ideas in eight minutes to unlock creativity.',
     'pre-mortem':       'Imagine the project failed. What went wrong?',
-    'devils-advocate':  'Face five named adversaries who attack your idea from different risk angles.',
-    'rapid-experiment': 'Design a quick test to learn before you build.',
+    'devils-advocate':  'Two-phase stress-test: adversary role-play, then four-risk operational assessment.',
+    'rapid-experiment': 'Map your assumptions, find the riskiest one, design the cheapest fastest test.',
+    'wardley':          'Map your value chain from user need to components, spot evolution and strategic plays.',
     'lean-canvas':      'Outline your venture model on a single page.',
     'effectuation':     'Build using the resources and relationships you already have.',
     'mash-up':          'Smash ideas from different industries together and see what comes out.',
@@ -298,7 +301,7 @@ const EXERCISE_DESCS = {
     'flywheel':         'Map the reinforcing loop that drives your growth and find the bottleneck.',
     'socratic':         'Test whether your problem is built on facts or assumptions.',
     'customer-discovery':         'Practise a customer interview — Pete plays the customer.',
-    'reality-check':     'Pressure-test your idea against all four product risks.',
+    'reality-check':     'Two-phase stress-test: adversary role-play, then four-risk operational assessment.',
     'theory-of-change':  'Map the causal chain from what you do to the change you create.',
     'trade-off':         'Force trade-offs to reveal what customers actually value.',
     'iceberg':           'See the system beneath the surface problem.',
@@ -326,6 +329,7 @@ const EXERCISE_HINTS = {
     'trade-off':        'Type, chat, or upload — e.g. "We have seven features and every stakeholder says theirs is essential"',
     'theory-of-change': 'Type, chat, or upload — e.g. "I can\'t explain how our work leads to the impact we promise"',
     'reality-check':    'Type, chat, or upload — e.g. "I keep saying we have product-market fit but the numbers are thin"',
+    'wardley':          'Type, chat, or upload — e.g. "We\'re building everything in-house and I\'m not sure that\'s smart"',
     'socratic':         'Type, chat, or upload — e.g. "Everyone says the board will never approve this"',
     'flywheel':         'Type, chat, or upload — e.g. "Our users love it but growth has stalled"'
 };
@@ -339,8 +343,9 @@ const EXERCISE_ARCS = {
     'scamper':          'We\'ll run your idea through seven creative lenses, then pull out the strongest twist.',
     'crazy-8s':         'We\'ll rapidly generate eight different ideas, then zero in on the one worth developing.',
     'pre-mortem':       'We\'ll imagine your project has failed spectacularly, then work backwards to find what you can prevent now.',
-    'devils-advocate':  'Pete will become one of five adversaries — a churned customer, confused user, tired engineer, sceptical investor, or fast follower — and attack your idea. You defend it.',
-    'rapid-experiment': 'We\'ll design a quick, cheap test to validate your riskiest assumption before you build.',
+    'devils-advocate':  'Phase 1: Pete becomes an adversary and attacks your idea. Phase 2: a four-risk operational assessment. You defend on both fronts.',
+    'rapid-experiment': 'We\'ll map your assumptions, score them for risk, then design the cheapest, fastest experiment to test the one that matters most.',
+    'wardley':          'We\'ll map every component in your value chain, plot its evolution stage, and find where to build, buy, or partner.',
     'lean-canvas':      'We\'ll map your venture model on one page, then pressure-test the weakest blocks.',
     'effectuation':     'We\'ll start with what you have — skills, network, resources — then find where they point.',
     'mash-up':          'We\'ll smash ideas from completely different industries together, see what collides, and remix the best into something new.',
@@ -349,7 +354,7 @@ const EXERCISE_ARCS = {
     'constraint-flip':  'Pete will help you see your biggest constraint as your deepest competitive advantage. Ideas that only work because of the limitation.',
     'trade-off':        'Pete will force you to choose between your own features. The ones that survive every round are your core value.',
     'theory-of-change': 'We\'ll work backwards from the change you want to create, mapping every condition that has to be true, and find where the chain depends on things you can\'t control.',
-    'reality-check':    'Pete will pressure-test your idea across four risk dimensions — value, usability, feasibility, and viability — and score each one.',
+    'reality-check':    'Phase 1: Pete becomes an adversary and attacks your idea. Phase 2: a four-risk operational assessment. You defend on both fronts.',
     'customer-discovery':        'Pete will become your target customer and you\'ll practise a discovery interview. He\'ll respond like a real person — evasive, polite, distracted. Then he\'ll coach you on your technique.',
     'socratic':         'We\'ll examine every belief behind your problem — separating facts from assumptions — and find the one thing to test first.',
     'flywheel':         'We\'ll map the 3-5 things that reinforce each other in your business, test each connection, and find the bottleneck holding you back.'
@@ -467,8 +472,14 @@ const TOOL_PROGRAM_MAP = {
     'reality-check': {
         program: 'Executive Education',
         programUrl: 'https://wadeinstitute.org.au/programs/entrepreneurs/think-like-an-entrepreneur/',
-        bridge: 'Confronting the gap between narrative and evidence is what Wade helps leaders do — in executive programs designed for innovation teams inside organisations.',
+        bridge: 'Rigorous thinking under pressure is what Wade\'s executive programs are designed to develop. If your team needs to make better decisions, Wade can help.',
         segment: 'corporate'
+    },
+    'wardley': {
+        program: 'Growth Engine',
+        programUrl: 'https://wadeinstitute.org.au/programs/entrepreneurs/growth-engine/',
+        bridge: 'Strategic positioning and build-vs-buy decisions are critical for scaling ventures. Wade\'s Growth Engine helps founders make the calls that compound.',
+        segment: 'founder'
     },
     'trade-off': {
         program: 'Master of Entrepreneurship',
@@ -520,8 +531,8 @@ const TOOL_PROGRAM_FALLBACK = {
 const EXERCISE_EXCHANGES = {
     'five-whys': 7, 'jtbd': 10, 'empathy-map': 10,
     'hmw': 8, 'scamper': 10, 'crazy-8s': 8,
-    'pre-mortem': 10, 'devils-advocate': 10, 'rapid-experiment': 8,
-    'lean-canvas': 12, 'effectuation': 8, 'mash-up': 8, 'analogical': 8, 'flywheel': 10, 'socratic': 8, 'customer-discovery': 8, 'reality-check': 8, 'theory-of-change': 10, 'trade-off': 10, 'iceberg': 8, 'constraint-flip': 8
+    'pre-mortem': 10, 'devils-advocate': 14, 'rapid-experiment': 10,
+    'lean-canvas': 12, 'effectuation': 8, 'mash-up': 8, 'analogical': 8, 'flywheel': 10, 'socratic': 8, 'customer-discovery': 8, 'reality-check': 14, 'wardley': 12, 'theory-of-change': 10, 'trade-off': 10, 'iceberg': 8, 'constraint-flip': 8
 };
 
 // Human-readable time estimates per exercise
@@ -533,8 +544,9 @@ const EXERCISE_TIMES = {
     'scamper':        '20 min',
     'crazy-8s':       '15 min',
     'pre-mortem':     '20 min',
-    'devils-advocate':'25 min',
-    'rapid-experiment':'15 min',
+    'devils-advocate':'30 min',
+    'rapid-experiment':'20 min',
+    'wardley':        '25 min',
     'lean-canvas':    '20 min',
     'effectuation':   '20 min',
     'mash-up':        '20 min',
@@ -542,7 +554,7 @@ const EXERCISE_TIMES = {
     'flywheel':       '25 min',
     'socratic':       '20 min',
     'customer-discovery':      '20 min',
-    'reality-check':  '20 min',
+    'reality-check':  '30 min',
     'theory-of-change':'25 min',
     'trade-off':      '25 min',
     'iceberg':        '20 min',
@@ -572,8 +584,8 @@ const STAGE_DEFAULT = {
 const TOOLS_BY_MODE = {
     untangle: ['five-whys', 'empathy-map', 'jtbd', 'socratic', 'iceberg'],
     spark:    ['crazy-8s', 'hmw', 'scamper', 'mash-up', 'constraint-flip'],
-    test:     ['pre-mortem', 'devils-advocate', 'customer-discovery', 'reality-check', 'trade-off'],
-    build:    ['lean-canvas', 'effectuation', 'rapid-experiment', 'flywheel', 'theory-of-change']
+    test:     ['pre-mortem', 'devils-advocate', 'customer-discovery', 'rapid-experiment', 'trade-off'],
+    build:    ['lean-canvas', 'effectuation', 'wardley', 'flywheel', 'theory-of-change']
 };
 
 // Category prompts — used by homepage cards and ?category= URL param
@@ -643,7 +655,8 @@ const TOOL_DETAIL_SLUG = {
     'theory-of-change': 'theory-of-change',
     'trade-off': 'trade-off',
     'iceberg': 'iceberg',
-    'constraint-flip': 'constraint-flip'
+    'constraint-flip': 'constraint-flip',
+    'wardley': 'wardley-mapping'
 };
 function toolDetailUrl(exercise) {
     const slug = TOOL_DETAIL_SLUG[exercise] || exercise;
@@ -1015,7 +1028,7 @@ function startExercise(mode, exercise, startMsg = null) {
     routingBack.classList.add('hidden');
 
     // Switch board layout based on exercise — custom boards for structured tools
-    const customLayouts = ['lean-canvas', 'elevator-pitch', 'pre-mortem', 'effectuation', 'flywheel', 'customer-discovery', 'iceberg', 'constraint-flip', 'socratic', 'reality-check', 'theory-of-change', 'trade-off', 'five-whys', 'empathy-map', 'jtbd', 'crazy-8s', 'hmw', 'scamper', 'devils-advocate', 'rapid-experiment', 'mash-up', 'analogical'];
+    const customLayouts = ['lean-canvas', 'elevator-pitch', 'pre-mortem', 'effectuation', 'flywheel', 'customer-discovery', 'iceberg', 'constraint-flip', 'socratic', 'reality-check', 'theory-of-change', 'trade-off', 'five-whys', 'empathy-map', 'jtbd', 'crazy-8s', 'hmw', 'scamper', 'devils-advocate', 'rapid-experiment', 'mash-up', 'analogical', 'wardley'];
     if (customLayouts.includes(exercise)) {
         switchBoardLayout(exercise);
     } else {
@@ -1955,7 +1968,7 @@ async function streamResponse() {
                         if (breadcrumbStage) breadcrumbStage.textContent = (MODE_LABELS[autoMode] || autoMode).toUpperCase();
                         if (breadcrumbTool) breadcrumbTool.innerHTML = (EXERCISE_LABELS[autoKey] || autoKey) + ' <svg class="breadcrumb-chevron" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg>';
                         // Switch board layout
-                        const customLayouts = ['lean-canvas', 'elevator-pitch', 'pre-mortem', 'effectuation', 'flywheel', 'customer-discovery', 'iceberg', 'constraint-flip', 'socratic', 'reality-check', 'theory-of-change', 'trade-off', 'five-whys', 'empathy-map', 'jtbd', 'crazy-8s', 'hmw', 'scamper', 'devils-advocate', 'rapid-experiment', 'mash-up', 'analogical'];
+                        const customLayouts = ['lean-canvas', 'elevator-pitch', 'pre-mortem', 'effectuation', 'flywheel', 'customer-discovery', 'iceberg', 'constraint-flip', 'socratic', 'reality-check', 'theory-of-change', 'trade-off', 'five-whys', 'empathy-map', 'jtbd', 'crazy-8s', 'hmw', 'scamper', 'devils-advocate', 'rapid-experiment', 'mash-up', 'analogical', 'wardley'];
                         if (customLayouts.includes(autoKey)) {
                             switchBoardLayout(autoKey);
                         } else {
@@ -3879,22 +3892,31 @@ const BOARD_LAYOUTS = {
             { id: 'da-defended', name: 'Defended', empty: 'Had evidence', hint: 'Objections you handled well', colour: 'pink' },
             { id: 'da-deflected', name: 'Deflected', empty: 'Argued without evidence', hint: 'Plausible but unproven responses', colour: 'pink' },
             { id: 'da-exposed', name: 'Exposed', empty: 'No answer', hint: 'Objections you couldn\'t address', colour: 'pink' },
-            { id: 'da-danger', name: 'Danger Zone', empty: 'Biggest vulnerability', hint: 'The one thing that could kill this', colour: 'pink' },
-            { id: 'actions', name: 'Actions', empty: 'Address top vulnerability', hint: 'What to fix first', colour: 'pink' }
+            { id: 'da-danger', name: 'Strategic Danger', empty: 'Biggest logical vulnerability', hint: 'From the adversary challenge', colour: 'pink' },
+            { id: 'rc-value', name: 'Value Risk', empty: 'Will customers want this?', hint: 'Switching cost, evidence of demand', colour: 'pink' },
+            { id: 'rc-value-rating', name: 'Value Rating', empty: '🟢 🟡 🔴', hint: 'GREEN / AMBER / RED', colour: 'pink' },
+            { id: 'rc-usability', name: 'Usability Risk', empty: 'Can they figure it out?', hint: 'First-use experience, complexity', colour: 'pink' },
+            { id: 'rc-usability-rating', name: 'Usability Rating', empty: '🟢 🟡 🔴', hint: 'GREEN / AMBER / RED', colour: 'pink' },
+            { id: 'rc-feasibility', name: 'Feasibility Risk', empty: 'Can the team build it?', hint: 'Technical long pole, team capability', colour: 'pink' },
+            { id: 'rc-feasibility-rating', name: 'Feasibility Rating', empty: '🟢 🟡 🔴', hint: 'GREEN / AMBER / RED', colour: 'pink' },
+            { id: 'rc-viability', name: 'Viability Risk', empty: 'Does the business work?', hint: 'Unit economics, strategy, legal', colour: 'pink' },
+            { id: 'rc-viability-rating', name: 'Viability Rating', empty: '🟢 🟡 🔴', hint: 'GREEN / AMBER / RED', colour: 'pink' },
+            { id: 'rc-overall', name: 'Overall Verdict', empty: 'Combined diagnosis', hint: 'Strategic + operational synthesis', colour: 'pink' },
+            { id: 'actions', name: 'Actions', empty: 'Address top combined vulnerability', hint: 'What to fix first', colour: 'pink' }
         ],
         gridClass: 'board-grid-devils-advocate'
     },
     'rapid-experiment': {
         zones: [
-            { id: 're-assumptions', name: 'Assumptions', empty: 'What must be true?', hint: '5-8 assumptions embedded in your idea', colour: 'yellow' },
-            { id: 're-matrix', name: 'Risk Matrix', empty: 'Confidence x Consequence', hint: 'TEST NOW / MONITOR / WATCH / PARK', colour: 'yellow' },
-            { id: 're-top-risk', name: 'Top Risk', empty: 'Riskiest assumption', hint: 'Low confidence, high consequence', colour: 'yellow' },
-            { id: 're-hypothesis', name: 'Hypothesis', empty: 'What do you believe?', hint: 'We believe [X]. We\'ll know if [Y]', colour: 'yellow' },
-            { id: 're-method', name: 'Test Method', empty: 'The cheapest test', hint: 'Interview, landing page, concierge...', colour: 'yellow' },
-            { id: 're-sample', name: 'Sample', empty: 'Who to test with', hint: 'Who, how many, how to recruit', colour: 'yellow' },
-            { id: 're-metric', name: 'Success Metric', empty: 'Pass/fail threshold', hint: 'Set before seeing data', colour: 'yellow' },
-            { id: 're-timeline', name: 'Timeline', empty: 'How long?', hint: 'Target: under 1 week', colour: 'yellow' },
-            { id: 'actions', name: 'First Step', empty: 'Tomorrow morning', hint: 'What to do first', colour: 'yellow' }
+            { id: 're-assumptions', name: 'Assumptions', empty: 'What must be true?', hint: '5-8 assumptions embedded in your idea', colour: 'pink' },
+            { id: 're-matrix', name: 'Risk Matrix', empty: 'Confidence x Consequence', hint: 'TEST NOW / MONITOR / WATCH / PARK', colour: 'pink' },
+            { id: 're-top-risk', name: 'Top Risk', empty: 'Riskiest assumption', hint: 'Low confidence, high consequence', colour: 'pink' },
+            { id: 're-hypothesis', name: 'Hypothesis', empty: 'What do you believe?', hint: 'We believe [X]. We\'ll know if [Y]', colour: 'pink' },
+            { id: 're-method', name: 'Test Method', empty: 'The cheapest test', hint: 'Interview, landing page, concierge...', colour: 'pink' },
+            { id: 're-sample', name: 'Sample', empty: 'Who to test with', hint: 'Who, how many, how to recruit', colour: 'pink' },
+            { id: 're-metric', name: 'Success Metric', empty: 'Pass/fail threshold', hint: 'Set before seeing data', colour: 'pink' },
+            { id: 're-timeline', name: 'Timeline', empty: 'How long?', hint: 'Target: under 1 week', colour: 'pink' },
+            { id: 'actions', name: 'First Step', empty: 'Tomorrow morning', hint: 'What to do first', colour: 'pink' }
         ],
         gridClass: 'board-grid-rapid-experiment'
     },
@@ -4013,7 +4035,12 @@ const BOARD_LAYOUTS = {
     },
     'reality-check': {
         zones: [
-            { id: 'rc-context', name: 'The Idea', empty: 'What you\'re building', hint: 'The 30-second version', colour: 'pink' },
+            { id: 'da-idea', name: 'The Idea', empty: 'What are you defending?', hint: 'State your case', colour: 'pink' },
+            { id: 'da-objections', name: 'Objections', empty: 'Adversary attacks', hint: 'Each challenge from the adversary', colour: 'pink' },
+            { id: 'da-defended', name: 'Defended', empty: 'Had evidence', hint: 'Objections you handled well', colour: 'pink' },
+            { id: 'da-deflected', name: 'Deflected', empty: 'Argued without evidence', hint: 'Plausible but unproven responses', colour: 'pink' },
+            { id: 'da-exposed', name: 'Exposed', empty: 'No answer', hint: 'Objections you couldn\'t address', colour: 'pink' },
+            { id: 'da-danger', name: 'Strategic Danger', empty: 'Biggest logical vulnerability', hint: 'From the adversary challenge', colour: 'pink' },
             { id: 'rc-value', name: 'Value Risk', empty: 'Will customers want this?', hint: 'Switching cost, evidence of demand', colour: 'pink' },
             { id: 'rc-value-rating', name: 'Value Rating', empty: '🟢 🟡 🔴', hint: 'GREEN / AMBER / RED', colour: 'pink' },
             { id: 'rc-usability', name: 'Usability Risk', empty: 'Can they figure it out?', hint: 'First-use experience, complexity', colour: 'pink' },
@@ -4022,10 +4049,10 @@ const BOARD_LAYOUTS = {
             { id: 'rc-feasibility-rating', name: 'Feasibility Rating', empty: '🟢 🟡 🔴', hint: 'GREEN / AMBER / RED', colour: 'pink' },
             { id: 'rc-viability', name: 'Viability Risk', empty: 'Does the business work?', hint: 'Unit economics, strategy, legal', colour: 'pink' },
             { id: 'rc-viability-rating', name: 'Viability Rating', empty: '🟢 🟡 🔴', hint: 'GREEN / AMBER / RED', colour: 'pink' },
-            { id: 'rc-overall', name: 'Overall Verdict', empty: 'Biggest risk identified', hint: 'Weakest link = overall rating', colour: 'pink' },
-            { id: 'actions', name: 'Actions', empty: 'Test your biggest risk', hint: 'One cheap test', colour: 'pink' }
+            { id: 'rc-overall', name: 'Overall Verdict', empty: 'Combined diagnosis', hint: 'Strategic + operational synthesis', colour: 'pink' },
+            { id: 'actions', name: 'Actions', empty: 'Address top combined vulnerability', hint: 'What to fix first', colour: 'pink' }
         ],
-        gridClass: 'board-grid-reality-check'
+        gridClass: 'board-grid-devils-advocate'
     },
     'theory-of-change': {
         zones: [
@@ -4104,6 +4131,23 @@ const BOARD_LAYOUTS = {
             { id: 'mu-actions', name: 'Actions', empty: 'First experiment', hint: 'Which remixed idea to prototype first, and how', colour: 'orange' }
         ],
         gridClass: 'board-grid-mash-up'
+    },
+    'wardley': {
+        zones: [
+            { id: 'wm-need', name: 'User Need', empty: 'The anchor need', hint: 'Who needs what?', colour: 'yellow' },
+            { id: 'wm-components', name: 'Components', empty: 'Value chain elements', hint: '8-15 components from need to infrastructure', colour: 'yellow' },
+            { id: 'wm-genesis', name: 'Genesis', empty: 'Novel, experimental', hint: 'Custom-built, no best practice exists', colour: 'yellow' },
+            { id: 'wm-custom', name: 'Custom', empty: 'Understood but bespoke', hint: 'Early products, emerging patterns', colour: 'yellow' },
+            { id: 'wm-product', name: 'Product', empty: 'Multiple solutions exist', hint: 'Buy, rent, or standardise', colour: 'yellow' },
+            { id: 'wm-commodity', name: 'Commodity', empty: 'Ubiquitous utility', hint: 'Cloud, payments, electricity', colour: 'yellow' },
+            { id: 'wm-mismatch', name: 'Mismatches', empty: 'Wrong stage for the component', hint: 'Building what you should buy, or vice versa', colour: 'yellow' },
+            { id: 'wm-inertia', name: 'Inertia', empty: 'Resisting change', hint: 'Holding onto something that\'s commoditising', colour: 'yellow' },
+            { id: 'wm-opportunity', name: 'Opportunity', empty: 'Your differentiator', hint: 'Genesis/custom component that could be a moat', colour: 'yellow' },
+            { id: 'wm-risk', name: 'Dependency Risk', empty: 'Single points of failure', hint: 'Critical dependencies on one supplier or tech', colour: 'yellow' },
+            { id: 'wm-movement', name: 'Movement', empty: 'What\'s evolving', hint: 'Components shifting stage in the next 18 months', colour: 'yellow' },
+            { id: 'actions', name: 'Strategic Moves', empty: 'Build, buy, or partner decisions', hint: 'The highest-impact moves from the map', colour: 'yellow' }
+        ],
+        gridClass: 'board-grid-wardley'
     }
 };
 
@@ -4179,7 +4223,12 @@ const SCAMPER_TAG_MAP = {
 const DEVILS_TAG_MAP = {
     'idea': 'da-idea', 'objection': 'da-objections', 'attack': 'da-objections',
     'defended': 'da-defended', 'deflected': 'da-deflected',
-    'exposed': 'da-exposed', 'danger': 'da-danger'
+    'exposed': 'da-exposed', 'danger': 'da-danger',
+    'value': 'rc-value', 'value-rating': 'rc-value-rating',
+    'usability': 'rc-usability', 'usability-rating': 'rc-usability-rating',
+    'feasibility': 'rc-feasibility', 'feasibility-rating': 'rc-feasibility-rating',
+    'viability': 'rc-viability', 'viability-rating': 'rc-viability-rating',
+    'overall': 'rc-overall'
 };
 const RAPID_TAG_MAP = {
     'assumption': 're-assumptions', 'assumptions': 're-assumptions',
@@ -4196,7 +4245,10 @@ const SOCRATIC_TAG_MAP = {
     'critical': 'sq-critical', 'critical-assumption': 'sq-critical'
 };
 const REALITY_TAG_MAP = {
-    'context': 'rc-context', 'idea': 'rc-context',
+    'idea': 'da-idea', 'context': 'da-idea',
+    'objection': 'da-objections', 'attack': 'da-objections',
+    'defended': 'da-defended', 'deflected': 'da-deflected',
+    'exposed': 'da-exposed', 'danger': 'da-danger',
     'value': 'rc-value', 'value-rating': 'rc-value-rating',
     'usability': 'rc-usability', 'usability-rating': 'rc-usability-rating',
     'feasibility': 'rc-feasibility', 'feasibility-rating': 'rc-feasibility-rating',
@@ -4244,6 +4296,17 @@ const MASHUP_TAG_MAP = {
     'actions': 'mu-actions', 'action': 'mu-actions'
 };
 
+const WARDLEY_TAG_MAP = {
+    'need': 'wm-need', 'user-need': 'wm-need',
+    'component': 'wm-components', 'components': 'wm-components',
+    'genesis': 'wm-genesis', 'custom': 'wm-custom',
+    'product': 'wm-product', 'commodity': 'wm-commodity',
+    'mismatch': 'wm-mismatch', 'inertia': 'wm-inertia',
+    'opportunity': 'wm-opportunity', 'differentiator': 'wm-opportunity',
+    'risk': 'wm-risk', 'dependency': 'wm-risk',
+    'movement': 'wm-movement', 'evolving': 'wm-movement'
+};
+
 var TOOL_TAG_MAPS = {
     'five-whys': FIVE_WHYS_TAG_MAP, 'empathy-map': EMPATHY_TAG_MAP,
     'jtbd': JTBD_TAG_MAP_TOOL, 'crazy-8s': CRAZY8S_TAG_MAP,
@@ -4253,7 +4316,8 @@ var TOOL_TAG_MAPS = {
     'theory-of-change': TOC_TAG_MAP, 'trade-off': TRADEOFF_TAG_MAP,
     'iceberg': ICEBERG_TAG_MAP, 'constraint-flip': CONSTRAINT_TAG_MAP,
     'customer-discovery': CUSTOMER_DISCOVERY_TAG_MAP,
-    'mash-up': MASHUP_TAG_MAP, 'analogical': MASHUP_TAG_MAP
+    'mash-up': MASHUP_TAG_MAP, 'analogical': MASHUP_TAG_MAP,
+    'wardley': WARDLEY_TAG_MAP
 };
 
 // Effectuation principle tag mapping
@@ -5570,15 +5634,16 @@ const TOOL_DESCRIPTIONS = {
     'mash-up': { desc: 'Pete will help you combine ideas from unrelated domains to spark novel solutions.', output: 'A collision board and report with remixed concepts.' },
     'constraint-flip': { desc: 'Pete will help you turn your biggest limitations into competitive advantages.', output: 'A constraints board and report with flipped strategies.' },
     'pre-mortem': { desc: 'Pete will help you imagine your plan has already failed and work backwards to find the risks.', output: 'A risk board and report with prioritised failure modes and mitigations.' },
-    'devils-advocate': { desc: 'Pete becomes one of five adversaries — churned customer, confused user, tired engineer, sceptical investor, or fast follower — and attacks your idea from their risk angle.', output: 'An objection log with defence ratings, risk heatmap, and your biggest vulnerability identified.' },
+    'devils-advocate': { desc: 'Phase 1: Pete becomes an adversary and attacks your idea. Phase 2: a four-risk operational assessment of value, usability, feasibility, and viability.', output: 'An objection log, defence ratings, four-risk scorecard, and combined diagnosis of your biggest vulnerability.' },
     'customer-discovery': { desc: 'Pete becomes your target customer and you practise a discovery interview. He\'ll be evasive, polite, and drop hidden signals. Then he\'ll score your technique.', output: 'A persona card, interview technique scorecard, and signals-caught analysis.' },
-    'reality-check': { desc: 'Pete will pressure-test your idea against all four product risks — value, usability, feasibility, and viability — and deliver a scorecard.', output: 'A four-risk scorecard and report identifying your biggest exposure.' },
+    'reality-check': { desc: 'Phase 1: Pete becomes an adversary and attacks your idea. Phase 2: a four-risk operational assessment of value, usability, feasibility, and viability.', output: 'An objection log, defence ratings, four-risk scorecard, and combined diagnosis of your biggest vulnerability.' },
     'trade-off': { desc: 'Pete will force you to choose between your own features. Each round requires a sacrifice. The features that survive every trade-off are your core value.', output: 'A feature value stack, side-by-side bundle comparison cards, and a Minimum Viable Offer.' },
     'lean-canvas': { desc: 'Pete will guide you through mapping your business model on a single page.', output: 'A completed Lean Canvas board and report with model analysis.' },
     'effectuation': { desc: 'Pete will help you start from what you have \u2014 your skills, connections, and resources \u2014 and build from there.', output: 'An effectuation board and report with your first moves.' },
     'rapid-experiment': { desc: 'Pete will surface your hidden assumptions, score them on confidence and consequence, then design the cheapest test for the riskiest one.', output: 'An assumption risk matrix, prioritised assumptions, and an experiment card for your top risk.' },
     'flywheel': { desc: 'Pete will help you find the reinforcing loops that make your growth compound.', output: 'A flywheel board and report with growth loop analysis.' },
-    'theory-of-change': { desc: 'Pete will help you draw the causal chain from your activities to the impact you hope to create.', output: 'A theory of change board and report with your impact pathway.' }
+    'theory-of-change': { desc: 'Pete will help you draw the causal chain from your activities to the impact you hope to create.', output: 'A theory of change board and report with your impact pathway.' },
+    'wardley': { desc: 'Pete will map every component in your value chain, plot its evolution stage, and find where to build, buy, or partner.', output: 'A value chain map with evolution stages, strategic mismatches, and build/buy/partner recommendations.' }
 };
 
 // showExpectCard removed — activity-brief card is the single intro card

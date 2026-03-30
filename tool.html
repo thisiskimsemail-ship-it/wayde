@@ -382,15 +382,15 @@
         },
         'devils-advocate': {
             name: "Devil's Advocate",
-            stage: 'Validate', stageKey: 'debate',
-            time: '25 min', type: 'Deep',
-            tagline: 'Challenge your assumptions to strengthen your thinking.',
-            origin: 'Rooted in the Catholic Church\'s canonisation process — a formal role to argue against sainthood.',
-            description: 'Pete takes the opposing position and actively argues against your idea across five dimensions: assumptions, market, execution, finances, and alternatives. It\'s the toughest challenge in the toolbox — like a sceptical investor Q&A, but in a safe environment where the goal is learning, not winning.',
+            stage: 'The Test', stageKey: 'test',
+            time: '30 min', type: 'Deep',
+            tagline: 'Two-phase stress-test: adversary role-play, then four-risk operational assessment.',
+            origin: 'Rooted in the Catholic Church\'s canonisation process and Cagan\'s four product risks. Combines military red-teaming with structured risk assessment.',
+            description: 'Phase 1: Pete becomes one of five adversaries — a churned customer, confused user, tired engineer, sceptical investor, or fast follower — and attacks your idea. You defend it. Phase 2: Pete drops character and pressure-tests your idea across four operational risks: value, usability, feasibility, and viability. The synthesis reveals where your logic and your execution are both exposed.',
             whatYouGet: [
-                'A clear picture of which arguments hold up and which don\'t',
-                'Strengthened responses to the hardest questions you\'ll face',
-                'Blind spots and assumptions you didn\'t know you had'
+                'An objection log with defence ratings (Defended / Deflected / Exposed)',
+                'A four-risk scorecard (GREEN / AMBER / RED)',
+                'A combined diagnosis connecting strategic weaknesses to operational risks'
             ],
             bestFor: [
                 'Founders preparing for investor pitches or board meetings',
@@ -401,14 +401,14 @@
         },
         'rapid-experiment': {
             name: 'Rapid Experiment',
-            stage: 'Validate', stageKey: 'debate',
-            time: '15 min', type: 'Quick',
-            tagline: 'Design a quick test to learn before you build.',
-            origin: 'Drawn from Lean Startup methodology and scientific method.',
-            description: 'Rapid Experiment helps you design a quick, cheap test to validate your riskiest assumption before investing in a full build. You\'ll identify what you need to learn, design the smallest possible experiment, define what success looks like, and plan your next move based on the result.',
+            stage: 'The Test', stageKey: 'test',
+            time: '20 min', type: 'Deep',
+            tagline: 'Map your assumptions, find the riskiest one, design the cheapest fastest test.',
+            origin: 'Drawn from Lean Startup methodology, Marty Cagan\'s product discovery, and Eric Ries\'s assumption testing.',
+            description: 'Rapid Experiment surfaces the 5-8 assumptions hiding in your idea, scores each on confidence and consequence, then designs the cheapest experiment for the one that matters most. You\'ll walk out with a hypothesis, method, sample, success metric, and timeline — all under one week.',
             whatYouGet: [
-                'A testable hypothesis with clear success criteria',
-                'An experiment design you can run in days, not months',
+                'An assumption risk matrix (TEST NOW / MONITOR / WATCH / PARK)',
+                'A fully designed experiment card for your riskiest assumption',
                 'A decision framework: what to do if it works and if it doesn\'t'
             ],
             bestFor: [
@@ -417,6 +417,25 @@
                 'Anyone who says "we should just try it" but hasn\'t defined what "trying it" means'
             ],
             example: 'Assumption: "Corporates will pay for this workshop." → Experiment: "Email 20 L&D managers with a one-page brief and ask for a 15-minute call. If 5+ reply, the demand signal is real."'
+        },
+        'wardley': {
+            name: 'Wardley Mapping',
+            stage: 'The Build', stageKey: 'build',
+            time: '25 min', type: 'Deep',
+            tagline: 'Map your value chain from user need to components. Spot what to build, buy, or partner on.',
+            origin: 'Developed by Simon Wardley. Used by UK government, Amazon, and strategic consultancies worldwide.',
+            description: 'Wardley Mapping plots every component of your value chain on two axes: visibility (how close to the user) and evolution (how mature). It reveals which parts of your business are genuinely differentiating and which are commodities you should stop building. The map exposes strategic mismatches, inertia, and opportunities competitors can\'t see.',
+            whatYouGet: [
+                'A complete value chain map with evolution stages for each component',
+                'Strategic mismatches: where you\'re building what you should buy',
+                'Clear build/buy/partner recommendations based on the landscape'
+            ],
+            bestFor: [
+                'Founders making build vs buy decisions on tight budgets',
+                'Teams debating where to invest engineering time',
+                'Anyone who needs to explain their strategic position to investors or stakeholders'
+            ],
+            example: '"You\'re custom-building your analytics dashboard — but that\'s a commodity. Meanwhile, your matching algorithm is genesis-stage and competitors can\'t replicate it. Flip your investment."'
         },
         'lean-canvas': {
             name: 'Lean Canvas',

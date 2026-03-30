@@ -32,9 +32,9 @@ EXERCISE_DISPLAY = {
     'customer-discovery': 'Customer Discovery', 'empathy-map': 'Empathy Map',
     'socratic': 'Socratic Questioning', 'iceberg': 'The Iceberg',
     'lean-canvas': 'Lean Canvas', 'effectuation': 'Effectuation',
-    'flywheel': 'Flywheel', 'reality-check': 'Reality Check',
+    'flywheel': 'Flywheel', 'reality-check': "Devil's Advocate",
     'theory-of-change': 'Theory of Change', 'constraint-flip': 'Constraint Flip',
-    'trade-off': 'The Trade-Off',
+    'trade-off': 'The Trade-Off', 'wardley': 'Wardley Mapping',
 }
 
 EXERCISE_PATHWAY = {
@@ -43,8 +43,8 @@ EXERCISE_PATHWAY = {
     'hmw': 'spark', 'scamper': 'spark', 'crazy-8s': 'spark',
     'mash-up': 'spark', 'analogical': 'spark', 'constraint-flip': 'spark',
     'pre-mortem': 'test', 'devils-advocate': 'test', 'customer-discovery': 'test',
-    'reality-check': 'test', 'trade-off': 'test',
-    'lean-canvas': 'build', 'effectuation': 'build', 'rapid-experiment': 'build',
+    'trade-off': 'test', 'rapid-experiment': 'test',
+    'lean-canvas': 'build', 'effectuation': 'build', 'wardley': 'build',
     'flywheel': 'build', 'theory-of-change': 'build',
 }
 
@@ -480,6 +480,8 @@ def _render_evidence_components(components):
             html_parts.append(_render_why_chain(comp.get('whys', [])))
         elif ctype == 'experiment_cards':
             html_parts.append(_render_experiment_cards(comp.get('cards', [])))
+        elif ctype == 'wardley_grid':
+            html_parts.append(_render_wardley_grid(comp.get('components', [])))
         elif ctype == 'paragraph':
             html_parts.append(_paragraphs(comp.get('text', '')))
     return '\n'.join(html_parts)
@@ -533,6 +535,34 @@ def _render_experiment_cards(cards):
         </div>
       </div>'''
     return items
+
+
+def _render_wardley_grid(components):
+    """Render Wardley Map components as a table with evolution stages."""
+    if not components:
+        return ''
+    rows = ''
+    # Evolution stage order for visual grouping
+    stage_styles = {
+        'Genesis': 'background:#fff0f0',
+        'Custom': 'background:#fff8e0',
+        'Product': 'background:#e8f5e9',
+        'Commodity': 'background:#e3f2fd',
+    }
+    for comp in components:
+        name = _e(comp.get('name', ''))
+        evolution = comp.get('evolution', 'Custom')
+        visibility = comp.get('visibility', 'Medium')
+        style = stage_styles.get(evolution, '')
+        rows += f'''<tr>
+        <td><strong>{name}</strong></td>
+        <td style="{style}">{_e(evolution)}</td>
+        <td>{_e(visibility)}</td>
+      </tr>'''
+    return f'''<table class="wb">
+      <thead><tr><th>Component</th><th>Evolution</th><th>Visibility</th></tr></thead>
+      <tbody>{rows}</tbody>
+    </table>'''
 
 
 # ══════════════════════════════════════════════════════════════

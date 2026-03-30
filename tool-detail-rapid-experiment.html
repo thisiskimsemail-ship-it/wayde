@@ -12,7 +12,7 @@
     --navy: #1E194F; --navy-deep: #12103a; --orange: #F15A22; --orange-hover: #d14e1b;
     --white: #FFFFFF; --text-body: #b8b5d0; --text-light: #6e6a8a;
     --border: rgba(255,255,255,0.08); --border-light: rgba(255,255,255,0.15); --card-bg: #1a1750; --card-hover: #221d5a;
-    --cat-color: #E4E517; --untangle: #27BDBE; --spark: #F15A22; --test: #ED3694; --build: #E4E517;
+    --cat-color: #ED3694; --untangle: #27BDBE; --spark: #F15A22; --test: #ED3694; --build: #E4E517;
   }
   body { font-family: 'GT Walsheim', 'Space Grotesk', sans-serif; color: var(--text-body); background: var(--navy-deep); -webkit-font-smoothing: antialiased; }
   header { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: var(--navy-deep); border-bottom: 2px solid var(--orange); padding: 0 60px; height: 72px; display: flex; align-items: center; justify-content: space-between; }
@@ -72,10 +72,10 @@
   .experiment-text { font-size: 14px; color: var(--white); line-height: 1.5; }
   .experiment-criteria { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px; }
   .criteria-card { padding: 14px; border-radius: 10px; border: 1px solid var(--border); }
-  .criteria-card.pass { background: rgba(228,229,23,0.06); border-color: rgba(228,229,23,0.2); }
+  .criteria-card.pass { background: rgba(237,54,148,0.06); border-color: rgba(237,54,148,0.2); }
   .criteria-card.fail { background: rgba(248,113,113,0.06); border-color: rgba(248,113,113,0.2); }
   .criteria-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 4px; }
-  .criteria-card.pass .criteria-label { color: #E4E517; }
+  .criteria-card.pass .criteria-label { color: #ED3694; }
   .criteria-card.fail .criteria-label { color: #F87171; }
   .criteria-text { font-size: 13px; color: var(--text-body); line-height: 1.4; }
 
@@ -94,7 +94,7 @@
   .related-tool-icon.build { background: rgba(228,229,23,0.15); color: #E4E517; }
   .related-tool-text h4 { font-size: 14px; font-weight: 600; color: var(--white); margin-bottom: 2px; }
   .related-tool-text p { font-size: 13px; color: var(--text-light); line-height: 1.4; }
-  .pete-note { background: linear-gradient(135deg, rgba(228,229,23,0.08), rgba(228,229,23,0.04)); border: 1px solid rgba(228,229,23,0.25); border-radius: 14px; padding: 24px; }
+  .pete-note { background: linear-gradient(135deg, rgba(237,54,148,0.08), rgba(237,54,148,0.04)); border: 1px solid rgba(237,54,148,0.25); border-radius: 14px; padding: 24px; }
   .pete-avatar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
   .pete-avatar { width: 32px; height: 32px; border-radius: 8px; background: var(--navy); display: flex; align-items: center; justify-content: center; color: var(--white); font-weight: 700; font-size: 13px; }
   .pete-label { font-size: 13px; font-weight: 600; color: var(--white); }
@@ -158,10 +158,10 @@
 </header>
 
 <section class="tool-hero">
-  <div class="breadcrumb"><a href="index.html">The Studio</a><span>/</span><a href="toolbox.html">Toolbox</a><span>/</span><a href="toolbox.html#build">The Build</a><span>/</span>Rapid Experiment</div>
+  <div class="breadcrumb"><a href="index.html">The Studio</a><span>/</span><a href="toolbox.html">Toolbox</a><span>/</span><a href="toolbox.html#test">The Test</a><span>/</span>Rapid Experiment</div>
   <div class="tool-hero-grid">
     <div class="tool-hero-left">
-      <div class="stage-badge">THE BUILD</div>
+      <div class="stage-badge">THE TEST</div>
       <h1>Rapid Experiment</h1>
       <p class="tool-headline">Design a quick test to learn before you build.</p>
       <p class="tool-intro">Fastest, cheapest test that could disprove the riskiest assumption. Build-Measure-Learn loop: identify the hypothesis that, if wrong, kills the idea — then design the minimum test. Goal is not proof but a decision: keep going, pivot, or stop.</p>
@@ -169,10 +169,10 @@
     <div class="quick-facts">
       <div class="qf-title">Quick Facts</div>
       <div class="qf-row"><span class="qf-label">Duration</span><span class="qf-value">~20 minutes</span></div>
-      <div class="qf-row"><span class="qf-label">Category</span><span class="qf-value">The Build</span></div>
+      <div class="qf-row"><span class="qf-label">Category</span><span class="qf-value">The Test</span></div>
       <div class="qf-row"><span class="qf-label">Origin</span><span class="qf-value">Lean Startup, 2011</span></div>
       <div class="qf-row"><span class="qf-label">Created by</span><span class="qf-value">Eric Ries</span></div>
-      <div class="qf-pathways"><div class="qf-pathways-label">Used in pathways</div><div class="pathway-tags"><span class="pathway-tag build">The Build</span></div></div>
+      <div class="qf-pathways"><div class="qf-pathways-label">Used in pathways</div><div class="pathway-tags"><span class="pathway-tag test">The Test</span></div></div>
       <a href="index.html?tool=rapid-experiment" class="qf-cta">Try Rapid Experiment &rarr;</a>
     </div>
   </div>
@@ -181,7 +181,7 @@
 <section class="content-area">
   <div class="content-grid">
     <div class="content-main">
-      <div class="section-block"><h2>When to use it</h2><p>Use when you have a promising idea and want to validate before investing, when about to build on an untested assumption, or when the team is debating something that could simply be tested in days.</p><p>Core tool in <strong>The Build</strong> when you need evidence, not opinions.</p></div>
+      <div class="section-block"><h2>When to use it</h2><p>Use when you have a promising idea and want to validate before investing, when about to build on an untested assumption, or when the team is debating something that could simply be tested in days.</p><p>Core tool in <strong>The Test</strong> when you need evidence, not opinions.</p></div>
       <div class="section-block"><h2>How it works in The Studio</h2><p>Here's how a session works with Pete:</p>
         <div class="steps-timeline">
           <div class="step-item"><div class="step-number">1</div><div class="step-title">State the idea or assumption</div><div class="step-desc">What do you believe is true?</div></div>
@@ -221,9 +221,9 @@
         <a href="tool-detail-pre-mortem.html" class="related-tool"><div class="related-tool-icon test">P</div><div class="related-tool-text"><h4>Pre-Mortem</h4><p>Identify risks before designing the test</p></div></a>
         <a href="tool-detail-lean-canvas.html" class="related-tool"><div class="related-tool-icon build">L</div><div class="related-tool-text"><h4>Lean Canvas</h4><p>Map the full model around your validated assumption</p></div></a>
       </div>
-      <div class="sidebar-card"><div class="sidebar-card-label">Also in The Build</div>
-        <a href="tool-detail-lean-canvas.html" class="related-tool"><div class="related-tool-icon build">L</div><div class="related-tool-text"><h4>Lean Canvas</h4><p>Outline your venture model on a single page</p></div></a>
-        <a href="tool-detail-effectuation.html" class="related-tool"><div class="related-tool-icon build">E</div><div class="related-tool-text"><h4>Effectuation</h4><p>Build using the resources you already have</p></div></a>
+      <div class="sidebar-card"><div class="sidebar-card-label">Also in The Test</div>
+        <a href="tool-detail-devils-advocate.html" class="related-tool"><div class="related-tool-icon test">D</div><div class="related-tool-text"><h4>Devil's Advocate</h4><p>Two-phase stress-test for your strategy and operations</p></div></a>
+        <a href="tool-detail-pre-mortem.html" class="related-tool"><div class="related-tool-icon test">P</div><div class="related-tool-text"><h4>Pre-Mortem</h4><p>Imagine failure to prevent it</p></div></a>
       </div>
     </div>
   </div>
