@@ -4616,16 +4616,40 @@ def generate_report():
         if not report_text:
             return jsonify({'error': 'No report content generated'}), 500
 
-        # Parse JSON from Claude's response
+        # Parse JSON from Claude's response — robust extraction
         import json as _json
+        import re as _re
         clean = report_text.strip()
-        if clean.startswith('```'):
-            clean = clean.split('\n', 1)[1].rsplit('```', 1)[0].strip()
+
+        # Strategy 1: Try direct parse (Claude followed instructions perfectly)
+        report_json = None
         try:
             report_json = _json.loads(clean)
-        except _json.JSONDecodeError as je:
-            print(f"[REPORT] JSON parse failed: {je}. Falling back to markdown.")
-            # Fallback: return raw text as markdown (backwards compatibility)
+        except _json.JSONDecodeError:
+            pass
+
+        # Strategy 2: Strip code fences (```json ... ``` or ``` ... ```)
+        if report_json is None:
+            fence_match = _re.search(r'```(?:json)?\s*\n(.*?)```', clean, _re.DOTALL)
+            if fence_match:
+                try:
+                    report_json = _json.loads(fence_match.group(1).strip())
+                except _json.JSONDecodeError:
+                    pass
+
+        # Strategy 3: Find the outermost { ... } in the response
+        if report_json is None:
+            first_brace = clean.find('{')
+            last_brace = clean.rfind('}')
+            if first_brace != -1 and last_brace > first_brace:
+                try:
+                    report_json = _json.loads(clean[first_brace:last_brace + 1])
+                except _json.JSONDecodeError as je:
+                    print(f"[REPORT] JSON parse failed after all strategies: {je}. Falling back to markdown.")
+
+        # All strategies exhausted — fallback to raw text
+        if report_json is None:
+            print(f"[REPORT] Could not extract JSON. First 200 chars: {clean[:200]}")
             synopsis = {
                 'title': f'Your {exercise_name} Report',
                 'hook': 'Your session uncovered something worth reading closely.',
