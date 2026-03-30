@@ -50,6 +50,35 @@
   .header-nav-link:hover { color: #fff; background: rgba(255,255,255,0.05); }
   .header-nav-link.active { color: #fff; background: rgba(255,255,255,0.08); }
   .nav-icon { width: 36px; height: 36px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,0.25); display: flex; align-items: center; justify-content: center; color: var(--white); font-size: 14px; text-decoration: none; }
+  .header-controls { display: flex; align-items: center; gap: 0.4rem; }
+  .text-size-btn, .theme-toggle-btn, .help-btn { background: none; border: 1px solid rgba(255,255,255,0.15); border-radius: 6px; color: rgba(255,255,255,0.7); font-size: 0.8rem; padding: 0.3rem 0.6rem; cursor: pointer; font-family: inherit; transition: all 0.2s; }
+  .text-size-btn:hover, .theme-toggle-btn:hover, .help-btn:hover { color: #fff; border-color: rgba(255,255,255,0.3); background: rgba(255,255,255,0.05); }
+  .help-wrap { position: relative; }
+  .help-dropdown { display: none; position: absolute; top: calc(100% + 6px); right: 0; background: var(--card-bg); border: 1px solid var(--border-light); border-radius: 10px; min-width: 200px; padding: 0.4rem 0; box-shadow: 0 8px 24px rgba(0,0,0,0.3); z-index: 200; }
+  .help-dropdown.open { display: block; }
+  .help-dropdown a { display: block; padding: 0.5rem 1rem; color: rgba(255,255,255,0.7); text-decoration: none; font-size: 0.8rem; transition: background 0.15s; }
+  .help-dropdown a:hover { background: rgba(255,255,255,0.05); color: #fff; }
+  .hamburger { display: none; background: none; border: none; cursor: pointer; padding: 0.5rem; }
+  .hamburger-line { display: block; width: 20px; height: 2px; background: rgba(255,255,255,0.7); margin: 4px 0; border-radius: 1px; transition: all 0.3s; }
+  .mobile-menu { display: none; position: fixed; top: 72px; left: 0; right: 0; background: var(--navy-deep); border-bottom: 1px solid var(--border-light); padding: 1rem; z-index: 99; flex-direction: column; gap: 0.25rem; }
+  .mobile-menu.open { display: flex; }
+  .mobile-menu a { padding: 0.6rem 1rem; color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.9rem; border-radius: 8px; }
+  .mobile-menu a:hover, .mobile-menu a.active { color: #fff; background: rgba(255,255,255,0.05); }
+  @media (max-width: 768px) {
+    header { padding: 0 16px; }
+    .header-nav { display: none; }
+    .header-controls { display: none; }
+    .hamburger { display: block; }
+  }
+  html[data-theme="light"] .text-size-btn, html[data-theme="light"] .theme-toggle-btn, html[data-theme="light"] .help-btn { color: rgba(30,25,79,0.6); border-color: rgba(30,25,79,0.15); }
+  html[data-theme="light"] .text-size-btn:hover, html[data-theme="light"] .theme-toggle-btn:hover, html[data-theme="light"] .help-btn:hover { color: #1E194F; border-color: rgba(30,25,79,0.3); background: rgba(30,25,79,0.04); }
+  html[data-theme="light"] .help-dropdown { background: #fff; border-color: rgba(0,0,0,0.1); }
+  html[data-theme="light"] .help-dropdown a { color: #555; }
+  html[data-theme="light"] .help-dropdown a:hover { background: rgba(0,0,0,0.03); color: #1E194F; }
+  html[data-theme="light"] .hamburger-line { background: rgba(30,25,79,0.6); }
+  html[data-theme="light"] .mobile-menu { background: #f8f7f5; border-color: rgba(0,0,0,0.1); }
+  html[data-theme="light"] .mobile-menu a { color: rgba(30,25,79,0.6); }
+  html[data-theme="light"] .mobile-menu a:hover, html[data-theme="light"] .mobile-menu a.active { color: #1E194F; background: rgba(30,25,79,0.04); }
 
   /* ── TOOL HERO ── */
   .tool-hero {
@@ -446,13 +475,47 @@
     <a href="toolbox.html" class="header-nav-link active">Toolbox</a>
     <a href="sessions.html" class="header-nav-link">Sessions</a>
     <a href="#" class="header-nav-link" onclick="document.getElementById('feedbackPanel')?.classList.toggle('hidden'); return false;">Feedback</a>
+    <a href="index.html?signin=1" class="header-nav-link">Sign in</a>
   </nav>
+  <button class="hamburger" id="hamburgerBtn" aria-label="Open menu">
+    <span class="hamburger-line"></span>
+    <span class="hamburger-line"></span>
+    <span class="hamburger-line"></span>
+  </button>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="index.html">The Studio</a>
+    <a href="toolbox.html" class="active">Toolbox</a>
+    <a href="sessions.html">Sessions</a>
+    <a href="#" onclick="document.getElementById('feedbackPanel')?.classList.toggle('hidden'); document.getElementById('mobileMenu').classList.remove('open'); return false;">Feedback</a>
+    <a href="index.html?signin=1">Sign in</a>
+  </div>
   <div class="header-controls">
-    <button class="text-size-btn" onclick="document.documentElement.dataset.textSize=({'':'lg','lg':'xl','xl':''}[document.documentElement.dataset.textSize||''])||''" title="Adjust text size">Aa</button>
-    <button class="text-size-btn" onclick="document.documentElement.dataset.theme=document.documentElement.dataset.theme==='light'?'':'light'" title="Toggle light/dark mode">&#x2731;</button>
-    <a href="index.html" class="text-size-btn" title="Back to The Studio">?</a>
+    <button class="text-size-btn" id="tdTextSize" title="Adjust text size">Aa</button>
+    <button class="theme-toggle-btn" id="tdThemeToggle" title="Toggle light/dark mode">☀</button>
+    <div class="help-wrap">
+      <button class="help-btn" id="tdHelpBtn">Help</button>
+      <div class="help-dropdown" id="tdHelpDropdown">
+        <a href="index.html">Back to The Studio</a>
+        <a href="toolbox.html">Browse all tools</a>
+        <a href="https://wadeinstitute.org.au/contact" target="_blank" rel="noopener">Contact Wade Institute</a>
+      </div>
+    </div>
   </div>
 </header>
+<script>
+(function(){
+  var ts = document.getElementById('tdTextSize');
+  if(ts) ts.addEventListener('click', function(){ var s={'':'lg','lg':'xl','xl':''}; document.documentElement.dataset.textSize = s[document.documentElement.dataset.textSize||'']||''; });
+  var tt = document.getElementById('tdThemeToggle');
+  if(tt) tt.addEventListener('click', function(){ var l = document.documentElement.dataset.theme==='light'; document.documentElement.dataset.theme = l?'':'light'; localStorage.setItem('studio_theme', l?'dark':'light'); tt.textContent = l?'\u2600':'\u263E'; });
+  var saved = localStorage.getItem('studio_theme'); if(saved==='light'){ document.documentElement.dataset.theme='light'; if(tt) tt.textContent='\u263E'; }
+  var hb = document.getElementById('tdHelpBtn'), hd = document.getElementById('tdHelpDropdown');
+  if(hb&&hd) hb.addEventListener('click', function(e){ e.stopPropagation(); hd.classList.toggle('open'); });
+  document.addEventListener('click', function(){ if(hd) hd.classList.remove('open'); });
+  var ham = document.getElementById('hamburgerBtn'), mm = document.getElementById('mobileMenu');
+  if(ham&&mm) ham.addEventListener('click', function(){ mm.classList.toggle('open'); });
+})();
+</script>
 
 <!-- TOOL HERO -->
 <section class="tool-hero">

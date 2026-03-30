@@ -174,6 +174,13 @@
         html[data-theme="light"] .header-nav-link:hover { color: #1E194F; background: rgba(30,25,79,0.04); }
         html[data-theme="light"] .header-nav-link.active { color: #1E194F; background: rgba(30,25,79,0.07); }
         @media (max-width: 640px) { .header-nav { display: none; } }
+        .help-dropdown-tb { display: none; position: absolute; top: calc(100% + 6px); right: 0; background: var(--card-bg, #1a1750); border: 1px solid rgba(255,255,255,0.15); border-radius: 10px; min-width: 200px; padding: 0.4rem 0; box-shadow: 0 8px 24px rgba(0,0,0,0.3); z-index: 200; }
+        .help-dropdown-tb.open { display: block; }
+        .help-dropdown-tb a { display: block; padding: 0.5rem 1rem; color: rgba(255,255,255,0.7); text-decoration: none; font-size: 0.8rem; transition: background 0.15s; }
+        .help-dropdown-tb a:hover { background: rgba(255,255,255,0.05); color: #fff; }
+        html[data-theme="light"] .help-dropdown-tb { background: #fff; border-color: rgba(0,0,0,0.1); }
+        html[data-theme="light"] .help-dropdown-tb a { color: #555; }
+        html[data-theme="light"] .help-dropdown-tb a:hover { background: rgba(0,0,0,0.03); color: #1E194F; }
     </style>
 </head>
 <body>
@@ -185,13 +192,32 @@
             <a class="header-nav-link active" href="toolbox.html">Toolbox</a>
             <a class="header-nav-link" href="sessions.html">Sessions</a>
             <a class="header-nav-link" href="#" id="navFeedbackBtn">Feedback</a>
+            <a class="header-nav-link" href="index.html?signin=1">Sign in</a>
         </nav>
+        <button class="hamburger" id="hamburgerBtn" aria-label="Open menu">
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+        </button>
+        <div class="mobile-menu hidden" id="mobileMenu">
+            <a class="mobile-menu-link" href="index.html">The Studio</a>
+            <a class="mobile-menu-link active" href="toolbox.html">Toolbox</a>
+            <a class="mobile-menu-link" href="sessions.html">Sessions</a>
+            <a class="mobile-menu-link" href="#" id="mobileFeedbackBtn">Feedback</a>
+            <a class="mobile-menu-link" href="index.html?signin=1">Sign in</a>
+        </div>
         <div class="header-controls">
             <button class="text-size-btn" id="textSizeToggle" title="Adjust text size">Aa</button>
             <button class="theme-toggle" id="themeToggle" title="Toggle light/dark mode" aria-label="Toggle light/dark mode">
                 <span class="theme-icon">&#9728;</span>
             </button>
-            <a class="tour-help-btn" href="index.html" title="Back to The Studio">?</a>
+            <div style="position:relative">
+                <button class="help-menu-btn" id="tbHelpBtn" title="Help" aria-label="Help">Help</button>
+                <div class="help-dropdown-tb" id="tbHelpDropdown">
+                    <a href="index.html">Back to The Studio</a>
+                    <a href="https://wadeinstitute.org.au/contact" target="_blank" rel="noopener">Contact Wade Institute</a>
+                </div>
+            </div>
         </div>
     </header>
 
@@ -423,6 +449,22 @@
     const panel = document.getElementById('feedbackPanel');
     if (navBtn && panel) {
         navBtn.addEventListener('click', function(e) { e.preventDefault(); panel.classList.toggle('hidden'); });
+    }
+    // Mobile feedback
+    const mobFb = document.getElementById('mobileFeedbackBtn');
+    if (mobFb && panel) {
+        mobFb.addEventListener('click', function(e) { e.preventDefault(); panel.classList.toggle('hidden'); document.getElementById('mobileMenu')?.classList.add('hidden'); });
+    }
+    // Help dropdown
+    const hb = document.getElementById('tbHelpBtn'), hd = document.getElementById('tbHelpDropdown');
+    if (hb && hd) {
+        hb.addEventListener('click', function(e) { e.stopPropagation(); hd.classList.toggle('open'); });
+        document.addEventListener('click', function() { hd.classList.remove('open'); });
+    }
+    // Hamburger
+    const ham = document.getElementById('hamburgerBtn'), mm = document.getElementById('mobileMenu');
+    if (ham && mm) {
+        ham.addEventListener('click', function() { mm.classList.toggle('hidden'); });
     }
 })();
 </script>

@@ -20,6 +20,20 @@
         .header-controls { display: flex; align-items: center; gap: 0.5rem; }
         .ctrl-btn { background: transparent; border: 1px solid rgba(255,255,255,0.12); border-radius: 6px; width: 32px; height: 32px; color: rgba(255,255,255,0.5); font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         .ctrl-btn:hover { border-color: rgba(255,255,255,0.3); color: #fff; }
+        .help-btn-s { background: none; border: 1px solid rgba(255,255,255,0.12); border-radius: 6px; color: rgba(255,255,255,0.5); font-size: 0.8rem; padding: 0.3rem 0.6rem; cursor: pointer; font-family: inherit; transition: all 0.2s; }
+        .help-btn-s:hover { color: #fff; border-color: rgba(255,255,255,0.3); }
+        .help-wrap { position: relative; }
+        .help-dropdown-s { display: none; position: absolute; top: calc(100% + 6px); right: 0; background: #1a1750; border: 1px solid rgba(255,255,255,0.15); border-radius: 10px; min-width: 200px; padding: 0.4rem 0; box-shadow: 0 8px 24px rgba(0,0,0,0.3); z-index: 200; }
+        .help-dropdown-s.open { display: block; }
+        .help-dropdown-s a { display: block; padding: 0.5rem 1rem; color: rgba(255,255,255,0.7); text-decoration: none; font-size: 0.8rem; transition: background 0.15s; }
+        .help-dropdown-s a:hover { background: rgba(255,255,255,0.05); color: #fff; }
+        .hamburger { display: none; background: none; border: none; cursor: pointer; padding: 0.5rem; }
+        .hamburger-line { display: block; width: 20px; height: 2px; background: rgba(255,255,255,0.7); margin: 4px 0; border-radius: 1px; }
+        .mobile-menu { display: none; position: fixed; top: 56px; left: 0; right: 0; background: var(--bg); border-bottom: 1px solid var(--border); padding: 1rem; z-index: 99; flex-direction: column; gap: 0.25rem; }
+        .mobile-menu.open { display: flex; }
+        .mobile-menu a { padding: 0.6rem 1rem; color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.9rem; border-radius: 8px; }
+        .mobile-menu a:hover, .mobile-menu a.active { color: #fff; background: rgba(255,255,255,0.05); }
+        @media (max-width: 640px) { .header-nav { display: none; } .header-controls { display: none; } .hamburger { display: block; } }
         /* Account menu (same as main app) */
         .account-menu { position: relative; display: flex; align-items: center; margin-left: 4px; }
         .account-menu-btn { background: none; border: none; cursor: pointer; padding: 2px; display: flex; align-items: center; }
@@ -137,8 +151,29 @@
                 </div>
             </div>
         </nav>
+        <button class="hamburger" id="hamburgerBtn" aria-label="Open menu">
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+        </button>
+        <div class="mobile-menu" id="mobileMenu">
+            <a href="index.html">The Studio</a>
+            <a href="toolbox.html">Toolbox</a>
+            <a href="sessions.html" class="active">Sessions</a>
+            <a href="#" id="mobileFeedbackLink">Feedback</a>
+            <a href="index.html?signin=1" id="mobileSignIn">Sign in</a>
+        </div>
         <div class="header-controls">
+            <button class="ctrl-btn" id="textSizeBtn" title="Adjust text size">Aa</button>
             <button class="ctrl-btn" id="themeToggle" title="Toggle light/dark mode" aria-label="Toggle light/dark mode">☀</button>
+            <div class="help-wrap">
+                <button class="help-btn-s" id="sHelpBtn">Help</button>
+                <div class="help-dropdown-s" id="sHelpDropdown">
+                    <a href="index.html">Back to The Studio</a>
+                    <a href="toolbox.html">Browse all tools</a>
+                    <a href="https://wadeinstitute.org.au/contact" target="_blank" rel="noopener">Contact Wade Institute</a>
+                </div>
+            </div>
         </div>
     </header>
 
@@ -224,6 +259,17 @@
         </div>
     </div>
 
+    <script>
+    // Header controls
+    (function(){
+        var ts = document.getElementById('textSizeBtn');
+        if(ts) ts.addEventListener('click', function(){ var s={'':'lg','lg':'xl','xl':''}; document.documentElement.dataset.textSize = s[document.documentElement.dataset.textSize||'']||''; });
+        var hb = document.getElementById('sHelpBtn'), hd = document.getElementById('sHelpDropdown');
+        if(hb&&hd){ hb.addEventListener('click', function(e){ e.stopPropagation(); hd.classList.toggle('open'); }); document.addEventListener('click', function(){ hd.classList.remove('open'); }); }
+        var ham = document.getElementById('hamburgerBtn'), mm = document.getElementById('mobileMenu');
+        if(ham&&mm) ham.addEventListener('click', function(){ mm.classList.toggle('open'); });
+    })();
+    </script>
     <script>
     const MODE_LABELS = { untangle: 'The Untangle', spark: 'The Spark', test: 'The Test', build: 'The Build' };
     const EXERCISE_LABELS = {
