@@ -619,13 +619,126 @@ const state = {
     tradeOffRound: 0,  // counts BUNDLE tags rendered for trade-off progress
     wrapped: false,  // true when [WRAP] signal received — hides Help/Challenge buttons
     userEmail: localStorage.getItem('wade_user_email') || '',  // persisted for memory
-    deviceId: localStorage.getItem('wade_device_id') || ''  // anonymous identity for memory
+    deviceId: localStorage.getItem('wade_device_id') || '',  // anonymous identity for memory
+    authenticated: false,  // Tier 3: logged-in via magic link
+    authEmail: '',         // email from JWT cookie
+    displayName: ''        // profile display name
 };
 
 // Generate device ID on first visit (anonymous — no email needed)
 if (!state.deviceId) {
     state.deviceId = 'dev_' + crypto.randomUUID();
     localStorage.setItem('wade_device_id', state.deviceId);
+}
+
+// === AUTH (Magic-Link Passwordless) ===
+
+async function checkAuth() {
+    try {
+        const res = await fetch('/api/auth/me');
+        const data = await res.json();
+        state.authenticated = data.authenticated;
+        state.authEmail = data.email || '';
+        state.displayName = data.display_name || '';
+        updateAccountMenu();
+    } catch (e) {
+        console.warn('[Auth] check failed:', e);
+    }
+}
+
+function updateAccountMenu() {
+    const signInLink = document.getElementById('navSignIn');
+    const accountMenu = document.getElementById('accountMenu');
+    const accountAvatar = document.getElementById('accountAvatar');
+    const accountEmail = document.getElementById('accountEmail');
+    const mobileSignIn = document.getElementById('mobileSignIn');
+    const mobileAccountInfo = document.getElementById('mobileAccountInfo');
+    const mobileAccountEmail = document.getElementById('mobileAccountEmail');
+
+    if (state.authenticated) {
+        if (signInLink) signInLink.classList.add('hidden');
+        if (accountMenu) accountMenu.classList.remove('hidden');
+        const initial = (state.displayName || state.authEmail || '?')[0].toUpperCase();
+        if (accountAvatar) accountAvatar.textContent = initial;
+        if (accountEmail) accountEmail.textContent = state.authEmail;
+        if (mobileSignIn) mobileSignIn.classList.add('hidden');
+        if (mobileAccountInfo) mobileAccountInfo.classList.remove('hidden');
+        if (mobileAccountEmail) mobileAccountEmail.textContent = state.authEmail;
+    } else {
+        if (signInLink) signInLink.classList.remove('hidden');
+        if (accountMenu) accountMenu.classList.add('hidden');
+        if (mobileSignIn) mobileSignIn.classList.remove('hidden');
+        if (mobileAccountInfo) mobileAccountInfo.classList.add('hidden');
+    }
+}
+
+function openLoginModal() {
+    const overlay = document.getElementById('loginModalOverlay');
+    const emailInput = document.getElementById('loginEmail');
+    const status = document.getElementById('loginStatus');
+    if (overlay) overlay.classList.remove('hidden');
+    if (status) { status.classList.add('hidden'); status.textContent = ''; }
+    // Pre-fill from localStorage if available
+    if (emailInput && !emailInput.value) {
+        emailInput.value = localStorage.getItem('wade_user_email') || '';
+    }
+    if (emailInput) emailInput.focus();
+}
+
+function closeLoginModal() {
+    const overlay = document.getElementById('loginModalOverlay');
+    if (overlay) overlay.classList.add('hidden');
+}
+
+async function submitLogin() {
+    const emailInput = document.getElementById('loginEmail');
+    const status = document.getElementById('loginStatus');
+    const btn = document.getElementById('loginSubmitBtn');
+    const email = (emailInput?.value || '').trim().toLowerCase();
+
+    if (!email || !email.includes('@')) {
+        if (status) { status.textContent = 'Please enter a valid email.'; status.classList.remove('hidden'); }
+        return;
+    }
+
+    if (btn) { btn.disabled = true; btn.textContent = 'Sending...'; }
+
+    try {
+        const res = await fetch('/api/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, device_id: state.deviceId })
+        });
+        const data = await res.json();
+        if (data.ok) {
+            if (status) {
+                status.textContent = 'Check your inbox — we sent you a sign-in link.';
+                status.classList.remove('hidden');
+                status.style.color = 'var(--teal)';
+            }
+            if (btn) { btn.textContent = 'Link sent'; }
+        } else {
+            if (status) {
+                status.textContent = data.error || 'Something went wrong.';
+                status.classList.remove('hidden');
+                status.style.color = '';
+            }
+            if (btn) { btn.disabled = false; btn.textContent = 'Send magic link'; }
+        }
+    } catch (e) {
+        if (status) { status.textContent = 'Network error. Try again.'; status.classList.remove('hidden'); }
+        if (btn) { btn.disabled = false; btn.textContent = 'Send magic link'; }
+    }
+}
+
+async function logout() {
+    try {
+        await fetch('/api/auth/logout', { method: 'POST' });
+    } catch (e) { /* ignore */ }
+    state.authenticated = false;
+    state.authEmail = '';
+    state.displayName = '';
+    updateAccountMenu();
 }
 
 // === DOM ===
@@ -5955,6 +6068,94 @@ window.addEventListener('beforeunload', (e) => {
             e.preventDefault();
             e.returnValue = '';
         }
+    }
+});
+
+// === AUTH EVENT LISTENERS ===
+document.addEventListener('DOMContentLoaded', () => {
+    // Check auth on load
+    checkAuth();
+
+    // Sign-in links open login modal
+    const navSignIn = document.getElementById('navSignIn');
+    const mobileSignIn = document.getElementById('mobileSignIn');
+    if (navSignIn) navSignIn.addEventListener('click', (e) => { e.preventDefault(); openLoginModal(); });
+    if (mobileSignIn) mobileSignIn.addEventListener('click', (e) => { e.preventDefault(); openLoginModal(); });
+
+    // Login modal close
+    const loginClose = document.getElementById('loginModalClose');
+    const loginOverlay = document.getElementById('loginModalOverlay');
+    if (loginClose) loginClose.addEventListener('click', closeLoginModal);
+    if (loginOverlay) loginOverlay.addEventListener('click', (e) => { if (e.target === loginOverlay) closeLoginModal(); });
+
+    // Login submit
+    const loginBtn = document.getElementById('loginSubmitBtn');
+    if (loginBtn) loginBtn.addEventListener('click', submitLogin);
+    const loginEmail = document.getElementById('loginEmail');
+    if (loginEmail) loginEmail.addEventListener('keydown', (e) => { if (e.key === 'Enter') submitLogin(); });
+
+    // Account menu dropdown toggle
+    const accountBtn = document.getElementById('accountMenuBtn');
+    const accountDropdown = document.getElementById('accountDropdown');
+    if (accountBtn && accountDropdown) {
+        accountBtn.addEventListener('click', () => {
+            const open = !accountDropdown.classList.contains('hidden');
+            accountDropdown.classList.toggle('hidden');
+            accountBtn.setAttribute('aria-expanded', !open);
+        });
+        document.addEventListener('click', (e) => {
+            if (!accountBtn.contains(e.target) && !accountDropdown.contains(e.target)) {
+                accountDropdown.classList.add('hidden');
+                accountBtn.setAttribute('aria-expanded', 'false');
+            }
+        });
+    }
+
+    // Logout buttons
+    const logoutBtn = document.getElementById('accountLogoutBtn');
+    const mobileLogoutBtn = document.getElementById('mobileLogoutBtn');
+    if (logoutBtn) logoutBtn.addEventListener('click', logout);
+    if (mobileLogoutBtn) mobileLogoutBtn.addEventListener('click', logout);
+
+    // Settings button → go to sessions page settings
+    const settingsBtn = document.getElementById('accountSettingsBtn');
+    if (settingsBtn) settingsBtn.addEventListener('click', () => { window.location.href = 'sessions.html#settings'; });
+
+    // After magic-link redirect: show welcome toast
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('logged_in') === '1') {
+        const devices = parseInt(params.get('devices') || '0');
+        const msg = devices > 1
+            ? `Signed in — found ${devices} devices linked to your account.`
+            : 'Signed in successfully.';
+        // Show a brief toast
+        const toast = document.createElement('div');
+        toast.className = 'auth-toast';
+        toast.textContent = msg;
+        toast.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#27BDBE;color:#1E194F;padding:10px 20px;border-radius:8px;font-size:0.85rem;font-weight:600;z-index:9999;opacity:0;transition:opacity 0.3s;';
+        document.body.appendChild(toast);
+        requestAnimationFrame(() => { toast.style.opacity = '1'; });
+        setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 400); }, 4000);
+        // Clean URL
+        window.history.replaceState({}, '', window.location.pathname);
+    }
+
+    // Auth error from redirect
+    const authError = params.get('auth_error');
+    if (authError) {
+        const msgs = {
+            'missing_token': 'Invalid sign-in link.',
+            'invalid_or_expired': 'This sign-in link has expired. Request a new one.',
+            'db_unavailable': 'Service temporarily unavailable.',
+            'server_error': 'Something went wrong. Try again.'
+        };
+        const toast = document.createElement('div');
+        toast.textContent = msgs[authError] || 'Sign-in failed.';
+        toast.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#F15A22;color:#fff;padding:10px 20px;border-radius:8px;font-size:0.85rem;font-weight:600;z-index:9999;opacity:0;transition:opacity 0.3s;';
+        document.body.appendChild(toast);
+        requestAnimationFrame(() => { toast.style.opacity = '1'; });
+        setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 400); }, 5000);
+        window.history.replaceState({}, '', window.location.pathname);
     }
 });
 

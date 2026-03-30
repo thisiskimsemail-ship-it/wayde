@@ -1643,6 +1643,43 @@ body:not(.in-session) .input-area { display: none !important; }
 body.in-session .header-nav { display: none; }
 body.in-session.session-complete .header-nav { display: flex; }
 
+/* Account menu */
+.account-menu { position: relative; display: flex; align-items: center; margin-left: 4px; }
+.account-menu-btn {
+    background: none; border: none; cursor: pointer; padding: 2px;
+    display: flex; align-items: center;
+}
+.account-avatar {
+    display: flex; align-items: center; justify-content: center;
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--orange); color: #fff; font-size: 0.75rem; font-weight: 600;
+    text-transform: uppercase;
+}
+.account-dropdown {
+    position: absolute; top: calc(100% + 6px); right: 0;
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 8px; min-width: 200px; padding: 6px 0;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.25); z-index: 100;
+}
+.account-dropdown-email {
+    padding: 8px 14px; font-size: 0.75rem; color: var(--text-dim);
+    border-bottom: 1px solid var(--border); margin-bottom: 4px;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.account-dropdown-item {
+    display: block; width: 100%; padding: 8px 14px; font-size: 0.82rem;
+    color: var(--text); background: none; border: none; text-align: left;
+    cursor: pointer; text-decoration: none; font-family: inherit;
+}
+.account-dropdown-item:hover { background: rgba(255,255,255,0.06); }
+.account-dropdown-divider { height: 1px; background: var(--border); margin: 4px 0; }
+html[data-theme="light"] .account-dropdown { background: #fff; box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
+html[data-theme="light"] .account-dropdown-item:hover { background: rgba(0,0,0,0.04); }
+
+/* Mobile account */
+.mobile-account-info { padding: 0.5rem 1.2rem; }
+.mobile-account-email { display: block; font-size: 0.78rem; color: var(--text-dim); margin-bottom: 0.3rem; }
+
 /* Container */
 .lp-container { max-width: 1120px; margin: 0 auto; padding: 0 2rem; }
 

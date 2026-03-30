@@ -7,24 +7,54 @@
     <link rel="preload" href="fonts/GT-Walsheim-Regular.woff" as="font" type="font/woff" crossorigin>
     <style>
         @font-face { font-family: 'GT Walsheim'; src: url('fonts/GT-Walsheim-Regular.woff') format('woff'), url('fonts/GT-Walsheim-Regular.ttf') format('truetype'); font-weight: 400; font-style: normal; font-display: swap; }
-        :root { --bg: #12103a; --bg-light: #1a1750; --text: #f5f5f5; --text-dim: #b8b5d0; --text-muted: #6e6a8a; --orange: #F15A22; --teal: #27BDBE; --pink: #ED3694; --yellow: #E4E517; --font: 'GT Walsheim', 'Space Grotesk', sans-serif; }
+        :root { --bg: #12103a; --bg-light: #1a1750; --text: #f5f5f5; --text-dim: #b8b5d0; --text-muted: #6e6a8a; --border: rgba(255,255,255,0.08); --orange: #F15A22; --teal: #27BDBE; --pink: #ED3694; --yellow: #E4E517; --font: 'GT Walsheim', 'Space Grotesk', sans-serif; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; }
-        .header { padding: 1rem 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: space-between; }
+        .hidden { display: none !important; }
+        .header { padding: 1rem 1.5rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
         .logo { height: 50px; width: auto; }
         .header-nav { display: flex; border: 1px solid rgba(255,255,255,0.12); border-radius: 999px; overflow: hidden; margin-left: auto; margin-right: 1rem; }
         .header-nav-link { padding: 0.4rem 1.1rem; font-size: 0.8rem; font-weight: 500; color: rgba(255,255,255,0.5); text-decoration: none; transition: all 0.2s; white-space: nowrap; }
         .header-nav-link:hover { color: #fff; background: rgba(255,255,255,0.05); }
         .header-nav-link.active { color: #fff; background: rgba(255,255,255,0.08); }
         .header-controls { display: flex; align-items: center; gap: 0.5rem; }
-        .text-size-btn, .theme-toggle, .tour-help-btn { background: transparent; border: 1px solid rgba(255,255,255,0.12); border-radius: 6px; width: 32px; height: 32px; color: rgba(255,255,255,0.5); font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        .text-size-btn:hover, .theme-toggle:hover, .tour-help-btn:hover { border-color: rgba(255,255,255,0.3); color: #fff; }
+        .ctrl-btn { background: transparent; border: 1px solid rgba(255,255,255,0.12); border-radius: 6px; width: 32px; height: 32px; color: rgba(255,255,255,0.5); font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .ctrl-btn:hover { border-color: rgba(255,255,255,0.3); color: #fff; }
+        /* Account menu (same as main app) */
+        .account-menu { position: relative; display: flex; align-items: center; margin-left: 4px; }
+        .account-menu-btn { background: none; border: none; cursor: pointer; padding: 2px; display: flex; align-items: center; }
+        .account-avatar { display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; background: var(--orange); color: #fff; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; }
+        .account-dropdown { position: absolute; top: calc(100% + 6px); right: 0; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; min-width: 200px; padding: 6px 0; box-shadow: 0 8px 24px rgba(0,0,0,0.25); z-index: 100; }
+        .account-dropdown-email { padding: 8px 14px; font-size: 0.75rem; color: var(--text-dim); border-bottom: 1px solid var(--border); margin-bottom: 4px; overflow: hidden; text-overflow: ellipsis; }
+        .account-dropdown-item { display: block; width: 100%; padding: 8px 14px; font-size: 0.82rem; color: var(--text); background: none; border: none; text-align: left; cursor: pointer; text-decoration: none; font-family: inherit; }
+        .account-dropdown-item:hover { background: rgba(255,255,255,0.06); }
+        .account-dropdown-divider { height: 1px; background: var(--border); margin: 4px 0; }
 
         .container { max-width: 900px; margin: 0 auto; padding: 2rem; }
         .back { color: var(--orange); text-decoration: none; font-size: 0.85rem; display: inline-block; margin-bottom: 1.5rem; }
         .back:hover { text-decoration: underline; }
         h1 { font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; }
-        .subtitle { color: var(--text-dim); font-size: 1rem; margin-bottom: 2rem; }
+        .subtitle { color: var(--text-dim); font-size: 1rem; margin-bottom: 1.5rem; }
+
+        /* Auth banner */
+        .auth-banner { background: var(--bg-light); border: 1px solid var(--border); border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 1rem; }
+        .auth-banner p { font-size: 0.85rem; color: var(--text-dim); flex: 1; }
+        .auth-banner-btn { background: var(--orange); color: #fff; border: none; padding: 0.5rem 1.25rem; border-radius: 6px; font-size: 0.82rem; font-weight: 600; cursor: pointer; white-space: nowrap; font-family: inherit; }
+        .auth-banner-btn:hover { opacity: 0.9; }
+
+        /* Filter tabs */
+        .filters { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; align-items: center; }
+        .filter-tab { background: transparent; border: 1px solid var(--border); border-radius: 999px; padding: 0.35rem 0.9rem; font-size: 0.78rem; font-weight: 600; color: var(--text-dim); cursor: pointer; transition: all 0.2s; font-family: inherit; }
+        .filter-tab:hover { border-color: rgba(255,255,255,0.2); color: var(--text); }
+        .filter-tab.active { color: #fff; border-color: currentColor; }
+        .filter-tab[data-mode="untangle"].active { color: var(--teal); }
+        .filter-tab[data-mode="spark"].active { color: var(--orange); }
+        .filter-tab[data-mode="test"].active { color: var(--pink); }
+        .filter-tab[data-mode="build"].active { color: var(--yellow); }
+        .filter-sep { width: 1px; height: 18px; background: var(--border); margin: 0 0.25rem; }
+        .search-input { background: var(--bg-light); border: 1px solid var(--border); border-radius: 6px; padding: 0.4rem 0.8rem; font-size: 0.8rem; color: var(--text); font-family: inherit; width: 180px; margin-left: auto; }
+        .search-input::placeholder { color: var(--text-muted); }
+        .search-input:focus { outline: none; border-color: rgba(255,255,255,0.2); }
 
         .empty { text-align: center; padding: 4rem 2rem; color: var(--text-muted); }
         .empty h2 { font-size: 1.25rem; color: var(--text-dim); margin-bottom: 0.5rem; }
@@ -32,27 +62,10 @@
         .empty a { color: var(--orange); text-decoration: none; font-weight: 600; }
 
         .session-list { display: flex; flex-direction: column; gap: 1rem; }
-        .session-card {
-            background: var(--bg-light);
-            border: 1px solid rgba(255,255,255,0.06);
-            border-radius: 10px;
-            padding: 1.25rem 1.5rem;
-            transition: all 0.2s;
-            cursor: pointer;
-            text-decoration: none;
-            color: inherit;
-            display: block;
-        }
+        .session-card { background: var(--bg-light); border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem 1.5rem; transition: all 0.2s; cursor: pointer; text-decoration: none; color: inherit; display: block; }
         .session-card:hover { border-color: rgba(255,255,255,0.15); transform: translateY(-1px); }
         .session-card-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem; }
-        .session-badge {
-            font-size: 0.65rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            padding: 0.2rem 0.6rem;
-            border-radius: 999px;
-        }
+        .session-badge { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; padding: 0.2rem 0.6rem; border-radius: 999px; }
         .badge-untangle { color: var(--teal); border: 1px solid rgba(39,189,190,0.3); }
         .badge-spark { color: var(--orange); border: 1px solid rgba(241,90,34,0.3); }
         .badge-test { color: var(--pink); border: 1px solid rgba(237,54,148,0.3); }
@@ -61,8 +74,9 @@
         .session-date { font-size: 0.75rem; color: var(--text-muted); margin-left: auto; }
         .session-topic { font-size: 0.9rem; color: var(--text-dim); line-height: 1.5; margin-bottom: 0.5rem; }
         .session-insight { font-size: 0.85rem; color: var(--text-muted); }
-        .badge-resumable { color: var(--teal); border: 1px solid rgba(39,189,190,0.3); margin-left: 0.5rem; }
-        .session-card-actions { position: relative; }
+        .badge-status-active { background: rgba(39,189,190,0.15); color: #27BDBE; }
+        .badge-status-completed { background: rgba(228,229,23,0.15); color: #b8b900; }
+        .badge-status-expired { background: rgba(168,164,165,0.15); color: #A8A4A5; }
         .session-delete { background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 0.85rem; padding: 0.25rem 0.5rem; border-radius: 4px; opacity: 0; transition: opacity 0.2s; }
         .session-card:hover .session-delete { opacity: 1; }
         .session-delete:hover { color: #ff6b6b; background: rgba(255,107,107,0.1); }
@@ -70,9 +84,23 @@
         .session-meta span { font-size: 0.75rem; color: var(--text-muted); }
         .session-report-link { color: var(--teal); text-decoration: none; font-size: 0.75rem; font-weight: 500; }
         .session-report-link:hover { text-decoration: underline; }
-        .badge-status-active { background: rgba(39,189,190,0.15); color: #27BDBE; }
-        .badge-status-completed { background: rgba(228,229,23,0.15); color: #b8b900; }
-        .badge-status-expired { background: rgba(168,164,165,0.15); color: #A8A4A5; }
+
+        /* Settings panel */
+        .settings-panel { background: var(--bg-light); border: 1px solid var(--border); border-radius: 10px; padding: 1.5rem; margin-bottom: 2rem; }
+        .settings-panel h2 { font-size: 1.1rem; margin-bottom: 1rem; }
+        .settings-row { display: flex; gap: 1rem; margin-bottom: 0.75rem; flex-wrap: wrap; }
+        .settings-field { flex: 1; min-width: 200px; }
+        .settings-field label { display: block; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.3rem; text-transform: uppercase; letter-spacing: 0.05em; }
+        .settings-field input { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 0.5rem 0.75rem; font-size: 0.85rem; color: var(--text); font-family: inherit; }
+        .settings-field input:focus { outline: none; border-color: var(--orange); }
+        .settings-field input[readonly] { opacity: 0.5; cursor: not-allowed; }
+        .settings-save { background: var(--orange); color: #fff; border: none; padding: 0.5rem 1.5rem; border-radius: 6px; font-size: 0.82rem; font-weight: 600; cursor: pointer; font-family: inherit; margin-top: 0.5rem; }
+        .settings-save:hover { opacity: 0.9; }
+        .settings-save:disabled { opacity: 0.5; cursor: not-allowed; }
+        .settings-status { font-size: 0.8rem; color: var(--teal); margin-left: 1rem; }
+        .settings-actions { display: flex; align-items: center; gap: 1rem; margin-top: 0.75rem; }
+        .settings-logout { background: transparent; border: 1px solid rgba(255,107,107,0.3); color: #ff6b6b; padding: 0.5rem 1.25rem; border-radius: 6px; font-size: 0.82rem; cursor: pointer; font-family: inherit; }
+        .settings-logout:hover { background: rgba(255,107,107,0.1); }
 
         .footer { text-align: center; padding: 2rem; border-top: 2px solid var(--orange); margin-top: 3rem; }
         .footer a { color: var(--text-dim); text-decoration: none; font-size: 0.8rem; }
@@ -82,6 +110,8 @@
             .container { padding: 1rem; }
             .session-card-header { flex-wrap: wrap; }
             .session-date { margin-left: 0; width: 100%; }
+            .search-input { width: 100%; margin-left: 0; margin-top: 0.5rem; }
+            .auth-banner { flex-direction: column; text-align: center; }
         }
     </style>
 </head>
@@ -92,12 +122,23 @@
             <a class="header-nav-link" href="index.html">The Studio</a>
             <a class="header-nav-link" href="toolbox.html">Toolbox</a>
             <a class="header-nav-link active" href="sessions.html">Sessions</a>
-            <a class="header-nav-link header-feedback-link" href="#" id="headerFeedbackLink">Feedback</a>
+            <a class="header-nav-link" href="#" id="headerFeedbackLink">Feedback</a>
+            <a class="header-nav-link" href="#" id="navSignIn">Sign in</a>
+            <div class="account-menu hidden" id="accountMenu">
+                <button class="account-menu-btn" id="accountMenuBtn" aria-expanded="false">
+                    <span class="account-avatar" id="accountAvatar"></span>
+                </button>
+                <div class="account-dropdown hidden" id="accountDropdown" role="menu">
+                    <div class="account-dropdown-email" id="accountEmail"></div>
+                    <a class="account-dropdown-item" href="index.html" role="menuitem">The Studio</a>
+                    <button class="account-dropdown-item" id="accountSettingsBtn" role="menuitem">Settings</button>
+                    <div class="account-dropdown-divider"></div>
+                    <button class="account-dropdown-item" id="accountLogoutBtn" role="menuitem">Sign out</button>
+                </div>
+            </div>
         </nav>
         <div class="header-controls">
-            <button class="text-size-btn" id="textSizeToggle" title="Adjust text size" aria-label="Adjust text size">Aa</button>
-            <button class="theme-toggle" id="themeToggle" title="Toggle light/dark mode" aria-label="Toggle light/dark mode">☀</button>
-            <button class="tour-help-btn" id="tourHelpBtn" title="Help" aria-label="Help">?</button>
+            <button class="ctrl-btn" id="themeToggle" title="Toggle light/dark mode" aria-label="Toggle light/dark mode">☀</button>
         </div>
     </header>
 
@@ -106,12 +147,61 @@
         <h1>Your Sessions</h1>
         <p class="subtitle">Pick up where you left off, or revisit past thinking.</p>
 
+        <!-- Auth banner (shown when not logged in) -->
+        <div class="auth-banner hidden" id="authBanner">
+            <p>Sign in to see sessions from all your devices in one place.</p>
+            <button class="auth-banner-btn" id="authBannerBtn">Sign in</button>
+        </div>
+
+        <!-- Settings panel (shown when logged in and #settings hash) -->
+        <div class="settings-panel hidden" id="settingsPanel">
+            <h2>Settings</h2>
+            <div class="settings-row">
+                <div class="settings-field">
+                    <label>Email</label>
+                    <input type="email" id="settingsEmail" readonly>
+                </div>
+                <div class="settings-field">
+                    <label>Display Name</label>
+                    <input type="text" id="settingsName" placeholder="Your name">
+                </div>
+            </div>
+            <div class="settings-row">
+                <div class="settings-field">
+                    <label>Venture Name</label>
+                    <input type="text" id="settingsVenture" placeholder="Your venture or project">
+                </div>
+                <div class="settings-field">
+                    <label>Stage</label>
+                    <input type="text" id="settingsStage" placeholder="e.g. Idea, MVP, Growth">
+                </div>
+            </div>
+            <div class="settings-actions">
+                <button class="settings-save" id="settingsSaveBtn">Save changes</button>
+                <span class="settings-status hidden" id="settingsStatus"></span>
+                <button class="settings-logout" id="settingsLogoutBtn">Sign out</button>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters" id="filters">
+            <button class="filter-tab active" data-mode="">All</button>
+            <button class="filter-tab" data-mode="untangle">Untangle</button>
+            <button class="filter-tab" data-mode="spark">Spark</button>
+            <button class="filter-tab" data-mode="test">Test</button>
+            <button class="filter-tab" data-mode="build">Build</button>
+            <div class="filter-sep"></div>
+            <button class="filter-tab active" data-status="">Any status</button>
+            <button class="filter-tab" data-status="active">Active</button>
+            <button class="filter-tab" data-status="completed">Completed</button>
+            <input class="search-input" id="searchInput" type="text" placeholder="Search sessions...">
+        </div>
+
         <div id="sessionList" class="session-list">
             <div class="empty" id="emptyState">
                 <h2>No sessions yet</h2>
                 <p>Start a session with Pete and your work will appear here.</p>
                 <a href="index.html">Jam with Pete →</a>
-                <p style="margin-top:1rem"><a class="lp-sample-link" href="sample-report.pdf" target="_blank" rel="noopener" style="color:var(--orange);font-size:0.85rem;text-decoration:none;font-weight:500;">See what a session report looks like →</a></p>
             </div>
         </div>
     </div>
@@ -122,6 +212,18 @@
         <a href="/privacy.html">Privacy</a>
     </footer>
 
+    <!-- Login modal (reused structure from index.html) -->
+    <div class="save-modal-overlay hidden" id="loginModalOverlay" aria-hidden="true" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:1000;display:flex;align-items:center;justify-content:center;">
+        <div style="background:var(--bg-light);border:1px solid var(--border);border-radius:12px;padding:2rem;max-width:380px;width:90%;position:relative;">
+            <button id="loginModalClose" style="position:absolute;top:12px;right:12px;background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:1.2rem;">✕</button>
+            <h3 style="font-size:1.1rem;margin-bottom:0.5rem;">Sign in to The Studio</h3>
+            <p style="font-size:0.85rem;color:var(--text-dim);margin-bottom:1rem;">Enter your email and we'll send you a magic link. No password needed.</p>
+            <input type="email" id="loginEmail" placeholder="your@email.com" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:0.6rem 0.8rem;font-size:0.9rem;color:var(--text);font-family:inherit;margin-bottom:0.75rem;">
+            <button id="loginSubmitBtn" style="width:100%;background:var(--orange);color:#fff;border:none;padding:0.65rem;border-radius:6px;font-size:0.9rem;font-weight:600;cursor:pointer;font-family:inherit;">Send magic link</button>
+            <p id="loginStatus" class="hidden" style="font-size:0.8rem;margin-top:0.75rem;text-align:center;"></p>
+        </div>
+    </div>
+
     <script>
     const MODE_LABELS = { untangle: 'The Untangle', spark: 'The Spark', test: 'The Test', build: 'The Build' };
     const EXERCISE_LABELS = {
@@ -130,83 +232,322 @@
         'pre-mortem': 'Pre-Mortem', 'devils-advocate': "Devil's Advocate",
         'rapid-experiment': 'Rapid Experiment', 'empathy-map': 'Empathy Map',
         'lean-canvas': 'Lean Canvas', 'effectuation': 'Effectuation',
-        'reality-check': "Devil's Advocate", 'wardley': 'Wardley Mapping'
+        'socratic': 'Socratic Questioning', 'iceberg': 'Iceberg',
+        'constraint-flip': 'Constraint Flip', 'customer-discovery': 'Customer Discovery',
+        'trade-off': 'Trade-Off', 'wardley': 'Wardley Mapping',
+        'flywheel': 'Flywheel', 'theory-of-change': 'Theory of Change'
     };
     const EXERCISE_MODE = {
         'five-whys': 'untangle', 'jtbd': 'untangle', 'empathy-map': 'untangle',
+        'socratic': 'untangle', 'iceberg': 'untangle',
         'hmw': 'spark', 'scamper': 'spark', 'crazy-8s': 'spark',
-        'pre-mortem': 'test', 'devils-advocate': 'test', 'rapid-experiment': 'test', 'analogical': 'test',
-        'lean-canvas': 'build', 'effectuation': 'build', 'wardley': 'build'
+        'mash-up': 'spark', 'analogical': 'spark', 'constraint-flip': 'spark',
+        'pre-mortem': 'test', 'devils-advocate': 'test', 'customer-discovery': 'test',
+        'trade-off': 'test', 'rapid-experiment': 'test',
+        'lean-canvas': 'build', 'effectuation': 'build', 'wardley': 'build',
+        'flywheel': 'build', 'theory-of-change': 'build'
     };
 
     const deviceId = localStorage.getItem('wade_device_id') || '';
-    if (!deviceId) {
-        document.getElementById('emptyState').style.display = '';
-    } else {
-        fetch('/api/sessions?device_id=' + encodeURIComponent(deviceId))
-            .then(r => r.json())
-            .then(data => {
-                const list = document.getElementById('sessionList');
-                const sessions = data.sessions || [];
-                if (sessions.length === 0) return;
+    let authenticated = false;
+    let authEmail = '';
+    let allSessions = []; // cached for client-side filtering
 
-                document.getElementById('emptyState').style.display = 'none';
-                sessions.forEach(s => {
-                    const mode = EXERCISE_MODE[s.exercise] || s.mode || 'untangle';
-                    const exercise = s.exercise || '';
-                    const modeName = MODE_LABELS[mode] || mode;
-                    const toolName = EXERCISE_LABELS[exercise] || exercise || 'Conversation';
-                    const badgeClass = 'badge-' + mode;
-                    const date = s.session_date ? new Date(s.session_date).toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' }) : '';
-                    const topic = s.topic || s.conversation_summary || '';
-                    const insight = s.key_insight || '';
-                    const resumeId = s.short_id || s.id;
-                    const resumable = s.resumable;
-                    const status = s.status || (s.has_report ? 'completed' : 'active');
-                    const statusLabel = { active: 'In Progress', completed: 'Completed', expired: 'Expired' }[status] || status;
-                    const statusClass = 'badge-status-' + status;
-                    const exchanges = parseInt(s.exchange_count) || 0;
-
-                    const card = document.createElement('a');
-                    card.className = 'session-card';
-                    card.href = resumable ? 'index.html?resume=' + resumeId : 'index.html?tool=' + (exercise || 'suggest');
-                    card.innerHTML = `
-                        <div class="session-card-header">
-                            <span class="session-badge ${badgeClass}">${modeName}</span>
-                            <span class="session-tool">${toolName}</span>
-                            <span class="session-badge ${statusClass}">${statusLabel}</span>
-                            <span class="session-date">${date}</span>
-                            <button class="session-delete" data-id="${resumeId}" title="Delete session">🗑</button>
-                        </div>
-                        ${topic ? `<div class="session-topic">${topic}</div>` : ''}
-                        ${insight ? `<div class="session-insight">"${insight}"</div>` : ''}
-                        <div class="session-meta">
-                            ${exchanges > 0 ? `<span>${exchanges} exchanges</span>` : ''}
-                            ${s.has_report ? '<a class="session-report-link" href="index.html?resume=' + resumeId + '">View report →</a>' : ''}
-                        </div>
-                    `;
-                    list.appendChild(card);
-                });
-
-                // Delete handlers
-                list.querySelectorAll('.session-delete').forEach(btn => {
-                    btn.addEventListener('click', async (e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        const sid = btn.dataset.id;
-                        if (!confirm('Delete this session?')) return;
-                        try {
-                            await fetch('/api/sessions/' + sid + '?device_id=' + encodeURIComponent(deviceId), { method: 'DELETE' });
-                            btn.closest('.session-card').remove();
-                            if (!list.querySelector('.session-card')) {
-                                document.getElementById('emptyState').style.display = '';
-                            }
-                        } catch (err) { console.error('Delete failed:', err); }
-                    });
-                });
-            })
-            .catch(e => console.error('Failed to load sessions:', e));
+    // === AUTH ===
+    async function checkAuth() {
+        try {
+            const res = await fetch('/api/auth/me');
+            const data = await res.json();
+            authenticated = data.authenticated;
+            authEmail = data.email || '';
+            updateAuthUI(data);
+        } catch (e) { console.warn('[Auth] check failed:', e); }
     }
+
+    function updateAuthUI(data) {
+        const signIn = document.getElementById('navSignIn');
+        const menu = document.getElementById('accountMenu');
+        const avatar = document.getElementById('accountAvatar');
+        const email = document.getElementById('accountEmail');
+        const banner = document.getElementById('authBanner');
+        const settings = document.getElementById('settingsPanel');
+
+        if (authenticated) {
+            if (signIn) signIn.classList.add('hidden');
+            if (menu) menu.classList.remove('hidden');
+            if (avatar) avatar.textContent = (data.display_name || data.email || '?')[0].toUpperCase();
+            if (email) email.textContent = data.email;
+            if (banner) banner.classList.add('hidden');
+
+            // Show settings if hash
+            if (window.location.hash === '#settings' && settings) {
+                settings.classList.remove('hidden');
+                loadProfile();
+            }
+        } else {
+            if (signIn) signIn.classList.remove('hidden');
+            if (menu) menu.classList.add('hidden');
+            if (banner) banner.classList.remove('hidden');
+            if (settings) settings.classList.add('hidden');
+        }
+    }
+
+    // === LOGIN MODAL ===
+    function openLoginModal() {
+        const overlay = document.getElementById('loginModalOverlay');
+        const input = document.getElementById('loginEmail');
+        const status = document.getElementById('loginStatus');
+        if (overlay) { overlay.classList.remove('hidden'); overlay.style.display = 'flex'; }
+        if (status) { status.classList.add('hidden'); status.textContent = ''; }
+        if (input) { input.value = localStorage.getItem('wade_user_email') || ''; input.focus(); }
+    }
+    function closeLoginModal() {
+        const overlay = document.getElementById('loginModalOverlay');
+        if (overlay) { overlay.classList.add('hidden'); overlay.style.display = ''; }
+    }
+    async function submitLogin() {
+        const input = document.getElementById('loginEmail');
+        const status = document.getElementById('loginStatus');
+        const btn = document.getElementById('loginSubmitBtn');
+        const email = (input?.value || '').trim().toLowerCase();
+        if (!email || !email.includes('@')) {
+            if (status) { status.textContent = 'Please enter a valid email.'; status.classList.remove('hidden'); }
+            return;
+        }
+        if (btn) { btn.disabled = true; btn.textContent = 'Sending...'; }
+        try {
+            const res = await fetch('/api/auth/login', {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, device_id: deviceId })
+            });
+            const data = await res.json();
+            if (data.ok) {
+                if (status) { status.textContent = 'Check your inbox — we sent you a sign-in link.'; status.classList.remove('hidden'); status.style.color = 'var(--teal)'; }
+                if (btn) btn.textContent = 'Link sent';
+            } else {
+                if (status) { status.textContent = data.error || 'Something went wrong.'; status.classList.remove('hidden'); status.style.color = ''; }
+                if (btn) { btn.disabled = false; btn.textContent = 'Send magic link'; }
+            }
+        } catch (e) {
+            if (status) { status.textContent = 'Network error. Try again.'; status.classList.remove('hidden'); }
+            if (btn) { btn.disabled = false; btn.textContent = 'Send magic link'; }
+        }
+    }
+
+    // === PROFILE / SETTINGS ===
+    async function loadProfile() {
+        try {
+            const res = await fetch('/api/profile');
+            const data = await res.json();
+            const p = data.profile || {};
+            document.getElementById('settingsEmail').value = p.email || authEmail;
+            document.getElementById('settingsName').value = p.display_name || '';
+            document.getElementById('settingsVenture').value = p.venture_name || '';
+            document.getElementById('settingsStage').value = p.stage || '';
+        } catch (e) { console.warn('[Profile] load failed:', e); }
+    }
+    async function saveProfile() {
+        const btn = document.getElementById('settingsSaveBtn');
+        const status = document.getElementById('settingsStatus');
+        const data = {
+            display_name: document.getElementById('settingsName').value.trim(),
+            venture_name: document.getElementById('settingsVenture').value.trim(),
+            stage: document.getElementById('settingsStage').value.trim()
+        };
+        if (btn) { btn.disabled = true; btn.textContent = 'Saving...'; }
+        try {
+            const res = await fetch('/api/profile', {
+                method: 'PUT', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            const result = await res.json();
+            if (result.ok) {
+                if (status) { status.textContent = 'Saved'; status.classList.remove('hidden'); }
+                setTimeout(() => { if (status) status.classList.add('hidden'); }, 2000);
+            }
+        } catch (e) { console.warn('[Profile] save failed:', e); }
+        if (btn) { btn.disabled = false; btn.textContent = 'Save changes'; }
+    }
+
+    // === SESSIONS ===
+    async function loadSessions() {
+        const url = authenticated
+            ? '/api/sessions'
+            : '/api/sessions?device_id=' + encodeURIComponent(deviceId);
+        try {
+            const res = await fetch(url);
+            const data = await res.json();
+            allSessions = data.sessions || [];
+            renderSessions(allSessions);
+        } catch (e) {
+            console.error('Failed to load sessions:', e);
+        }
+    }
+
+    function renderSessions(sessions) {
+        const list = document.getElementById('sessionList');
+        const empty = document.getElementById('emptyState');
+        // Clear existing cards
+        list.querySelectorAll('.session-card').forEach(c => c.remove());
+
+        if (sessions.length === 0) {
+            if (empty) empty.style.display = '';
+            return;
+        }
+        if (empty) empty.style.display = 'none';
+
+        sessions.forEach(s => {
+            const mode = EXERCISE_MODE[s.exercise] || s.mode || 'untangle';
+            const exercise = s.exercise || '';
+            const modeName = MODE_LABELS[mode] || mode;
+            const toolName = EXERCISE_LABELS[exercise] || exercise || 'Conversation';
+            const badgeClass = 'badge-' + mode;
+            const date = s.session_date ? new Date(s.session_date).toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' }) : '';
+            const topic = s.topic || s.conversation_summary || '';
+            const insight = s.key_insight || '';
+            const resumeId = s.short_id || s.id;
+            const resumable = s.resumable;
+            const status = s.status || (s.has_report ? 'completed' : 'active');
+            const statusLabel = { active: 'In Progress', completed: 'Completed', expired: 'Expired' }[status] || status;
+            const statusClass = 'badge-status-' + status;
+            const exchanges = parseInt(s.exchange_count) || 0;
+
+            const card = document.createElement('a');
+            card.className = 'session-card';
+            card.dataset.mode = mode;
+            card.dataset.status = status;
+            card.href = resumable ? 'index.html?resume=' + resumeId : 'index.html?tool=' + (exercise || 'suggest');
+            card.innerHTML = `
+                <div class="session-card-header">
+                    <span class="session-badge ${badgeClass}">${modeName}</span>
+                    <span class="session-tool">${toolName}</span>
+                    <span class="session-badge ${statusClass}">${statusLabel}</span>
+                    <span class="session-date">${date}</span>
+                    <button class="session-delete" data-id="${resumeId}" title="Delete session">🗑</button>
+                </div>
+                ${topic ? `<div class="session-topic">${topic}</div>` : ''}
+                ${insight ? `<div class="session-insight">"${insight}"</div>` : ''}
+                <div class="session-meta">
+                    ${exchanges > 0 ? `<span>${exchanges} exchanges</span>` : ''}
+                    ${s.has_report ? '<a class="session-report-link" href="index.html?resume=' + resumeId + '">View report →</a>' : ''}
+                </div>
+            `;
+            list.appendChild(card);
+        });
+
+        // Delete handlers
+        list.querySelectorAll('.session-delete').forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                const sid = btn.dataset.id;
+                if (!confirm('Delete this session?')) return;
+                try {
+                    await fetch('/api/sessions/' + sid + '?device_id=' + encodeURIComponent(deviceId), { method: 'DELETE' });
+                    btn.closest('.session-card').remove();
+                    allSessions = allSessions.filter(s => (s.short_id || s.id) !== sid);
+                    if (!list.querySelector('.session-card')) {
+                        document.getElementById('emptyState').style.display = '';
+                    }
+                } catch (err) { console.error('Delete failed:', err); }
+            });
+        });
+    }
+
+    function applyFilters() {
+        const modeTab = document.querySelector('.filter-tab[data-mode].active');
+        const statusTab = document.querySelector('.filter-tab[data-status].active');
+        const search = document.getElementById('searchInput').value.trim().toLowerCase();
+        const modeFilter = modeTab?.dataset.mode || '';
+        const statusFilter = statusTab?.dataset.status || '';
+
+        let filtered = allSessions;
+        if (modeFilter) {
+            filtered = filtered.filter(s => (EXERCISE_MODE[s.exercise] || s.mode) === modeFilter);
+        }
+        if (statusFilter) {
+            filtered = filtered.filter(s => {
+                const st = s.status || (s.has_report ? 'completed' : 'active');
+                return st === statusFilter;
+            });
+        }
+        if (search) {
+            filtered = filtered.filter(s =>
+                (s.topic || '').toLowerCase().includes(search) ||
+                (s.key_insight || '').toLowerCase().includes(search) ||
+                (s.conversation_summary || '').toLowerCase().includes(search)
+            );
+        }
+        renderSessions(filtered);
+    }
+
+    // === INIT ===
+    document.addEventListener('DOMContentLoaded', async () => {
+        await checkAuth();
+        loadSessions();
+
+        // Filter tabs — mode
+        document.querySelectorAll('.filter-tab[data-mode]').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.filter-tab[data-mode]').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                applyFilters();
+            });
+        });
+        // Filter tabs — status
+        document.querySelectorAll('.filter-tab[data-status]').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.filter-tab[data-status]').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                applyFilters();
+            });
+        });
+        // Search
+        document.getElementById('searchInput')?.addEventListener('input', applyFilters);
+
+        // Auth banner sign-in
+        document.getElementById('authBannerBtn')?.addEventListener('click', openLoginModal);
+        document.getElementById('navSignIn')?.addEventListener('click', (e) => { e.preventDefault(); openLoginModal(); });
+
+        // Login modal
+        document.getElementById('loginModalClose')?.addEventListener('click', closeLoginModal);
+        document.getElementById('loginModalOverlay')?.addEventListener('click', (e) => { if (e.target.id === 'loginModalOverlay') closeLoginModal(); });
+        document.getElementById('loginSubmitBtn')?.addEventListener('click', submitLogin);
+        document.getElementById('loginEmail')?.addEventListener('keydown', (e) => { if (e.key === 'Enter') submitLogin(); });
+
+        // Account dropdown
+        const accountBtn = document.getElementById('accountMenuBtn');
+        const accountDropdown = document.getElementById('accountDropdown');
+        if (accountBtn && accountDropdown) {
+            accountBtn.addEventListener('click', () => {
+                accountDropdown.classList.toggle('hidden');
+                accountBtn.setAttribute('aria-expanded', !accountDropdown.classList.contains('hidden'));
+            });
+            document.addEventListener('click', (e) => {
+                if (!accountBtn.contains(e.target) && !accountDropdown.contains(e.target)) {
+                    accountDropdown.classList.add('hidden');
+                }
+            });
+        }
+
+        // Account actions
+        document.getElementById('accountLogoutBtn')?.addEventListener('click', async () => {
+            await fetch('/api/auth/logout', { method: 'POST' });
+            window.location.reload();
+        });
+        document.getElementById('accountSettingsBtn')?.addEventListener('click', () => {
+            window.location.hash = '#settings';
+            const panel = document.getElementById('settingsPanel');
+            if (panel) { panel.classList.remove('hidden'); loadProfile(); }
+        });
+
+        // Settings
+        document.getElementById('settingsSaveBtn')?.addEventListener('click', saveProfile);
+        document.getElementById('settingsLogoutBtn')?.addEventListener('click', async () => {
+            await fetch('/api/auth/logout', { method: 'POST' });
+            window.location.reload();
+        });
+    });
     </script>
 </body>
 </html>

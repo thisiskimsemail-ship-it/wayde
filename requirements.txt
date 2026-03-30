@@ -9,3 +9,4 @@ python-docx
 python-pptx
 cairosvg
 fpdf2
+PyJWT

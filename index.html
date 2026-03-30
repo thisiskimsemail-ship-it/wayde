@@ -26,6 +26,19 @@
             <a class="header-nav-link" href="toolbox.html">Toolbox</a>
             <a class="header-nav-link" href="sessions.html">Sessions</a>
             <a class="header-nav-link" href="#" id="navFeedbackBtn">Feedback</a>
+            <a class="header-nav-link" href="#" id="navSignIn">Sign in</a>
+            <div class="account-menu hidden" id="accountMenu">
+                <button class="account-menu-btn" id="accountMenuBtn" aria-expanded="false">
+                    <span class="account-avatar" id="accountAvatar"></span>
+                </button>
+                <div class="account-dropdown hidden" id="accountDropdown" role="menu">
+                    <div class="account-dropdown-email" id="accountEmail"></div>
+                    <a class="account-dropdown-item" href="sessions.html" role="menuitem">My Sessions</a>
+                    <button class="account-dropdown-item" id="accountSettingsBtn" role="menuitem">Settings</button>
+                    <div class="account-dropdown-divider"></div>
+                    <button class="account-dropdown-item" id="accountLogoutBtn" role="menuitem">Sign out</button>
+                </div>
+            </div>
         </nav>
         <!-- Hamburger menu for mobile -->
         <button class="hamburger" id="hamburgerBtn" aria-label="Open menu" aria-expanded="false">
@@ -38,6 +51,11 @@
             <a class="mobile-menu-link" href="toolbox.html">Toolbox</a>
             <a class="mobile-menu-link" href="sessions.html">Sessions</a>
             <a class="mobile-menu-link" href="#" id="mobileNavFeedbackBtn">Feedback</a>
+            <a class="mobile-menu-link" href="#" id="mobileSignIn">Sign in</a>
+            <div class="mobile-account-info hidden" id="mobileAccountInfo">
+                <span class="mobile-account-email" id="mobileAccountEmail"></span>
+                <button class="mobile-menu-link" id="mobileLogoutBtn">Sign out</button>
+            </div>
             <div class="mobile-menu-divider"></div>
             <div class="mobile-menu-controls">
                 <button class="mobile-menu-control" id="mobileTextSize" aria-label="Adjust text size">Aa Text size</button>
@@ -111,6 +129,18 @@
             <input type="email" class="save-modal-email" id="saveModalEmail" placeholder="your@email.com" autocomplete="email" aria-label="Email address">
             <button class="save-modal-submit" id="saveModalSubmit">Send link</button>
             <p class="save-modal-status hidden" id="saveModalStatus"></p>
+        </div>
+    </div>
+
+    <!-- Login modal (magic-link) -->
+    <div class="save-modal-overlay hidden" id="loginModalOverlay" aria-hidden="true">
+        <div class="save-modal">
+            <button class="save-modal-close" id="loginModalClose">✕</button>
+            <h3>Sign in to The Studio</h3>
+            <p>Enter your email and we'll send you a magic link. No password needed.</p>
+            <input type="email" class="save-modal-email" id="loginEmail" placeholder="your@email.com" autocomplete="email" aria-label="Email address">
+            <button class="save-modal-submit" id="loginSubmitBtn">Send magic link</button>
+            <p class="save-modal-status hidden" id="loginStatus"></p>
         </div>
     </div>
 
@@ -820,6 +850,6 @@
         <button class="feedback-submit" id="feedbackSubmit">Send feedback</button>
     </div>
 
-    <script src="app.js?v=190"></script>
+    <script src="app.js?v=191"></script>
 </body>
 </html>

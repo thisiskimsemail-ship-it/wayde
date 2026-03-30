@@ -4,18 +4,52 @@ import uuid
 import time
 import smtplib
 import urllib.request
+import hashlib
+import secrets
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from datetime import datetime, timezone, timedelta
 from html.parser import HTMLParser
-from flask import Flask, request, Response, send_from_directory, jsonify, make_response
+from flask import Flask, request, Response, send_from_directory, jsonify, make_response, redirect
 from dotenv import load_dotenv
 import anthropic
+import jwt
 
 load_dotenv()
 
 app = Flask(__name__, static_folder='.', static_url_path='')
 app.config['MAX_CONTENT_LENGTH'] = 20 * 1024 * 1024  # 20MB max upload
+
+# === AUTH (Magic-link passwordless via PyJWT) ===
+JWT_SECRET = os.environ.get('JWT_SECRET', secrets.token_hex(32))
+JWT_EXPIRY = 30 * 24 * 3600  # 30 days
+AUTH_LINK_EXPIRY = 15 * 60    # 15 minutes
+
+
+def _hash_token(token):
+    return hashlib.sha256(token.encode()).hexdigest()
+
+
+def _create_jwt(email):
+    return jwt.encode(
+        {'email': email, 'exp': time.time() + JWT_EXPIRY},
+        JWT_SECRET, algorithm='HS256'
+    )
+
+
+def get_auth_email():
+    """Read JWT from cookie, return email or None."""
+    token = request.cookies.get('studio_token')
+    if not token:
+        return None
+    try:
+        payload = jwt.decode(token, JWT_SECRET, algorithms=['HS256'])
+        return payload.get('email')
+    except jwt.ExpiredSignatureError:
+        return None
+    except jwt.InvalidTokenError:
+        return None
+
 
 # === DATABASE (PostgreSQL on Railway) ===
 import psycopg2
@@ -100,6 +134,33 @@ def init_db():
             ALTER TABLE session_summaries ADD COLUMN IF NOT EXISTS save_type TEXT DEFAULT 'auto';
             ALTER TABLE session_summaries ADD COLUMN IF NOT EXISTS short_id TEXT UNIQUE;
             ALTER TABLE session_summaries ADD COLUMN IF NOT EXISTS status TEXT DEFAULT 'active';
+
+            -- Auth: magic-link tokens (transactional, short-lived)
+            CREATE TABLE IF NOT EXISTS auth_tokens (
+                id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                email TEXT NOT NULL,
+                token_hash TEXT NOT NULL,
+                device_id TEXT,
+                expires_at TIMESTAMPTZ NOT NULL,
+                used_at TIMESTAMPTZ,
+                created_at TIMESTAMPTZ DEFAULT now()
+            );
+            CREATE INDEX IF NOT EXISTS idx_auth_tokens_hash ON auth_tokens(token_hash);
+
+            -- Auth: email-to-device mapping (cross-device sync)
+            CREATE TABLE IF NOT EXISTS user_devices (
+                id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                email TEXT NOT NULL,
+                device_id TEXT NOT NULL,
+                linked_at TIMESTAMPTZ DEFAULT now(),
+                last_seen TIMESTAMPTZ DEFAULT now(),
+                UNIQUE(email, device_id)
+            );
+            CREATE INDEX IF NOT EXISTS idx_user_devices_email ON user_devices(email);
+
+            -- Auth: account fields on founder_profiles
+            ALTER TABLE founder_profiles ADD COLUMN IF NOT EXISTS auth_email TEXT;
+            ALTER TABLE founder_profiles ADD COLUMN IF NOT EXISTS display_name TEXT;
 
             CREATE TABLE IF NOT EXISTS analytics_events (
                 id BIGSERIAL PRIMARY KEY,
@@ -5035,6 +5096,298 @@ def consolidate_board():
         return jsonify({'error': str(e)}), 500
 
 
+# === AUTH ENDPOINTS (Magic-Link Passwordless) ===
+
+@app.route('/api/auth/login', methods=['POST'])
+def auth_login():
+    """Send a magic-link sign-in email."""
+    data = request.json or {}
+    email = (data.get('email') or '').strip().lower()
+    device_id = data.get('device_id', '')
+    if not email:
+        return jsonify({'error': 'Email is required'}), 400
+
+    # Rate limit: max 5 login attempts per email per hour
+    conn = get_db()
+    if not conn:
+        return jsonify({'error': 'Database unavailable'}), 503
+    try:
+        cur = conn.cursor()
+        cur.execute("""
+            SELECT COUNT(*) FROM auth_tokens
+            WHERE email = %s AND created_at > now() - interval '1 hour'
+        """, (email,))
+        count = cur.fetchone()[0]
+        if count >= 5:
+            cur.close()
+            conn.close()
+            return jsonify({'error': 'Too many login attempts. Try again later.'}), 429
+
+        # Generate magic-link token
+        token = secrets.token_urlsafe(32)
+        token_hash = _hash_token(token)
+        cur.execute("""
+            INSERT INTO auth_tokens (email, token_hash, device_id, expires_at)
+            VALUES (%s, %s, %s, now() + interval '15 minutes')
+        """, (email, token_hash, device_id))
+        cur.close()
+        conn.close()
+    except Exception as e:
+        print(f"[AUTH] login error: {e}")
+        if conn:
+            conn.close()
+        return jsonify({'error': 'Failed to create login token'}), 500
+
+    # Build magic link URL
+    base_url = request.host_url.rstrip('/')
+    verify_url = f"{base_url}/auth/verify?token={token}"
+
+    # Send email via Resend
+    resend_key = os.environ.get('RESEND_API_KEY')
+    if resend_key:
+        html_body = f"""
+        <div style="font-family:Arial,sans-serif;max-width:480px;margin:0 auto;padding:32px 0;">
+            <div style="background:#1E194F;padding:20px 24px;border-radius:8px 8px 0 0;">
+                <h1 style="color:#fff;font-size:18px;margin:0;">The Studio</h1>
+                <p style="color:rgba(255,255,255,0.7);font-size:13px;margin:4px 0 0;">Wade Institute of Entrepreneurship</p>
+            </div>
+            <div style="padding:24px;border:1px solid #e5e5e5;border-top:none;border-radius:0 0 8px 8px;">
+                <h2 style="color:#1E194F;font-size:20px;margin:0 0 12px;">Sign in to The Studio</h2>
+                <p style="color:#555;font-size:14px;line-height:1.6;">Click the button below to sign in. This link expires in 15 minutes.</p>
+                <a href="{verify_url}" style="display:inline-block;background:#F15A22;color:#fff;text-decoration:none;padding:12px 28px;border-radius:6px;font-weight:600;font-size:14px;margin:16px 0;">Sign in</a>
+                <p style="color:#999;font-size:12px;margin-top:20px;">If you didn't request this, you can ignore this email.</p>
+            </div>
+        </div>
+        """
+        try:
+            _resend_send_email(
+                resend_key,
+                'The Studio <enquiries@wadeinstitute.org.au>',
+                email,
+                'Sign in to The Studio',
+                html_body
+            )
+            print(f"[AUTH] Magic link sent to {email}")
+        except Exception as e:
+            print(f"[AUTH] Email send failed: {e}")
+            return jsonify({'error': 'Failed to send email'}), 500
+    else:
+        print(f"[AUTH] No RESEND_API_KEY — magic link: {verify_url}")
+
+    return jsonify({'ok': True})
+
+
+@app.route('/auth/verify')
+def auth_verify():
+    """Verify magic-link token, set JWT cookie, link device."""
+    token = request.args.get('token', '')
+    if not token:
+        return redirect('/?auth_error=missing_token')
+
+    token_hash = _hash_token(token)
+    conn = get_db()
+    if not conn:
+        return redirect('/?auth_error=db_unavailable')
+
+    try:
+        cur = conn.cursor()
+        # Find valid, unused token
+        cur.execute("""
+            SELECT id, email, device_id FROM auth_tokens
+            WHERE token_hash = %s AND used_at IS NULL AND expires_at > now()
+        """, (token_hash,))
+        row = cur.fetchone()
+        if not row:
+            cur.close()
+            conn.close()
+            return redirect('/?auth_error=invalid_or_expired')
+
+        token_id, email, original_device_id = row
+
+        # Mark token as used
+        cur.execute("UPDATE auth_tokens SET used_at = now() WHERE id = %s", (token_id,))
+
+        # Link the device that requested the login
+        if original_device_id:
+            cur.execute("""
+                INSERT INTO user_devices (email, device_id)
+                VALUES (%s, %s)
+                ON CONFLICT (email, device_id) DO UPDATE SET last_seen = now()
+            """, (email, original_device_id))
+
+            # Set auth_email on the founder profile for this device
+            cur.execute("""
+                UPDATE founder_profiles SET auth_email = %s, user_email = COALESCE(user_email, %s)
+                WHERE device_id = %s
+            """, (email, email, original_device_id))
+
+        # Back-fill: find other devices with same email and link them
+        cur.execute("""
+            SELECT DISTINCT device_id FROM session_summaries
+            WHERE user_email = %s AND device_id IS NOT NULL
+        """, (email,))
+        other_devices = [r[0] for r in cur.fetchall()]
+
+        cur.execute("""
+            SELECT device_id FROM founder_profiles
+            WHERE user_email = %s AND device_id IS NOT NULL
+        """, (email,))
+        other_devices += [r[0] for r in cur.fetchall()]
+
+        for did in set(other_devices):
+            cur.execute("""
+                INSERT INTO user_devices (email, device_id)
+                VALUES (%s, %s)
+                ON CONFLICT (email, device_id) DO UPDATE SET last_seen = now()
+            """, (email, did))
+
+        linked_count = len(set(other_devices))
+        cur.close()
+        conn.close()
+        print(f"[AUTH] Verified {email}, linked {linked_count} device(s)")
+
+    except Exception as e:
+        print(f"[AUTH] verify error: {e}")
+        if conn:
+            conn.close()
+        return redirect('/?auth_error=server_error')
+
+    # Create JWT and set HttpOnly cookie
+    jwt_token = _create_jwt(email)
+    is_secure = request.is_secure or 'railway' in request.host
+    resp = make_response(redirect(f'/?logged_in=1&devices={linked_count}'))
+    resp.set_cookie(
+        'studio_token', jwt_token,
+        max_age=JWT_EXPIRY,
+        httponly=True,
+        samesite='Lax',
+        secure=is_secure
+    )
+    return resp
+
+
+@app.route('/api/auth/me')
+def auth_me():
+    """Check current auth status."""
+    email = get_auth_email()
+    if not email:
+        return jsonify({'authenticated': False})
+
+    # Get profile info
+    conn = get_db()
+    display_name = ''
+    session_count = 0
+    if conn:
+        try:
+            cur = conn.cursor()
+            cur.execute("""
+                SELECT display_name, session_count FROM founder_profiles
+                WHERE auth_email = %s OR user_email = %s
+                ORDER BY updated_at DESC LIMIT 1
+            """, (email, email))
+            row = cur.fetchone()
+            if row:
+                display_name = row[0] or ''
+                session_count = row[1] or 0
+            cur.close()
+            conn.close()
+        except Exception as e:
+            print(f"[AUTH] me error: {e}")
+            if conn:
+                conn.close()
+
+    return jsonify({
+        'authenticated': True,
+        'email': email,
+        'display_name': display_name,
+        'session_count': session_count
+    })
+
+
+@app.route('/api/auth/logout', methods=['POST'])
+def auth_logout():
+    """Clear auth cookie."""
+    resp = make_response(jsonify({'ok': True}))
+    resp.delete_cookie('studio_token')
+    return resp
+
+
+@app.route('/api/profile', methods=['GET'])
+def get_profile():
+    """Get founder profile for authenticated user."""
+    email = get_auth_email()
+    if not email:
+        return jsonify({'error': 'Not authenticated'}), 401
+    conn = get_db()
+    if not conn:
+        return jsonify({'error': 'Database unavailable'}), 503
+    try:
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        cur.execute("""
+            SELECT display_name, venture_name, venture_description, stage, core_problem,
+                   target_customer, user_email, session_count, created_at
+            FROM founder_profiles
+            WHERE auth_email = %s OR user_email = %s
+            ORDER BY updated_at DESC LIMIT 1
+        """, (email, email))
+        row = cur.fetchone()
+        cur.close()
+        conn.close()
+        if not row:
+            return jsonify({'profile': {'email': email}})
+        profile = dict(row)
+        for k, v in profile.items():
+            if hasattr(v, 'isoformat'):
+                profile[k] = v.isoformat()
+        profile['email'] = email
+        return jsonify({'profile': profile})
+    except Exception as e:
+        print(f"[PROFILE] get error: {e}")
+        if conn:
+            conn.close()
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/profile', methods=['PUT'])
+def update_profile():
+    """Update founder profile for authenticated user."""
+    email = get_auth_email()
+    if not email:
+        return jsonify({'error': 'Not authenticated'}), 401
+    data = request.json or {}
+    allowed = ['display_name', 'venture_name', 'venture_description', 'stage', 'core_problem', 'target_customer']
+    updates = {k: v for k, v in data.items() if k in allowed and isinstance(v, str)}
+    if not updates:
+        return jsonify({'error': 'No valid fields to update'}), 400
+
+    conn = get_db()
+    if not conn:
+        return jsonify({'error': 'Database unavailable'}), 503
+    try:
+        cur = conn.cursor()
+        set_clause = ', '.join(f"{k} = %s" for k in updates)
+        values = list(updates.values()) + [email, email]
+        cur.execute(f"""
+            UPDATE founder_profiles SET {set_clause}, updated_at = now()
+            WHERE auth_email = %s OR user_email = %s
+        """, values)
+        if cur.rowcount == 0:
+            # No profile found — might need to create one
+            cur.close()
+            conn.close()
+            return jsonify({'error': 'Profile not found'}), 404
+        cur.close()
+        conn.close()
+        return jsonify({'ok': True, 'updated': list(updates.keys())})
+    except Exception as e:
+        print(f"[PROFILE] update error: {e}")
+        if conn:
+            conn.close()
+        return jsonify({'error': str(e)}), 500
+
+
+# === SESSION PERSISTENCE ===
+
 @app.route('/api/session/save', methods=['POST'])
 def save_session():
     data = request.json
@@ -5529,6 +5882,11 @@ def generate_session_summary():
     is_final = data.get('is_final', False)  # true = session complete
     session_data = data.get('session_data')  # full state for resuming
 
+    # If authenticated, ensure email is set on the session
+    auth_email = get_auth_email()
+    if auth_email and not email:
+        email = auth_email
+
     if not messages:
         return jsonify({'error': 'No messages provided'}), 400
 
@@ -5602,6 +5960,27 @@ def get_memory():
     device_id = data.get('device_id', '')
     if not device_id:
         return jsonify({'memory': ''})
+
+    # If authenticated, use the primary device_id linked to this email
+    # (ensures Pete sees all cross-device sessions)
+    auth_email = get_auth_email()
+    if auth_email:
+        conn = get_db()
+        if conn:
+            try:
+                cur = conn.cursor()
+                # Link current device if not already linked
+                cur.execute("""
+                    INSERT INTO user_devices (email, device_id)
+                    VALUES (%s, %s)
+                    ON CONFLICT (email, device_id) DO UPDATE SET last_seen = now()
+                """, (auth_email, device_id))
+                cur.close()
+                conn.close()
+            except Exception as e:
+                print(f"[AUTH] device link in memory: {e}")
+                if conn:
+                    conn.close()
 
     memory_block = format_memory_for_prompt(device_id)
     return jsonify({'memory': memory_block})
@@ -5814,25 +6193,61 @@ def track_event():
 
 @app.route('/api/sessions', methods=['GET'])
 def list_sessions():
-    """List session summaries for a device_id."""
+    """List session summaries. Auth cookie → cross-device; fallback → single device_id."""
     device_id = request.args.get('device_id', '')
-    if not device_id:
-        return jsonify({'sessions': []})
+    mode_filter = request.args.get('mode', '')
+    status_filter = request.args.get('status', '')
+    q = request.args.get('q', '').strip()
+
     conn = get_db()
     if not conn:
         return jsonify({'sessions': []})
+
     try:
         cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-        cur.execute("""
+
+        # If authenticated, query across all linked devices
+        auth_email = get_auth_email()
+        if auth_email:
+            cur.execute("SELECT device_id FROM user_devices WHERE email = %s", (auth_email,))
+            linked_ids = [r['device_id'] for r in cur.fetchall()]
+            if device_id and device_id not in linked_ids:
+                linked_ids.append(device_id)
+            if not linked_ids:
+                linked_ids = [device_id] if device_id else []
+        else:
+            linked_ids = [device_id] if device_id else []
+
+        if not linked_ids:
+            cur.close()
+            conn.close()
+            return jsonify({'sessions': []})
+
+        # Build query with optional filters
+        where = ["device_id IN %s"]
+        params = [tuple(linked_ids)]
+
+        if mode_filter:
+            where.append("mode = %s")
+            params.append(mode_filter)
+        if status_filter:
+            where.append("status = %s")
+            params.append(status_filter)
+        if q:
+            where.append("(topic ILIKE %s OR key_insight ILIKE %s OR conversation_summary ILIKE %s)")
+            params.extend([f'%{q}%', f'%{q}%', f'%{q}%'])
+
+        sql = f"""
             SELECT id, short_id, mode, exercise, topic, key_insight, conversation_summary,
                    save_type, status, created_at, session_date, (session_data IS NOT NULL) as resumable,
                    COALESCE(session_data->>'exchangeCount', '0') as exchange_count,
                    COALESCE((session_data->>'reportGenerated')::boolean, false) as has_report
             FROM session_summaries
-            WHERE device_id = %s
+            WHERE {' AND '.join(where)}
             ORDER BY session_date DESC
-            LIMIT 20
-        """, (device_id,))
+            LIMIT 50
+        """
+        cur.execute(sql, params)
         sessions = [dict(row) for row in cur.fetchall()]
         cur.close()
         conn.close()
@@ -5841,10 +6256,9 @@ def list_sessions():
             for k, v in s.items():
                 if hasattr(v, 'isoformat'):
                     s[k] = v.isoformat()
-            # Stringify UUID
             if s.get('id'):
                 s['id'] = str(s['id'])
-        return jsonify({'sessions': sessions})
+        return jsonify({'sessions': sessions, 'authenticated': bool(auth_email)})
     except Exception as e:
         print(f"[DB] list_sessions error: {e}")
         if conn: conn.close()
