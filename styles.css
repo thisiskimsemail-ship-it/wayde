@@ -1924,6 +1924,7 @@ html[data-theme="light"] .account-dropdown-item:hover { background: rgba(0,0,0,0
     .lp-section-heading { font-size: 1.75rem; }
     .lp-process { padding: 3rem 0; }
     .lp-process-grid { grid-template-columns: 1fr; }
+    .lp-process-grid.lp-grid-2x2 { grid-template-columns: 1fr; }
     .lp-stats { padding: 2.5rem 0; }
     .lp-stats-grid { grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
     .lp-stat-number { font-size: 2rem; }
