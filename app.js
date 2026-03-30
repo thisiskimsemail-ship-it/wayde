@@ -3142,30 +3142,16 @@ async function downloadReportPdf() {
 async function downloadReportDoc() {
     if (!state.reportHtml) return downloadReportWordFallback();
     const headline = state.reportJson?.headline || state.reportSynopsis?.title || 'Session Report';
+    const safeName = headline.replace(/[^a-zA-Z0-9 _-]/g, '').trim().slice(0, 60) || 'Session Report';
 
-    try {
-        const resp = await fetch('/api/report/doc', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                report_html: state.reportHtml,
-                headline: headline
-            })
-        });
-
-        if (!resp.ok) throw new Error('Doc generation failed');
-        const blob = await resp.blob();
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        const safeName = headline.replace(/[^a-zA-Z0-9 _-]/g, '').trim().slice(0, 60) || 'Session Report';
-        a.href = url;
-        a.download = safeName + ' - The Studio.doc';
-        a.click();
-        URL.revokeObjectURL(url);
-    } catch (err) {
-        console.error('[Report] Doc download failed, using fallback:', err);
-        downloadReportWordFallback();
-    }
+    // Download as .html — opens in browser with full branded CSS design
+    const blob = new Blob([state.reportHtml], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = safeName + ' - The Studio.html';
+    a.click();
+    URL.revokeObjectURL(url);
 }
 
 // === DOWNLOAD AS WORD (.doc) — legacy fallback ===
