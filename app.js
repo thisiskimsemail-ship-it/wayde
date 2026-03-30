@@ -3908,6 +3908,7 @@ const BOARD_LAYOUTS = {
             { id: 'fw-why3', name: 'Why #3', empty: 'Deeper still', hint: 'Why?', colour: 'teal' },
             { id: 'fw-why4', name: 'Why #4', empty: 'Approaching root', hint: 'Why?', colour: 'teal' },
             { id: 'fw-why5', name: 'Root Cause', empty: 'The real insight', hint: 'The deepest why', colour: 'teal' },
+            { id: 'fw-reframed', name: 'Reframed Problem', empty: 'The real problem isn\'t [original]. It\'s [root cause].', hint: 'One sentence reframe', colour: 'teal' },
             { id: 'fw-reach', name: 'Reach', empty: 'How many people?', hint: 'Tens, thousands, millions?', colour: 'orange' },
             { id: 'fw-frequency', name: 'Frequency', empty: 'How often?', hint: 'Daily, weekly, annually?', colour: 'orange' },
             { id: 'fw-alternatives', name: 'Alternatives', empty: 'What do they do today?', hint: 'Workarounds or nothing?', colour: 'orange' },
@@ -3918,24 +3919,28 @@ const BOARD_LAYOUTS = {
     },
     'empathy-map': {
         zones: [
-            { id: 'em-user', name: 'User', empty: 'Who are we mapping?', hint: 'Specific person or persona', colour: 'teal' },
+            { id: 'em-user', name: 'The Person', empty: 'Who are we mapping?', hint: 'Specific person or persona', colour: 'teal' },
             { id: 'em-says', name: 'Says', empty: 'What they say out loud', hint: 'Direct quotes, public statements', colour: 'teal' },
             { id: 'em-thinks', name: 'Thinks', empty: 'What they think privately', hint: 'Inner thoughts, worries, hopes', colour: 'teal' },
             { id: 'em-does', name: 'Does', empty: 'Observable behaviour', hint: 'Actions, habits, routines', colour: 'teal' },
             { id: 'em-feels', name: 'Feels', empty: 'Emotions', hint: 'Anxious, excited, frustrated, hopeful', colour: 'teal' },
-            { id: 'em-contradictions', name: 'Contradictions', empty: 'Where says and does don\'t match', hint: 'The gaps are the insights', colour: 'teal' },
-            { id: 'insights', name: 'Key Insight', empty: 'The most important discovery', hint: 'What changes because of this?', colour: 'teal' }
+            { id: 'em-contradictions', name: 'Contradiction', empty: 'Where says and does don\'t match', hint: 'The gaps are the insights', colour: 'teal' },
+            { id: 'insights', name: 'The Insight', empty: 'The most important discovery', hint: 'What changes because of this?', colour: 'teal' }
         ],
         gridClass: 'board-grid-empathy-map'
     },
     'jtbd': {
         zones: [
-            { id: 'jtbd-situation', name: 'Situation', empty: 'When I\'m...', hint: 'The context that triggers the need', colour: 'teal' },
+            { id: 'jtbd-customer', name: 'The Customer', empty: 'A person in a moment, not a demographic', hint: 'Who are they and what context are they in?', colour: 'teal' },
+            { id: 'jtbd-job-story', name: 'Job Story', empty: 'When I [situation], I want to [motivation], so I can [outcome].', hint: 'The complete job story in one sentence', colour: 'teal' },
+            { id: 'jtbd-push', name: 'Push — Pain of current situation', empty: 'What\'s driving them away from the status quo?', hint: 'Frustrations, costs, friction', colour: 'teal' },
+            { id: 'jtbd-pull', name: 'Pull — Attraction to new solution', empty: 'What draws them toward a better future?', hint: 'Outcomes, feelings, possibilities', colour: 'teal' },
+            { id: 'jtbd-anxiety', name: 'Anxiety — Fear of switching', empty: 'What holds them back from changing?', hint: 'Risk, learning curve, uncertainty', colour: 'teal' },
+            { id: 'jtbd-habit', name: 'Habit — Comfort of current way', empty: 'What keeps them doing what they already do?', hint: 'Familiarity, sunk costs, inertia', colour: 'teal' },
             { id: 'jtbd-functional', name: 'Functional Job', empty: 'What task am I trying to accomplish?', hint: 'The practical thing they need done', colour: 'teal' },
             { id: 'jtbd-emotional', name: 'Emotional Job', empty: 'How do I want to feel?', hint: 'Confidence, relief, excitement', colour: 'teal' },
             { id: 'jtbd-social', name: 'Social Job', empty: 'How do I want to be perceived?', hint: 'Competent, innovative, caring', colour: 'teal' },
-            { id: 'jtbd-hiring', name: 'Hiring Criteria', empty: 'What makes them choose?', hint: 'Speed, cost, trust, outcome', colour: 'teal' },
-            { id: 'insights', name: 'Underserved Job', empty: 'The job no one does well', hint: 'This is the opportunity', colour: 'teal' }
+            { id: 'jtbd-gap', name: 'Gap Analysis', empty: 'Where does the current solution fall short?', hint: 'The gap between what they hire and what they need', colour: 'teal' }
         ],
         gridClass: 'board-grid-jtbd'
     },
@@ -3949,25 +3954,28 @@ const BOARD_LAYOUTS = {
             { id: 'c8-6', name: 'Idea 6', empty: 'Sixth idea', hint: '~1 minute', colour: 'orange' },
             { id: 'c8-7', name: 'Idea 7', empty: 'Seventh idea', hint: '~1 minute', colour: 'orange' },
             { id: 'c8-8', name: 'Idea 8', empty: 'Eighth idea', hint: '~1 minute', colour: 'orange' },
-            { id: 'c8-shortlist', name: 'Shortlist', empty: 'Best ideas selected', hint: 'Star your favourites', colour: 'orange' }
+            { id: 'c8-patterns', name: 'Patterns', empty: 'Themes across the 8 ideas', hint: 'Automation? UX? Cost reduction? What keeps appearing?', colour: 'orange' },
+            { id: 'c8-shortlist', name: 'Top Pick Analysis', empty: 'Best 2-3 ideas with promise + assumption', hint: 'Why this one? What must be true?', colour: 'orange' }
         ],
         gridClass: 'board-grid-crazy8s'
     },
     'hmw': {
         zones: [
-            { id: 'hmw-problem', name: 'Problem Statement', empty: 'The challenge to reframe', hint: 'What\'s the problem?', colour: 'orange' },
+            { id: 'hmw-problem', name: 'Original Problem', empty: 'The challenge to reframe', hint: 'What\'s the problem?', colour: 'orange' },
             { id: 'hmw-q1', name: 'HMW #1', empty: 'First reframe', hint: 'How might we...?', colour: 'orange' },
             { id: 'hmw-q2', name: 'HMW #2', empty: 'Second reframe', hint: 'How might we...?', colour: 'orange' },
             { id: 'hmw-q3', name: 'HMW #3', empty: 'Third reframe', hint: 'How might we...?', colour: 'orange' },
             { id: 'hmw-q4', name: 'HMW #4', empty: 'Fourth reframe', hint: 'How might we...?', colour: 'orange' },
             { id: 'hmw-q5', name: 'HMW #5', empty: 'Fifth reframe', hint: 'How might we...?', colour: 'orange' },
-            { id: 'hmw-best', name: 'Most Promising', empty: 'The reframe with the most potential', hint: 'Which one opens the most interesting direction?', colour: 'orange' },
+            { id: 'hmw-solutions', name: 'Solutions Explored', empty: 'Ideas generated for selected HMWs', hint: 'What solutions did the best HMWs unlock?', colour: 'orange' },
+            { id: 'hmw-best', name: 'Recommended Direction', empty: 'The most promising path forward', hint: 'Which direction opens the most interesting space?', colour: 'orange' },
             { id: 'actions', name: 'Actions', empty: 'Next steps', hint: 'What to explore from here', colour: 'orange' }
         ],
         gridClass: 'board-grid-hmw'
     },
     'scamper': {
         zones: [
+            { id: 'sc-subject', name: 'The Subject', empty: 'What are you SCAMPERing?', hint: 'The product, service, or process being reimagined', colour: 'orange' },
             { id: 'sc-s', name: 'S — Substitute', empty: 'What could you replace?', hint: 'Materials, people, processes', colour: 'orange' },
             { id: 'sc-c', name: 'C — Combine', empty: 'What could you merge?', hint: 'Features, ideas, audiences', colour: 'orange' },
             { id: 'sc-a', name: 'A — Adapt', empty: 'What could you borrow?', hint: 'From other industries, contexts', colour: 'orange' },
@@ -3975,36 +3983,29 @@ const BOARD_LAYOUTS = {
             { id: 'sc-p', name: 'P — Put to Other Uses', empty: 'What else could this do?', hint: 'New markets, new contexts', colour: 'orange' },
             { id: 'sc-e', name: 'E — Eliminate', empty: 'What could you remove?', hint: 'The hardest question', colour: 'orange' },
             { id: 'sc-r', name: 'R — Reverse', empty: 'What if you did the opposite?', hint: 'Flip the assumption', colour: 'orange' },
-            { id: 'sc-shortlist', name: 'Shortlist', empty: 'Best ideas across all lenses', hint: 'Star your favourites', colour: 'orange' }
+            { id: 'sc-shortlist', name: 'Top Picks', empty: 'Best ideas across all lenses', hint: 'Most promising + assumption to test', colour: 'orange' }
         ],
         gridClass: 'board-grid-scamper'
     },
     'devils-advocate': {
         zones: [
             { id: 'da-idea', name: 'The Idea', empty: 'What are you defending?', hint: 'State your case', colour: 'pink' },
-            { id: 'da-objections', name: 'Objections', empty: 'Adversary attacks', hint: 'Each challenge from the adversary', colour: 'pink' },
+            { id: 'da-adversaries', name: 'Adversaries Faced', empty: 'Which roles challenged you?', hint: 'Churned Customer, Sceptical Investor, Fast Follower...', colour: 'pink' },
+            { id: 'da-objections', name: 'Objection Log', empty: 'Adversary attacks with your responses', hint: 'Adversary | Objection | Defence | Rating', colour: 'pink' },
             { id: 'da-defended', name: 'Defended', empty: 'Had evidence', hint: 'Objections you handled well', colour: 'pink' },
             { id: 'da-deflected', name: 'Deflected', empty: 'Argued without evidence', hint: 'Plausible but unproven responses', colour: 'pink' },
             { id: 'da-exposed', name: 'Exposed', empty: 'No answer', hint: 'Objections you couldn\'t address', colour: 'pink' },
-            { id: 'da-danger', name: 'Strategic Danger', empty: 'Biggest logical vulnerability', hint: 'From the adversary challenge', colour: 'pink' },
-            { id: 'rc-value', name: 'Value Risk', empty: 'Will customers want this?', hint: 'Switching cost, evidence of demand', colour: 'pink' },
-            { id: 'rc-value-rating', name: 'Value Rating', empty: '🟢 🟡 🔴', hint: 'GREEN / AMBER / RED', colour: 'pink' },
-            { id: 'rc-usability', name: 'Usability Risk', empty: 'Can they figure it out?', hint: 'First-use experience, complexity', colour: 'pink' },
-            { id: 'rc-usability-rating', name: 'Usability Rating', empty: '🟢 🟡 🔴', hint: 'GREEN / AMBER / RED', colour: 'pink' },
-            { id: 'rc-feasibility', name: 'Feasibility Risk', empty: 'Can the team build it?', hint: 'Technical long pole, team capability', colour: 'pink' },
-            { id: 'rc-feasibility-rating', name: 'Feasibility Rating', empty: '🟢 🟡 🔴', hint: 'GREEN / AMBER / RED', colour: 'pink' },
-            { id: 'rc-viability', name: 'Viability Risk', empty: 'Does the business work?', hint: 'Unit economics, strategy, legal', colour: 'pink' },
-            { id: 'rc-viability-rating', name: 'Viability Rating', empty: '🟢 🟡 🔴', hint: 'GREEN / AMBER / RED', colour: 'pink' },
-            { id: 'rc-overall', name: 'Overall Verdict', empty: 'Combined diagnosis', hint: 'Strategic + operational synthesis', colour: 'pink' },
-            { id: 'actions', name: 'Actions', empty: 'Address top combined vulnerability', hint: 'What to fix first', colour: 'pink' }
+            { id: 'da-heatmap', name: 'Risk Heatmap', empty: 'Which risk area has the most Exposed ratings?', hint: 'Where are the clusters of vulnerability?', colour: 'pink' },
+            { id: 'da-danger', name: 'Danger Zone', empty: 'Biggest vulnerability', hint: 'The objection you cannot yet win', colour: 'pink' },
+            { id: 'actions', name: 'Suggested Next Step', empty: 'Address the top Exposed objection', hint: 'One specific action to close the gap', colour: 'pink' }
         ],
         gridClass: 'board-grid-devils-advocate'
     },
     'rapid-experiment': {
         zones: [
-            { id: 're-assumptions', name: 'Assumptions', empty: 'What must be true?', hint: '5-8 assumptions embedded in your idea', colour: 'pink' },
+            { id: 're-assumptions', name: 'Assumption Inventory', empty: 'What must be true?', hint: '5-8 assumptions embedded in your idea', colour: 'pink' },
             { id: 're-matrix', name: 'Risk Matrix', empty: 'Confidence x Consequence', hint: 'TEST NOW / MONITOR / WATCH / PARK', colour: 'pink' },
-            { id: 're-top-risk', name: 'Top Risk', empty: 'Riskiest assumption', hint: 'Low confidence, high consequence', colour: 'pink' },
+            { id: 're-top-risk', name: 'Riskiest Assumption', empty: 'Low confidence, high consequence', hint: 'The one that could sink everything', colour: 'pink' },
             { id: 're-hypothesis', name: 'Hypothesis', empty: 'What do you believe?', hint: 'We believe [X]. We\'ll know if [Y]', colour: 'pink' },
             { id: 're-method', name: 'Test Method', empty: 'The cheapest test', hint: 'Interview, landing page, concierge...', colour: 'pink' },
             { id: 're-sample', name: 'Sample', empty: 'Who to test with', hint: 'Who, how many, how to recruit', colour: 'pink' },
@@ -4026,10 +4027,12 @@ const BOARD_LAYOUTS = {
     'lean-canvas': {
         zones: [
             { id: 'problem', name: 'Problem', empty: 'Top 1-3 problems', hint: 'What are the top 3 problems?', colour: 'yellow' },
+            { id: 'alternatives', name: 'Existing Alternatives', empty: 'What do they do today?', hint: 'Current workarounds and competitors', colour: 'yellow' },
             { id: 'solution', name: 'Solution', empty: 'Top features', hint: 'How you solve each problem', colour: 'yellow' },
             { id: 'uvp', name: 'Unique Value Prop', empty: 'Single clear message', hint: 'Why are you different?', colour: 'yellow' },
             { id: 'unfair', name: 'Unfair Advantage', empty: 'Can\'t be copied', hint: 'What can\'t be easily copied?', colour: 'yellow' },
             { id: 'segments', name: 'Customer Segments', empty: 'Target customers', hint: 'Who are your target customers?', colour: 'yellow' },
+            { id: 'early-adopters', name: 'Early Adopters', empty: 'First customers', hint: 'Who will use this first and tell others?', colour: 'yellow' },
             { id: 'channels', name: 'Channels', empty: 'Path to customers', hint: 'How you reach customers', colour: 'yellow' },
             { id: 'revenue', name: 'Revenue Streams', empty: 'How you make money', hint: 'Revenue model', colour: 'yellow' },
             { id: 'costs', name: 'Cost Structure', empty: 'Key costs', hint: 'Key cost drivers', colour: 'yellow' },
@@ -4039,36 +4042,29 @@ const BOARD_LAYOUTS = {
     },
     'pre-mortem': {
         zones: [
+            { id: 'pm-idea', name: 'The Idea Being Tested', empty: 'What are you pre-mortming?', hint: 'State what you\'re about to launch or commit to', colour: 'pink' },
             { id: 'risk-market', name: 'Market Risk', empty: 'Market failures', hint: 'Wrong market, bad timing, no demand', colour: 'pink' },
             { id: 'risk-product', name: 'Product Risk', empty: 'Product failures', hint: 'Wrong solution, bad UX, doesn\'t work', colour: 'pink' },
             { id: 'risk-team', name: 'Team Risk', empty: 'Team failures', hint: 'Wrong skills, conflict, burnout', colour: 'pink' },
             { id: 'risk-financial', name: 'Financial Risk', empty: 'Money failures', hint: 'Ran out of cash, wrong pricing', colour: 'pink' },
             { id: 'risk-competition', name: 'Competition Risk', empty: 'Competitive failures', hint: 'Beaten by incumbents or new entrants', colour: 'pink' },
             { id: 'risk-timing', name: 'Timing Risk', empty: 'Timing failures', hint: 'Too early, too late, external shock', colour: 'pink' },
-            { id: 'risk-mitigations', name: 'Mitigations', empty: 'Actions to reduce risk', hint: 'What you can do this week', colour: 'pink' }
+            { id: 'pm-biggest', name: 'Biggest Risk', empty: 'Most likely AND most fatal', hint: 'The one that keeps you up at night', colour: 'pink' },
+            { id: 'risk-mitigations', name: 'Mitigations', empty: 'Actions to reduce risk', hint: 'To reduce [risk]: [specific action by date]', colour: 'pink' }
         ],
         gridClass: 'board-grid-premortem'
     },
     'effectuation': {
         zones: [
-            { id: 'eff-means', name: 'Bird in Hand', empty: 'What you already have', hint: 'Skills, knowledge, network', colour: 'yellow' },
-            { id: 'eff-loss', name: 'Affordable Loss', empty: 'What you can risk', hint: 'Time, money, reputation', colour: 'yellow' },
-            { id: 'eff-quilt', name: 'Crazy Quilt', empty: 'Who could join', hint: 'Partners, allies, co-creators', colour: 'yellow' },
-            { id: 'eff-lemonade', name: 'Lemonade', empty: 'Surprises to leverage', hint: 'Turn setbacks into advantages', colour: 'yellow' },
-            { id: 'eff-pilot', name: 'Pilot in the Plane', empty: 'What you control', hint: 'Shape the future, don\'t predict it', colour: 'yellow' },
-            { id: 'eff-action', name: 'First Move', empty: 'This week\'s action', hint: 'One concrete step in 48 hours', colour: 'yellow' }
+            { id: 'eff-who-you-are', name: 'Who You Are', empty: 'Identity, expertise, passions', hint: 'Your skills, experience, and reputation', colour: 'yellow' },
+            { id: 'eff-what-you-know', name: 'What You Know', empty: 'Knowledge, expertise, domains', hint: 'Technical skills, industry knowledge, hard-won lessons', colour: 'yellow' },
+            { id: 'eff-who-you-know', name: 'Who You Know', empty: 'Network, relationships, access', hint: 'People who could help, partner, or open doors', colour: 'yellow' },
+            { id: 'eff-loss', name: 'Affordable Loss', empty: 'What you can risk', hint: 'Time, money, reputation — what\'s the maximum you\'d accept losing?', colour: 'yellow' },
+            { id: 'eff-quilt', name: 'Crazy Quilt — Allies', empty: 'Who could join the journey?', hint: '3-5 people + what each contributes', colour: 'yellow' },
+            { id: 'eff-lemonade', name: 'Lemonade — Surprises', empty: 'Setbacks to leverage as advantages', hint: 'Turn setbacks into advantages', colour: 'yellow' },
+            { id: 'eff-action', name: 'First Move', empty: 'One concrete step in 48 hours', hint: 'Specific, actionable, starts today', colour: 'yellow' }
         ],
         gridClass: 'board-grid-effectuation'
-    },
-    'elevator-pitch': {
-        zones: [
-            { id: 'pitch-customer', name: 'Target Customer', empty: 'Who is this for?', hint: 'The specific person who needs this most', colour: 'yellow' },
-            { id: 'pitch-problem', name: 'Problem / Need', empty: 'What pain do they have?', hint: 'The urgent problem they face', colour: 'yellow' },
-            { id: 'pitch-solution', name: 'Product / Service', empty: 'What are you building?', hint: 'Name and category', colour: 'yellow' },
-            { id: 'pitch-benefit', name: 'Key Benefit', empty: 'What changes for them?', hint: 'The specific outcome they get', colour: 'yellow' },
-            { id: 'pitch-differentiator', name: 'Differentiator', empty: 'Why you, not them?', hint: 'What makes you different from alternatives', colour: 'yellow' }
-        ],
-        gridClass: 'board-grid-pitch'
     },
     'iceberg': {
         zones: [
@@ -4077,14 +4073,16 @@ const BOARD_LAYOUTS = {
             { id: 'ice-structures', name: 'Structures', empty: 'What causes the pattern?', hint: 'Incentives, processes, power dynamics', colour: 'teal' },
             { id: 'ice-mental', name: 'Mental Models', empty: 'What belief holds this in place?', hint: 'The deepest assumption', colour: 'teal' },
             { id: 'ice-leverage', name: 'Leverage Point', empty: 'Where to intervene', hint: 'The change with the greatest impact', colour: 'teal' },
-            { id: 'actions', name: 'Actions', empty: 'Next steps', hint: 'Test or shift the mental model', colour: 'teal' }
+            { id: 'ice-shift', name: 'The Shift', empty: 'What changes when the mental model shifts?', hint: 'The cascading effects of changing the belief', colour: 'teal' }
         ],
         gridClass: 'board-grid-iceberg'
     },
     'constraint-flip': {
         zones: [
             { id: 'cf-constraint', name: 'The Constraint', empty: 'Your biggest limitation', hint: 'Be specific — not just "no money"', colour: 'orange' },
-            { id: 'cf-flip', name: 'The Flip', empty: 'The same fact, seen as an advantage', hint: 'What can you do because of this?', colour: 'orange' },
+            { id: 'cf-forces', name: 'What It Forces', empty: 'What does this constraint make you do?', hint: 'The limitations it creates', colour: 'orange' },
+            { id: 'cf-signals', name: 'What It Signals', empty: 'What does this constraint tell you?', hint: 'Information hidden in the limitation', colour: 'orange' },
+            { id: 'cf-enables', name: 'What It Enables', empty: 'What can you do BECAUSE of this?', hint: 'The hidden advantage', colour: 'orange' },
             { id: 'cf-ideas', name: 'Constraint-Driven Ideas', empty: 'Ideas that depend on the constraint', hint: 'If the constraint disappeared, would the idea still work?', colour: 'orange' },
             { id: 'cf-moat', name: 'The Moat Idea', empty: 'The idea competitors can\'t copy', hint: 'Only works because of your specific limitation', colour: 'orange' },
             { id: 'actions', name: 'Actions', empty: 'First test', hint: 'How to validate the moat idea', colour: 'orange' }
@@ -4093,27 +4091,27 @@ const BOARD_LAYOUTS = {
     },
     'mash-up': {
         zones: [
-            { id: 'mu-problem', name: 'Your Challenge', empty: 'The problem in your own words', hint: 'What are you trying to solve?', colour: 'orange' },
-            { id: 'mu-abstract', name: 'Abstract Version', empty: 'The problem stripped to its essence', hint: 'Remove the industry — what\'s the underlying pattern?', colour: 'orange' },
-            { id: 'mu-collision-1', name: 'Collision 1', empty: 'First outside-world analogy', hint: 'How does a different field solve this?', colour: 'orange' },
+            { id: 'mu-problem', name: 'The Challenge', empty: 'Your problem in your own words', hint: 'What are you trying to solve?', colour: 'orange' },
+            { id: 'mu-abstract', name: 'Abstracted Challenge', empty: 'The problem stripped to its essence', hint: 'Remove the industry — what\'s the underlying pattern?', colour: 'orange' },
+            { id: 'mu-collision-1', name: 'Collision 1', empty: 'First outside-world analogy', hint: 'Source domain + story + mechanism', colour: 'orange' },
             { id: 'mu-collision-2', name: 'Collision 2', empty: 'Second outside-world analogy', hint: 'A wilder, more distant domain', colour: 'orange' },
             { id: 'mu-collision-3', name: 'Collision 3', empty: 'Third outside-world analogy', hint: 'From nature, art, or history', colour: 'orange' },
             { id: 'mu-collision-4', name: 'Collision 4', empty: 'Fourth outside-world analogy', hint: 'The most unexpected one', colour: 'orange' },
-            { id: 'mu-remix', name: 'The Remix', empty: 'Your new approach — mashed up from the best collisions', hint: 'Combine elements that don\'t usually meet', colour: 'orange' },
-            { id: 'mu-actions', name: 'Actions', empty: 'First step to test the remix', hint: 'What can you try this week?', colour: 'orange' }
+            { id: 'mu-breakthrough', name: 'Breakthrough Analogy', empty: 'The analogy that changes everything', hint: 'The insight and the assumption it breaks', colour: 'orange' },
+            { id: 'actions', name: 'Actions', empty: 'First step to test the breakthrough', hint: 'What can you try this week?', colour: 'orange' }
         ],
         gridClass: 'board-grid-mash-up'
     },
     'analogical': {
         zones: [
-            { id: 'mu-problem', name: 'Your Challenge', empty: 'The problem in your own words', hint: 'What are you trying to solve?', colour: 'orange' },
-            { id: 'mu-abstract', name: 'Abstract Version', empty: 'The problem stripped to its essence', hint: 'Remove the industry — what\'s the underlying pattern?', colour: 'orange' },
-            { id: 'mu-collision-1', name: 'Collision 1', empty: 'First outside-world analogy', hint: 'How does a different field solve this?', colour: 'orange' },
+            { id: 'mu-problem', name: 'The Challenge', empty: 'Your problem in your own words', hint: 'What are you trying to solve?', colour: 'orange' },
+            { id: 'mu-abstract', name: 'Abstracted Challenge', empty: 'The problem stripped to its essence', hint: 'Remove the industry — what\'s the underlying pattern?', colour: 'orange' },
+            { id: 'mu-collision-1', name: 'Collision 1', empty: 'First outside-world analogy', hint: 'Source domain + story + mechanism', colour: 'orange' },
             { id: 'mu-collision-2', name: 'Collision 2', empty: 'Second outside-world analogy', hint: 'A wilder, more distant domain', colour: 'orange' },
             { id: 'mu-collision-3', name: 'Collision 3', empty: 'Third outside-world analogy', hint: 'From nature, art, or history', colour: 'orange' },
             { id: 'mu-collision-4', name: 'Collision 4', empty: 'Fourth outside-world analogy', hint: 'The most unexpected one', colour: 'orange' },
-            { id: 'mu-remix', name: 'The Remix', empty: 'Your new approach — mashed up from the best collisions', hint: 'Combine elements that don\'t usually meet', colour: 'orange' },
-            { id: 'mu-actions', name: 'Actions', empty: 'First step to test the remix', hint: 'What can you try this week?', colour: 'orange' }
+            { id: 'mu-breakthrough', name: 'Breakthrough Analogy', empty: 'The analogy that changes everything', hint: 'The insight and the assumption it breaks', colour: 'orange' },
+            { id: 'actions', name: 'Actions', empty: 'First step to test the breakthrough', hint: 'What can you try this week?', colour: 'orange' }
         ],
         gridClass: 'board-grid-mash-up'
     },
@@ -4122,6 +4120,7 @@ const BOARD_LAYOUTS = {
             { id: 'sq-verified', name: 'Verified', empty: 'Tested — evidence exists', hint: 'Claims with real data behind them', colour: 'teal' },
             { id: 'sq-assumed', name: 'Assumed', empty: 'Believed but untested', hint: 'Feels true but no evidence', colour: 'teal' },
             { id: 'sq-inherited', name: 'Inherited', empty: 'Someone told you — you accepted it', hint: 'Absorbed from others without testing', colour: 'teal' },
+            { id: 'sq-score', name: 'The Score', empty: 'N beliefs: X verified, Y assumed, Z inherited', hint: 'How much of your plan is evidence vs assumption?', colour: 'teal' },
             { id: 'sq-critical', name: 'Critical Assumption', empty: 'The one that changes everything', hint: 'If this is wrong, the whole plan shifts', colour: 'teal' },
             { id: 'actions', name: 'The Test', empty: 'How to validate the critical assumption', hint: 'Simplest test in the next two weeks', colour: 'teal' }
         ],
@@ -4129,12 +4128,6 @@ const BOARD_LAYOUTS = {
     },
     'reality-check': {
         zones: [
-            { id: 'da-idea', name: 'The Idea', empty: 'What are you defending?', hint: 'State your case', colour: 'pink' },
-            { id: 'da-objections', name: 'Objections', empty: 'Adversary attacks', hint: 'Each challenge from the adversary', colour: 'pink' },
-            { id: 'da-defended', name: 'Defended', empty: 'Had evidence', hint: 'Objections you handled well', colour: 'pink' },
-            { id: 'da-deflected', name: 'Deflected', empty: 'Argued without evidence', hint: 'Plausible but unproven responses', colour: 'pink' },
-            { id: 'da-exposed', name: 'Exposed', empty: 'No answer', hint: 'Objections you couldn\'t address', colour: 'pink' },
-            { id: 'da-danger', name: 'Strategic Danger', empty: 'Biggest logical vulnerability', hint: 'From the adversary challenge', colour: 'pink' },
             { id: 'rc-value', name: 'Value Risk', empty: 'Will customers want this?', hint: 'Switching cost, evidence of demand', colour: 'pink' },
             { id: 'rc-value-rating', name: 'Value Rating', empty: '🟢 🟡 🔴', hint: 'GREEN / AMBER / RED', colour: 'pink' },
             { id: 'rc-usability', name: 'Usability Risk', empty: 'Can they figure it out?', hint: 'First-use experience, complexity', colour: 'pink' },
@@ -4143,10 +4136,10 @@ const BOARD_LAYOUTS = {
             { id: 'rc-feasibility-rating', name: 'Feasibility Rating', empty: '🟢 🟡 🔴', hint: 'GREEN / AMBER / RED', colour: 'pink' },
             { id: 'rc-viability', name: 'Viability Risk', empty: 'Does the business work?', hint: 'Unit economics, strategy, legal', colour: 'pink' },
             { id: 'rc-viability-rating', name: 'Viability Rating', empty: '🟢 🟡 🔴', hint: 'GREEN / AMBER / RED', colour: 'pink' },
-            { id: 'rc-overall', name: 'Overall Verdict', empty: 'Combined diagnosis', hint: 'Strategic + operational synthesis', colour: 'pink' },
-            { id: 'actions', name: 'Actions', empty: 'Address top combined vulnerability', hint: 'What to fix first', colour: 'pink' }
+            { id: 'rc-biggest', name: 'Biggest Risk', empty: 'The one that matters most', hint: 'Most dangerous gap + missing evidence', colour: 'pink' },
+            { id: 'rc-test', name: 'Suggested Test', empty: 'Cheap, fast experiment', hint: 'What | How | Who | Timeline (<1 week)', colour: 'pink' }
         ],
-        gridClass: 'board-grid-devils-advocate'
+        gridClass: 'board-grid-reality-check'
     },
     'theory-of-change': {
         zones: [
@@ -4154,7 +4147,8 @@ const BOARD_LAYOUTS = {
             { id: 'toc-control', name: 'Within Control', empty: 'Preconditions you can create', hint: 'Actions and conditions you directly influence', colour: 'yellow' },
             { id: 'toc-influence', name: 'Within Influence', empty: 'Preconditions you can nudge', hint: 'Can\'t guarantee but can increase likelihood', colour: 'yellow' },
             { id: 'toc-outside', name: 'Outside Control', empty: 'Must happen independently', hint: 'The assumptions your whole plan rests on', colour: 'yellow' },
-            { id: 'toc-activities', name: 'Activities', empty: 'What you\'ll actually do', hint: 'Specific actions to create controllable conditions', colour: 'yellow' },
+            { id: 'toc-activities', name: 'Activities Mapped', empty: 'What you\'ll actually do', hint: 'Specific actions to create controllable conditions', colour: 'yellow' },
+            { id: 'toc-missing', name: 'The Missing Middle', empty: 'Gaps in the causal chain', hint: 'Where did you jump from activity to outcome?', colour: 'yellow' },
             { id: 'toc-weakest', name: 'Weakest Link', empty: 'The connection you\'re least confident about', hint: 'Where the chain is most likely to break', colour: 'yellow' },
             { id: 'actions', name: 'The Test', empty: 'Validate the weakest link', hint: 'Simplest test in the next month', colour: 'yellow' }
         ],
@@ -4162,7 +4156,8 @@ const BOARD_LAYOUTS = {
     },
     'trade-off': {
         zones: [
-            { id: 'to-features', name: 'All Features', empty: 'The full offer, deconstructed', hint: '5 dimensions with 3 levels each', colour: 'pink' },
+            { id: 'to-synopsis', name: 'Synopsis', empty: 'What was tested and what surprised you?', hint: '2-3 sentence summary of the trade-off exercise', colour: 'pink' },
+            { id: 'to-setup', name: 'The Setup', empty: 'Categories with 3 levels each', hint: 'Category | Level 1 | Level 2 | Level 3 | Price range', colour: 'pink' },
             { id: 'to-tally', name: 'Running Tally', empty: 'Win counts update after each round', hint: 'Which features are winning?', colour: 'pink' },
             { id: 'to-rounds', name: 'Trade-Off Rounds', empty: 'Package A vs Package B', hint: 'Each round forces a sacrifice', colour: 'pink' },
             { id: 'to-musthave', name: 'Must-Have', empty: 'Won 7-10 rounds', hint: 'Core value — customers always choose this', colour: 'pink' },
@@ -4170,21 +4165,20 @@ const BOARD_LAYOUTS = {
             { id: 'to-expendable', name: 'Expendable', empty: 'Won 0-3 rounds', hint: 'You care more than your customer does', colour: 'pink' },
             { id: 'to-surprise', name: 'The Surprise', empty: 'The feature you were most wrong about', hint: 'Overvalued or undervalued going in', colour: 'pink' },
             { id: 'to-mvo', name: 'Minimum Viable Offer', empty: 'Survivors only — the simplest version someone would pay for', hint: 'Strip everything else away', colour: 'pink' },
-            { id: 'actions', name: 'Actions', empty: 'What changes because of this', hint: 'Roadmap, pricing, or positioning shift', colour: 'pink' }
+            { id: 'actions', name: 'What to Do Next', empty: 'What changes because of this', hint: 'Roadmap, pricing, or positioning shift', colour: 'pink' }
         ],
         gridClass: 'board-grid-trade-off'
     },
     'customer-discovery': {
         zones: [
             { id: 'co-persona', name: 'Customer Persona', empty: 'Who Pete is playing', hint: 'Name, role, context, frustrations', colour: 'pink' },
-            { id: 'co-exchanges', name: 'Interview Log', empty: 'Key Q&A moments', hint: 'What you asked, how they responded', colour: 'pink' },
             { id: 'co-open', name: 'Open vs Leading', empty: 'Question quality', hint: 'Did you explore or pitch?', colour: 'pink' },
             { id: 'co-followup', name: 'Follow-up Quality', empty: 'Thread chasing', hint: 'Did you pursue the interesting threads?', colour: 'pink' },
             { id: 'co-silence', name: 'Silence Tolerance', empty: 'Space for thinking', hint: 'Did you let them think?', colour: 'pink' },
-            { id: 'co-signals', name: 'Signal Detection', empty: 'Planted vs caught', hint: 'Hints dropped and whether you followed up', colour: 'pink' },
+            { id: 'co-signals', name: 'Signals Planted vs Caught', empty: 'Hints dropped and whether you followed up', hint: 'Signal | Type | Caught?', colour: 'pink' },
             { id: 'co-pitch', name: 'Pitch Avoidance', empty: 'How long before selling?', hint: 'Lower is better', colour: 'pink' },
             { id: 'co-insight', name: 'Key Insight', empty: 'The big reveal', hint: 'What the customer revealed and whether you noticed', colour: 'pink' },
-            { id: 'actions', name: 'Actions', empty: 'One thing to change', hint: 'The behaviour to fix next time', colour: 'pink' }
+            { id: 'actions', name: 'One Thing to Change', empty: 'The single most impactful behaviour change', hint: 'What to do differently next time', colour: 'pink' }
         ],
         gridClass: 'board-grid-customer-discovery'
     },
@@ -4194,37 +4188,11 @@ const BOARD_LAYOUTS = {
             { id: 'fw-component-2', name: 'Component 2', empty: 'What does Component 1 lead to?', hint: 'The next link in the chain', colour: 'yellow' },
             { id: 'fw-component-3', name: 'Component 3', empty: 'What does Component 2 lead to?', hint: 'The next link', colour: 'yellow' },
             { id: 'fw-component-4', name: 'Component 4', empty: 'What completes the loop?', hint: 'How it feeds back to the start', colour: 'yellow' },
-            { id: 'fw-bottleneck', name: 'Bottleneck', empty: 'The weakest link', hint: 'Which connection loses the most energy?', colour: 'yellow' },
-            { id: 'insights', name: 'Key Insights', empty: 'What emerged', hint: 'Patterns and observations', colour: 'yellow' },
-            { id: 'actions', name: 'Actions', empty: 'Next steps', hint: '90-day plan + 48-hour first step', colour: 'yellow' }
+            { id: 'fw-connections', name: 'Connection Strength', empty: 'How strong is each link?', hint: 'Connection | Strong / Developing / Unproven | Mechanism', colour: 'yellow' },
+            { id: 'fw-bottleneck', name: 'The Bottleneck', empty: 'The weakest link', hint: 'Which connection loses the most energy?', colour: 'yellow' },
+            { id: 'fw-acceleration', name: 'Acceleration Plan', empty: 'Make the bottleneck 2x stronger in 90 days', hint: '90-day plan + 48-hour first step', colour: 'yellow' }
         ],
         gridClass: 'board-grid-flywheel'
-    },
-    'mash-up': {
-        zones: [
-            { id: 'mu-problem', name: 'Problem', empty: 'Your core challenge', hint: 'What specific problem needs solving?', colour: 'orange' },
-            { id: 'mu-abstract', name: 'Abstract Structure', empty: 'The structural pattern', hint: 'What type of problem is this, stripped of context?', colour: 'orange' },
-            { id: 'mu-collision-1', name: 'Collision 1', empty: 'First domain collision', hint: 'Source domain + story + mechanism', colour: 'orange' },
-            { id: 'mu-collision-2', name: 'Collision 2', empty: 'Second domain collision', hint: 'Source domain + story + mechanism', colour: 'orange' },
-            { id: 'mu-collision-3', name: 'Collision 3', empty: 'Third domain collision', hint: 'Source domain + story + mechanism', colour: 'orange' },
-            { id: 'mu-collision-4', name: 'Collision 4', empty: 'Fourth domain collision', hint: 'Source domain + story + mechanism', colour: 'orange' },
-            { id: 'mu-remix', name: 'Remixed Ideas', empty: 'Adapted solutions', hint: 'Ideas remixed from hot collisions + source tags', colour: 'orange' },
-            { id: 'mu-actions', name: 'Actions', empty: 'First experiment', hint: 'Which remixed idea to prototype first, and how', colour: 'orange' }
-        ],
-        gridClass: 'board-grid-mash-up'
-    },
-    'analogical': {
-        zones: [
-            { id: 'mu-problem', name: 'Problem', empty: 'Your core challenge', hint: 'What specific problem needs solving?', colour: 'orange' },
-            { id: 'mu-abstract', name: 'Abstract Structure', empty: 'The structural pattern', hint: 'What type of problem is this, stripped of context?', colour: 'orange' },
-            { id: 'mu-collision-1', name: 'Collision 1', empty: 'First domain collision', hint: 'Source domain + story + mechanism', colour: 'orange' },
-            { id: 'mu-collision-2', name: 'Collision 2', empty: 'Second domain collision', hint: 'Source domain + story + mechanism', colour: 'orange' },
-            { id: 'mu-collision-3', name: 'Collision 3', empty: 'Third domain collision', hint: 'Source domain + story + mechanism', colour: 'orange' },
-            { id: 'mu-collision-4', name: 'Collision 4', empty: 'Fourth domain collision', hint: 'Source domain + story + mechanism', colour: 'orange' },
-            { id: 'mu-remix', name: 'Remixed Ideas', empty: 'Adapted solutions', hint: 'Ideas remixed from hot collisions + source tags', colour: 'orange' },
-            { id: 'mu-actions', name: 'Actions', empty: 'First experiment', hint: 'Which remixed idea to prototype first, and how', colour: 'orange' }
-        ],
-        gridClass: 'board-grid-mash-up'
     },
     'wardley': {
         zones: [
@@ -4252,6 +4220,8 @@ const CANVAS_TAG_MAP = {
     'uvp': 'uvp', 'value-prop': 'uvp', 'value_prop': 'uvp',
     'unfair': 'unfair', 'unfair-advantage': 'unfair', 'advantage': 'unfair',
     'segments': 'segments', 'customers': 'segments', 'customer-segments': 'segments',
+    'early-adopters': 'early-adopters', 'early_adopters': 'early-adopters', 'adopters': 'early-adopters',
+    'alternatives': 'alternatives', 'existing-alternatives': 'alternatives',
     'channels': 'channels', 'channel': 'channels',
     'revenue': 'revenue', 'revenue-streams': 'revenue',
     'costs': 'costs', 'cost': 'costs', 'cost-structure': 'costs',
@@ -4260,12 +4230,14 @@ const CANVAS_TAG_MAP = {
 
 // Pre-Mortem risk tag mapping
 const RISK_TAG_MAP = {
+    'idea': 'pm-idea', 'tested': 'pm-idea',
     'market': 'risk-market',
     'product': 'risk-product',
     'team': 'risk-team',
     'financial': 'risk-financial',
     'competition': 'risk-competition',
     'timing': 'risk-timing',
+    'biggest': 'pm-biggest', 'biggest-risk': 'pm-biggest',
     'mitigation': 'risk-mitigations', 'mitigations': 'risk-mitigations'
 };
 
@@ -4279,50 +4251,58 @@ const FIVE_WHYS_TAG_MAP = {
     'why3': 'fw-why3', 'why-3': 'fw-why3',
     'why4': 'fw-why4', 'why-4': 'fw-why4',
     'why5': 'fw-why5', 'why-5': 'fw-why5', 'root-cause': 'fw-why5', 'root': 'fw-why5',
+    'reframed': 'fw-reframed', 'reframe': 'fw-reframed', 'reframed-problem': 'fw-reframed',
     'reach': 'fw-reach', 'frequency': 'fw-frequency',
     'alternatives': 'fw-alternatives', 'verdict': 'fw-verdict'
 };
 const EMPATHY_TAG_MAP = {
-    'user': 'em-user', 'persona': 'em-user', 'says': 'em-says', 'thinks': 'em-thinks',
+    'user': 'em-user', 'persona': 'em-user', 'person': 'em-user',
+    'says': 'em-says', 'thinks': 'em-thinks',
     'does': 'em-does', 'feels': 'em-feels',
     'contradiction': 'em-contradictions', 'gap': 'em-contradictions',
     'insight': 'insights', 'key-insight': 'insights'
 };
 const JTBD_TAG_MAP_TOOL = {
-    'situation': 'jtbd-situation', 'context': 'jtbd-situation',
+    'customer': 'jtbd-customer', 'persona': 'jtbd-customer', 'context': 'jtbd-customer',
+    'job-story': 'jtbd-job-story', 'story': 'jtbd-job-story',
+    'push': 'jtbd-push', 'pull': 'jtbd-pull',
+    'anxiety': 'jtbd-anxiety', 'habit': 'jtbd-habit',
     'functional': 'jtbd-functional', 'emotional': 'jtbd-emotional', 'social': 'jtbd-social',
-    'hiring': 'jtbd-hiring', 'criteria': 'jtbd-hiring',
-    'underserved': 'insights', 'opportunity': 'insights'
+    'gap': 'jtbd-gap', 'gap-analysis': 'jtbd-gap', 'opportunity': 'jtbd-gap'
 };
 const CRAZY8S_TAG_MAP = {
     'idea-1': 'c8-1', '1': 'c8-1', 'idea-2': 'c8-2', '2': 'c8-2',
     'idea-3': 'c8-3', '3': 'c8-3', 'idea-4': 'c8-4', '4': 'c8-4',
     'idea-5': 'c8-5', '5': 'c8-5', 'idea-6': 'c8-6', '6': 'c8-6',
     'idea-7': 'c8-7', '7': 'c8-7', 'idea-8': 'c8-8', '8': 'c8-8',
-    'shortlist': 'c8-shortlist', 'selected': 'c8-shortlist'
+    'patterns': 'c8-patterns', 'pattern': 'c8-patterns',
+    'shortlist': 'c8-shortlist', 'selected': 'c8-shortlist', 'top-pick': 'c8-shortlist'
 };
 const HMW_TAG_MAP = {
     'problem': 'hmw-problem', 'challenge': 'hmw-problem',
     'hmw-1': 'hmw-q1', 'q1': 'hmw-q1', 'hmw-2': 'hmw-q2', 'q2': 'hmw-q2',
     'hmw-3': 'hmw-q3', 'q3': 'hmw-q3', 'hmw-4': 'hmw-q4', 'q4': 'hmw-q4',
     'hmw-5': 'hmw-q5', 'q5': 'hmw-q5',
-    'best': 'hmw-best', 'most-promising': 'hmw-best'
+    'solutions': 'hmw-solutions', 'solutions-explored': 'hmw-solutions',
+    'best': 'hmw-best', 'most-promising': 'hmw-best', 'recommended': 'hmw-best', 'direction': 'hmw-best'
 };
 const SCAMPER_TAG_MAP = {
+    'subject': 'sc-subject', 'topic': 'sc-subject',
     'substitute': 'sc-s', 's': 'sc-s', 'combine': 'sc-c', 'c': 'sc-c',
     'adapt': 'sc-a', 'a': 'sc-a', 'modify': 'sc-m', 'm': 'sc-m',
     'put': 'sc-p', 'p': 'sc-p', 'eliminate': 'sc-e', 'e': 'sc-e',
-    'reverse': 'sc-r', 'r': 'sc-r', 'shortlist': 'sc-shortlist'
+    'reverse': 'sc-r', 'r': 'sc-r',
+    'shortlist': 'sc-shortlist', 'top-picks': 'sc-shortlist'
 };
 const DEVILS_TAG_MAP = {
-    'idea': 'da-idea', 'objection': 'da-objections', 'attack': 'da-objections',
+    'idea': 'da-idea',
+    'adversary': 'da-adversaries', 'adversaries': 'da-adversaries', 'roles': 'da-adversaries',
+    'objection': 'da-objections', 'attack': 'da-objections', 'log': 'da-objections',
     'defended': 'da-defended', 'deflected': 'da-deflected',
-    'exposed': 'da-exposed', 'danger': 'da-danger',
-    'value': 'rc-value', 'value-rating': 'rc-value-rating',
-    'usability': 'rc-usability', 'usability-rating': 'rc-usability-rating',
-    'feasibility': 'rc-feasibility', 'feasibility-rating': 'rc-feasibility-rating',
-    'viability': 'rc-viability', 'viability-rating': 'rc-viability-rating',
-    'overall': 'rc-overall'
+    'exposed': 'da-exposed',
+    'heatmap': 'da-heatmap', 'risk-heatmap': 'da-heatmap',
+    'danger': 'da-danger', 'danger-zone': 'da-danger',
+    'next-step': 'actions', 'suggested': 'actions'
 };
 const RAPID_TAG_MAP = {
     'assumption': 're-assumptions', 'assumptions': 're-assumptions',
@@ -4336,26 +4316,28 @@ const SOCRATIC_TAG_MAP = {
     'verified': 'sq-verified', 'tested': 'sq-verified',
     'assumed': 'sq-assumed', 'untested': 'sq-assumed',
     'inherited': 'sq-inherited',
+    'score': 'sq-score', 'tally': 'sq-score',
     'critical': 'sq-critical', 'critical-assumption': 'sq-critical'
 };
 const REALITY_TAG_MAP = {
-    'idea': 'da-idea', 'context': 'da-idea',
-    'objection': 'da-objections', 'attack': 'da-objections',
-    'defended': 'da-defended', 'deflected': 'da-deflected',
-    'exposed': 'da-exposed', 'danger': 'da-danger',
     'value': 'rc-value', 'value-rating': 'rc-value-rating',
     'usability': 'rc-usability', 'usability-rating': 'rc-usability-rating',
     'feasibility': 'rc-feasibility', 'feasibility-rating': 'rc-feasibility-rating',
     'viability': 'rc-viability', 'viability-rating': 'rc-viability-rating',
-    'overall': 'rc-overall'
+    'biggest': 'rc-biggest', 'biggest-risk': 'rc-biggest',
+    'test': 'rc-test', 'suggested-test': 'rc-test'
 };
 const TOC_TAG_MAP = {
     'outcome': 'toc-outcome', 'control': 'toc-control', 'influence': 'toc-influence',
     'outside': 'toc-outside', 'external': 'toc-outside',
-    'activity': 'toc-activities', 'weakest': 'toc-weakest'
+    'activity': 'toc-activities', 'activities': 'toc-activities',
+    'missing': 'toc-missing', 'missing-middle': 'toc-missing', 'gap': 'toc-missing',
+    'weakest': 'toc-weakest'
 };
 const TRADEOFF_TAG_MAP = {
-    'feature': 'to-features', 'round': 'to-rounds', 'tally': 'to-tally',
+    'synopsis': 'to-synopsis', 'summary': 'to-synopsis',
+    'setup': 'to-setup', 'feature': 'to-setup',
+    'round': 'to-rounds', 'tally': 'to-tally',
     'must-have': 'to-musthave', 'nice-to-have': 'to-nicetohave',
     'expendable': 'to-expendable', 'surprise': 'to-surprise',
     'mvo': 'to-mvo', 'minimum-viable': 'to-mvo'
@@ -4364,16 +4346,19 @@ const ICEBERG_TAG_MAP = {
     'event': 'ice-event', 'pattern': 'ice-patterns', 'patterns': 'ice-patterns',
     'structure': 'ice-structures', 'structures': 'ice-structures',
     'mental-model': 'ice-mental', 'belief': 'ice-mental',
-    'leverage': 'ice-leverage'
+    'leverage': 'ice-leverage',
+    'shift': 'ice-shift', 'the-shift': 'ice-shift'
 };
 const CONSTRAINT_TAG_MAP = {
     'constraint': 'cf-constraint', 'limitation': 'cf-constraint',
-    'flip': 'cf-flip', 'advantage': 'cf-flip',
+    'forces': 'cf-forces', 'what-it-forces': 'cf-forces',
+    'signals': 'cf-signals', 'what-it-signals': 'cf-signals',
+    'enables': 'cf-enables', 'what-it-enables': 'cf-enables',
+    'flip': 'cf-forces',
     'idea': 'cf-ideas', 'moat': 'cf-moat'
 };
 const CUSTOMER_DISCOVERY_TAG_MAP = {
     'persona': 'co-persona', 'customer': 'co-persona',
-    'exchange': 'co-exchanges', 'interview': 'co-exchanges',
     'score-open': 'co-open', 'open': 'co-open',
     'score-followup': 'co-followup', 'followup': 'co-followup', 'follow-up': 'co-followup',
     'score-silence': 'co-silence', 'silence': 'co-silence',
@@ -4383,11 +4368,12 @@ const CUSTOMER_DISCOVERY_TAG_MAP = {
 };
 // Mash Up / Analogical Thinking tag mapping
 const MASHUP_TAG_MAP = {
-    'problem': 'mu-problem', 'abstract': 'mu-abstract',
+    'problem': 'mu-problem', 'challenge': 'mu-problem',
+    'abstract': 'mu-abstract', 'abstracted': 'mu-abstract',
     'collision-1': 'mu-collision-1', 'collision-2': 'mu-collision-2',
     'collision-3': 'mu-collision-3', 'collision-4': 'mu-collision-4',
-    'remix': 'mu-remix', 'remixed': 'mu-remix',
-    'actions': 'mu-actions', 'action': 'mu-actions'
+    'breakthrough': 'mu-breakthrough', 'best-analogy': 'mu-breakthrough',
+    'remix': 'mu-breakthrough', 'remixed': 'mu-breakthrough'
 };
 
 const WARDLEY_TAG_MAP = {
@@ -4416,11 +4402,13 @@ var TOOL_TAG_MAPS = {
 
 // Effectuation principle tag mapping
 const EFF_TAG_MAP = {
-    'means': 'eff-means', 'bird-in-hand': 'eff-means',
+    'who-you-are': 'eff-who-you-are', 'identity': 'eff-who-you-are',
+    'what-you-know': 'eff-what-you-know', 'knowledge': 'eff-what-you-know',
+    'who-you-know': 'eff-who-you-know', 'network': 'eff-who-you-know',
+    'means': 'eff-who-you-are', 'bird-in-hand': 'eff-who-you-are',
     'loss': 'eff-loss', 'affordable-loss': 'eff-loss',
-    'quilt': 'eff-quilt', 'crazy-quilt': 'eff-quilt',
-    'lemonade': 'eff-lemonade',
-    'pilot': 'eff-pilot', 'pilot-in-the-plane': 'eff-pilot',
+    'quilt': 'eff-quilt', 'crazy-quilt': 'eff-quilt', 'allies': 'eff-quilt',
+    'lemonade': 'eff-lemonade', 'surprises': 'eff-lemonade',
     'action': 'eff-action', 'first-move': 'eff-action'
 };
 
@@ -4428,7 +4416,9 @@ const EFF_TAG_MAP = {
 const FLYWHEEL_TAG_MAP = {
     'component-1': 'fw-component-1', 'component-2': 'fw-component-2',
     'component-3': 'fw-component-3', 'component-4': 'fw-component-4',
-    'bottleneck': 'fw-bottleneck'
+    'connections': 'fw-connections', 'connection-strength': 'fw-connections',
+    'bottleneck': 'fw-bottleneck',
+    'acceleration': 'fw-acceleration', 'acceleration-plan': 'fw-acceleration'
 };
 
 function switchBoardLayout(mode) {
