@@ -127,6 +127,47 @@
             .search-input { width: 100%; margin-left: 0; margin-top: 0.5rem; }
             .auth-banner { flex-direction: column; text-align: center; }
         }
+
+        /* Light theme */
+        html[data-theme="light"] { --bg: #f8f7f5; --bg-light: #fff; --text: #1E194F; --text-dim: #49474D; --text-muted: #A8A4A5; --border: rgba(30,25,79,0.08); }
+        html[data-theme="light"] body { background: #f8f7f5; color: #1E194F; }
+        html[data-theme="light"] .header { background: #fff; border-bottom-color: rgba(30,25,79,0.1); }
+        html[data-theme="light"] .header-nav { border-color: rgba(30,25,79,0.12); }
+        html[data-theme="light"] .header-nav-link { color: rgba(30,25,79,0.5); }
+        html[data-theme="light"] .header-nav-link:hover { color: #1E194F; background: rgba(30,25,79,0.04); }
+        html[data-theme="light"] .header-nav-link.active { color: #1E194F; background: rgba(30,25,79,0.07); }
+        html[data-theme="light"] .ctrl-btn { border-color: rgba(30,25,79,0.15); color: rgba(30,25,79,0.5); }
+        html[data-theme="light"] .ctrl-btn:hover { border-color: rgba(30,25,79,0.3); color: #1E194F; }
+        html[data-theme="light"] .help-btn-s { border-color: rgba(30,25,79,0.15); color: rgba(30,25,79,0.5); }
+        html[data-theme="light"] .help-btn-s:hover { color: #1E194F; border-color: rgba(30,25,79,0.3); }
+        html[data-theme="light"] .help-dropdown-s { background: #fff; border-color: rgba(0,0,0,0.1); }
+        html[data-theme="light"] .help-dropdown-s a { color: #555; }
+        html[data-theme="light"] .help-dropdown-s a:hover { background: rgba(0,0,0,0.03); color: #1E194F; }
+        html[data-theme="light"] .hamburger-line { background: rgba(30,25,79,0.6); }
+        html[data-theme="light"] .mobile-menu { background: #fff; border-color: rgba(0,0,0,0.1); }
+        html[data-theme="light"] .mobile-menu a { color: rgba(30,25,79,0.6); }
+        html[data-theme="light"] .mobile-menu a:hover, html[data-theme="light"] .mobile-menu a.active { color: #1E194F; background: rgba(30,25,79,0.04); }
+        html[data-theme="light"] .session-card { background: #fff; border-color: rgba(30,25,79,0.08); }
+        html[data-theme="light"] .session-card:hover { border-color: rgba(30,25,79,0.15); box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
+        html[data-theme="light"] .filter-tab { border-color: rgba(30,25,79,0.12); color: #49474D; }
+        html[data-theme="light"] .filter-tab:hover { border-color: rgba(30,25,79,0.25); color: #1E194F; }
+        html[data-theme="light"] .filter-tab.active { color: #1E194F; border-color: #1E194F; }
+        html[data-theme="light"] .filter-tab[data-mode="untangle"].active { color: var(--teal); border-color: var(--teal); }
+        html[data-theme="light"] .filter-tab[data-mode="spark"].active { color: var(--orange); border-color: var(--orange); }
+        html[data-theme="light"] .filter-tab[data-mode="test"].active { color: var(--pink); border-color: var(--pink); }
+        html[data-theme="light"] .filter-tab[data-mode="build"].active { color: #49474D; border-color: #49474D; }
+        html[data-theme="light"] .filter-sep { background: rgba(30,25,79,0.1); }
+        html[data-theme="light"] .search-input { background: #fff; border-color: rgba(30,25,79,0.12); color: #1E194F; }
+        html[data-theme="light"] .search-input:focus { border-color: rgba(30,25,79,0.3); }
+        html[data-theme="light"] .auth-banner { background: #fff; border-color: rgba(30,25,79,0.08); }
+        html[data-theme="light"] .settings-panel { background: #fff; border-color: rgba(30,25,79,0.08); }
+        html[data-theme="light"] .settings-field input { background: #f8f7f5; border-color: rgba(30,25,79,0.1); color: #1E194F; }
+        html[data-theme="light"] .badge-build { color: #49474D; border-color: rgba(73,71,77,0.3); }
+        html[data-theme="light"] .badge-status-completed { background: rgba(73,71,77,0.1); color: #49474D; }
+        html[data-theme="light"] .account-dropdown { background: #fff; border-color: rgba(0,0,0,0.1); }
+        html[data-theme="light"] .account-dropdown-item:hover { background: rgba(0,0,0,0.03); }
+        html[data-theme="light"] .footer { border-top-color: var(--orange); }
+        html[data-theme="light"] .logo { filter: none; }
     </style>
 </head>
 <body>
@@ -244,7 +285,7 @@
     <footer class="footer">
         <a href="https://wadeinstitute.org.au" target="_blank" rel="noopener">Wade Institute of Entrepreneurship</a> ·
         <a href="mailto:enquiries@wadeinstitute.org.au">Contact</a> ·
-        <a href="/privacy.html">Privacy</a>
+        <a href="privacy.html">Privacy</a>
     </footer>
 
     <!-- Login modal (reused structure from index.html) -->
@@ -268,6 +309,10 @@
         if(hb&&hd){ hb.addEventListener('click', function(e){ e.stopPropagation(); hd.classList.toggle('open'); }); document.addEventListener('click', function(){ hd.classList.remove('open'); }); }
         var ham = document.getElementById('hamburgerBtn'), mm = document.getElementById('mobileMenu');
         if(ham&&mm) ham.addEventListener('click', function(){ mm.classList.toggle('open'); });
+        // Theme toggle
+        var tt = document.getElementById('themeToggle');
+        if (localStorage.getItem('theme_preference') === 'light') { document.documentElement.setAttribute('data-theme', 'light'); if(tt) tt.textContent = '☾'; }
+        if(tt) tt.addEventListener('click', function(){ var isLight = document.documentElement.getAttribute('data-theme') === 'light'; document.documentElement.setAttribute('data-theme', isLight ? '' : 'light'); localStorage.setItem('theme_preference', isLight ? 'dark' : 'light'); tt.textContent = isLight ? '☀' : '☾'; });
     })();
     </script>
     <script>
