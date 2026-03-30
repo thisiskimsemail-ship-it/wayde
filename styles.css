@@ -1644,6 +1644,8 @@ body.in-session .header-nav { display: none; }
 body.in-session.session-complete .header-nav { display: flex; }
 
 /* Account menu */
+.account-menu.hidden { display: none !important; }
+.account-dropdown.hidden { display: none !important; }
 .account-menu { position: relative; display: flex; align-items: center; margin-left: 4px; }
 .account-menu-btn {
     background: none; border: none; cursor: pointer; padding: 2px;
