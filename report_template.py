@@ -32,7 +32,7 @@ EXERCISE_DISPLAY = {
     'customer-discovery': 'Customer Discovery', 'empathy-map': 'Empathy Map',
     'socratic': 'Socratic Questioning', 'iceberg': 'The Iceberg',
     'lean-canvas': 'Lean Canvas', 'effectuation': 'Effectuation',
-    'flywheel': 'Flywheel', 'reality-check': "Devil's Advocate",
+    'flywheel': 'Flywheel', 'reality-check': 'Reality Check',
     'theory-of-change': 'Theory of Change', 'constraint-flip': 'Constraint Flip',
     'trade-off': 'The Trade-Off', 'wardley': 'Wardley Mapping',
 }
@@ -852,14 +852,12 @@ def _render_board_jtbd(board, pathway):
 # ── 3. EMPATHY MAP ──
 
 def _render_board_empathy_map(board, pathway):
-    """Empathy Map: person + 6-segment grid + contradiction + insight."""
+    """Empathy Map: person + 2×2 quadrant grid (Says/Thinks/Does/Feels) + contradiction + insight."""
     person = board.get('person', '')
     says = board.get('says', '')
     thinks = board.get('thinks', '')
-    feels = board.get('feels', '')
     does = board.get('does', '')
-    sees = board.get('sees', '')
-    hears = board.get('hears', '')
+    feels = board.get('feels', '')
     contradiction = board.get('contradiction', '')
     insight = board.get('insight', '')
     accent = PATHWAY_COLOURS.get(pathway, '#27BDBE')
@@ -875,15 +873,13 @@ def _render_board_empathy_map(board, pathway):
         <div class="c-label" style="color:{accent};">The Person</div>
         <div style="font-size:11px;color:var(--navy);font-weight:600;">{_e(person)}</div>
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;">
         {_seg('Says', accent, says)}
         {_seg('Thinks', 'var(--navy)', thinks)}
-        {_seg('Feels', '#ED3694', feels)}
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;">
         {_seg('Does', '#F15A22', does)}
-        {_seg('Sees', '#2E7D32', sees)}
-        {_seg('Hears', '#F57F17', hears)}
+        {_seg('Feels', '#ED3694', feels)}
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;">
         <div style="background:var(--navy);padding:10px 20px;">
@@ -1299,7 +1295,75 @@ def _render_board_customer_discovery(board, pathway):
     </div>'''
 
 
-# ── 14. THE TRADE-OFF ──
+# ── 14. REALITY CHECK ──
+
+def _render_board_reality_check(board, pathway):
+    """Reality Check: four-risk scorecard + overall rating + biggest risk + suggested test."""
+    scorecard = board.get('scorecard', [])  # [{dimension, finding, rating}]
+    overall = board.get('overall_rating', '')
+    biggest_risk = board.get('biggest_risk', '')
+    suggested_test = board.get('suggested_test', {})
+    accent = PATHWAY_COLOURS.get(pathway, '#ED3694')
+
+    # Scorecard grid — 2×2 risk cards
+    colour_map = {'GREEN': ('#E8F5E9', '#2E7D32'), 'AMBER': ('#FFF8E1', '#F57F17'), 'RED': ('#FFEBEE', '#C62828')}
+    risk_labels = {'Value': 'Will customers want this?', 'Usability': 'Can they figure it out?', 'Feasibility': 'Can the team build it?', 'Viability': 'Does the business work?'}
+    cards_html = ''
+    for s in scorecard[:4]:
+        dim = s.get('dimension', '')
+        rating = s.get('rating', '').upper()
+        finding = s.get('finding', '')
+        bg, tc = colour_map.get(rating, ('#EEEDF4', 'var(--navy)'))
+        sub = risk_labels.get(dim, '')
+        cards_html += f'''<div class="risk-cell" style="background:{bg};color:{tc};">
+          <div style="font-size:11px;font-weight:700;">{_e(dim)}</div>
+          <div class="rsub">{_e(sub)}</div>
+          <div style="font-size:14px;font-weight:700;margin:4px 0;">{_e(rating)}</div>
+          <div style="font-size:8px;font-weight:400;color:var(--grey-4);">{_e(finding)}</div>
+        </div>'''
+
+    # Overall rating
+    overall_html = ''
+    if overall:
+        bg, tc = colour_map.get(overall.upper(), ('#EEEDF4', 'var(--navy)'))
+        overall_html = f'<div class="callout-strip" style="background:{bg};color:{tc};">Overall: {_e(overall)} — Weakest link rule</div>'
+
+    # Biggest risk callout
+    risk_html = ''
+    if biggest_risk:
+        risk_html = f'''<div style="background:var(--navy);padding:8px 14px;border-radius:4px;margin-top:6px;">
+          <div style="font-size:8px;font-weight:700;color:{accent};text-transform:uppercase;">Biggest Risk</div>
+          <div style="font-size:10px;font-weight:600;color:white;">{_e(biggest_risk)}</div>
+        </div>'''
+
+    # Suggested test
+    test_html = ''
+    if suggested_test:
+        test_rows = ''
+        for key in ('what', 'how', 'who', 'timeline'):
+            val = suggested_test.get(key, '')
+            if val:
+                test_rows += f'<div class="exp-row"><div class="exp-lbl">{_e(key.title())}</div><div class="c-text">{_e(val)}</div></div>'
+        if test_rows:
+            test_html = f'''<div class="exp-card" style="margin-top:6px;">
+              <div style="font-size:8px;font-weight:700;color:{accent};text-transform:uppercase;margin-bottom:4px;">Suggested Test</div>
+              {test_rows}
+            </div>'''
+
+    return f'''<div style="height:calc(100% - 44px);display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr auto;gap:1px;background:var(--grey-2);">
+      <div style="background:white;padding:10px 14px;">
+        <div class="c-label" style="color:{accent};">Four-Risk Scorecard</div>
+        <div class="risk-grid">{cards_html}</div>
+        {overall_html}
+      </div>
+      <div style="background:white;padding:10px 14px;">
+        {risk_html}
+        {test_html}
+      </div>
+    </div>'''
+
+
+# ── 15. THE TRADE-OFF ──
 
 def _render_board_trade_off(board, pathway):
     """Trade-Off: setup + 10 round cards + feature value stack."""
@@ -1686,7 +1750,7 @@ BOARD_RENDERERS = {
     'constraint-flip': _render_board_constraint_flip,
     'pre-mortem': _render_board_pre_mortem,
     'devils-advocate': _render_board_devils_advocate,
-    'reality-check': _render_board_devils_advocate,
+    'reality-check': _render_board_reality_check,
     'customer-discovery': _render_board_customer_discovery,
     'trade-off': _render_board_trade_off,
     'rapid-experiment': _render_board_rapid_experiment,
@@ -1897,6 +1961,9 @@ def wrap_html_for_doc(html_content):
     Wrap rendered HTML in Microsoft Office XML namespaces for .doc export.
     Word opens the HTML and renders the CSS-driven layout.
     """
+    # Count actual pages in the HTML
+    page_count = html_content.count('class="page')
+
     # Replace the <html> tag with Office-namespaced version
     doc_html = html_content.replace(
         '<html lang="en">',
@@ -1904,10 +1971,10 @@ def wrap_html_for_doc(html_content):
         'xmlns:w="urn:schemas-microsoft-com:office:word" lang="en">'
     )
     # Inject Word-specific page setup after <head>
-    word_setup = '''
+    word_setup = f'''
 <xml>
   <o:DocumentProperties>
-    <o:Pages>4</o:Pages>
+    <o:Pages>{page_count}</o:Pages>
   </o:DocumentProperties>
   <w:WordDocument>
     <w:View>Print</w:View>
@@ -1915,9 +1982,9 @@ def wrap_html_for_doc(html_content):
   </w:WordDocument>
 </xml>
 <style>
-  @page { size: 210mm 297mm; margin: 0; }
-  @page landscape-page { size: 297mm 210mm; margin: 0; }
-  .page--landscape { page: landscape-page; }
+  @page {{ size: 210mm 297mm; margin: 0; }}
+  @page landscape-page {{ size: 297mm 210mm; margin: 0; }}
+  .page--landscape {{ page: landscape-page; }}
 </style>'''
     doc_html = doc_html.replace('</head>', f'{word_setup}\n</head>')
     return doc_html

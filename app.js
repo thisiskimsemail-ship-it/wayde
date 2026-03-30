@@ -2978,7 +2978,7 @@ document.getElementById('unlockForm')?.addEventListener('submit', async (e) => {
         </div>
         <div class="download-ready hidden" id="dlReady">
             <p class="download-ready-text">Your report is ready</p>
-            <button class="download-ready-btn" id="dlDownloadBtn">Download Report (.pdf)</button>
+            <button class="download-ready-btn" id="dlDownloadBtn">Download Report</button>
             <p class="download-ready-note">It was good thinking with you today.</p>
         </div>
     `;
@@ -3044,19 +3044,7 @@ document.getElementById('formatWordBtn')?.addEventListener('click', () => {
     renderNextExercisePanel();
 });
 
-// Auto-trigger PDF download when format choice is shown
-const _formatObserver = new MutationObserver(() => {
-    const formatChoice = document.getElementById('reportFormatChoice');
-    if (formatChoice && !formatChoice.classList.contains('hidden')) {
-        setTimeout(() => {
-            downloadReportPdf();
-            formatChoice.classList.add('hidden');
-            renderNextExercisePanel();
-        }, 1500); // Brief delay so user sees "Your report is on its way"
-        _formatObserver.disconnect();
-    }
-});
-_formatObserver.observe(document.body, { attributes: true, subtree: true, attributeFilter: ['class'] });
+// MutationObserver auto-download removed — download is triggered once after email capture
 
 function handleReportAction(btn, action) {
     switch (action) {
@@ -3105,7 +3093,14 @@ document.querySelectorAll('.report-actions').forEach(bar => {
 
 // === DOWNLOAD AS PDF (primary) ===
 
+let _downloadInProgress = false;
+
 async function downloadReportPdf() {
+    // Guard against multiple simultaneous downloads
+    if (_downloadInProgress) return;
+    _downloadInProgress = true;
+    setTimeout(() => { _downloadInProgress = false; }, 3000);
+
     // If we have branded HTML, use the new .doc export
     if (state.reportHtml) {
         return downloadReportDoc();

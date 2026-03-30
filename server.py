@@ -4068,7 +4068,7 @@ In the "evidence.components" array, include:
 ]
 
 BOARD SUMMARY (board_summary):
-{"person": "Name, role, context", "says": "what they say", "thinks": "what they think", "feels": "what they feel", "does": "what they do", "sees": "what they see", "hears": "what they hear", "contradiction": "gap between says/does and thinks/feels", "insight": "key insight"}
+{"person": "Name, role, context", "says": "what they say", "thinks": "what they think", "does": "what they do", "feels": "what they feel", "contradiction": "gap between says/does and thinks/feels", "insight": "key insight"}
 """ + UNIVERSAL_REPORT_JSON
 
 SCAMPER_REPORT = """You are producing a SCAMPER session report for The Studio at Wade Institute of Entrepreneurship.
@@ -4143,7 +4143,7 @@ In the "evidence.components" array, include:
 ]
 
 BOARD SUMMARY (board_summary):
-{"objections": [{"adversary": "role name", "objection": "the objection", "defence": "the defence", "rating": "DEFENDED/DEFLECTED/EXPOSED"}, ...], "scorecard": [{"dimension": "Value/Usability/Feasibility/Viability", "rating": "GREEN/AMBER/RED", "finding": "brief finding"}, ...], "overall_rating": "GREEN/AMBER/RED", "danger_zone": "The single biggest vulnerability"}
+{"scorecard": [{"dimension": "Value", "finding": "brief finding", "rating": "GREEN/AMBER/RED"}, {"dimension": "Usability", "finding": "brief finding", "rating": "GREEN/AMBER/RED"}, {"dimension": "Feasibility", "finding": "brief finding", "rating": "GREEN/AMBER/RED"}, {"dimension": "Viability", "finding": "brief finding", "rating": "GREEN/AMBER/RED"}], "overall_rating": "GREEN/AMBER/RED", "biggest_risk": "The single biggest risk identified", "suggested_test": {"what": "what to test", "how": "how to test it", "who": "who to test with", "timeline": "target timeline"}}
 """ + UNIVERSAL_REPORT_JSON
 
 TRADE_OFF_REPORT = """You are producing a Trade-Off session report for The Studio at Wade Institute of Entrepreneurship.
@@ -4417,7 +4417,7 @@ EXERCISE_NAMES = {
     'lean-canvas': 'Lean Canvas',
     'effectuation': 'Effectuation',
     'flywheel': 'Flywheel',
-    'reality-check': "Devil's Advocate",
+    'reality-check': 'Reality Check',
     'theory-of-change': 'Theory of Change',
     'constraint-flip': 'Constraint Flip',
     'trade-off': 'The Trade-Off',
@@ -4633,7 +4633,7 @@ def generate_report():
             'empathy-map': EMPATHY_MAP_REPORT,
             'scamper': SCAMPER_REPORT,
             'customer-discovery': CUSTOMER_DISCOVERY_REPORT,
-            'reality-check': DEVILS_ADVOCATE_REPORT,
+            'reality-check': REALITY_CHECK_REPORT,
             'trade-off': TRADE_OFF_REPORT,
             'rapid-experiment': RAPID_EXPERIMENT_REPORT,
             'wardley': WARDLEY_REPORT,
