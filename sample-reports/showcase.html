@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Your customers don&#x27;t want everything you&#x27;re building — The Studio Report</title>
+<title>Your Customers Don't Want Everything You're Building — The Studio Report</title>
 <style>
   @font-face { font-family: 'GT Walsheim'; src: local('GT Walsheim Pro Light'), local('GT-Walsheim-Pro-Light'), local('GTWalsheimPro-Light'); font-weight: 300; }
   @font-face { font-family: 'GT Walsheim'; src: local('GT Walsheim Pro Regular'), local('GT-Walsheim-Pro-Regular'), local('GTWalsheimPro-Regular'); font-weight: 400; }
@@ -17,10 +17,7 @@
     --page-x: 48px;
   }
 
-  body.pathway-untangle { --accent: #27BDBE; --accent-light: #E8F8F8; --accent-on-dark: #27BDBE; --accent-text: #27BDBE; }
-  body.pathway-spark    { --accent: #F15A22; --accent-light: #FDF0EB; --accent-on-dark: #F15A22; --accent-text: #F15A22; }
-  body.pathway-test     { --accent: #ED3694; --accent-light: #FDE8F3; --accent-on-dark: #ED3694; --accent-text: #ED3694; }
-  body.pathway-build    { --accent: #E4E517; --accent-light: #FAFBE8; --accent-on-dark: #E4E517; --accent-text: #1E194F; }
+  body.pathway-test { --accent: #ED3694; --accent-light: #FDE8F3; --accent-on-dark: #ED3694; --accent-text: #ED3694; }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   @page { size: A4; margin: 0; }
@@ -64,7 +61,6 @@
   .sh { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid var(--grey-2); }
   .sh-bar { width: 3px; height: 18px; border-radius: 2px; flex-shrink: 0; background: var(--accent); }
   .sh h2 { font-size: 17px; font-weight: 400; color: var(--navy); flex: 1; }
-  .sh-num { font-size: 9.5px; font-weight: 500; color: var(--grey-3); text-transform: uppercase; letter-spacing: 0.5px; }
   .sec { margin-bottom: 28px; }
   p { margin-bottom: 10px; }
   p:last-child { margin-bottom: 0; }
@@ -82,7 +78,6 @@
   .rd-body { flex: 1; }
   .rd-vs { font-size: 12.5px; color: var(--grey-4); margin-bottom: 3px; line-height: 1.45; }
   .rd-tag { display: inline-block; padding: 2px 8px; border-radius: 100px; font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.2px; background: var(--accent-light); color: var(--accent-text); margin-bottom: 3px; }
-  .rd-q { font-size: 12px; font-weight: 300; color: var(--grey-4); font-style: italic; line-height: 1.45; }
 
   .vs { margin-bottom: 14px; }
   .tier { border-radius: 6px; overflow: hidden; margin-bottom: 7px; }
@@ -125,69 +120,22 @@
   .cta-card h4 { font-size: 11px; font-weight: 500; color: var(--accent-on-dark); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.3px; }
   .cta-card p { font-size: 12px; font-weight: 300; color: rgba(255,255,255,0.5); margin: 0; line-height: 1.45; }
 
-  .wb { width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 14px; }
-  .wb thead th { background: var(--navy); color: white; padding: 7px 12px; text-align: left; font-weight: 500; font-size: 10px; text-transform: uppercase; letter-spacing: 0.4px; }
-  .wb td { padding: 7px 12px; border-bottom: 1px solid var(--grey-2); vertical-align: top; font-weight: 300; }
-  .wb tr:nth-child(even) { background: var(--grey-1); }
-  .tl { display: inline-block; padding: 2px 8px; border-radius: 100px; font-size: 9.5px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.2px; }
-  .tl--must { background: #EEEDF4; color: var(--navy); }
-  .tl--strong { background: var(--grey-2); color: var(--grey-4); }
-  .tl--exp { background: var(--accent-light); color: var(--accent-text); }
-  .tl--cut { background: #F5E6E6; color: #8B3A3A; }
-
   .div { height: 1px; background: var(--grey-2); margin: 20px 0; border: none; }
 
   .page--landscape { width: 297mm; min-height: 210mm; }
-
-  /* ── Canvas board styles (landscape page) ── */
   .canvas { background: white; overflow: hidden; position: relative; color: var(--grey-4); height: 100%; display: flex; flex-direction: column; }
   .canvas * { font-family: var(--font); }
   .c-headline { font-size: 22px; font-weight: 700; color: var(--navy); padding: 16px 20px 12px; line-height: 1.25; }
-  .c-strip { display: flex; align-items: center; justify-content: space-between; padding: 8px 20px; }
-  .c-strip-left { display: flex; align-items: center; gap: 16px; flex: 1; }
-  .c-strip .c-tool { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; }
-  .c-strip .c-dur { font-size: 9px; color: rgba(255,255,255,0.5); }
-  .c-strip .c-source { font-size: 8px; color: rgba(255,255,255,0.4); font-style: italic; }
-  .c-strip-right { display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
-  .c-cell { padding: 14px 18px; overflow: hidden; }
   .c-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
-  .c-text { font-size: 12px; color: var(--grey-4); line-height: 1.5; }
-  .c-text b { color: var(--navy); }
-  .c-text.sm { font-size: 10px; }
-  .ct { width: 100%; border-collapse: collapse; font-size: 12px; }
-  .ct th { padding: 8px 12px; text-align: left; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px; background: var(--navy); color: white; }
-  .ct td { padding: 8px 12px; border-bottom: 1px solid var(--grey-2); vertical-align: top; }
-  .ct tr:last-child td { border-bottom: none; }
-  .tag { display: inline-block; padding: 2px 10px; border-radius: 3px; font-size: 10px; font-weight: 600; }
-  .tag-green { background: #E0F7F7; color: #1a8a8a; }
-  .tag-amber { background: #FFF8E1; color: #F57F17; }
-  .tag-red { background: #FFEBEE; color: #C62828; }
-  .tag-navy { background: #EEEDF4; color: var(--navy); }
-  .tag-teal { background: #E0F7F7; color: #1a8a8a; }
-  .v-tier { padding: 8px 14px; border-radius: 4px; font-size: 12px; font-weight: 600; margin-bottom: 4px; }
-  .v-must { background: #E0F7F7; color: #1a8a8a; border-left: 4px solid #27BDBE; }
-  .v-nice { background: #FFF8E1; color: #F57F17; border-left: 4px solid #F57F17; }
-  .v-exp { background: #FFEBEE; color: #C62828; border-left: 4px solid #C62828; }
-  .rounds { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; }
+  .rounds { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; }
   .rnd { background: var(--grey-1); border: 1px solid var(--grey-2); border-radius: 4px; padding: 6px; text-align: center; font-size: 9px; }
   .rnd .rn { font-weight: 700; font-size: 11px; color: var(--navy); }
   .rnd.picked { border-color: var(--accent); background: white; }
-  .exp-card { background: var(--grey-1); border-radius: 6px; padding: 14px 16px; }
-  .exp-row { display: flex; gap: 8px; margin-bottom: 5px; font-size: 12px; }
-  .exp-lbl { font-weight: 700; color: var(--navy); min-width: 80px; font-size: 10px; flex-shrink: 0; }
-  .sc-row { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
-  .sc-dim { font-size: 12px; font-weight: 600; color: var(--navy); width: 110px; flex-shrink: 0; }
-  .risk-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-  .risk-cell { padding: 12px; border-radius: 4px; font-size: 12px; font-weight: 600; text-align: center; }
-  .risk-cell .rsub { font-size: 9px; font-weight: 400; margin-top: 3px; }
-  .callout-strip { padding: 10px 16px; border-radius: 4px; font-size: 12px; font-weight: 600; text-align: center; margin-top: 8px; }
-  .chain-node { display: flex; align-items: center; gap: 14px; margin-bottom: 3px; }
-  .chain-circle { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; }
-  .chain-text { flex: 1; padding: 8px 16px; font-size: 12px; color: var(--grey-4); line-height: 1.45; }
-  .chain-arrow { text-align: center; color: var(--grey-3); font-size: 16px; line-height: 1; margin: 2px 0; }
 </style>
 </head>
 <body class="pathway-test">
+
+<!-- ═══════ PAGE 1 — Cover ═══════ -->
 <div class="page">
   <div class="hdr">
     <div class="hdr-left">
@@ -206,314 +154,191 @@
       <div class="hero-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg></div>
       <div class="hero-badge">The Trade-Off</div>
     </div>
-    <h1>Your customers don&#x27;t want everything you&#x27;re building</h1>
-    <p class="hero-sub">Six rounds of forced trade-offs revealed only three of seven features survive contact with reality — and your favourite feature wasn&#x27;t one of them.</p>
+    <h1>Your Customers Don&#x27;t Want Everything You&#x27;re Building</h1>
+    <p class="hero-sub">You thought all seven features were essential. Six rounds of forced trade-offs revealed that only three survive contact with reality &#x2014; and your favourite feature wasn&#x27;t one of them.</p>
   </div>
   <div class="insights"><div class="ins">
-      <div class="ins-label">Features tested</div>
+      <div class="ins-label">FEATURES TESTED</div>
       <div class="ins-big">7</div>
       <div class="ins-text">Seven planned features entered. Three survived.</div>
     </div><div class="ins">
-      <div class="ins-label">The surprise</div>
-      <div class="ins-big">5/6</div>
-      <div class="ins-text">Real-time collaboration — the centrepiece of the pitch deck — lost five of six rounds.</div>
+      <div class="ins-label">THE SURPRISE</div>
+      <div class="ins-big">5 / 6</div>
+      <div class="ins-text">Real-time collaboration &#x2014; the pitch deck centrepiece &#x2014; lost five of six rounds</div>
     </div><div class="ins">
-      <div class="ins-label">The winner</div>
-      <div class="ins-big">6/6</div>
-      <div class="ins-text">Automated reporting won every round. The feature nearly cut for feeling &quot;boring&quot;.</div>
+      <div class="ins-label">THE WINNER</div>
+      <div class="ins-big">6 / 6</div>
+      <div class="ins-text">Automated reporting won every round. The feature nearly cut for feeling &#x201C;boring&#x201D;.</div>
     </div></div>
-  <div class="page-body"><div class="sec"><p>You came in with seven features planned for launch. A full-featured project management tool for mid-size agencies. &quot;We need all of them,&quot; you said. Six rounds of forced trade-offs later, the picture looks very different. Three features dominate. Three are expendable. And the one you were most excited about — real-time collaboration, the centrepiece of the pitch deck, the most technically complex thing you&#x27;ve built — lost five of six rounds.</p></div>
+  <div class="page-body"><div class="sec"><p>You came in with seven features planned for launch. A full-featured project management tool for mid-size creative agencies. &#x201C;We need all of them,&#x201D; you said. Six rounds of forced trade-offs later, the picture looks very different.</p>
+    <p>Three features dominate. Three are expendable. And the one you were most excited about &#x2014; real-time collaboration, the centrepiece of the pitch deck, the most technically complex thing you&#x27;ve built &#x2014; lost five of six rounds.</p></div>
     <div class="sec">
-      <div class="sh">
-      <div class="sh-bar"></div>
-      <h2>The challenge</h2>
-      
-    </div>
-      <p>Building a project management SaaS for mid-size agencies (15–80 people). Seven features in the launch roadmap, limited runway, and a team convinced everything is equally important. The real question: if you can only ship three features at launch, which three?</p>
+      <div class="sh"><div class="sh-bar"></div><h2>The challenge</h2></div>
+      <p>Building a project management SaaS for mid-size agencies (15&#x2013;80 people). Seven features in the launch roadmap, limited runway, and a team convinced everything is equally important. The real question: if you can only ship three features at launch, which three?</p>
     </div></div>
   <div class="ftr">
-    <span>Generated by The Studio · Wade Institute of Entrepreneurship</span>
+    <span>Generated by The Studio &#xB7; Wade Institute of Entrepreneurship</span>
     <span class="ftr-page">1 / 5</span>
   </div>
 </div>
 
+<!-- ═══════ PAGE 2 — Evidence ═══════ -->
 <div class="page">
   <div class="hdr">
-    <div class="hdr-left">
-      <div class="hdr-logo">Wade<br>Institute</div>
-      <div class="hdr-pipe"></div>
-      <div class="hdr-studio">The Studio</div>
-    </div>
+    <div class="hdr-left"><div class="hdr-logo">Wade<br>Institute</div><div class="hdr-pipe"></div><div class="hdr-studio">The Studio</div></div>
     <div class="hdr-right">
       <span class="hdr-pathway"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg> The Test</span>
       <span>The Trade-Off</span>
-      
     </div>
   </div>
   <div class="page-body">
     <div class="sec">
-      <div class="sh">
-      <div class="sh-bar"></div>
-      <h2>The six rounds</h2>
-      
-    </div>
-      <p>Each round forced a choice between competing feature bundles, stripping away comfort and forcing harder decisions. Here&#x27;s what survived.</p><ul class="fl"><li><span class="dot"></span><strong>Automated weekly reporting</strong> — Client-facing status updates generated from task data</li><li><span class="dot"></span><strong>One-click integrations</strong> — Slack, Google Drive, Xero without setup friction</li><li><span class="dot"></span><strong>Real-time collaboration</strong> — Live cursors, comments, co-editing inside the tool</li><li><span class="dot"></span><strong>Custom workflows</strong> — Drag-and-drop pipeline builder per client</li><li><span class="dot"></span><strong>Time tracking</strong> — Built-in timer linked to tasks and invoicing</li><li><span class="dot"></span><strong>AI task suggestions</strong> — Auto-generates next steps based on project patterns</li><li><span class="dot"></span><strong>White-label client portal</strong> — Branded view for external stakeholders</li></ul>
-<div class="vs"><div class="tier tier--must">
-        <div class="tier-hd"><h4>Must-haves</h4><span>Won 5–6 rounds</span></div>
-        <div class="tier-body"><div class="tier-row">
-            <span>Automated weekly reporting</span>
-            <span class="wc">6/6</span>
-          </div><div class="tier-row">
-            <span>One-click integrations</span>
-            <span class="wc">5/6</span>
-          </div></div>
+      <div class="sh"><div class="sh-bar"></div><h2>What emerged</h2></div>
+      <p>The pattern was stark: automated reporting and one-click integrations won almost every round they appeared in. You consistently sacrificed the features you were most excited about &#x2014; real-time collaboration and AI task suggestions &#x2014; for the ones that save agency owners time on Monday mornings.</p>
+      <div class="co"><div class="co-bar"></div><div class="co-body"><strong>Synopsis</strong> You tested seven features for a creative agency PM tool and discovered that only three drive purchase decisions. Automated reporting won every round. Real-time collaboration &#x2014; your most technically complex feature &#x2014; lost five of six. Your customers want utility, not novelty.</div></div>
+
+      <div class="rd"><div class="rd-n">1</div><div class="rd-body"><div class="rd-vs">&#x2713; The Agency Essential vs &#x2717; The Bare Bones</div><div class="rd-tag">Round 1</div></div></div>
+      <div class="rd"><div class="rd-n">2</div><div class="rd-body"><div class="rd-vs">&#x2713; The Data Engine vs &#x2717; The Network Play</div><div class="rd-tag">Round 2</div></div></div>
+      <div class="rd"><div class="rd-n">3</div><div class="rd-body"><div class="rd-vs">&#x2713; The Integration Hub vs &#x2717; The Collab Suite</div><div class="rd-tag">Round 3</div></div></div>
+      <div class="rd"><div class="rd-n">4</div><div class="rd-body"><div class="rd-vs">&#x2713; The Lean Build vs &#x2717; The Full Stack</div><div class="rd-tag">Round 4</div></div></div>
+      <div class="rd"><div class="rd-n">5</div><div class="rd-body"><div class="rd-vs">&#x2713; The Report Machine vs &#x2717; The Innovation Kit</div><div class="rd-tag">Round 5</div></div></div>
+      <div class="rd"><div class="rd-n">6</div><div class="rd-body"><div class="rd-vs">&#x2713; The Core Three vs &#x2717; The Feature Feast</div><div class="rd-tag">Round 6</div></div></div>
+
+      <div class="vs"><div class="tier tier--must">
+        <div class="tier-hd"><h4>Must-haves</h4><span>Won 5&#x2013;6 of 6 rounds</span></div>
+        <div class="tier-body"><div class="tier-row"><span>Automated weekly reporting</span><span class="wc">6 / 6</span></div><div class="tier-row"><span>One-click integrations</span><span class="wc">5 / 6</span></div></div>
       </div><div class="tier tier--strong">
-        <div class="tier-hd"><h4>Strong performers</h4><span>Won 3–4 rounds</span></div>
-        <div class="tier-body"><div class="tier-row">
-            <span>Time tracking</span>
-            <span class="wc">4/6</span>
-          </div><div class="tier-row">
-            <span>White-label client portal</span>
-            <span class="wc">3/6</span>
-          </div></div>
-      </div><div class="tier tier--cut">
-        <div class="tier-hd"><h4>Expendable</h4><span>Won 0–2 rounds</span></div>
-        <div class="tier-body"><div class="tier-row">
-            <span>Custom workflows</span>
-            <span class="wc">2/6</span>
-          </div><div class="tier-row">
-            <span>AI task suggestions</span>
-            <span class="wc">1/6</span>
-          </div><div class="tier-row">
-            <span>Real-time collaboration</span>
-            <span class="wc">1/6</span>
-          </div></div>
+        <div class="tier-hd"><h4>Nice-to-haves</h4><span>Won 3&#x2013;4 of 6 rounds</span></div>
+        <div class="tier-body"><div class="tier-row"><span>Time tracking</span><span class="wc">4 / 6</span></div><div class="tier-row"><span>White-label client portal</span><span class="wc">3 / 6</span></div></div>
+      </div><div class="tier tier--exp">
+        <div class="tier-hd"><h4>Expendable</h4><span>Won 0&#x2013;2 of 6 rounds</span></div>
+        <div class="tier-body"><div class="tier-row"><span>Custom workflows</span><span class="wc">2 / 6</span></div><div class="tier-row"><span>AI task suggestions</span><span class="wc">1 / 6</span></div><div class="tier-row"><span>Real-time collaboration</span><span class="wc">1 / 6</span></div></div>
       </div></div>
-<div class="co">
-      <div class="co-bar"></div>
-      <div class="co-body"><strong>The surprise.</strong> Real-time collaboration — the feature you were most excited about, the centrepiece of your pitch deck, and the most technically complex thing you&#x27;ve built — lost five of six rounds. Meanwhile, automated reporting — a feature you nearly cut for feeling &quot;boring&quot; — won every single round.</div>
-    </div>
-    </div>
-    <hr class="div">
-    <div class="sec">
-      <div class="sh">
-      <div class="sh-bar"></div>
-      <h2>Key moments</h2>
-      
-    </div>
-      <p>These were the statements that shifted the conversation:</p>
-      <blockquote>
-      <strong></strong>
-      
-    </blockquote>
-<blockquote>
-      <strong></strong>
-      
-    </blockquote>
-<blockquote>
-      <strong></strong>
-      
-    </blockquote>
+
+      <div class="co"><div class="co-bar"></div><div class="co-body"><strong>The Surprise</strong> Real-time collaboration &#x2014; the feature you were most excited about, the centrepiece of your pitch deck, and the most technically complex thing you&#x27;ve built &#x2014; lost five of six rounds. Meanwhile, automated reporting &#x2014; a feature you nearly cut for feeling &#x201C;boring&#x201D; &#x2014; won every single round.</div></div>
+
+      <ul class="fl"><li><span class="dot"></span><strong>Minimum Viable Offer</strong> &#x2014; Reporting + Integrations + Time Tracking at $39/month per seat. The floor &#x2014; the cheapest version someone would still pay for.</li></ul>
+
+      <div class="co"><div class="co-bar"></div><div class="co-body"><strong>What to Do Next</strong> Rebuild your launch scope around reporting, integrations, and time tracking &#x2014; cut everything else from v1. Run five customer interviews showing the $39/mo core bundle versus the $69/mo full suite. Rewrite your positioning: &#x201C;Automated client reports in 30 seconds&#x201D; is the headline, not &#x201C;All-in-one project management.&#x201D;</div></div>
     </div>
   </div>
   <div class="ftr">
-    <span>Generated by The Studio · Wade Institute of Entrepreneurship</span>
+    <span>Generated by The Studio &#xB7; Wade Institute of Entrepreneurship</span>
     <span class="ftr-page">2 / 5</span>
   </div>
 </div>
 
+<!-- ═══════ PAGE 3 — Key Moments, Reframe, Questions, Actions ═══════ -->
 <div class="page">
   <div class="hdr">
-    <div class="hdr-left">
-      <div class="hdr-logo">Wade<br>Institute</div>
-      <div class="hdr-pipe"></div>
-      <div class="hdr-studio">The Studio</div>
-    </div>
+    <div class="hdr-left"><div class="hdr-logo">Wade<br>Institute</div><div class="hdr-pipe"></div><div class="hdr-studio">The Studio</div></div>
     <div class="hdr-right">
       <span class="hdr-pathway"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg> The Test</span>
       <span>The Trade-Off</span>
-      
     </div>
   </div>
   <div class="page-body">
+    <div class="sec">
+      <div class="sh"><div class="sh-bar"></div><h2>Key moments</h2></div>
+      <p>These were the statements that shifted the conversation:</p>
+      <blockquote><strong>The pattern emerges</strong>&#x201C;I keep choosing reporting over collaboration &#x2014; I think our customers don&#x27;t care about what we care about.&#x201D; The first sign that builder excitement and buyer need had diverged.</blockquote>
+      <blockquote><strong>The reframe</strong>&#x201C;Automated reporting saves an agency owner 45 minutes every Monday. Collaboration saves us a cool demo.&#x201D; Reframed the entire value proposition from novelty to utility.</blockquote>
+      <blockquote><strong>The admission</strong>&#x201C;If I&#x27;m honest, we built collaboration because it was fun to build. Not because anyone asked for it.&#x201D; The admission that changed the launch plan.</blockquote>
+    </div>
+
     <div class="sec"><div class="reframe">
       <h3>The reframe</h3>
-      
-    </div></div><div class="sec">
-      <div class="sh">
-      <div class="sh-bar"></div>
-      <h2>Questions worth sitting with</h2>
-      
-    </div>
-      <div class="qgrid"><div class="qc">
-        <div class="qc-tag">Product</div>
-        <p>Is the reporting engine genuinely best-in-class, or an afterthought that now needs real investment?</p>
-      </div><div class="qc">
-        <div class="qc-tag">Positioning</div>
-        <p>What does the pricing page look like leading with &quot;Automated client reports in 30 seconds&quot; instead of &quot;All-in-one project management&quot;?</p>
-      </div><div class="qc">
-        <div class="qc-tag">Honesty</div>
-        <p>Which expendable features are you still emotionally attached to — and why?</p>
-      </div><div class="qc">
-        <div class="qc-tag">Competition</div>
-        <p>If a competitor launched with just reporting + integrations tomorrow, how would you respond?</p>
-      </div></div>
-    </div><hr class="div">
+      <p><strong>Before:</strong> &#x201C;We need to ship all seven features to compete with Monday.com and Asana.&#x201D;</p>
+      <p><strong>After:</strong> &#x201C;We need to ship three features that save an agency owner 45 minutes every week &#x2014; and charge less than the tools that try to do everything.&#x201D;</p>
+      <p>The minimum viable offer is simpler and cheaper than planned &#x2014; but that&#x27;s a faster path to revenue and a clearer positioning story. Lead with utility, not novelty. The features that lost aren&#x27;t dead ideas &#x2014; they&#x27;re roadmap items for after you have 50 paying customers.</p>
+    </div></div>
+
     <div class="sec">
-      <div class="sh">
-      <div class="sh-bar"></div>
-      <h2>What to do next</h2>
-      
+      <div class="sh"><div class="sh-bar"></div><h2>Questions worth sitting with</h2></div>
+      <div class="qgrid"><div class="qc"><div class="qc-tag">PRODUCT</div><p>Is the reporting engine genuinely best-in-class, or an afterthought that now needs real investment?</p></div><div class="qc"><div class="qc-tag">POSITIONING</div><p>What does the pricing page look like leading with &#x201C;Automated client reports in 30 seconds&#x201D; instead of &#x201C;All-in-one project management&#x201D;?</p></div><div class="qc"><div class="qc-tag">HONESTY</div><p>Which expendable features are you still emotionally attached to &#x2014; and why?</p></div><div class="qc"><div class="qc-tag">COMPETITION</div><p>If a competitor launched with just reporting + integrations tomorrow, how would you respond?</p></div></div>
     </div>
-      <ol class="steps"><li><strong></strong> </li>
-<li><strong></strong> </li>
-<li><strong></strong> </li>
-<li><strong></strong> </li>
-</ol>
+
+    <hr class="div">
+
+    <div class="sec">
+      <div class="sh"><div class="sh-bar"></div><h2>What to do next</h2></div>
+      <ol class="steps"><li><strong>Rebuild launch scope around the three must-haves.</strong> Reporting, integrations, time tracking. Cut everything else from v1. Ship faster, learn faster.</li>
+<li><strong>Run 5 customer interviews showing two pricing tiers</strong> &#x2014; core bundle at $39/mo vs. full suite at $69/mo. Let real agency owners decide.</li>
+<li><strong>Rewrite positioning: lead with the boring feature.</strong> &#x201C;Automated client reports in 30 seconds&#x201D; is the headline. Boring to you. Valuable to them.</li>
+<li><strong>Shelf the collaboration engine.</strong> Don&#x27;t delete the code &#x2014; remove it from product and marketing until 50 paying customers ask for it.</li></ol>
     </div>
   </div>
   <div class="ftr">
-    <span>Generated by The Studio · Wade Institute of Entrepreneurship</span>
+    <span>Generated by The Studio &#xB7; Wade Institute of Entrepreneurship</span>
     <span class="ftr-page">3 / 5</span>
   </div>
 </div>
 
+<!-- ═══════ PAGE 4 — Go Further ═══════ -->
 <div class="page">
   <div class="hdr">
-    <div class="hdr-left">
-      <div class="hdr-logo">Wade<br>Institute</div>
-      <div class="hdr-pipe"></div>
-      <div class="hdr-studio">The Studio</div>
-    </div>
+    <div class="hdr-left"><div class="hdr-logo">Wade<br>Institute</div><div class="hdr-pipe"></div><div class="hdr-studio">The Studio</div></div>
     <div class="hdr-right">
       <span class="hdr-pathway"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg> The Test</span>
       <span>The Trade-Off</span>
-      
     </div>
   </div>
   <div class="page-body">
     <div class="cta">
       <h2>Go further with Wade</h2>
-      <p>This pattern — building for the demo instead of the buyer — is one of the most common reasons startups overbuild and underprice. The Trade-Off exercise surfaced it in 25 minutes. Imagine what a full program does.</p>
-      <div class="cta-grid"><div class="cta-card">
-        <h4>Recommended reading</h4>
-        <p>Explore more tools in The Studio to pressure-test your assumptions, validate demand, and build with confidence.</p>
-      </div><div class="cta-card">
-        <h4>Wade programs</h4>
-        <p>Wade&#x27;s flagship program takes you beyond the tools. Build your venture with a cohort of founders, expert mentors, and structured support.</p>
-      </div><div class="cta-card">
-        <h4>From the Wade community</h4>
-        <p>&quot;I cut my roadmap in half after a single Trade-Off session. We launched three months earlier and doubled our conversion rate.&quot; — James Nguyen, MoE &#x27;24</p>
-      </div></div>
+      <p>This pattern &#x2014; building for the demo instead of the buyer &#x2014; is one of the most common reasons startups overbuild and underprice. The Trade-Off exercise surfaced it in 25 minutes. Imagine what a full program does.</p>
+      <div class="cta-grid"><div class="cta-card"><h4>Suggested reading</h4><p>Explore more tools in The Studio to pressure-test your assumptions, validate demand, and build with confidence.</p></div><div class="cta-card"><h4>Wade programs</h4><p>Wade&#x27;s flagship programs take you beyond the tools. Build your venture with a cohort of founders, expert mentors, and structured support.</p></div><div class="cta-card"><h4>From the Wade community</h4><p>&#x201C;I cut my roadmap in half after a single Trade-Off session. We launched three months earlier and doubled our conversion rate.&#x201D; &#x2014; James Nguyen, MoE &#x27;24</p></div></div>
     </div>
   </div>
   <div class="ftr">
-    <span>Generated by The Studio · Wade Institute of Entrepreneurship</span>
+    <span>Generated by The Studio &#xB7; Wade Institute of Entrepreneurship</span>
     <span class="ftr-page">4 / 5</span>
   </div>
 </div>
 
+<!-- ═══════ PAGE 5 — Workshop Board (Landscape) ═══════ -->
 <div class="page page--landscape">
   <div class="hdr">
-    <div class="hdr-left">
-      <div class="hdr-logo">Wade<br>Institute</div>
-      <div class="hdr-pipe"></div>
-      <div class="hdr-studio">The Studio</div>
-    </div>
+    <div class="hdr-left"><div class="hdr-logo">Wade<br>Institute</div><div class="hdr-pipe"></div><div class="hdr-studio">The Studio</div></div>
     <div class="hdr-right">
       <span class="hdr-pathway"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg> The Test</span>
       <span>The Trade-Off</span>
-      
     </div>
   </div>
   <div style="padding:0 var(--page-x);flex:1;overflow:hidden;">
     <div class="canvas">
-      <div class="c-headline">Your customers don&#x27;t want everything you&#x27;re building</div>
-      <div style="flex:1;display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;padding:12px 14px;background:white;">
-      <div style="opacity:1;">
-          <div style="background:var(--navy);color:white;padding:5px 10px;font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:0.3px;border-radius:4px 4px 0 0;">Must-Have</div>
-          <div style="background:var(--grey-1);border-radius:0 0 4px 4px;"><div style="padding:5px 10px;font-size:8px;border-bottom:1px solid var(--grey-2);">
-              Reporting: Automated weekly<div style="font-size:7px;color:var(--grey-3);margin-top:2px;">9/10 · 32%</div>
-            </div><div style="padding:5px 10px;font-size:8px;border-bottom:1px solid var(--grey-2);">
-              Integrations: One-click setup<div style="font-size:7px;color:var(--grey-3);margin-top:2px;">8/10 · 26%</div>
-            </div></div>
-        </div><div style="opacity:1;">
-          <div style="background:var(--grey-4);color:white;padding:5px 10px;font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:0.3px;border-radius:4px 4px 0 0;">Nice-to-Have</div>
-          <div style="background:var(--grey-1);border-radius:0 0 4px 4px;"><div style="padding:5px 10px;font-size:8px;border-bottom:1px solid var(--grey-2);">
-              Time tracking: Built-in timer<div style="font-size:7px;color:var(--grey-3);margin-top:2px;">6/10 · 18%</div>
-            </div><div style="padding:5px 10px;font-size:8px;border-bottom:1px solid var(--grey-2);">
-              Client portal: White-label<div style="font-size:7px;color:var(--grey-3);margin-top:2px;">5/10 · 14%</div>
-            </div></div>
-        </div><div style="opacity:0.6;">
-          <div style="background:var(--grey-2);color:var(--grey-4);padding:5px 10px;font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:0.3px;border-radius:4px 4px 0 0;">Expendable</div>
-          <div style="background:var(--grey-1);border-radius:0 0 4px 4px;"><div style="padding:5px 10px;font-size:8px;border-bottom:1px solid var(--grey-2);">
-              Custom workflows<div style="font-size:7px;color:var(--grey-3);margin-top:2px;">3/10 · 6%</div>
-            </div><div style="padding:5px 10px;font-size:8px;border-bottom:1px solid var(--grey-2);">
-              AI task suggestions<div style="font-size:7px;color:var(--grey-3);margin-top:2px;">2/10 · 3%</div>
-            </div><div style="padding:5px 10px;font-size:8px;border-bottom:1px solid var(--grey-2);">
-              Real-time collaboration<div style="font-size:7px;color:var(--grey-3);margin-top:2px;">1/10 · 1%</div>
-            </div></div>
+      <div class="c-headline">Your Customers Don&#x27;t Want Everything You&#x27;re Building</div>
+      <div style="flex:1;display:grid;grid-template-columns:1.3fr 0.7fr;grid-template-rows:1fr;gap:1px;background:var(--grey-2);">
+      <div style="background:white;padding:12px 14px;overflow:auto;">
+        <div class="c-label" style="color:#ED3694;margin-bottom:8px;">The 6 Rounds</div>
+        <div class="rounds"><div class="rnd picked"><div class="rn">R1</div><div style="font-size:7px;color:var(--grey-4);">The Bare Bones vs The Agency Essential</div><div style="font-size:7px;font-weight:700;color:#ED3694;">The Agency Essential</div></div><div class="rnd picked"><div class="rn">R2</div><div style="font-size:7px;color:var(--grey-4);">The Network Play vs The Data Engine</div><div style="font-size:7px;font-weight:700;color:#ED3694;">The Data Engine</div></div><div class="rnd picked"><div class="rn">R3</div><div style="font-size:7px;color:var(--grey-4);">The Collab Suite vs The Integration Hub</div><div style="font-size:7px;font-weight:700;color:#ED3694;">The Integration Hub</div></div><div class="rnd picked"><div class="rn">R4</div><div style="font-size:7px;color:var(--grey-4);">The Full Stack vs The Lean Build</div><div style="font-size:7px;font-weight:700;color:#ED3694;">The Lean Build</div></div><div class="rnd picked"><div class="rn">R5</div><div style="font-size:7px;color:var(--grey-4);">The Innovation Kit vs The Report Machine</div><div style="font-size:7px;font-weight:700;color:#ED3694;">The Report Machine</div></div><div class="rnd picked"><div class="rn">R6</div><div style="font-size:7px;color:var(--grey-4);">The Feature Feast vs The Core Three</div><div style="font-size:7px;font-weight:700;color:#ED3694;">The Core Three</div></div></div>
+      </div>
+      <div style="background:white;padding:12px 14px;overflow:auto;">
+        <div class="c-label" style="color:#ED3694;margin-bottom:8px;">Feature Value Stack</div>
+        <div style="border-radius:4px;overflow:hidden;margin-bottom:4px;">
+          <div style="background:var(--navy);color:white;padding:5px 14px;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.3px;">Must-have</div>
+          <div style="background:var(--grey-1);"><div style="display:flex;justify-content:space-between;padding:4px 14px;font-size:9px;border-bottom:1px solid var(--grey-2);">Automated weekly reporting <span style="font-size:8px;color:var(--grey-3);">6/6</span></div><div style="display:flex;justify-content:space-between;padding:4px 14px;font-size:9px;border-bottom:1px solid var(--grey-2);">One-click integrations <span style="font-size:8px;color:var(--grey-3);">5/6</span></div></div>
+        </div><div style="border-radius:4px;overflow:hidden;margin-bottom:4px;">
+          <div style="background:var(--grey-4);color:white;padding:5px 14px;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.3px;">Nice-to-have</div>
+          <div style="background:var(--grey-1);"><div style="display:flex;justify-content:space-between;padding:4px 14px;font-size:9px;border-bottom:1px solid var(--grey-2);">Time tracking <span style="font-size:8px;color:var(--grey-3);">4/6</span></div><div style="display:flex;justify-content:space-between;padding:4px 14px;font-size:9px;border-bottom:1px solid var(--grey-2);">White-label client portal <span style="font-size:8px;color:var(--grey-3);">3/6</span></div></div>
+        </div><div style="border-radius:4px;overflow:hidden;margin-bottom:4px;">
+          <div style="background:var(--grey-2);color:var(--grey-4);padding:5px 14px;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.3px;">Expendable</div>
+          <div style="background:var(--grey-1);"><div style="display:flex;justify-content:space-between;padding:4px 14px;font-size:9px;border-bottom:1px solid var(--grey-2);">Custom workflows <span style="font-size:8px;color:var(--grey-3);">2/6</span></div><div style="display:flex;justify-content:space-between;padding:4px 14px;font-size:9px;border-bottom:1px solid var(--grey-2);">AI task suggestions <span style="font-size:8px;color:var(--grey-3);">1/6</span></div><div style="display:flex;justify-content:space-between;padding:4px 14px;font-size:9px;border-bottom:1px solid var(--grey-2);">Real-time collaboration <span style="font-size:8px;color:var(--grey-3);">1/6</span></div></div>
         </div>
-      <div style="grid-column:1/-1;background:var(--grey-1);border-left:3px solid #F15A22;padding:8px 12px;border-radius:4px;">
-          <div style="font-size:8px;font-weight:700;color:#F15A22;text-transform:uppercase;letter-spacing:0.3px;margin-bottom:3px;">The Surprise</div>
-          <div style="font-size:8px;color:var(--grey-4);line-height:1.4;">Real-time collaboration — the founder&#x27;s favourite feature and centrepiece of the pitch deck — had only 1% relative importance. Customers chose the bundle WITHOUT it 9 out of 10 times. Meanwhile, automated reporting drove 32% of all choices.</div>
+        <div style="margin-top:8px;padding:8px 14px;background:var(--accent-light);border-radius:4px;border-left:3px solid var(--accent);">
+          <div style="font-size:8px;font-weight:600;text-transform:uppercase;color:var(--accent-text);margin-bottom:2px;">Surprise</div>
+          <div style="font-size:9px;color:var(--navy);line-height:1.4;">Real-time collaboration &#x2014; the founder&#x27;s favourite feature &#x2014; lost 5 of 6 rounds</div>
         </div>
-      <div style="grid-column:1/-1;background:var(--grey-1);border-left:3px solid #ED3694;padding:8px 12px;border-radius:4px;">
-          <div style="font-size:8px;font-weight:700;color:#ED3694;text-transform:uppercase;letter-spacing:0.3px;margin-bottom:3px;">Minimum Viable Offer · $39/mo</div>
-          <div style="font-size:8px;color:var(--grey-4);line-height:1.4;">Reporting: Automated weekly · Integrations: One-click · Time tracking: Basic · Portal: None · Collaboration: None</div>
+        <div style="margin-top:6px;padding:8px 14px;background:var(--navy);border-radius:4px;">
+          <div style="font-size:8px;font-weight:600;text-transform:uppercase;color:var(--accent-on-dark);margin-bottom:2px;">Minimum Viable Offer</div>
+          <div style="font-size:9px;color:white;line-height:1.4;">Reporting + Integrations + Time Tracking at $39/mo</div>
         </div>
-      <div style="grid-column:1/-1;background:var(--grey-1);border-left:3px solid #27BDBE;padding:8px 12px;border-radius:4px;">
-          <div style="font-size:8px;font-weight:700;color:#27BDBE;text-transform:uppercase;letter-spacing:0.3px;margin-bottom:3px;">Optimised Offer · $49/mo</div>
-          <div style="font-size:8px;color:var(--grey-4);line-height:1.4;">Reporting: Automated weekly · Integrations: One-click · Time tracking: Built-in timer · Portal: White-label · Collaboration: None</div>
-        </div>
-      <div style="grid-column:1/-1;background:var(--grey-1);padding:8px 12px;border-radius:4px;">
-          <div style="font-size:8px;font-weight:700;color:#ED3694;text-transform:uppercase;letter-spacing:0.3px;margin-bottom:4px;">Conjoint Utilities</div>
-          <table style="width:100%;border-collapse:collapse;">
-            <tr>
-              <th style="padding:3px 6px;font-size:7px;text-align:left;border-bottom:2px solid var(--grey-3);">Category</th>
-              <th style="padding:3px 6px;font-size:7px;text-align:center;border-bottom:2px solid var(--grey-3);">Level 1</th>
-              <th style="padding:3px 6px;font-size:7px;text-align:center;border-bottom:2px solid var(--grey-3);">Level 2</th>
-              <th style="padding:3px 6px;font-size:7px;text-align:center;border-bottom:2px solid var(--grey-3);">Level 3</th>
-              <th style="padding:3px 6px;font-size:7px;text-align:center;border-bottom:2px solid var(--grey-3);">Importance</th>
-            </tr>
-            <tr>
-              <td style="padding:3px 6px;font-size:7px;border-bottom:1px solid var(--grey-2);">Reporting</td>
-              <td style="padding:3px 6px;font-size:7px;text-align:center;border-bottom:1px solid var(--grey-2);">0.2</td>
-              <td style="padding:3px 6px;font-size:7px;text-align:center;border-bottom:1px solid var(--grey-2);">0.55</td>
-              <td style="padding:3px 6px;font-size:7px;text-align:center;border-bottom:1px solid var(--grey-2);">0.9</td>
-              <td style="padding:3px 6px;font-size:7px;text-align:center;font-weight:700;border-bottom:1px solid var(--grey-2);">32%</td>
-            </tr><tr>
-              <td style="padding:3px 6px;font-size:7px;border-bottom:1px solid var(--grey-2);">Integrations</td>
-              <td style="padding:3px 6px;font-size:7px;text-align:center;border-bottom:1px solid var(--grey-2);">0.25</td>
-              <td style="padding:3px 6px;font-size:7px;text-align:center;border-bottom:1px solid var(--grey-2);">0.6</td>
-              <td style="padding:3px 6px;font-size:7px;text-align:center;border-bottom:1px solid var(--grey-2);">0.85</td>
-              <td style="padding:3px 6px;font-size:7px;text-align:center;font-weight:700;border-bottom:1px solid var(--grey-2);">26%</td>
-            </tr><tr>
-              <td style="padding:3px 6px;font-size:7px;border-bottom:1px solid var(--grey-2);">Time Tracking</td>
-              <td style="padding:3px 6px;font-size:7px;text-align:center;border-bottom:1px solid var(--grey-2);">0.35</td>
-              <td style="padding:3px 6px;font-size:7px;text-align:center;border-bottom:1px solid var(--grey-2);">0.55</td>
-              <td style="padding:3px 6px;font-size:7px;text-align:center;border-bottom:1px solid var(--grey-2);">0.7</td>
-              <td style="padding:3px 6px;font-size:7px;text-align:center;font-weight:700;border-bottom:1px solid var(--grey-2);">18%</td>
-            </tr><tr>
-              <td style="padding:3px 6px;font-size:7px;border-bottom:1px solid var(--grey-2);">Client Portal</td>
-              <td style="padding:3px 6px;font-size:7px;text-align:center;border-bottom:1px solid var(--grey-2);">0.3</td>
-              <td style="padding:3px 6px;font-size:7px;text-align:center;border-bottom:1px solid var(--grey-2);">0.5</td>
-              <td style="padding:3px 6px;font-size:7px;text-align:center;border-bottom:1px solid var(--grey-2);">0.65</td>
-              <td style="padding:3px 6px;font-size:7px;text-align:center;font-weight:700;border-bottom:1px solid var(--grey-2);">14%</td>
-            </tr><tr>
-              <td style="padding:3px 6px;font-size:7px;border-bottom:1px solid var(--grey-2);">Collaboration</td>
-              <td style="padding:3px 6px;font-size:7px;text-align:center;border-bottom:1px solid var(--grey-2);">0.45</td>
-              <td style="padding:3px 6px;font-size:7px;text-align:center;border-bottom:1px solid var(--grey-2);">0.5</td>
-              <td style="padding:3px 6px;font-size:7px;text-align:center;border-bottom:1px solid var(--grey-2);">0.48</td>
-              <td style="padding:3px 6px;font-size:7px;text-align:center;font-weight:700;border-bottom:1px solid var(--grey-2);">3%</td>
-            </tr>
-          </table>
-        </div>
+      </div>
     </div>
     </div>
   </div>
   <div class="ftr">
-    <span>Framework: Green &amp; Rao, Conjoint Analysis (1971) · Choice-based conjoint · March 2026</span>
+    <span>Framework: Binary conjoint analysis &#xB7; 6 rounds &#xB7; March 2026</span>
     <span class="ftr-page">5 / 5</span>
   </div>
 </div>
