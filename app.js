@@ -2081,8 +2081,8 @@ async function streamResponse() {
                             requestAnimationFrame(() => {
                                 renderPending = false;
                                 const displayText = fullText
-                                    .replace(/\[(?:BOARD|CANVAS|PITCH|RISK|EFF|FLYWHEEL|BUNDLE|PARK|PHASE|STEP|CELEBRATE|SUGGEST|OPTIONS|WRAP|END_SESSION|GAP_\w+)[:\s][^\]]*\]/g, '')
-                                    .replace(/\[(?:WRAP|CELEBRATE|END_SESSION|GAP_NONE)\]/g, '')
+                                    .replace(/\[(?:BOARD|CANVAS|PITCH|RISK|EFF|FLYWHEEL|BUNDLE|PARK|PHASE|STEP|CELEBRATE|SUGGEST|OPTIONS|WRAP|END_SESSION|SETUP_FORM|GAP_\w+)[:\s][^\]]*\]/g, '')
+                                    .replace(/\[(?:WRAP|CELEBRATE|END_SESSION|GAP_NONE|SETUP_FORM)\]/g, '')
                                     .trim();
                                 if (agentDiv) agentDiv.innerHTML = renderMarkdown(displayText);
                                 scrollToBottom();
@@ -2136,6 +2136,89 @@ async function streamResponse() {
             agentDiv.after(chipRow);
             scrollToBottom();
         }
+    }
+
+    // Render [SETUP_FORM] — inline structured form for Trade-Off category input
+    if (fullText && fullText.includes('[SETUP_FORM]') && agentDiv) {
+        fullText = fullText.replace(/\n?\[SETUP_FORM\]/g, '').trim();
+        agentDiv.innerHTML = renderMarkdown(fullText);
+        const formCard = document.createElement('div');
+        formCard.className = 'setup-form-card';
+        formCard.innerHTML = `
+            <div class="setup-form-header">Define your 4 categories</div>
+            <div class="setup-form-grid">
+                <div class="setup-form-label-row">
+                    <span class="setup-form-col-label"></span>
+                    <span class="setup-form-col-label">Category</span>
+                    <span class="setup-form-col-label">Low level</span>
+                    <span class="setup-form-col-label">High level</span>
+                </div>
+                ${[1,2,3,4].map(i => `
+                <div class="setup-form-row" data-row="${i}">
+                    <span class="setup-form-row-num">${i}</span>
+                    <input type="text" class="setup-input sf-cat" placeholder="e.g. Support level" data-idx="${i}" />
+                    <input type="text" class="setup-input sf-low" placeholder="e.g. Email only" data-idx="${i}" />
+                    <input type="text" class="setup-input sf-high" placeholder="e.g. 24/7 dedicated" data-idx="${i}" />
+                </div>`).join('')}
+                <div class="setup-form-row setup-form-price-row">
+                    <span class="setup-form-row-num">$</span>
+                    <input type="text" class="setup-input sf-price-min" placeholder="Min price" />
+                    <input type="text" class="setup-input sf-price-max" placeholder="Max price" style="grid-column: span 2;" />
+                </div>
+            </div>
+            <button class="setup-form-submit">Lock it in →</button>
+        `;
+        agentDiv.after(formCard);
+        // Focus first input
+        const firstInput = formCard.querySelector('.sf-cat');
+        if (firstInput) setTimeout(() => firstInput.focus(), 100);
+        // Tab through inputs naturally — Enter in last field submits
+        formCard.querySelectorAll('.setup-input').forEach(inp => {
+            inp.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const inputs = Array.from(formCard.querySelectorAll('.setup-input'));
+                    const idx = inputs.indexOf(e.target);
+                    if (idx < inputs.length - 1) {
+                        inputs[idx + 1].focus();
+                    } else {
+                        formCard.querySelector('.setup-form-submit').click();
+                    }
+                }
+            });
+        });
+        // Submit handler
+        formCard.querySelector('.setup-form-submit').addEventListener('click', () => {
+            const cats = [];
+            let valid = true;
+            for (let i = 1; i <= 4; i++) {
+                const cat = formCard.querySelector(`.sf-cat[data-idx="${i}"]`).value.trim();
+                const low = formCard.querySelector(`.sf-low[data-idx="${i}"]`).value.trim();
+                const high = formCard.querySelector(`.sf-high[data-idx="${i}"]`).value.trim();
+                if (!cat || !low || !high) { valid = false; break; }
+                cats.push({ cat, low, high });
+            }
+            const minPrice = formCard.querySelector('.sf-price-min').value.trim();
+            const maxPrice = formCard.querySelector('.sf-price-max').value.trim();
+            if (!valid || !minPrice || !maxPrice) {
+                formCard.querySelector('.setup-form-submit').textContent = 'Fill in all fields first';
+                setTimeout(() => { formCard.querySelector('.setup-form-submit').textContent = 'Lock it in →'; }, 2000);
+                return;
+            }
+            // Build structured message
+            let msg = 'Here are my 4 categories:\n\n';
+            cats.forEach((c, i) => {
+                msg += (i+1) + '. **' + c.cat + '**: Low — ' + c.low + ' | High — ' + c.high + '\n';
+            });
+            msg += '\nPrice range: ' + minPrice + ' — ' + maxPrice;
+            formCard.classList.add('setup-form-submitted');
+            formCard.querySelector('.setup-form-submit').textContent = '✓ Locked in';
+            formCard.querySelector('.setup-form-submit').disabled = true;
+            // Disable all inputs
+            formCard.querySelectorAll('.setup-input').forEach(inp => { inp.disabled = true; });
+            sendMessage(msg);
+        });
+        scrollToBottom();
     }
 
     // Clear resumed flag after first response so subsequent messages are normal
