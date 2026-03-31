@@ -337,6 +337,37 @@ const EXERCISE_HINTS = {
     'flywheel':         'Type, chat, or upload — e.g. "Our users love it but growth has stalled"'
 };
 
+// Rotating placeholder prompts per exercise — cycle as conversation progresses
+const EXERCISE_PLACEHOLDERS = {
+    'five-whys':        ['Describe your challenge...', 'Why is that a problem?', 'What\'s underneath that?', 'What would change if you fixed the root cause?'],
+    'jtbd':             ['What are your customers trying to get done?', 'When do they struggle most?', 'What workaround do they use today?', 'What progress are they seeking?'],
+    'empathy-map':      ['Who is the person you\'re designing for?', 'What do they say out loud?', 'What are they actually doing?', 'What do they think but won\'t say?'],
+    'hmw':              ['What\'s the problem you want to reframe?', 'How might we turn that constraint into an opportunity?', 'Which HMW feels most energising?'],
+    'scamper':          ['What product or process are you rethinking?', 'What if you removed the biggest feature?', 'What could you combine or substitute?'],
+    'crazy-8s':         ['What challenge needs fresh ideas?', 'Go wilder — what\'s the opposite approach?', 'What would a competitor never try?'],
+    'pre-mortem':       ['What initiative are you stress-testing?', 'Imagine it failed — what went wrong?', 'What\'s the most likely failure?', 'How would you prevent that?'],
+    'devils-advocate':  ['What proposal needs pressure-testing?', 'What\'s the weakest part of this plan?', 'Who would disagree and why?', 'What evidence would change your mind?'],
+    'rapid-experiment': ['What assumption keeps you up at night?', 'How could you test that in a week?', 'What\'s the cheapest way to learn?', 'What result would make you pivot?'],
+    'lean-canvas':      ['Describe your venture or idea...', 'Who has this problem most acutely?', 'What makes your solution different?', 'How will you reach early customers?'],
+    'effectuation':     ['What skills and expertise do you bring?', 'Who do you already know?', 'What can you afford to lose?', 'What could you start this week?'],
+    'mash-up':          ['What problem are you solving?', 'What unrelated industry inspires you?', 'What would that look like applied here?'],
+    'trade-off':        ['What features are you deciding between?', 'Which would you give up first?', 'What surprised you about that choice?', 'What does the data say your customers want?'],
+    'cold-open':        ['Who do you need to explain this to?', 'What do they care about most?', 'How did you respond to that?'],
+    'theory-of-change': ['What long-term impact are you trying to create?', 'What has to change first?', 'How do you know your activities cause that change?'],
+    'reality-check':    ['What metric are you most proud of?', 'What evidence would disprove your assumptions?', 'Where is the gap between belief and data?'],
+    'wardley':          ['What user need are you starting from?', 'What components does that depend on?', 'What should you build vs buy?'],
+};
+
+// Total steps per exercise (used for "Step N of M" progress indicator)
+const EXERCISE_STEPS = {
+    'five-whys': 2, 'jtbd': 3, 'empathy-map': 3, 'hmw': 3, 'scamper': 3,
+    'crazy-8s': 3, 'pre-mortem': 3, 'devils-advocate': 5, 'rapid-experiment': 4,
+    'lean-canvas': 3, 'effectuation': 3, 'mash-up': 3, 'analogical': 3,
+    'cold-open': 3, 'iceberg': 3, 'constraint-flip': 3, 'trade-off': 4,
+    'theory-of-change': 3, 'reality-check': 3, 'wardley': 4, 'socratic': 3,
+    'flywheel': 3
+};
+
 // Exercise arc descriptions for activity brief cards
 const EXERCISE_ARCS = {
     'five-whys':        'We\'ll name your challenge, then dig through five layers of "why?" to find the root cause underneath.',
@@ -1091,7 +1122,7 @@ function startExercise(mode, exercise, startMsg = null) {
     state.mode = mode;
     state.exercise = exercise;
     state.messages = [];
-    state.exchangeCount = 0; state.tradeOffRound = 0;
+    state.exchangeCount = 0; state.tradeOffRound = 0; state.currentStep = 0;
     state.reportGenerated = false;
     state.reportText = '';
     state.routing = false;
@@ -1792,6 +1823,7 @@ function saveSession() {
         board: state.board,
         wrapped: state.wrapped,
         tradeOffRound: state.tradeOffRound,
+        currentStep: state.currentStep,
         currentPhase: state.currentPhase,
         sessionStartTime: state.sessionStartTime,
         pushHarder: state.pushHarder,
@@ -1820,6 +1852,7 @@ function restoreSession(session) {
         board: session.board || { cards: [], visible: false },
         wrapped: session.wrapped || false,
         tradeOffRound: session.tradeOffRound || 0,
+        currentStep: session.currentStep || 0,
         currentPhase: session.currentPhase || null,
         sessionStartTime: session.sessionStartTime || Date.now(),
         pushHarder: session.pushHarder || false,
@@ -1985,6 +2018,7 @@ async function streamResponse() {
 
     let fullText = '';
     let agentDiv = null;
+    let renderPending = false;
 
     try {
         const res = await fetch('/api/chat', {
@@ -2041,13 +2075,19 @@ async function streamResponse() {
                             messagesEl.appendChild(agentDiv);
                         }
                         fullText += parsed.text;
-                        // Strip known tags from live display (they're parsed after stream ends)
-                        const displayText = fullText
-                            .replace(/\[(?:BOARD|CANVAS|PITCH|RISK|EFF|FLYWHEEL|BUNDLE|PARK|PHASE|CELEBRATE|SUGGEST|OPTIONS|WRAP|END_SESSION|GAP_\w+)[:\s][^\]]*\]/g, '')
-                            .replace(/\[(?:WRAP|CELEBRATE|END_SESSION|GAP_NONE)\]/g, '')
-                            .trim();
-                        agentDiv.innerHTML = renderMarkdown(displayText);
-                        scrollToBottom();
+                        // Batch DOM updates at ~30fps for smoother feel
+                        if (!renderPending) {
+                            renderPending = true;
+                            requestAnimationFrame(() => {
+                                renderPending = false;
+                                const displayText = fullText
+                                    .replace(/\[(?:BOARD|CANVAS|PITCH|RISK|EFF|FLYWHEEL|BUNDLE|PARK|PHASE|STEP|CELEBRATE|SUGGEST|OPTIONS|WRAP|END_SESSION|GAP_\w+)[:\s][^\]]*\]/g, '')
+                                    .replace(/\[(?:WRAP|CELEBRATE|END_SESSION|GAP_NONE)\]/g, '')
+                                    .trim();
+                                if (agentDiv) agentDiv.innerHTML = renderMarkdown(displayText);
+                                scrollToBottom();
+                            });
+                        }
                     }
                 } catch (e) {
                     // Skip malformed JSON
@@ -2368,6 +2408,15 @@ async function streamResponse() {
             }
         }
 
+        // Parse [STEP:N] tag — progress step indicator
+        const stepMatch = fullText.match(/\[STEP:\s*(\d+)\]/);
+        if (stepMatch) {
+            state.currentStep = parseInt(stepMatch[1], 10);
+            fullText = fullText.replace(/\n?\[STEP:\s*\d+\]/g, '').trim();
+            if (agentDiv) agentDiv.innerHTML = renderMarkdown(fullText);
+            updateProgressIndicator();
+        }
+
         // Parse [CELEBRATE] tag — breakthrough moment effect
         const celebrateMatch = fullText.match(/\[CELEBRATE\]/);
         if (celebrateMatch) {
@@ -2413,6 +2462,12 @@ async function streamResponse() {
         } else {
             state.exchangeCount++;
             updateProgressIndicator();
+            // Rotate input placeholder based on conversation progress
+            const placeholders = EXERCISE_PLACEHOLDERS[state.exercise];
+            if (placeholders) {
+                const idx = Math.min(state.exchangeCount, placeholders.length - 1);
+                inputField.placeholder = placeholders[idx];
+            }
             maybeShowReportCta();
             // Show wrap-up card if facilitator signalled the exercise is complete
             if (wrapSignaled && !state.reportGenerated) {
@@ -3947,10 +4002,18 @@ function updateProgressIndicator() {
         return;
     }
 
-    const expected = EXERCISE_EXCHANGES[state.exercise] || 8;
-    const current = state.exchangeCount;
-    const pct = Math.min(100, Math.round((current / expected) * 100));
-    el.innerHTML = `<span class="progress-count">${current} of ~${expected}</span><div class="progress-bar-track"><div class="progress-bar-fill" style="width:${pct}%"></div></div>`;
+    // Step-based progress (from [STEP:N] tags) takes priority over exchange count
+    const totalSteps = EXERCISE_STEPS[state.exercise];
+    if (totalSteps && state.currentStep > 0) {
+        const step = Math.min(state.currentStep, totalSteps);
+        const pct = Math.min(100, Math.round((step / totalSteps) * 100));
+        el.innerHTML = `<span class="progress-count">Step ${step} of ${totalSteps}</span><div class="progress-bar-track"><div class="progress-bar-fill" style="width:${pct}%"></div></div>`;
+    } else {
+        const expected = EXERCISE_EXCHANGES[state.exercise] || 8;
+        const current = state.exchangeCount;
+        const pct = Math.min(100, Math.round((current / expected) * 100));
+        el.innerHTML = `<span class="progress-count">${current} of ~${expected}</span><div class="progress-bar-track"><div class="progress-bar-fill" style="width:${pct}%"></div></div>`;
+    }
     el.classList.remove('hidden');
 }
 

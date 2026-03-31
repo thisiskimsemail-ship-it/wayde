@@ -842,6 +842,8 @@ NAME THE PHASE: When transitioning between diverge and converge, say it out loud
 
 PHASE SIGNAL: When you transition between diverge and converge phases, emit [PHASE: diverge] or [PHASE: converge] on its own line at the end of your response. The frontend uses this to update a visual cue. Only emit at genuine transitions — not every response.
 
+STEP PROGRESS: At the start of each new phase or major section of the exercise, emit [STEP:N] on its own line (where N is the phase number, starting from 1). This powers a progress indicator in the UI. Emit it once when entering each phase — not on every response. For the very first exchange, emit [STEP:1].
+
 BOARD CARD REMINDER — CRITICAL: You MUST populate the user's Workshop Board as you go. After every 2-3 exchanges, check if anything card-worthy has emerged. Emit these tags on their own line at the END of your response:
 - [INSIGHT: one-sentence description] — when a key insight or root cause surfaces
 - [IDEA: one-sentence description] — when a promising idea or solution emerges

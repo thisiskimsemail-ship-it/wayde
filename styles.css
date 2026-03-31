@@ -4712,10 +4712,13 @@ body[data-mode] .board-zone .zone-name { color: var(--stage-color); }
 }
 
 .zone-empty {
-    font-size: 0.7rem;
-    color: rgba(255,255,255,0.2);
-   
-    padding: 0.25rem 0;
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.25);
+    padding: 0.5rem 0.6rem;
+    border: 1px dashed rgba(255,255,255,0.1);
+    border-radius: 6px;
+    font-style: italic;
+    margin-top: 0.25rem;
 }
 
 .zone-cards:not(:empty) + .zone-empty { display: none; }
@@ -4836,7 +4839,7 @@ html[data-theme="light"] .board-zone.drag-over { background: rgba(0,0,0,0.05); o
 html[data-theme="light"] .board-title { color: rgba(0,0,0,0.4); }
 html[data-theme="light"] .zone-name { color: rgba(0,0,0,0.4); }
 html[data-theme="light"] .zone-count { background: rgba(0,0,0,0.06); color: rgba(0,0,0,0.35); }
-html[data-theme="light"] .zone-empty { color: rgba(0,0,0,0.2); }
+html[data-theme="light"] .zone-empty { color: rgba(0,0,0,0.25); border-color: rgba(0,0,0,0.1); }
 html[data-theme="light"] .board-card { background: #fff; }
 html[data-theme="light"] .board-card-text { color: rgba(0,0,0,0.8); }
 html[data-theme="light"] .board-card-source { color: rgba(0,0,0,0.3); }
