@@ -2060,7 +2060,11 @@ async function streamResponse() {
         if (fullText && fullText.trim()) {
             state.messages.push({ role: 'assistant', content: fullText.trim() });
         }
-        appendMessage('agent', 'Connection interrupted. Your progress is saved — just send another message to continue.');
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'message agent';
+        errorDiv.innerHTML = '<div class="connection-error">Connection interrupted. Your progress is saved.<button class="retry-btn" onclick="this.closest(\'.message\').remove(); streamResponse();">Retry ↻</button></div>';
+        messagesEl.appendChild(errorDiv);
+        scrollToBottom();
     }
 
     // Always remove typing indicator after stream ends

@@ -1378,31 +1378,6 @@ body:not(.in-session) .input-area { display: none !important; }
     box-shadow: 0 2px 8px rgba(241, 90, 34, 0.2);
 }
 
-/* Welcome hero — full bleed image above text */
-.welcome-hero {
-    width: calc(100% + 4rem);
-    margin-left: -2rem;
-    margin-right: -2rem;
-    margin-top: -1.5rem;
-    margin-bottom: 1.5rem;
-    height: 30vh;
-    min-height: 180px;
-    max-height: 300px;
-    overflow: hidden;
-    position: relative;
-}
-.welcome-hero-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center 40%;
-    display: block;
-}
-
-@media (max-width: 640px) {
-    .welcome-hero { width: calc(100% + 1.5rem); margin-left: -0.75rem; margin-right: -0.75rem; margin-top: -0.75rem; margin-bottom: 1rem; height: 25vh; min-height: 140px; max-height: 220px; }
-}
-
 .welcome-title {
     font-size: 2.75rem;
     font-weight: 700;
@@ -1710,6 +1685,7 @@ html[data-theme="light"] .account-dropdown-item:hover { background: rgba(0,0,0,0
 /* Mobile account */
 .mobile-account-info { padding: 0.5rem 1.2rem; }
 .mobile-account-info.hidden { display: none !important; }
+#mobileSignIn.hidden { display: none !important; }
 .mobile-account-email { display: block; font-size: 0.78rem; color: var(--text-dim); margin-bottom: 0.3rem; }
 
 /* Container */
@@ -2070,6 +2046,11 @@ html[data-theme="light"] .account-dropdown-item:hover { background: rgba(0,0,0,0
     from { opacity: 0; transform: translateY(6px); }
     to { opacity: 1; transform: translateY(0); }
 }
+
+/* Connection error + retry */
+.connection-error { display: flex; align-items: center; gap: 0.75rem; color: var(--text-dim); font-size: 0.9rem; }
+.retry-btn { background: var(--orange); color: #fff; border: none; border-radius: 6px; padding: 0.4rem 1rem; font-size: 0.85rem; font-weight: 600; cursor: pointer; white-space: nowrap; }
+.retry-btn:hover { opacity: 0.85; }
 
 /* === WADE BRAND ANIMATIONS === */
 
