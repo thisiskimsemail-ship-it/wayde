@@ -514,6 +514,88 @@ def add_cache_headers(response):
 
 client = anthropic.Anthropic()
 
+# === MODEL RESILIENCE — retry + fallback ===
+PRIMARY_MODEL = "claude-opus-4-6"
+FALLBACK_MODEL = "claude-sonnet-4-20250514"
+MAX_RETRIES = 3
+RETRY_BASE_DELAY = 2  # seconds — doubles each attempt (2, 4, 8)
+
+
+def _is_overloaded(error):
+    """Check if an error is a transient overload we should retry."""
+    err_str = str(error).lower()
+    return 'overloaded' in err_str or '529' in err_str or 'capacity' in err_str
+
+
+def _stream_with_retry(*, system, messages, max_tokens=2048):
+    """Stream from primary model with retry + fallback to Sonnet.
+    Yields (text_chunk, model_used) tuples. Raises on total failure."""
+    import time as _time
+
+    for attempt in range(MAX_RETRIES):
+        try:
+            with client.messages.stream(
+                model=PRIMARY_MODEL,
+                max_tokens=max_tokens,
+                system=system,
+                messages=messages,
+            ) as stream:
+                for text in stream.text_stream:
+                    yield text
+                return  # Success — exit
+        except Exception as e:
+            if _is_overloaded(e) and attempt < MAX_RETRIES - 1:
+                delay = RETRY_BASE_DELAY * (2 ** attempt)
+                print(f"[Model] {PRIMARY_MODEL} overloaded (attempt {attempt + 1}/{MAX_RETRIES}), retrying in {delay}s")
+                _time.sleep(delay)
+            elif _is_overloaded(e):
+                # All retries exhausted — fall back to Sonnet
+                print(f"[Model] {PRIMARY_MODEL} overloaded after {MAX_RETRIES} attempts, falling back to {FALLBACK_MODEL}")
+                try:
+                    with client.messages.stream(
+                        model=FALLBACK_MODEL,
+                        max_tokens=max_tokens,
+                        system=system,
+                        messages=messages,
+                    ) as stream:
+                        for text in stream.text_stream:
+                            yield text
+                        return
+                except Exception as fallback_err:
+                    raise fallback_err
+            else:
+                raise  # Non-overload error — don't retry
+
+
+def _create_with_retry(*, system, messages, max_tokens=8000):
+    """Non-streaming create with retry + fallback. Returns the response object."""
+    import time as _time
+
+    for attempt in range(MAX_RETRIES):
+        try:
+            return client.messages.create(
+                model=PRIMARY_MODEL,
+                max_tokens=max_tokens,
+                system=system,
+                messages=messages,
+            )
+        except Exception as e:
+            if _is_overloaded(e) and attempt < MAX_RETRIES - 1:
+                delay = RETRY_BASE_DELAY * (2 ** attempt)
+                print(f"[Model] {PRIMARY_MODEL} overloaded (attempt {attempt + 1}/{MAX_RETRIES}), retrying in {delay}s")
+                _time.sleep(delay)
+            elif _is_overloaded(e):
+                print(f"[Model] {PRIMARY_MODEL} overloaded after {MAX_RETRIES} attempts, falling back to {FALLBACK_MODEL}")
+                return client.messages.create(
+                    model=FALLBACK_MODEL,
+                    max_tokens=max_tokens,
+                    system=system,
+                    messages=messages,
+                )
+            else:
+                raise
+
+
 # === PROGRAM PATHS ===
 PROGRAM_PATHS = {
     'founder': {
@@ -2529,17 +2611,16 @@ def chat():
 
     def generate():
         try:
-            with client.messages.stream(
-                model="claude-opus-4-6",
-                max_tokens=2048,
+            for text in _stream_with_retry(
                 system=system_prompt,
                 messages=messages,
-            ) as stream:
-                for text in stream.text_stream:
-                    yield f"data: {json.dumps({'text': text})}\n\n"
+                max_tokens=2048,
+            ):
+                yield f"data: {json.dumps({'text': text})}\n\n"
             yield "data: [DONE]\n\n"
         except Exception as e:
-            yield f"data: {json.dumps({'error': str(e)})}\n\n"
+            print(f"[Chat] All models failed: {e}")
+            yield f"data: {json.dumps({'error': 'Pete is a bit overwhelmed right now. Give it a moment and try again.'})}\n\n"
 
     return Response(stream_with_context(generate()), mimetype='text/event-stream',
                     headers={'Cache-Control': 'no-cache', 'X-Accel-Buffering': 'no'})
@@ -4605,16 +4686,15 @@ def pre_report():
 
     def generate():
         try:
-            with client.messages.stream(
-                model="claude-opus-4-6",
-                max_tokens=150,
+            for text in _stream_with_retry(
                 system=PRE_REPORT_PROMPT,
                 messages=pre_messages,
-            ) as stream:
-                for text in stream.text_stream:
-                    yield f"data: {json.dumps({'text': text})}\n\n"
+                max_tokens=150,
+            ):
+                yield f"data: {json.dumps({'text': text})}\n\n"
         except Exception as e:
-            yield f"data: {json.dumps({'error': str(e)})}\n\n"
+            print(f"[PreReport] All models failed: {e}")
+            yield f"data: {json.dumps({'error': 'Pete is a bit overwhelmed right now. Give it a moment and try again.'})}\n\n"
         yield "data: [DONE]\n\n"
 
     return Response(stream_with_context(generate()), mimetype='text/event-stream',
@@ -4722,11 +4802,10 @@ def generate_report():
 
     try:
         print(f"[REPORT] Generating JSON for {exercise_name} ({mode_name}), {len(report_messages)} messages, system prompt ~{len(system)} chars")
-        response = client.messages.create(
-            model="claude-opus-4-6",
-            max_tokens=8000,
+        response = _create_with_retry(
             system=system,
             messages=report_messages,
+            max_tokens=8000,
         )
         # Extract text from response
         report_text = ''
