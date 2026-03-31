@@ -247,6 +247,9 @@ const MODE_LABELS = {
     build: 'The Build'
 };
 
+// Exercises with custom board layouts (single source of truth — used for layout switching)
+const CUSTOM_BOARD_EXERCISES = ['lean-canvas', 'pre-mortem', 'effectuation', 'flywheel', 'cold-open', 'iceberg', 'constraint-flip', 'socratic', 'reality-check', 'theory-of-change', 'trade-off', 'five-whys', 'empathy-map', 'jtbd', 'crazy-8s', 'hmw', 'scamper', 'devils-advocate', 'rapid-experiment', 'mash-up', 'analogical', 'wardley'];
+
 // Reverse map: exercise key → mode (used for routing suggestions)
 const EXERCISE_MODE = {
     'five-whys':        'untangle',
@@ -1045,6 +1048,7 @@ $$('.card-exercise-btn').forEach(btn => {
 // Starter prompts removed — users type, chat, or upload directly
 
 function startExercise(mode, exercise, startMsg = null) {
+    if (state.streaming) return; // Prevent concurrent streams
     trackEvent('tool_start', { tool: exercise });
     // If transitioning from routing, use the user's own description as the exercise kickoff
     // so WAiDE can respond in context without asking them to repeat themselves
@@ -1143,7 +1147,7 @@ function startExercise(mode, exercise, startMsg = null) {
     routingBack.classList.add('hidden');
 
     // Switch board layout based on exercise — custom boards for structured tools
-    const customLayouts = ['lean-canvas', 'elevator-pitch', 'pre-mortem', 'effectuation', 'flywheel', 'cold-open', 'iceberg', 'constraint-flip', 'socratic', 'reality-check', 'theory-of-change', 'trade-off', 'five-whys', 'empathy-map', 'jtbd', 'crazy-8s', 'hmw', 'scamper', 'devils-advocate', 'rapid-experiment', 'mash-up', 'analogical', 'wardley'];
+    const customLayouts = CUSTOM_BOARD_EXERCISES;
     if (customLayouts.includes(exercise)) {
         switchBoardLayout(exercise);
     } else {
@@ -1413,6 +1417,10 @@ function swapToTool(mode, exercise, swapEl) {
     breakEl.dataset.mode = mode;
     breakEl.innerHTML = introHTML;
     messagesEl.appendChild(breakEl);
+
+    // Switch board layout for the new tool
+    switchBoardLayout(exercise);
+    renderBoard();
 
     // Carry all prior messages across, add a bridging message with switch marker
     state.messages = [
@@ -1771,6 +1779,7 @@ function maybeShowReportCta() {
 
 function saveSession() {
     if (!state.mode || state.mode === 'routing') return;
+    try {
     localStorage.setItem('studio_session', JSON.stringify({
         mode: state.mode,
         exercise: state.exercise,
@@ -1789,6 +1798,9 @@ function saveSession() {
         preReportAsked: state.preReportAsked,
         savedAt: Date.now()
     }));
+    } catch (e) {
+        console.warn('[Session] localStorage save failed (quota exceeded?):', e.message);
+    }
 }
 
 function clearSession() {
@@ -1834,7 +1846,7 @@ function restoreSession(session) {
     updateParkingLot();
 
     // Restore custom board layout before rendering cards
-    const customLayouts = ['lean-canvas', 'elevator-pitch', 'pre-mortem', 'effectuation', 'flywheel', 'cold-open', 'iceberg', 'constraint-flip', 'socratic', 'reality-check', 'theory-of-change', 'trade-off', 'five-whys', 'empathy-map', 'jtbd', 'crazy-8s', 'hmw', 'scamper', 'devils-advocate', 'rapid-experiment', 'mash-up', 'analogical', 'wardley'];
+    const customLayouts = CUSTOM_BOARD_EXERCISES;
     if (customLayouts.includes(state.exercise)) {
         switchBoardLayout(state.exercise);
     } else {
@@ -1869,7 +1881,7 @@ function restoreSession(session) {
 
     const SWAP_PREFIX = "Let's switch to ";
     state.messages.forEach(m => {
-        if (m.role === 'user' && m.content.startsWith(SWAP_PREFIX)) {
+        if (m.role === 'user' && typeof m.content === 'string' && m.content.startsWith(SWAP_PREFIX)) {
             // Synthetic swap message — render as inline section break
             const swappedName = m.content.slice(SWAP_PREFIX.length).split('.')[0];
             const exerciseKey = Object.entries(EXERCISE_LABELS).find(([, v]) => v === swappedName)?.[0];
@@ -2029,7 +2041,12 @@ async function streamResponse() {
                             messagesEl.appendChild(agentDiv);
                         }
                         fullText += parsed.text;
-                        agentDiv.innerHTML = renderMarkdown(fullText);
+                        // Strip known tags from live display (they're parsed after stream ends)
+                        const displayText = fullText
+                            .replace(/\[(?:BOARD|CANVAS|PITCH|RISK|EFF|FLYWHEEL|BUNDLE|PARK|PHASE|CELEBRATE|SUGGEST|OPTIONS|WRAP|END_SESSION|GAP_\w+)[:\s][^\]]*\]/g, '')
+                            .replace(/\[(?:WRAP|CELEBRATE|END_SESSION|GAP_NONE)\]/g, '')
+                            .trim();
+                        agentDiv.innerHTML = renderMarkdown(displayText);
                         scrollToBottom();
                     }
                 } catch (e) {
@@ -2039,7 +2056,11 @@ async function streamResponse() {
         }
     } catch (err) {
         typing.remove();
-        appendMessage('agent', 'Connection error. Make sure the server is running.');
+        // Save partial response so AI retains context on retry
+        if (fullText && fullText.trim()) {
+            state.messages.push({ role: 'assistant', content: fullText.trim() });
+        }
+        appendMessage('agent', 'Connection interrupted. Your progress is saved — just send another message to continue.');
     }
 
     // Always remove typing indicator after stream ends
@@ -2112,7 +2133,7 @@ async function streamResponse() {
                         if (breadcrumbStage) breadcrumbStage.textContent = (MODE_LABELS[autoMode] || autoMode).toUpperCase();
                         if (breadcrumbTool) breadcrumbTool.innerHTML = (EXERCISE_LABELS[autoKey] || autoKey) + ' <svg class="breadcrumb-chevron" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg>';
                         // Switch board layout
-                        const customLayouts = ['lean-canvas', 'elevator-pitch', 'pre-mortem', 'effectuation', 'flywheel', 'cold-open', 'iceberg', 'constraint-flip', 'socratic', 'reality-check', 'theory-of-change', 'trade-off', 'five-whys', 'empathy-map', 'jtbd', 'crazy-8s', 'hmw', 'scamper', 'devils-advocate', 'rapid-experiment', 'mash-up', 'analogical', 'wardley'];
+                        const customLayouts = CUSTOM_BOARD_EXERCISES;
                         if (customLayouts.includes(autoKey)) {
                             switchBoardLayout(autoKey);
                         } else {

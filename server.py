@@ -20,6 +20,33 @@ load_dotenv()
 app = Flask(__name__, static_folder='.', static_url_path='')
 app.config['MAX_CONTENT_LENGTH'] = 20 * 1024 * 1024  # 20MB max upload
 
+# === RATE LIMITING (in-memory, per-IP) ===
+import threading
+_rate_lock = threading.Lock()
+_rate_buckets = {}  # {ip: {'count': N, 'window_start': timestamp}}
+
+def _check_rate_limit(limit=30, window=60):
+    """Returns True if rate limit exceeded. Default: 30 requests per 60 seconds per IP."""
+    ip = request.headers.get('X-Forwarded-For', request.remote_addr or '').split(',')[0].strip()
+    now = time.time()
+    with _rate_lock:
+        bucket = _rate_buckets.get(ip)
+        if not bucket or now - bucket['window_start'] > window:
+            _rate_buckets[ip] = {'count': 1, 'window_start': now}
+            return False
+        bucket['count'] += 1
+        if bucket['count'] > limit:
+            return True
+        return False
+
+def _cleanup_rate_buckets():
+    """Remove stale rate limit entries (call periodically)."""
+    now = time.time()
+    with _rate_lock:
+        stale = [ip for ip, b in _rate_buckets.items() if now - b['window_start'] > 120]
+        for ip in stale:
+            del _rate_buckets[ip]
+
 # === AUTH (Magic-link passwordless via PyJWT) ===
 JWT_SECRET = os.environ.get('JWT_SECRET', secrets.token_hex(32))
 JWT_EXPIRY = 30 * 24 * 3600  # 30 days
@@ -2393,10 +2420,16 @@ def static_files(path):
 
 @app.route('/api/chat', methods=['POST'])
 def chat():
+    if _check_rate_limit(limit=30, window=60):
+        return jsonify({'error': 'Rate limit exceeded. Please wait a moment.'}), 429
+    _cleanup_rate_buckets()
     data = request.json
     mode = data.get('mode', 'untangle')
-    framework = data.get('framework')
     messages = data.get('messages', [])
+    # Trim long conversations to avoid exceeding context window
+    if len(messages) > 30:
+        messages = messages[:4] + messages[-20:]
+    framework = data.get('framework')
 
     exercise = data.get('exercise') or data.get('framework')
     prompt_key = f"{mode}:{exercise}" if exercise else mode
@@ -2514,7 +2547,7 @@ def chat():
 # === WADE WEBSITE SCRAPER ===
 
 _wade_cache = {'data': None, 'fetched_at': 0}
-_WADE_CACHE_TTL = 0  # always fetch fresh — site updated daily
+_WADE_CACHE_TTL = 3600  # cache for 1 hour — reduces latency and external dependency
 
 
 class _LinkExtractor(HTMLParser):
@@ -4558,6 +4591,8 @@ Do not use [OPTIONS] tags — keep it conversational.
 @app.route('/api/pre-report', methods=['POST'])
 def pre_report():
     """Stream a short program-aware handoff question before report generation."""
+    if _check_rate_limit(limit=10, window=60):
+        return jsonify({'error': 'Rate limit exceeded.'}), 429
     data = request.json
     messages = data.get('messages', [])
     exercise = data.get('exercise', '')
@@ -4592,6 +4627,8 @@ def pre_report():
 
 @app.route('/api/report', methods=['POST'])
 def generate_report():
+    if _check_rate_limit(limit=5, window=60):
+        return jsonify({'error': 'Rate limit exceeded.'}), 429
     from report_template import render_report_html, EXERCISE_PATHWAY
 
     data = request.json
@@ -5036,7 +5073,7 @@ def generate_canvas():
         canvas_id = str(uuid.uuid4())[:8]
         try:
             canvases = json.loads(open(SHARED_CANVASES_FILE).read()) if os.path.exists(SHARED_CANVASES_FILE) else []
-        except:
+        except Exception:
             canvases = []
         canvases.append({'id': canvas_id, 'html': html, 'data': canvas_data, 'created': datetime.now(timezone.utc).isoformat()})
         with open(SHARED_CANVASES_FILE, 'w') as f:
@@ -5055,9 +5092,9 @@ def view_canvas(canvas_id):
         canvases = json.loads(open(SHARED_CANVASES_FILE).read()) if os.path.exists(SHARED_CANVASES_FILE) else []
         canvas = next((c for c in canvases if c['id'] == canvas_id), None)
         if canvas:
-            return canvas['html']
+            return canvas['html'], 200, {'Content-Type': 'text/html; charset=utf-8'}
         return 'Canvas not found', 404
-    except:
+    except Exception:
         return 'Canvas not found', 404
 
 
@@ -6428,7 +6465,7 @@ def send_abandoned_session_emails():
 def get_analytics():
     """Simple analytics dashboard data."""
     admin_key = request.args.get('key', '')
-    if admin_key != os.environ.get('ADMIN_KEY', 'wade-studio-admin-2026'):
+    if admin_key != os.environ.get('ADMIN_KEY', ''):
         return jsonify({'error': 'Unauthorized'}), 401
     conn = get_db()
     if not conn:
@@ -6558,7 +6595,7 @@ def save_feedback():
 def feedback_summary():
     """Generate an AI-powered summary of all feedback with prioritised recommendations."""
     admin_key = request.args.get('key', '')
-    if admin_key != os.environ.get('ADMIN_KEY', 'wade-studio-admin-2026'):
+    if admin_key != os.environ.get('ADMIN_KEY', ''):
         return jsonify({'error': 'Unauthorized'}), 401
     if not os.path.exists(FEEDBACK_FILE):
         return jsonify({'summary': 'No feedback collected yet.'})
