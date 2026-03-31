@@ -214,6 +214,37 @@ function trackEvent(event, meta = {}) {
     }).catch(() => {}); // Fire and forget
 }
 
+// === GA4 (Google Analytics 4) ===
+// Loaded dynamically from /api/config so the Measurement ID stays in Railway env vars.
+// All gtag calls are no-ops until the script loads. Safe to call gtag() before init.
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+
+(async function initGA4() {
+    try {
+        const res = await fetch('/api/config');
+        const cfg = await res.json();
+        if (cfg.ga4_id) {
+            gtag('config', cfg.ga4_id);
+            const s = document.createElement('script');
+            s.async = true;
+            s.src = `https://www.googletagmanager.com/gtag/js?id=${cfg.ga4_id}`;
+            document.head.appendChild(s);
+        }
+    } catch (e) { /* GA4 not configured — silent */ }
+})();
+
+/** Fire a GA4 custom event. Automatically attaches exercise + mode. */
+function ga4(eventName, params = {}) {
+    if (typeof gtag !== 'function') return;
+    gtag('event', eventName, {
+        exercise_name: EXERCISE_LABELS?.[state?.exercise] || state?.exercise || '',
+        mode: MODE_LABELS?.[state?.mode] || state?.mode || '',
+        ...params
+    });
+}
+
 // === EXERCISE LABELS ===
 const EXERCISE_LABELS = {
     'five-whys': 'Five Whys',
@@ -753,6 +784,7 @@ async function submitLogin() {
                 status.style.color = 'var(--teal)';
             }
             if (btn) { btn.textContent = 'Link sent'; }
+            ga4('magic_link_sent', { source_page: location.pathname });
         } else {
             if (status) {
                 status.textContent = data.error || 'Something went wrong.';
@@ -1081,6 +1113,7 @@ $$('.card-exercise-btn').forEach(btn => {
 function startExercise(mode, exercise, startMsg = null) {
     if (state.streaming) return; // Prevent concurrent streams
     trackEvent('tool_start', { tool: exercise });
+    ga4('exercise_selected');
     // If transitioning from routing, use the user's own description as the exercise kickoff
     // so WAiDE can respond in context without asking them to repeat themselves
     let autoStartMsg = startMsg;
@@ -1468,6 +1501,7 @@ function swapToTool(mode, exercise, swapEl) {
 function enterStudio() {
     // Enter the studio — facilitator speaks first with welcome + icebreaker
     trackEvent('session_start');
+    ga4('session_started');
     state.mode = 'routing';
     state.exercise = 'suggest';
     state.routing = true;
@@ -3098,6 +3132,7 @@ document.getElementById('synopsisCloseBtn')?.addEventListener('click', () => {
 document.getElementById('unlockForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     trackEvent('lead_capture');
+    ga4('lead_capture');
     const submitBtn = document.getElementById('unlockSubmit');
     const email = document.getElementById('unlockEmail')?.value?.trim();
     const name = document.getElementById('unlockName')?.value?.trim();
@@ -3322,6 +3357,7 @@ async function downloadReportPdf() {
         a.download = safeName + ' - The Studio.pdf';
         a.click();
         URL.revokeObjectURL(url);
+        ga4('report_downloaded', { format: 'PDF' });
     } catch (err) {
         console.error('[Report] PDF download failed, using HTML fallback:', err);
         downloadReportDoc();
@@ -3563,6 +3599,10 @@ async function startPostSessionFlow() {
     const sessionDuration = state.sessionStartTime
         ? Math.round((Date.now() - state.sessionStartTime) / 60000)
         : Math.round(state.exchangeCount * 2);
+
+    // GA4: session completed + report generated
+    ga4('session_completed', { duration_seconds: sessionDuration * 60 });
+    ga4('report_generated');
 
     // Hide chat pane elements, board, report CTA
     const chatPane = document.getElementById('chatPane');
@@ -3874,6 +3914,7 @@ async function startPostSessionFlow() {
             const exName = EXERCISE_LABELS[state.exercise] || state.exercise;
             const text = encodeURIComponent(`Just completed a ${exName} session with The Studio (Wade Institute). ${headline}\n\nTry it at wadeinstitute.org.au/studio`);
             window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent('https://wadeinstitute.org.au/studio')}&text=${text}`, '_blank');
+            ga4('linkedin_shared');
         });
         document.getElementById('psShareEmail')?.addEventListener('click', () => {
             const headline = state._revealData?.headline || '';
@@ -5217,6 +5258,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 state.board.cards = newCards;
                 renderBoard();
                 saveSession();
+                ga4('board_consolidated', { original_count: data.original_count, new_count: data.new_count });
 
                 const reduced = data.original_count - data.new_count;
                 consolidateBtn.textContent = `✦ ${data.new_count} cards (was ${data.original_count})`;
@@ -5618,6 +5660,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await res.json();
             if (data.canvas_id) {
                 window.open('/canvas/' + data.canvas_id, '_blank');
+                ga4('canvas_saved');
             }
         } catch (e) {
             console.error('Canvas export failed', e);

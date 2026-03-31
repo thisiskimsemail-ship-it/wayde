@@ -2401,6 +2401,13 @@ SYSTEM_PROMPTS["test:reality-check"] = SYSTEM_PROMPTS["test:devils-advocate"]
 def index():
     return send_from_directory('.', 'index.html')
 
+@app.route('/api/config')
+def client_config():
+    """Public client config — non-sensitive values only."""
+    return jsonify({
+        'ga4_id': os.environ.get('GA4_MEASUREMENT_ID', ''),
+    })
+
 @app.route('/<path:path>')
 def static_files(path):
     # Block access to sensitive files
