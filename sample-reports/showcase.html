@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Your Customers Don't Want Everything You're Building — The Studio Report</title>
+<title>Your Customers Want a Bigger Battery, Not a Smarter One &#x2014; The Studio Report</title>
 <style>
   @font-face { font-family: 'GT Walsheim'; src: local('GT Walsheim Pro Light'), local('GT-Walsheim-Pro-Light'), local('GTWalsheimPro-Light'); font-weight: 300; }
   @font-face { font-family: 'GT Walsheim'; src: local('GT Walsheim Pro Regular'), local('GT-Walsheim-Pro-Regular'), local('GTWalsheimPro-Regular'); font-weight: 400; }
@@ -28,7 +28,7 @@
   }
 
   body { font-family: var(--font); font-weight: 300; font-size: 13.5px; line-height: 1.65; color: var(--grey-4); background: white; -webkit-font-smoothing: antialiased; }
-  .page { width: 210mm; min-height: 297mm; background: white; margin: 0 auto; position: relative; overflow: hidden; }
+  .page { width: 210mm; min-height: 297mm; background: white; margin: 0 auto; position: relative; overflow: hidden; display: flex; flex-direction: column; }
   .page-body { padding: 28px var(--page-x) 60px; }
 
   .hdr { background: var(--navy); padding: 14px var(--page-x); display: flex; align-items: center; justify-content: space-between; }
@@ -69,15 +69,12 @@
   blockquote { border-left: 3px solid var(--accent); padding: 10px 16px; margin: 10px 0; background: var(--accent-light); border-radius: 0 4px 4px 0; font-size: 13px; font-weight: 300; font-style: italic; color: var(--navy); line-height: 1.55; }
   blockquote strong { font-weight: 500; font-style: normal; color: var(--grey-4); font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.3px; display: block; margin-bottom: 2px; }
 
-  .fl li { list-style: none; padding: 7px 0; border-bottom: 1px solid var(--grey-1); font-size: 13px; display: flex; align-items: baseline; gap: 8px; }
-  .fl li:last-child { border-bottom: none; }
-  .fl .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); flex-shrink: 0; margin-top: 6px; }
-
   .rd { background: var(--grey-1); border-radius: 6px; padding: 12px 14px; margin-bottom: 7px; display: flex; gap: 12px; align-items: start; }
   .rd-n { font-size: 18px; font-weight: 700; color: var(--grey-3); min-width: 32px; text-align: center; padding-top: 1px; }
   .rd-body { flex: 1; }
   .rd-vs { font-size: 12.5px; color: var(--grey-4); margin-bottom: 3px; line-height: 1.45; }
   .rd-tag { display: inline-block; padding: 2px 8px; border-radius: 100px; font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.2px; background: var(--accent-light); color: var(--accent-text); margin-bottom: 3px; }
+  .rd-detail { font-size: 10px; color: var(--grey-3); margin-top: 2px; }
 
   .vs { margin-bottom: 14px; }
   .tier { border-radius: 6px; overflow: hidden; margin-bottom: 7px; }
@@ -122,15 +119,80 @@
 
   .div { height: 1px; background: var(--grey-2); margin: 20px 0; border: none; }
 
+  /* === UTILITY CHART === */
+  .chart { margin-bottom: 20px; }
+  .chart-row { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+  .chart-label { width: 110px; font-size: 11.5px; font-weight: 400; color: var(--navy); text-align: right; line-height: 1.3; }
+  .chart-bar-bg { flex: 1; height: 28px; background: var(--grey-1); border-radius: 4px; overflow: hidden; position: relative; }
+  .chart-bar { height: 100%; border-radius: 4px; display: flex; align-items: center; justify-content: flex-end; padding-right: 10px; font-size: 11px; font-weight: 600; color: white; }
+  .chart-bar--must { background: var(--navy); }
+  .chart-bar--nice { background: var(--grey-4); }
+  .chart-bar--exp { background: var(--grey-3); }
+  .chart-wins { font-size: 11px; font-weight: 500; color: var(--grey-3); min-width: 32px; }
+
+  /* === OFFER CARDS === */
+  .offers-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px; }
+  .offer-hero { background: var(--navy); border-radius: 10px; padding: 28px 32px; position: relative; overflow: hidden; }
+  .offer-hero::after { content: ''; position: absolute; top: -40px; right: -40px; width: 160px; height: 160px; border-radius: 50%; background: rgba(237,54,148,0.08); }
+  .offer-hero-tag { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; color: var(--accent-on-dark); margin-bottom: 10px; }
+  .offer-hero-price { font-size: 48px; font-weight: 700; color: white; line-height: 1; margin-bottom: 4px; }
+  .offer-hero-price span { font-size: 18px; font-weight: 300; color: rgba(255,255,255,0.5); }
+  .offer-hero-sub { font-size: 13px; font-weight: 300; color: rgba(255,255,255,0.5); margin-bottom: 18px; line-height: 1.5; }
+  .offer-levels { position: relative; z-index: 1; }
+  .offer-level { padding: 7px 0; font-size: 12.5px; font-weight: 300; border-bottom: 1px solid rgba(255,255,255,0.06); display: flex; gap: 10px; align-items: baseline; }
+  .offer-level:last-child { border-bottom: none; }
+  .offer-level--on { color: rgba(255,255,255,0.9); }
+  .offer-level--off { color: rgba(255,255,255,0.3); }
+  .offer-level .feat-icon { font-size: 11px; width: 16px; text-align: center; flex-shrink: 0; }
+  .offer-level--on .feat-icon { color: var(--teal); }
+  .offer-level--off .feat-icon { color: rgba(255,255,255,0.2); }
+
+  .offer-opt { background: white; border: 2px solid var(--accent); border-radius: 10px; padding: 24px 28px; position: relative; }
+  .offer-opt-tag { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; color: var(--accent-text); margin-bottom: 8px; }
+  .offer-opt-row { display: flex; align-items: baseline; gap: 12px; margin-bottom: 4px; }
+  .offer-opt-price { font-size: 36px; font-weight: 700; color: var(--navy); line-height: 1; }
+  .offer-opt-price span { font-size: 15px; font-weight: 300; color: var(--grey-3); }
+  .offer-opt-bump { display: inline-block; padding: 3px 10px; border-radius: 100px; font-size: 10px; font-weight: 600; background: var(--accent-light); color: var(--accent-text); letter-spacing: 0.2px; }
+  .offer-opt-sub { font-size: 13px; font-weight: 300; color: var(--grey-4); margin-bottom: 14px; line-height: 1.5; }
+  .offer-opt .offer-levels { border-top: 1px solid var(--grey-2); padding-top: 10px; }
+  .offer-opt .offer-level { color: var(--grey-4); border-bottom-color: var(--grey-1); }
+  .offer-opt .offer-level--off { color: var(--grey-3); }
+  .offer-opt .offer-level--on .feat-icon { color: var(--accent-text); }
+  .offer-opt .offer-level--off .feat-icon { color: var(--grey-3); }
+
+  /* === PRICE ELASTICITY === */
+  .elasticity { background: var(--grey-1); border-radius: 8px; padding: 20px 24px; margin-bottom: 16px; border-left: 4px solid var(--accent); }
+  .elasticity h3 { font-size: 14px; font-weight: 400; color: var(--navy); margin-bottom: 10px; }
+  .elasticity p { font-size: 12.5px; font-weight: 300; line-height: 1.6; color: var(--grey-4); margin-bottom: 8px; }
+  .elasticity p:last-child { margin-bottom: 0; }
+  .el-steps { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin: 12px 0; }
+  .el-step { background: white; border-radius: 6px; padding: 12px 14px; text-align: center; border: 1px solid var(--grey-2); }
+  .el-step-range { font-size: 10px; font-weight: 500; color: var(--grey-3); text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 4px; }
+  .el-step-val { font-size: 22px; font-weight: 700; color: var(--navy); line-height: 1.1; }
+  .el-step-label { font-size: 10px; font-weight: 300; color: var(--grey-4); margin-top: 2px; }
+  .el-step--hot { border-color: var(--navy); }
+  .el-step--warm { border-color: var(--accent); }
+  .el-step--cold { border-color: var(--grey-3); background: var(--grey-1); }
+
+  /* === LANDSCAPE CANVAS === */
   .page--landscape { width: 297mm; min-height: 210mm; }
-  .canvas { background: white; overflow: hidden; position: relative; color: var(--grey-4); height: 100%; display: flex; flex-direction: column; }
+  .canvas { background: var(--grey-1); overflow: hidden; position: relative; color: var(--grey-4); flex: 1; display: flex; flex-direction: column; }
   .canvas * { font-family: var(--font); }
-  .c-headline { font-size: 22px; font-weight: 700; color: var(--navy); padding: 16px 20px 12px; line-height: 1.25; }
-  .c-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
-  .rounds { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; }
-  .rnd { background: var(--grey-1); border: 1px solid var(--grey-2); border-radius: 4px; padding: 6px; text-align: center; font-size: 9px; }
-  .rnd .rn { font-weight: 700; font-size: 11px; color: var(--navy); }
-  .rnd.picked { border-color: var(--accent); background: white; }
+  .c-headline { font-size: 24px; font-weight: 700; color: var(--navy); padding: 18px 28px 14px; line-height: 1.25; }
+  .board { flex: 1; display: flex; flex-direction: column; gap: 0; padding: 20px 28px; overflow: hidden; }
+  .board-header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 12px; border-bottom: 2px solid var(--pink); margin-bottom: 20px; }
+  .board-title { color: var(--pink); font-size: 14px; font-weight: 700; letter-spacing: 0.06em; }
+  .board-meta { font-size: 11px; color: var(--grey-3); text-transform: uppercase; letter-spacing: 0.08em; }
+  /* Zone labels */
+  .zone-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; }
+  /* Board cards — light mode */
+  .bcard { background: white; border-radius: 8px; padding: 14px 16px; font-size: 13px; color: var(--grey-4); margin-bottom: 8px; line-height: 1.5; box-shadow: 0 1px 4px rgba(0,0,0,0.07); }
+  .bcard-tag { display: inline-block; font-size: 10px; font-weight: 600; color: var(--grey-3); margin-left: 6px; }
+  /* Round cards — light mode */
+  .rnd-card { background: white; border-radius: 8px; padding: 14px 12px; text-align: center; box-shadow: 0 1px 4px rgba(0,0,0,0.07); }
+  .rnd-num { display: block; font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+  .rnd-matchup { display: block; font-size: 10px; color: var(--grey-3); line-height: 1.35; }
+  .rnd-winner { display: block; font-size: 11px; font-weight: 700; color: var(--pink); margin-top: 4px; }
 </style>
 </head>
 <body class="pathway-test">
@@ -154,27 +216,52 @@
       <div class="hero-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg></div>
       <div class="hero-badge">The Trade-Off</div>
     </div>
-    <h1>Your Customers Don&#x27;t Want Everything You&#x27;re Building</h1>
-    <p class="hero-sub">You thought all seven features were essential. Six rounds of forced trade-offs revealed that only three survive contact with reality &#x2014; and your favourite feature wasn&#x27;t one of them.</p>
+    <h1>Your Customers Want a Bigger Battery, Not a Smarter One</h1>
+    <p class="hero-sub">You maxed out every dimension. Six rounds of forced trade-offs revealed that only two are must-haves &#x2014; and the feature you spent 18 months engineering wasn&#x27;t one of them.</p>
   </div>
   <div class="insights"><div class="ins">
-      <div class="ins-label">FEATURES TESTED</div>
-      <div class="ins-big">7</div>
-      <div class="ins-text">Seven planned features entered. Three survived.</div>
+      <div class="ins-label">Dimensions tested</div>
+      <div class="ins-big">4</div>
+      <div class="ins-text">Four dimensions entered. Two survived as must-haves.</div>
     </div><div class="ins">
-      <div class="ins-label">THE SURPRISE</div>
+      <div class="ins-label">The Surprise</div>
       <div class="ins-big">5 / 6</div>
-      <div class="ins-text">Real-time collaboration &#x2014; the pitch deck centrepiece &#x2014; lost five of six rounds</div>
+      <div class="ins-text">AI grid trading &#x2014; 18 months of engineering &#x2014; lost five of six rounds</div>
     </div><div class="ins">
-      <div class="ins-label">THE WINNER</div>
+      <div class="ins-label">The Winner</div>
       <div class="ins-big">6 / 6</div>
-      <div class="ins-text">Automated reporting won every round. The feature nearly cut for feeling &#x201C;boring&#x201D;.</div>
+      <div class="ins-text">13 kWh storage won every round. Homeowners want capacity, not clever software.</div>
     </div></div>
-  <div class="page-body"><div class="sec"><p>You came in with seven features planned for launch. A full-featured project management tool for mid-size creative agencies. &#x201C;We need all of them,&#x201D; you said. Six rounds of forced trade-offs later, the picture looks very different.</p>
-    <p>Three features dominate. Three are expendable. And the one you were most excited about &#x2014; real-time collaboration, the centrepiece of the pitch deck, the most technically complex thing you&#x27;ve built &#x2014; lost five of six rounds.</p></div>
+  <div class="page-body"><div class="sec"><p>You came in with a home battery system built around four dimensions &#x2014; storage capacity, warranty, backup speed, and smart features &#x2014; each with a basic and premium tier. &#x201C;The AI grid trading is what sets us apart,&#x201D; you said. Six rounds of forced trade-offs later, the picture looks very different.</p>
+    <p>Two dimensions dominate. One is a conditional nice-to-have. And the feature you spent the longest building &#x2014; AI load optimisation and grid trading, the centrepiece of every investor pitch &#x2014; won just one of six rounds.</p></div>
     <div class="sec">
       <div class="sh"><div class="sh-bar"></div><h2>The challenge</h2></div>
-      <p>Building a project management SaaS for mid-size agencies (15&#x2013;80 people). Seven features in the launch roadmap, limited runway, and a team convinced everything is equally important. The real question: if you can only ship three features at launch, which three?</p>
+      <p>Launching a residential battery storage system into a market dominated by Tesla Powerwall. Four product dimensions, each with a Low and High level, priced between $5,900 and $13,900 installed. The question isn&#x27;t which features to build &#x2014; it&#x27;s which combination a homeowner would actually choose over the incumbent.</p>
+    </div>
+    <div class="sec">
+      <div class="sh"><div class="sh-bar"></div><h2>The setup</h2></div>
+      <div style="border-radius:6px;overflow:hidden;border:1px solid var(--grey-2);">
+        <div style="display:grid;grid-template-columns:1.2fr 1fr 1fr;background:var(--navy);padding:8px 14px;gap:8px;">
+          <span style="font-size:10px;font-weight:600;color:rgba(255,255,255,0.7);text-transform:uppercase;letter-spacing:0.3px;">Category</span>
+          <span style="font-size:10px;font-weight:600;color:rgba(255,255,255,0.7);text-transform:uppercase;letter-spacing:0.3px;">Low</span>
+          <span style="font-size:10px;font-weight:600;color:rgba(255,255,255,0.7);text-transform:uppercase;letter-spacing:0.3px;">High</span>
+        </div>
+        <div style="display:grid;grid-template-columns:1.2fr 1fr 1fr;padding:7px 14px;gap:8px;font-size:12px;border-bottom:1px solid var(--grey-2);background:var(--grey-1);">
+          <span style="font-weight:500;color:var(--navy);">Storage capacity</span><span>5 kWh (essentials only)</span><span>13 kWh (whole-home backup)</span>
+        </div>
+        <div style="display:grid;grid-template-columns:1.2fr 1fr 1fr;padding:7px 14px;gap:8px;font-size:12px;border-bottom:1px solid var(--grey-2);">
+          <span style="font-weight:500;color:var(--navy);">Warranty</span><span>5 years standard</span><span>15 years with degradation guarantee</span>
+        </div>
+        <div style="display:grid;grid-template-columns:1.2fr 1fr 1fr;padding:7px 14px;gap:8px;font-size:12px;border-bottom:1px solid var(--grey-2);background:var(--grey-1);">
+          <span style="font-weight:500;color:var(--navy);">Backup speed</span><span>30-second switchover</span><span>Instant seamless (&lt;20 ms)</span>
+        </div>
+        <div style="display:grid;grid-template-columns:1.2fr 1fr 1fr;padding:7px 14px;gap:8px;font-size:12px;border-bottom:1px solid var(--grey-2);">
+          <span style="font-weight:500;color:var(--navy);">Smart features</span><span>Basic app monitoring</span><span>AI load optimisation + grid trading</span>
+        </div>
+        <div style="display:grid;grid-template-columns:1.2fr 1fr 1fr;padding:7px 14px;gap:8px;font-size:12px;background:var(--accent-light);">
+          <span style="font-weight:500;color:var(--accent-text);">Price range</span><span style="color:var(--accent-text);">$5,900 installed</span><span style="color:var(--accent-text);">$13,900 installed</span>
+        </div>
+      </div>
     </div></div>
   <div class="ftr">
     <span>Generated by The Studio &#xB7; Wade Institute of Entrepreneurship</span>
@@ -194,32 +281,27 @@
   <div class="page-body">
     <div class="sec">
       <div class="sh"><div class="sh-bar"></div><h2>What emerged</h2></div>
-      <p>The pattern was stark: automated reporting and one-click integrations won almost every round they appeared in. You consistently sacrificed the features you were most excited about &#x2014; real-time collaboration and AI task suggestions &#x2014; for the ones that save agency owners time on Monday mornings.</p>
-      <div class="co"><div class="co-bar"></div><div class="co-body"><strong>Synopsis</strong> You tested seven features for a creative agency PM tool and discovered that only three drive purchase decisions. Automated reporting won every round. Real-time collaboration &#x2014; your most technically complex feature &#x2014; lost five of six. Your customers want utility, not novelty.</div></div>
+      <div class="co"><div class="co-bar"></div><div class="co-body"><strong>Synopsis</strong> You tested four dimensions of a home battery system and discovered that two drive purchase decisions. Storage capacity won every round. AI grid trading &#x2014; your most technically complex feature and the centrepiece of every investor pitch &#x2014; won just one of six. Homeowners want the lights to stay on. They don&#x27;t want to trade electricity.</div></div>
 
-      <div class="rd"><div class="rd-n">1</div><div class="rd-body"><div class="rd-vs">&#x2713; The Agency Essential vs &#x2717; The Bare Bones</div><div class="rd-tag">Round 1</div></div></div>
-      <div class="rd"><div class="rd-n">2</div><div class="rd-body"><div class="rd-vs">&#x2713; The Data Engine vs &#x2717; The Network Play</div><div class="rd-tag">Round 2</div></div></div>
-      <div class="rd"><div class="rd-n">3</div><div class="rd-body"><div class="rd-vs">&#x2713; The Integration Hub vs &#x2717; The Collab Suite</div><div class="rd-tag">Round 3</div></div></div>
-      <div class="rd"><div class="rd-n">4</div><div class="rd-body"><div class="rd-vs">&#x2713; The Lean Build vs &#x2717; The Full Stack</div><div class="rd-tag">Round 4</div></div></div>
-      <div class="rd"><div class="rd-n">5</div><div class="rd-body"><div class="rd-vs">&#x2713; The Report Machine vs &#x2717; The Innovation Kit</div><div class="rd-tag">Round 5</div></div></div>
-      <div class="rd"><div class="rd-n">6</div><div class="rd-body"><div class="rd-vs">&#x2713; The Core Three vs &#x2717; The Feature Feast</div><div class="rd-tag">Round 6</div></div></div>
+      <div class="rd"><div class="rd-n">1</div><div class="rd-body"><div class="rd-tag">Round 1</div><div class="rd-vs">&#x2713; The Vault vs &#x2717; The Starter</div><div class="rd-detail">13 kWh, 15-yr warranty, 30-sec backup, basic app &#x2014; $9,900</div></div></div>
+      <div class="rd"><div class="rd-n">2</div><div class="rd-body"><div class="rd-tag">Round 2</div><div class="rd-vs">&#x2713; The Powerhouse vs &#x2717; The Lite</div><div class="rd-detail">13 kWh, 15-yr warranty, instant backup, basic app &#x2014; $11,900</div></div></div>
+      <div class="rd"><div class="rd-n">3</div><div class="rd-body"><div class="rd-tag">Round 3</div><div class="rd-vs">&#x2713; The Tank vs &#x2717; The Grid Trader</div><div class="rd-detail">13 kWh, 5-yr warranty, 30-sec backup, basic app &#x2014; $7,900</div></div></div>
+      <div class="rd"><div class="rd-n">4</div><div class="rd-body"><div class="rd-tag">Round 4</div><div class="rd-vs">&#x2713; The Protected vs &#x2717; The Responsive</div><div class="rd-detail">13 kWh, 15-yr warranty, 30-sec backup, AI smart &#x2014; $11,900</div></div></div>
+      <div class="rd"><div class="rd-n">5</div><div class="rd-body"><div class="rd-tag">Round 5</div><div class="rd-vs">&#x2713; The Reliable vs &#x2717; The Optimizer</div><div class="rd-detail">13 kWh, 15-yr warranty, instant backup, basic app &#x2014; $11,900</div></div></div>
+      <div class="rd"><div class="rd-n">6</div><div class="rd-body"><div class="rd-tag">Round 6</div><div class="rd-vs">&#x2713; The Shield vs &#x2717; The Brain</div><div class="rd-detail">13 kWh, 15-yr warranty, instant backup, basic app &#x2014; $11,900</div></div></div>
 
       <div class="vs"><div class="tier tier--must">
         <div class="tier-hd"><h4>Must-haves</h4><span>Won 5&#x2013;6 of 6 rounds</span></div>
-        <div class="tier-body"><div class="tier-row"><span>Automated weekly reporting</span><span class="wc">6 / 6</span></div><div class="tier-row"><span>One-click integrations</span><span class="wc">5 / 6</span></div></div>
+        <div class="tier-body"><div class="tier-row"><span>Storage: 13 kWh whole-home backup</span><span class="wc">6 / 6</span></div><div class="tier-row"><span>Warranty: 15 years with degradation guarantee</span><span class="wc">5 / 6</span></div></div>
       </div><div class="tier tier--strong">
-        <div class="tier-hd"><h4>Nice-to-haves</h4><span>Won 3&#x2013;4 of 6 rounds</span></div>
-        <div class="tier-body"><div class="tier-row"><span>Time tracking</span><span class="wc">4 / 6</span></div><div class="tier-row"><span>White-label client portal</span><span class="wc">3 / 6</span></div></div>
+        <div class="tier-hd"><h4>Nice-to-have</h4><span>Won 3&#x2013;4 of 6 rounds</span></div>
+        <div class="tier-body"><div class="tier-row"><span>Backup: Instant seamless switchover</span><span class="wc">3 / 6</span></div></div>
       </div><div class="tier tier--exp">
         <div class="tier-hd"><h4>Expendable</h4><span>Won 0&#x2013;2 of 6 rounds</span></div>
-        <div class="tier-body"><div class="tier-row"><span>Custom workflows</span><span class="wc">2 / 6</span></div><div class="tier-row"><span>AI task suggestions</span><span class="wc">1 / 6</span></div><div class="tier-row"><span>Real-time collaboration</span><span class="wc">1 / 6</span></div></div>
+        <div class="tier-body"><div class="tier-row"><span>Smart: AI load optimisation + grid trading</span><span class="wc">1 / 6</span></div></div>
       </div></div>
 
-      <div class="co"><div class="co-bar"></div><div class="co-body"><strong>The Surprise</strong> Real-time collaboration &#x2014; the feature you were most excited about, the centrepiece of your pitch deck, and the most technically complex thing you&#x27;ve built &#x2014; lost five of six rounds. Meanwhile, automated reporting &#x2014; a feature you nearly cut for feeling &#x201C;boring&#x201D; &#x2014; won every single round.</div></div>
-
-      <ul class="fl"><li><span class="dot"></span><strong>Minimum Viable Offer</strong> &#x2014; Reporting + Integrations + Time Tracking at $39/month per seat. The floor &#x2014; the cheapest version someone would still pay for.</li></ul>
-
-      <div class="co"><div class="co-bar"></div><div class="co-body"><strong>What to Do Next</strong> Rebuild your launch scope around reporting, integrations, and time tracking &#x2014; cut everything else from v1. Run five customer interviews showing the $39/mo core bundle versus the $69/mo full suite. Rewrite your positioning: &#x201C;Automated client reports in 30 seconds&#x201D; is the headline, not &#x201C;All-in-one project management.&#x201D;</div></div>
+      <div class="co"><div class="co-bar"></div><div class="co-body"><strong>The Surprise</strong> AI grid trading &#x2014; the feature you spent 18 months engineering, the centrepiece of every investor pitch, and the thing that made your CTO&#x27;s eyes light up &#x2014; won just one of six rounds. Meanwhile, a 13 kWh battery with a 15-year warranty &#x2014; &#x201C;boring spec sheet stuff&#x201D; &#x2014; won every single round. Homeowners don&#x27;t want to optimise their energy bill. They want the lights to stay on.</div></div>
     </div>
   </div>
   <div class="ftr">
@@ -228,7 +310,89 @@
   </div>
 </div>
 
-<!-- ═══════ PAGE 3 — Key Moments, Reframe, Questions, Actions ═══════ -->
+<!-- ═══════ PAGE 3 — The Offers ═══════ -->
+<div class="page">
+  <div class="hdr">
+    <div class="hdr-left"><div class="hdr-logo">Wade<br>Institute</div><div class="hdr-pipe"></div><div class="hdr-studio">The Studio</div></div>
+    <div class="hdr-right">
+      <span class="hdr-pathway"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg> The Test</span>
+      <span>The Trade-Off</span>
+    </div>
+  </div>
+  <div class="page-body">
+    <div class="sec">
+      <div class="sh"><div class="sh-bar"></div><h2>What homeowners would pay for</h2></div>
+      <p>Win rates reveal how much each dimension drives purchase decisions. Higher bars mean homeowners consistently chose bundles with the premium tier of that dimension.</p>
+
+      <div class="chart">
+        <div class="chart-row"><div class="chart-label">Storage capacity</div><div class="chart-bar-bg"><div class="chart-bar chart-bar--must" style="width:100%">6/6 wins</div></div><div class="chart-wins">40%</div></div>
+        <div class="chart-row"><div class="chart-label">Warranty</div><div class="chart-bar-bg"><div class="chart-bar chart-bar--must" style="width:83%">5/6 wins</div></div><div class="chart-wins">33%</div></div>
+        <div class="chart-row"><div class="chart-label">Backup speed</div><div class="chart-bar-bg"><div class="chart-bar chart-bar--nice" style="width:50%">3/6 wins</div></div><div class="chart-wins">20%</div></div>
+        <div class="chart-row"><div class="chart-label">Smart features</div><div class="chart-bar-bg"><div class="chart-bar chart-bar--exp" style="width:17%">1/6</div></div><div class="chart-wins">7%</div></div>
+      </div>
+    </div>
+
+    <div class="offers-grid">
+      <div class="offer-hero">
+        <div class="offer-hero-tag">Minimum Viable Offer</div>
+        <div class="offer-hero-price">$9,900</div>
+        <div class="offer-hero-sub">The floor &#x2014; the simplest system a homeowner would choose over the incumbent</div>
+        <div class="offer-levels">
+          <div class="offer-level offer-level--on"><span class="feat-icon">&#x2713;</span> Storage: 13 kWh whole-home</div>
+          <div class="offer-level offer-level--on"><span class="feat-icon">&#x2713;</span> Warranty: 15 years guaranteed</div>
+          <div class="offer-level offer-level--off"><span class="feat-icon">&#x2014;</span> Backup: 30-sec switchover</div>
+          <div class="offer-level offer-level--off"><span class="feat-icon">&#x2014;</span> Smart: Basic app only</div>
+        </div>
+      </div>
+      <div class="offer-opt">
+        <div class="offer-opt-tag">Optimised Offer</div>
+        <div class="offer-opt-row">
+          <div class="offer-opt-price">$11,900</div>
+          <div class="offer-opt-bump">+$2,000</div>
+        </div>
+        <div class="offer-opt-sub">The best bundle the data supports</div>
+        <div class="offer-levels">
+          <div class="offer-level offer-level--on"><span class="feat-icon">&#x2713;</span> Storage: 13 kWh whole-home</div>
+          <div class="offer-level offer-level--on"><span class="feat-icon">&#x2713;</span> Warranty: 15 years guaranteed</div>
+          <div class="offer-level offer-level--on"><span class="feat-icon">&#x2713;</span> Backup: Instant seamless</div>
+          <div class="offer-level offer-level--off"><span class="feat-icon">&#x2014;</span> Smart: Basic app only</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="elasticity">
+      <h3>Price elasticity</h3>
+      <div class="el-steps">
+        <div class="el-step el-step--hot">
+          <div class="el-step-range">$5,900 &#x2192; $9,900</div>
+          <div class="el-step-val">73%</div>
+          <div class="el-step-label">of customer value</div>
+        </div>
+        <div class="el-step el-step--warm">
+          <div class="el-step-range">$9,900 &#x2192; $11,900</div>
+          <div class="el-step-val">20%</div>
+          <div class="el-step-label">of customer value</div>
+        </div>
+        <div class="el-step el-step--cold">
+          <div class="el-step-range">$11,900 &#x2192; $13,900</div>
+          <div class="el-step-val">7%</div>
+          <div class="el-step-label">of customer value</div>
+        </div>
+      </div>
+      <p>The first $4,000 &#x2014; from $5,900 to $9,900 &#x2014; buys a 13 kWh battery and 15-year warranty: the two dimensions that won almost every round. That jump delivers 73% of total customer value.</p>
+      <p>The next $2,000 &#x2014; $9,900 to $11,900 &#x2014; adds instant backup, a dimension that won half its rounds. Defensible upsell for homeowners in blackout-prone areas.</p>
+      <p><strong>The cliff:</strong> the final $2,000 &#x2014; $11,900 to $13,900 &#x2014; buys AI grid trading, which won one round out of six. That&#x27;s $2,000 for a feature homeowners actively traded away. The pricing ceiling is $11,900.</p>
+    </div>
+
+    <div class="co"><div class="co-bar"></div><div class="co-body"><strong>What to Do Next</strong> Launch at $9,900 with 13 kWh storage and a 15-year warranty. Offer the $11,900 tier for areas with frequent outages. Do not build the $13,900 tier until 100 installed customers ask for grid trading by name.</div></div>
+  </div>
+  <div class="ftr">
+    <span>Generated by The Studio &#xB7; Wade Institute of Entrepreneurship</span>
+    <span class="ftr-page">3 / 5</span>
+  </div>
+</div>
+
+<!-- ═══════ PAGE 4 — Key Moments + Reframe + Questions + Actions + CTA ═══════ -->
 <div class="page">
   <div class="hdr">
     <div class="hdr-left"><div class="hdr-logo">Wade<br>Institute</div><div class="hdr-pipe"></div><div class="hdr-studio">The Studio</div></div>
@@ -240,54 +404,36 @@
   <div class="page-body">
     <div class="sec">
       <div class="sh"><div class="sh-bar"></div><h2>Key moments</h2></div>
-      <p>These were the statements that shifted the conversation:</p>
-      <blockquote><strong>The pattern emerges</strong>&#x201C;I keep choosing reporting over collaboration &#x2014; I think our customers don&#x27;t care about what we care about.&#x201D; The first sign that builder excitement and buyer need had diverged.</blockquote>
-      <blockquote><strong>The reframe</strong>&#x201C;Automated reporting saves an agency owner 45 minutes every Monday. Collaboration saves us a cool demo.&#x201D; Reframed the entire value proposition from novelty to utility.</blockquote>
-      <blockquote><strong>The admission</strong>&#x201C;If I&#x27;m honest, we built collaboration because it was fun to build. Not because anyone asked for it.&#x201D; The admission that changed the launch plan.</blockquote>
+      <blockquote><strong>The pattern emerges</strong>&#x201C;I keep choosing the bigger battery over the smarter one &#x2014; maybe our customers just want it to work.&#x201D;</blockquote>
+      <blockquote><strong>The reframe</strong>&#x201C;AI grid trading saves maybe $200 a year. A 15-year warranty saves $12,000 in replacement costs. The maths is obvious.&#x201D;</blockquote>
+      <blockquote><strong>The admission</strong>&#x201C;We built the AI because it was the hardest engineering challenge. Not because anyone asked for it.&#x201D;</blockquote>
     </div>
 
     <div class="sec"><div class="reframe">
       <h3>The reframe</h3>
-      <p><strong>Before:</strong> &#x201C;We need to ship all seven features to compete with Monday.com and Asana.&#x201D;</p>
-      <p><strong>After:</strong> &#x201C;We need to ship three features that save an agency owner 45 minutes every week &#x2014; and charge less than the tools that try to do everything.&#x201D;</p>
-      <p>The minimum viable offer is simpler and cheaper than planned &#x2014; but that&#x27;s a faster path to revenue and a clearer positioning story. Lead with utility, not novelty. The features that lost aren&#x27;t dead ideas &#x2014; they&#x27;re roadmap items for after you have 50 paying customers.</p>
+      <p><strong>Before:</strong> &#x201C;We need AI grid trading and instant switchover to compete with Tesla Powerwall.&#x201D;</p>
+      <p><strong>After:</strong> &#x201C;We need a 13 kWh battery with a 15-year warranty at $9,900 &#x2014; and we need to be the brand homeowners trust to keep the lights on.&#x201D;</p>
     </div></div>
 
     <div class="sec">
       <div class="sh"><div class="sh-bar"></div><h2>Questions worth sitting with</h2></div>
-      <div class="qgrid"><div class="qc"><div class="qc-tag">PRODUCT</div><p>Is the reporting engine genuinely best-in-class, or an afterthought that now needs real investment?</p></div><div class="qc"><div class="qc-tag">POSITIONING</div><p>What does the pricing page look like leading with &#x201C;Automated client reports in 30 seconds&#x201D; instead of &#x201C;All-in-one project management&#x201D;?</p></div><div class="qc"><div class="qc-tag">HONESTY</div><p>Which expendable features are you still emotionally attached to &#x2014; and why?</p></div><div class="qc"><div class="qc-tag">COMPETITION</div><p>If a competitor launched with just reporting + integrations tomorrow, how would you respond?</p></div></div>
+      <div class="qgrid"><div class="qc"><div class="qc-tag">Product</div><p>Is the 13 kWh unit genuinely reliable enough to back with a 15-year guarantee, or does the hardware need more investment?</p></div><div class="qc"><div class="qc-tag">Pricing</div><p>Can you defend the $2,000 jump to $11,900 with a clear instant-backup demo for blackout-prone areas?</p></div><div class="qc"><div class="qc-tag">Honesty</div><p>Is the AI grid trading still on the roadmap because customers want it, or because your engineers do?</p></div><div class="qc"><div class="qc-tag">Competition</div><p>If a competitor launched a 13 kWh unit with a 15-year warranty at $7,900, how would you respond?</p></div></div>
     </div>
 
     <hr class="div">
 
     <div class="sec">
       <div class="sh"><div class="sh-bar"></div><h2>What to do next</h2></div>
-      <ol class="steps"><li><strong>Rebuild launch scope around the three must-haves.</strong> Reporting, integrations, time tracking. Cut everything else from v1. Ship faster, learn faster.</li>
-<li><strong>Run 5 customer interviews showing two pricing tiers</strong> &#x2014; core bundle at $39/mo vs. full suite at $69/mo. Let real agency owners decide.</li>
-<li><strong>Rewrite positioning: lead with the boring feature.</strong> &#x201C;Automated client reports in 30 seconds&#x201D; is the headline. Boring to you. Valuable to them.</li>
-<li><strong>Shelf the collaboration engine.</strong> Don&#x27;t delete the code &#x2014; remove it from product and marketing until 50 paying customers ask for it.</li></ol>
+      <ol class="steps"><li><strong>Launch with the $9,900 MVO.</strong> 13 kWh storage and 15-year warranty. Basic app. 30-second switchover. Get it installed.</li>
+<li><strong>Test the $11,900 upsell.</strong> Show 10 homeowners in storm-prone areas the instant backup demo. Measure willingness to pay $2,000 more.</li>
+<li><strong>Rewrite positioning: lead with reliability.</strong> &#x201C;13 kWh. 15 years. Your home stays on.&#x201D; is the headline. Not &#x201C;AI-powered energy intelligence.&#x201D;</li>
+<li><strong>Shelf the AI grid trading.</strong> Don&#x27;t delete the code &#x2014; remove it from product and marketing until 100 installed customers ask for it.</li></ol>
     </div>
-  </div>
-  <div class="ftr">
-    <span>Generated by The Studio &#xB7; Wade Institute of Entrepreneurship</span>
-    <span class="ftr-page">3 / 5</span>
-  </div>
-</div>
 
-<!-- ═══════ PAGE 4 — Go Further ═══════ -->
-<div class="page">
-  <div class="hdr">
-    <div class="hdr-left"><div class="hdr-logo">Wade<br>Institute</div><div class="hdr-pipe"></div><div class="hdr-studio">The Studio</div></div>
-    <div class="hdr-right">
-      <span class="hdr-pathway"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg> The Test</span>
-      <span>The Trade-Off</span>
-    </div>
-  </div>
-  <div class="page-body">
     <div class="cta">
       <h2>Go further with Wade</h2>
-      <p>This pattern &#x2014; building for the demo instead of the buyer &#x2014; is one of the most common reasons startups overbuild and underprice. The Trade-Off exercise surfaced it in 25 minutes. Imagine what a full program does.</p>
-      <div class="cta-grid"><div class="cta-card"><h4>Suggested reading</h4><p>Explore more tools in The Studio to pressure-test your assumptions, validate demand, and build with confidence.</p></div><div class="cta-card"><h4>Wade programs</h4><p>Wade&#x27;s flagship programs take you beyond the tools. Build your venture with a cohort of founders, expert mentors, and structured support.</p></div><div class="cta-card"><h4>From the Wade community</h4><p>&#x201C;I cut my roadmap in half after a single Trade-Off session. We launched three months earlier and doubled our conversion rate.&#x201D; &#x2014; James Nguyen, MoE &#x27;24</p></div></div>
+      <p>This pattern &#x2014; building for the trade show instead of the homeowner &#x2014; is one of the most common reasons deep-tech startups overbuild and underprice. The Trade-Off surfaced it in 25 minutes. Imagine what a full program does.</p>
+      <div class="cta-grid"><div class="cta-card"><h4>Explore more tools</h4><p>The Studio has 20 structured innovation tools across four pathways. Pressure-test your assumptions, validate demand, and build with confidence.</p></div><div class="cta-card"><h4>Wade programs</h4><p>Wade&#x27;s flagship programs take you beyond the tools. Build your venture with a cohort of founders, expert mentors, and structured support.</p></div></div>
     </div>
   </div>
   <div class="ftr">
@@ -305,40 +451,69 @@
       <span>The Trade-Off</span>
     </div>
   </div>
-  <div style="padding:0 var(--page-x);flex:1;overflow:hidden;">
+  <div style="padding:0 var(--page-x);flex:1;display:flex;flex-direction:column;overflow:hidden;">
     <div class="canvas">
-      <div class="c-headline">Your Customers Don&#x27;t Want Everything You&#x27;re Building</div>
-      <div style="flex:1;display:grid;grid-template-columns:1.3fr 0.7fr;grid-template-rows:1fr;gap:1px;background:var(--grey-2);">
-      <div style="background:white;padding:12px 14px;overflow:auto;">
-        <div class="c-label" style="color:#ED3694;margin-bottom:8px;">The 6 Rounds</div>
-        <div class="rounds"><div class="rnd picked"><div class="rn">R1</div><div style="font-size:7px;color:var(--grey-4);">The Bare Bones vs The Agency Essential</div><div style="font-size:7px;font-weight:700;color:#ED3694;">The Agency Essential</div></div><div class="rnd picked"><div class="rn">R2</div><div style="font-size:7px;color:var(--grey-4);">The Network Play vs The Data Engine</div><div style="font-size:7px;font-weight:700;color:#ED3694;">The Data Engine</div></div><div class="rnd picked"><div class="rn">R3</div><div style="font-size:7px;color:var(--grey-4);">The Collab Suite vs The Integration Hub</div><div style="font-size:7px;font-weight:700;color:#ED3694;">The Integration Hub</div></div><div class="rnd picked"><div class="rn">R4</div><div style="font-size:7px;color:var(--grey-4);">The Full Stack vs The Lean Build</div><div style="font-size:7px;font-weight:700;color:#ED3694;">The Lean Build</div></div><div class="rnd picked"><div class="rn">R5</div><div style="font-size:7px;color:var(--grey-4);">The Innovation Kit vs The Report Machine</div><div style="font-size:7px;font-weight:700;color:#ED3694;">The Report Machine</div></div><div class="rnd picked"><div class="rn">R6</div><div style="font-size:7px;color:var(--grey-4);">The Feature Feast vs The Core Three</div><div style="font-size:7px;font-weight:700;color:#ED3694;">The Core Three</div></div></div>
+      <div class="c-headline">Your Customers Want a Bigger Battery, Not a Smarter One</div>
+      <div class="board">
+        <!-- Header bar -->
+        <div class="board-header">
+          <span class="board-title">Workshop Board</span>
+          <span class="board-meta">THE TEST &middot; THE TRADE-OFF</span>
+        </div>
+        <!-- Value stack zones — 3-column grid matching homepage -->
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:24px;">
+          <!-- MUST-HAVE -->
+          <div>
+            <div class="zone-label" style="color:var(--pink);">Must-have</div>
+            <div class="bcard" style="border-left:3px solid var(--pink);">Storage: 13 kWh whole-home backup <span class="bcard-tag">6/6 wins</span></div>
+            <div class="bcard" style="border-left:3px solid var(--pink);">Warranty: 15-year guarantee <span class="bcard-tag">5/6 wins</span></div>
+          </div>
+          <!-- NICE-TO-HAVE -->
+          <div>
+            <div class="zone-label" style="color:var(--pink);">Nice-to-have</div>
+            <div class="bcard" style="border-left:3px solid var(--pink);">Backup: Instant switchover <span class="bcard-tag">3/6 wins</span></div>
+          </div>
+          <!-- EXPENDABLE -->
+          <div>
+            <div class="zone-label" style="color:var(--grey-3);">Expendable</div>
+            <div class="bcard" style="border-left:3px solid var(--grey-2);opacity:0.6;">Smart: AI grid trading <span class="bcard-tag">1/6 wins</span></div>
+          </div>
+        </div>
+        <!-- Full-width callout zones -->
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:auto;">
+          <!-- SURPRISE -->
+          <div>
+            <div class="zone-label" style="color:var(--orange);">Surprise</div>
+            <div class="bcard" style="border-left:3px solid var(--orange);">AI grid trading &#x2014; 18 months of engineering, won only 1 of 6 rounds</div>
+          </div>
+          <!-- MINIMUM VIABLE OFFER -->
+          <div>
+            <div class="zone-label" style="color:var(--teal);">Minimum Viable Offer</div>
+            <div class="bcard" style="border-left:3px solid var(--teal);">Storage + Warranty at $9,900 &#x2014; the simplest system someone would choose</div>
+          </div>
+          <!-- OPTIMISED OFFER -->
+          <div>
+            <div class="zone-label" style="color:var(--pink);">Optimised Offer</div>
+            <div class="bcard" style="border-left:3px solid var(--pink);">Storage + Warranty + Instant Backup at $11,900 &#x2014; the best bundle the data supports</div>
+          </div>
+        </div>
+        <!-- Rounds strip -->
+        <div style="margin-top:auto;">
+          <div class="zone-label" style="color:var(--grey-3);">The 6 Rounds</div>
+          <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:10px;">
+            <div class="rnd-card"><span class="rnd-num">R1</span><span class="rnd-matchup">Starter vs Vault</span><span class="rnd-winner">The Vault</span></div>
+            <div class="rnd-card"><span class="rnd-num">R2</span><span class="rnd-matchup">Lite vs Powerhouse</span><span class="rnd-winner">The Powerhouse</span></div>
+            <div class="rnd-card"><span class="rnd-num">R3</span><span class="rnd-matchup">Grid Trader vs Tank</span><span class="rnd-winner">The Tank</span></div>
+            <div class="rnd-card"><span class="rnd-num">R4</span><span class="rnd-matchup">Responsive vs Protected</span><span class="rnd-winner">The Protected</span></div>
+            <div class="rnd-card"><span class="rnd-num">R5</span><span class="rnd-matchup">Optimizer vs Reliable</span><span class="rnd-winner">The Reliable</span></div>
+            <div class="rnd-card"><span class="rnd-num">R6</span><span class="rnd-matchup">Brain vs Shield</span><span class="rnd-winner">The Shield</span></div>
+          </div>
+        </div>
       </div>
-      <div style="background:white;padding:12px 14px;overflow:auto;">
-        <div class="c-label" style="color:#ED3694;margin-bottom:8px;">Feature Value Stack</div>
-        <div style="border-radius:4px;overflow:hidden;margin-bottom:4px;">
-          <div style="background:var(--navy);color:white;padding:5px 14px;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.3px;">Must-have</div>
-          <div style="background:var(--grey-1);"><div style="display:flex;justify-content:space-between;padding:4px 14px;font-size:9px;border-bottom:1px solid var(--grey-2);">Automated weekly reporting <span style="font-size:8px;color:var(--grey-3);">6/6</span></div><div style="display:flex;justify-content:space-between;padding:4px 14px;font-size:9px;border-bottom:1px solid var(--grey-2);">One-click integrations <span style="font-size:8px;color:var(--grey-3);">5/6</span></div></div>
-        </div><div style="border-radius:4px;overflow:hidden;margin-bottom:4px;">
-          <div style="background:var(--grey-4);color:white;padding:5px 14px;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.3px;">Nice-to-have</div>
-          <div style="background:var(--grey-1);"><div style="display:flex;justify-content:space-between;padding:4px 14px;font-size:9px;border-bottom:1px solid var(--grey-2);">Time tracking <span style="font-size:8px;color:var(--grey-3);">4/6</span></div><div style="display:flex;justify-content:space-between;padding:4px 14px;font-size:9px;border-bottom:1px solid var(--grey-2);">White-label client portal <span style="font-size:8px;color:var(--grey-3);">3/6</span></div></div>
-        </div><div style="border-radius:4px;overflow:hidden;margin-bottom:4px;">
-          <div style="background:var(--grey-2);color:var(--grey-4);padding:5px 14px;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.3px;">Expendable</div>
-          <div style="background:var(--grey-1);"><div style="display:flex;justify-content:space-between;padding:4px 14px;font-size:9px;border-bottom:1px solid var(--grey-2);">Custom workflows <span style="font-size:8px;color:var(--grey-3);">2/6</span></div><div style="display:flex;justify-content:space-between;padding:4px 14px;font-size:9px;border-bottom:1px solid var(--grey-2);">AI task suggestions <span style="font-size:8px;color:var(--grey-3);">1/6</span></div><div style="display:flex;justify-content:space-between;padding:4px 14px;font-size:9px;border-bottom:1px solid var(--grey-2);">Real-time collaboration <span style="font-size:8px;color:var(--grey-3);">1/6</span></div></div>
-        </div>
-        <div style="margin-top:8px;padding:8px 14px;background:var(--accent-light);border-radius:4px;border-left:3px solid var(--accent);">
-          <div style="font-size:8px;font-weight:600;text-transform:uppercase;color:var(--accent-text);margin-bottom:2px;">Surprise</div>
-          <div style="font-size:9px;color:var(--navy);line-height:1.4;">Real-time collaboration &#x2014; the founder&#x27;s favourite feature &#x2014; lost 5 of 6 rounds</div>
-        </div>
-        <div style="margin-top:6px;padding:8px 14px;background:var(--navy);border-radius:4px;">
-          <div style="font-size:8px;font-weight:600;text-transform:uppercase;color:var(--accent-on-dark);margin-bottom:2px;">Minimum Viable Offer</div>
-          <div style="font-size:9px;color:white;line-height:1.4;">Reporting + Integrations + Time Tracking at $39/mo</div>
-        </div>
-      </div>
-    </div>
     </div>
   </div>
   <div class="ftr">
-    <span>Framework: Binary conjoint analysis &#xB7; 6 rounds &#xB7; March 2026</span>
+    <span>Framework: Binary trade-off analysis &#xB7; 4 categories &#xD7; 2 levels &#xD7; 6 rounds &#xB7; March 2026</span>
     <span class="ftr-page">5 / 5</span>
   </div>
 </div>
