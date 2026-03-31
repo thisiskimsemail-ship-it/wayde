@@ -5725,6 +5725,81 @@ def _sync_lead_to_sheets(lead):
         print(f'[Sheets] sync failed: {e}')
 
 
+def _sync_lead_to_hubspot(lead):
+    """Push lead data to HubSpot via API as a contact with custom properties.
+    Creates a new contact or updates existing (by email). Silent no-op if not configured.
+    Uses urllib — no extra dependencies."""
+    token = os.environ.get('HUBSPOT_ACCESS_TOKEN')
+    if not token:
+        return
+
+    tags = lead.get('tags', {})
+
+    # Split name into first/last
+    name_parts = lead.get('name', '').strip().split(None, 1)
+    firstname = name_parts[0] if name_parts else ''
+    lastname = name_parts[1] if len(name_parts) > 1 else ''
+
+    # Standard + custom properties
+    properties = {
+        'email': lead.get('email', ''),
+        'firstname': firstname,
+        'lastname': lastname,
+        'company': lead.get('company', ''),
+        'jobtitle': lead.get('role', ''),
+        # Custom properties — must be created in HubSpot Admin > Properties first
+        'studio_exercise': lead.get('exercise', ''),
+        'studio_stage': lead.get('mode', ''),
+        'studio_rating': lead.get('rating', ''),
+        'studio_cluster': tags.get('cluster', ''),
+        'studio_industry': tags.get('industry', ''),
+        'studio_challenge': tags.get('challenge_summary', tags.get('challenge_category', '')),
+        'studio_venture_stage': tags.get('venture_stage', ''),
+        'studio_barrier': tags.get('primary_barrier', ''),
+        'studio_session_date': lead.get('timestamp', ''),
+    }
+    # Remove empty values to avoid overwriting existing data
+    properties = {k: v for k, v in properties.items() if v}
+
+    headers = {
+        'Authorization': f'Bearer {token}',
+        'Content-Type': 'application/json',
+    }
+
+    # Try to create the contact
+    payload = json.dumps({'properties': properties}).encode('utf-8')
+    try:
+        req = urllib.request.Request(
+            'https://api.hubapi.com/crm/v3/objects/contacts',
+            data=payload, headers=headers, method='POST'
+        )
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            result = json.loads(resp.read())
+            print(f'[HubSpot] Contact created: {result.get("id")}')
+            return
+    except urllib.error.HTTPError as e:
+        if e.code == 409:
+            # Contact already exists — update via email
+            pass
+        else:
+            print(f'[HubSpot] Create failed ({e.code}): {e.read().decode()[:200]}')
+            return
+
+    # Update existing contact by email
+    try:
+        email = properties.pop('email', lead.get('email', ''))
+        update_payload = json.dumps({'properties': properties}).encode('utf-8')
+        req = urllib.request.Request(
+            f'https://api.hubapi.com/crm/v3/objects/contacts/{email}?idProperty=email',
+            data=update_payload, headers=headers, method='PATCH'
+        )
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            result = json.loads(resp.read())
+            print(f'[HubSpot] Contact updated: {result.get("id")}')
+    except Exception as e:
+        print(f'[HubSpot] Update failed: {e}')
+
+
 def _resend_send_email(api_key, from_email, to_email, subject, html_body):
     """Send a transactional email via Resend API, BCC'd to HubSpot for logging."""
     payload = json.dumps({
@@ -6555,6 +6630,11 @@ def capture_lead():
         _sync_lead_to_sheets(lead)
     except Exception:
         pass  # Never break lead capture if Sheets sync fails
+
+    try:
+        _sync_lead_to_hubspot(lead)
+    except Exception:
+        pass  # Never break lead capture if HubSpot sync fails
 
     return jsonify({'success': True})
 
