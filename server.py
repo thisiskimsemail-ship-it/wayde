@@ -2,6 +2,8 @@ import os
 import json
 import uuid
 import time
+import html as html_mod
+import logging
 import smtplib
 import urllib.request
 import hashlib
@@ -16,6 +18,9 @@ import anthropic
 import jwt
 
 load_dotenv()
+
+logging.basicConfig(level=logging.INFO, format='%(asctime)s [%(levelname)s] %(message)s')
+logger = logging.getLogger('studio')
 
 app = Flask(__name__, static_folder='.', static_url_path='')
 app.config['MAX_CONTENT_LENGTH'] = 20 * 1024 * 1024  # 20MB max upload
@@ -5056,11 +5061,12 @@ def generate_canvas():
 
         # Build HTML
         def render_items(items):
-            html = ''
+            out = ''
             for item in items:
+                safe = html_mod.escape(str(item))
                 cls = ' class="hypothesis"' if 'to explore' in item.lower() or 'hypothesis' in item.lower() else ''
-                html += f'<li{cls}>{item}</li>'
-            return html
+                out += f'<li{cls}>{safe}</li>'
+            return out
 
         html = CANVAS_HTML_TEMPLATE.format(
             problem=render_items(canvas_data.get('problem', ['To explore'])),
@@ -5086,7 +5092,8 @@ def generate_canvas():
 
         return jsonify({'canvas_id': canvas_id, 'canvas_data': canvas_data})
     except json.JSONDecodeError as e:
-        return jsonify({'error': f'Could not parse canvas: {str(e)}', 'raw': text}), 500
+        logger.warning(f'[Canvas] JSON parse error: {e}')
+        return jsonify({'error': 'Could not parse canvas data'}), 500
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
@@ -5199,7 +5206,7 @@ def auth_login():
         cur.close()
         conn.close()
     except Exception as e:
-        print(f"[AUTH] login error: {e}")
+        logger.error(f"[AUTH] login error: {e}")
         if conn:
             conn.close()
         return jsonify({'error': 'Failed to create login token'}), 500
@@ -5233,12 +5240,12 @@ def auth_login():
                 'Sign in to The Studio',
                 html_body
             )
-            print(f"[AUTH] Magic link sent to {email}")
+            logger.info(f"[AUTH] Magic link sent to {email}")
         except Exception as e:
-            print(f"[AUTH] Email send failed: {e}")
+            logger.error(f"[AUTH] Email send failed: {e}")
             return jsonify({'error': 'Failed to send email'}), 500
     else:
-        print(f"[AUTH] No RESEND_API_KEY — magic link: {verify_url}")
+        logger.warning(f"[AUTH] No RESEND_API_KEY — magic link: {verify_url}")
 
     return jsonify({'ok': True})
 
@@ -5310,10 +5317,10 @@ def auth_verify():
         linked_count = len(set(other_devices))
         cur.close()
         conn.close()
-        print(f"[AUTH] Verified {email}, linked {linked_count} device(s)")
+        logger.info(f"[AUTH] Verified {email}, linked {linked_count} device(s)")
 
     except Exception as e:
-        print(f"[AUTH] verify error: {e}")
+        logger.error(f"[AUTH] verify error: {e}")
         if conn:
             conn.close()
         return redirect('/?auth_error=server_error')
@@ -5358,7 +5365,7 @@ def auth_me():
             cur.close()
             conn.close()
         except Exception as e:
-            print(f"[AUTH] me error: {e}")
+            logger.error(f"[AUTH] me error: {e}")
             if conn:
                 conn.close()
 
@@ -5532,7 +5539,7 @@ def save_session():
             """
             _resend_send_email(resend_key, from_email, email, f"Your Wade Studio session — {exercise_name}", html_body)
     except Exception as e:
-        print(f"Session email failed: {e}")
+        logger.error(f"[Resend] Session email failed: {e}")
 
     return jsonify({'id': short_id, 'url': f'/s/{short_id}'})
 
@@ -5699,40 +5706,51 @@ HUBSPOT_BCC = '442435393@bcc.ap1.hubspot.com'
 
 def _sync_lead_to_sheets(lead):
     """POST lead to Google Apps Script webhook → appends a row to Google Sheets.
-    URL stored in env var GOOGLE_SHEETS_WEBHOOK_URL. Fails silently."""
+    URL stored in env var GOOGLE_SHEETS_WEBHOOK_URL. Retries once on transient failure."""
     sheets_url = os.environ.get('GOOGLE_SHEETS_WEBHOOK_URL')
     if not sheets_url:
         return
-    try:
-        # Build a flat row — skip full report/messages (too long for cells)
-        tag_data = lead.get('tags', {})
-        row = {
-            'timestamp':  lead.get('timestamp', ''),
-            'name':       lead.get('name', ''),
-            'email':      lead.get('email', ''),
-            'company':    lead.get('company', ''),
-            'role':       lead.get('role', ''),
-            'stage':      lead.get('mode', ''),
-            'tool':       lead.get('exercise', ''),
-            'rating':     lead.get('rating', ''),
-            'cluster':    tag_data.get('cluster', ''),
-            'themes':     ', '.join(tag_data.get('themes', [])),
-            'challenge':  tag_data.get('challenge_summary', ''),
-        }
-        payload = json.dumps(row).encode('utf-8')
-        req = urllib.request.Request(
-            sheets_url,
-            data=payload,
-            headers={'Content-Type': 'application/json'},
-            method='POST'
-        )
-        urllib.request.urlopen(req, timeout=6)
-    except Exception as e:
-        print(f'[Sheets] sync failed: {e}')
+    tag_data = lead.get('tags', {})
+    row = {
+        'timestamp':  lead.get('timestamp', ''),
+        'name':       lead.get('name', ''),
+        'email':      lead.get('email', ''),
+        'company':    lead.get('company', ''),
+        'role':       lead.get('role', ''),
+        'stage':      lead.get('mode', ''),
+        'tool':       lead.get('exercise', ''),
+        'rating':     lead.get('rating', ''),
+        'cluster':    tag_data.get('cluster', ''),
+        'themes':     ', '.join(tag_data.get('themes', [])),
+        'challenge':  tag_data.get('challenge_summary', ''),
+    }
+    payload = json.dumps(row).encode('utf-8')
+    for attempt in range(2):
+        try:
+            req = urllib.request.Request(
+                sheets_url,
+                data=payload,
+                headers={'Content-Type': 'application/json'},
+                method='POST'
+            )
+            with urllib.request.urlopen(req, timeout=6) as resp:
+                if resp.status in (200, 201, 302):
+                    logger.info(f'[Sheets] Lead synced: {lead.get("email", "unknown")}')
+                    return
+                logger.warning(f'[Sheets] Unexpected status {resp.status} for {lead.get("email", "unknown")}')
+        except (urllib.error.URLError, OSError) as e:
+            logger.warning(f'[Sheets] Attempt {attempt+1}/2 failed for {lead.get("email", "unknown")}: {e}')
+            if attempt == 0:
+                time.sleep(1.5)
+        except Exception as e:
+            logger.error(f'[Sheets] Unexpected error syncing {lead.get("email", "unknown")}: {e}')
+            return
+    logger.error(f'[Sheets] All attempts failed for {lead.get("email", "unknown")}')
 
 
-def _resend_send_email(api_key, from_email, to_email, subject, html_body):
-    """Send a transactional email via Resend API, BCC'd to HubSpot for logging."""
+def _resend_send_email(api_key, from_email, to_email, subject, html_body, retries=2):
+    """Send a transactional email via Resend API, BCC'd to HubSpot for logging.
+    Retries on transient failures with exponential backoff."""
     payload = json.dumps({
         "from": from_email,
         "to": [to_email],
@@ -5740,17 +5758,39 @@ def _resend_send_email(api_key, from_email, to_email, subject, html_body):
         "subject": subject,
         "html": html_body,
     }).encode('utf-8')
-    req = urllib.request.Request(
-        'https://api.resend.com/emails',
-        data=payload,
-        headers={
-            'Authorization': f'Bearer {api_key}',
-            'Content-Type': 'application/json',
-        },
-        method='POST'
-    )
-    with urllib.request.urlopen(req, timeout=10) as resp:
-        return resp.status
+    last_err = None
+    for attempt in range(retries + 1):
+        try:
+            req = urllib.request.Request(
+                'https://api.resend.com/emails',
+                data=payload,
+                headers={
+                    'Authorization': f'Bearer {api_key}',
+                    'Content-Type': 'application/json',
+                },
+                method='POST'
+            )
+            with urllib.request.urlopen(req, timeout=10) as resp:
+                status = resp.status
+                if status in (200, 201):
+                    logger.info(f'[Resend] Email sent to {to_email} (status {status})')
+                    return status
+                body = resp.read().decode('utf-8', errors='replace')
+                logger.warning(f'[Resend] Unexpected status {status} for {to_email}: {body[:200]}')
+                last_err = f'HTTP {status}'
+        except urllib.error.HTTPError as e:
+            body = e.read().decode('utf-8', errors='replace') if e.fp else ''
+            logger.warning(f'[Resend] HTTP {e.code} on attempt {attempt+1}/{retries+1} for {to_email}: {body[:200]}')
+            last_err = e
+            if e.code < 500:
+                raise  # Client errors (4xx) won't be fixed by retry
+        except (urllib.error.URLError, OSError) as e:
+            logger.warning(f'[Resend] Network error on attempt {attempt+1}/{retries+1} for {to_email}: {e}')
+            last_err = e
+        if attempt < retries:
+            time.sleep(1.5 * (attempt + 1))
+    logger.error(f'[Resend] All {retries+1} attempts failed for {to_email}: {last_err}')
+    raise Exception(f'Resend email failed after {retries+1} attempts: {last_err}')
 
 
 def _tags_html(tags):
@@ -6051,7 +6091,7 @@ def get_memory():
                 cur.close()
                 conn.close()
             except Exception as e:
-                print(f"[AUTH] device link in memory: {e}")
+                logger.warning(f"[AUTH] device link in memory: {e}")
                 if conn:
                     conn.close()
 
