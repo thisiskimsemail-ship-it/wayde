@@ -4355,9 +4355,9 @@ const BOARD_LAYOUTS = {
     'trade-off': {
         zones: [
             { id: 'to-setup', name: 'The Setup', empty: 'Categories with 3 levels each', hint: 'Category | Level 1 | Level 2 | Level 3 | Price range', colour: 'pink' },
-            { id: 'to-musthave', name: 'Must-Have', empty: 'Won 7-10 rounds', hint: 'Core value — customers always choose this', colour: 'pink' },
-            { id: 'to-nicetohave', name: 'Nice-to-Have', empty: 'Won 4-6 rounds', hint: 'Valuable but tradeable', colour: 'pink' },
-            { id: 'to-expendable', name: 'Expendable', empty: 'Won 0-3 rounds', hint: 'You care more than your customer does', colour: 'pink' },
+            { id: 'to-musthave', name: 'Must-Have', empty: 'Won 5-6 of 6 rounds', hint: 'Core value — customers always choose this', colour: 'pink' },
+            { id: 'to-nicetohave', name: 'Nice-to-Have', empty: 'Won 3-4 of 6 rounds', hint: 'Valuable but tradeable', colour: 'pink' },
+            { id: 'to-expendable', name: 'Expendable', empty: 'Won 0-2 of 6 rounds', hint: 'You care more than your customer does', colour: 'pink' },
             { id: 'to-surprise', name: 'The Surprise', empty: 'The feature you were most wrong about', hint: 'Overvalued or undervalued going in', colour: 'pink' },
             { id: 'to-mvo', name: 'Minimum Viable Offer', empty: 'Survivors only — the simplest version someone would pay for', hint: 'Strip everything else away', colour: 'pink' },
             { id: 'to-optimised', name: 'Optimised Offer', empty: 'The best bundle the data supports', hint: 'Must-haves at top level + nice-to-haves at mid + computed price', colour: 'pink' },

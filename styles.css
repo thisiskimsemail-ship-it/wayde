@@ -561,6 +561,23 @@ body[data-mode] .board-grid-pitch,
 body[data-mode] .board-grid-premortem,
 body[data-mode] .board-grid-effectuation,
 body[data-mode] .board-grid-mash-up,
+body[data-mode] .board-grid-trade-off,
+body[data-mode] .board-grid-five-whys,
+body[data-mode] .board-grid-empathy-map,
+body[data-mode] .board-grid-jtbd,
+body[data-mode] .board-grid-crazy8s,
+body[data-mode] .board-grid-hmw,
+body[data-mode] .board-grid-scamper,
+body[data-mode] .board-grid-devils-advocate,
+body[data-mode] .board-grid-rapid-experiment,
+body[data-mode] .board-grid-cold-open,
+body[data-mode] .board-grid-socratic,
+body[data-mode] .board-grid-reality-check,
+body[data-mode] .board-grid-toc,
+body[data-mode] .board-grid-iceberg,
+body[data-mode] .board-grid-constraint-flip,
+body[data-mode] .board-grid-flywheel,
+body[data-mode] .board-grid-wardley,
 body[data-mode] .board-grid-default { border-color: color-mix(in srgb, var(--stage-color) 20%, transparent); }
 body[data-mode] .zone-name { color: var(--stage-color); }
 body[data-mode] .board-card { border-left-color: var(--stage-color); }
@@ -5462,12 +5479,13 @@ body.light .feedback-input, html[data-theme="light"] .feedback-input { backgroun
     max-height: none;
     overflow: visible;
 }
-.board-grid-trade-off .board-zone[data-zone="to-surprise"],
-.board-grid-trade-off .board-zone[data-zone="to-mvo"],
-.board-grid-trade-off .board-zone[data-zone="to-optimised"],
-.board-grid-trade-off .board-zone[data-zone="actions"] {
-    grid-column: 1 / -1;
-}
+/* Setup spans full top row */
+.board-grid-trade-off .board-zone[data-zone="to-setup"] { grid-column: 1 / -1; }
+/* Must-Have / Nice-to-Have side by side (row 2) — handled by default 2-col */
+/* Expendable / Surprise side by side (row 3) */
+/* MVO / Optimised side by side (row 4) — the key fix */
+/* Actions spans full bottom row */
+.board-grid-trade-off .board-zone[data-zone="actions"] { grid-column: 1 / -1; }
 @media (max-width: 600px) {
     .board-grid-trade-off { grid-template-columns: 1fr; }
 }
@@ -5509,7 +5527,389 @@ body.light .feedback-input, html[data-theme="light"] .feedback-input { backgroun
     .board-grid-mash-up { grid-template-columns: 1fr; }
 }
 
+/* === FIVE WHYS BOARD GRID === */
+/* Left col: Problem + 5 Whys + Reframed. Right col: Reach/Frequency/Alternatives/Verdict. Actions full-width. */
+.board-grid-five-whys {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    border: 1px solid var(--stage-color, rgba(255,255,255,0.1));
+    border-radius: 8px;
+    overflow: hidden;
+}
+.board-grid-five-whys .board-zone {
+    min-height: auto; border-radius: 0; background: var(--bg, #12103a);
+    border-left: 3px solid var(--stage-color, #27BDBE); padding: 0.6rem; overflow: visible;
+}
+.board-grid-five-whys .board-zone .zone-cards { max-height: none; overflow: visible; }
+/* Whys chain: left column rows 1-7 */
+.board-grid-five-whys .board-zone[data-zone="fw-problem"]   { grid-column: 1; grid-row: 1; }
+.board-grid-five-whys .board-zone[data-zone="fw-why1"]      { grid-column: 1; grid-row: 2; }
+.board-grid-five-whys .board-zone[data-zone="fw-why2"]      { grid-column: 1; grid-row: 3; }
+.board-grid-five-whys .board-zone[data-zone="fw-why3"]      { grid-column: 1; grid-row: 4; }
+.board-grid-five-whys .board-zone[data-zone="fw-why4"]      { grid-column: 1; grid-row: 5; }
+.board-grid-five-whys .board-zone[data-zone="fw-why5"]      { grid-column: 1; grid-row: 6; }
+.board-grid-five-whys .board-zone[data-zone="fw-reframed"]  { grid-column: 1; grid-row: 7; }
+/* Problem sizing: right column rows 1-4 */
+.board-grid-five-whys .board-zone[data-zone="fw-reach"]        { grid-column: 2; grid-row: 1; }
+.board-grid-five-whys .board-zone[data-zone="fw-frequency"]    { grid-column: 2; grid-row: 2; }
+.board-grid-five-whys .board-zone[data-zone="fw-alternatives"] { grid-column: 2; grid-row: 3; }
+.board-grid-five-whys .board-zone[data-zone="fw-verdict"]      { grid-column: 2; grid-row: 4; }
+/* Actions spans full bottom */
+.board-grid-five-whys .board-zone[data-zone="actions"] { grid-column: 1 / -1; }
+@media (max-width: 600px) { .board-grid-five-whys { grid-template-columns: 1fr; }
+    .board-grid-five-whys .board-zone { grid-column: auto !important; grid-row: auto !important; } }
+
+/* === EMPATHY MAP BOARD GRID === */
+/* Classic quadrant: Says/Thinks top, Does/Feels mid, Person top-full, Contradiction + Insight bottom */
+.board-grid-empathy-map {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    border: 1px solid var(--stage-color, rgba(255,255,255,0.1));
+    border-radius: 8px;
+    overflow: hidden;
+}
+.board-grid-empathy-map .board-zone {
+    min-height: auto; border-radius: 0; background: var(--bg, #12103a);
+    border-left: 3px solid var(--stage-color, #27BDBE); padding: 0.6rem; overflow: visible;
+}
+.board-grid-empathy-map .board-zone .zone-cards { max-height: none; overflow: visible; }
+.board-grid-empathy-map .board-zone[data-zone="em-user"]            { grid-column: 1 / -1; }
+/* Says + Thinks side by side */
+/* Does + Feels side by side */
+.board-grid-empathy-map .board-zone[data-zone="em-contradictions"]  { grid-column: 1 / -1; }
+.board-grid-empathy-map .board-zone[data-zone="insights"]           { grid-column: 1 / -1; }
+@media (max-width: 600px) { .board-grid-empathy-map { grid-template-columns: 1fr; } }
+
+/* === JTBD BOARD GRID === */
+/* Customer + Job Story full-width top, Forces 2x2 mid, Jobs 3-col, Gap full-width bottom */
+.board-grid-jtbd {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    border: 1px solid var(--stage-color, rgba(255,255,255,0.1));
+    border-radius: 8px;
+    overflow: hidden;
+}
+.board-grid-jtbd .board-zone {
+    min-height: auto; border-radius: 0; background: var(--bg, #12103a);
+    border-left: 3px solid var(--stage-color, #27BDBE); padding: 0.6rem; overflow: visible;
+}
+.board-grid-jtbd .board-zone .zone-cards { max-height: none; overflow: visible; }
+.board-grid-jtbd .board-zone[data-zone="jtbd-customer"]   { grid-column: 1 / -1; }
+.board-grid-jtbd .board-zone[data-zone="jtbd-job-story"]  { grid-column: 1 / -1; }
+/* Push + Pull side by side, Anxiety + Habit side by side */
+.board-grid-jtbd .board-zone[data-zone="jtbd-functional"] { grid-column: 1 / -1; }
+.board-grid-jtbd .board-zone[data-zone="jtbd-emotional"]  { grid-column: 1; }
+.board-grid-jtbd .board-zone[data-zone="jtbd-social"]     { grid-column: 2; }
+.board-grid-jtbd .board-zone[data-zone="jtbd-gap"]        { grid-column: 1 / -1; }
+@media (max-width: 600px) { .board-grid-jtbd { grid-template-columns: 1fr; }
+    .board-grid-jtbd .board-zone { grid-column: auto !important; } }
+
+/* === CRAZY 8S BOARD GRID === */
+/* 4x2 grid of 8 ideas, Patterns + Top Pick full-width bottom */
+.board-grid-crazy8s {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 2px;
+    border: 1px solid var(--stage-color, rgba(255,255,255,0.1));
+    border-radius: 8px;
+    overflow: hidden;
+}
+.board-grid-crazy8s .board-zone {
+    min-height: auto; border-radius: 0; background: var(--bg, #12103a);
+    border-left: 3px solid var(--stage-color, #F15A22); padding: 0.6rem; overflow: visible;
+}
+.board-grid-crazy8s .board-zone .zone-cards { max-height: none; overflow: visible; }
+.board-grid-crazy8s .board-zone[data-zone="c8-patterns"]  { grid-column: 1 / -1; }
+.board-grid-crazy8s .board-zone[data-zone="c8-shortlist"]  { grid-column: 1 / -1; }
+@media (max-width: 768px) { .board-grid-crazy8s { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 480px) { .board-grid-crazy8s { grid-template-columns: 1fr; } }
+
+/* === HMW BOARD GRID === */
+/* Problem full-width top, 3-col HMW questions, Solutions + Best + Actions full-width bottom */
+.board-grid-hmw {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 2px;
+    border: 1px solid var(--stage-color, rgba(255,255,255,0.1));
+    border-radius: 8px;
+    overflow: hidden;
+}
+.board-grid-hmw .board-zone {
+    min-height: auto; border-radius: 0; background: var(--bg, #12103a);
+    border-left: 3px solid var(--stage-color, #F15A22); padding: 0.6rem; overflow: visible;
+}
+.board-grid-hmw .board-zone .zone-cards { max-height: none; overflow: visible; }
+.board-grid-hmw .board-zone[data-zone="hmw-problem"]   { grid-column: 1 / -1; }
+.board-grid-hmw .board-zone[data-zone="hmw-solutions"] { grid-column: 1 / -1; }
+.board-grid-hmw .board-zone[data-zone="hmw-best"]      { grid-column: 1 / -1; }
+.board-grid-hmw .board-zone[data-zone="actions"]        { grid-column: 1 / -1; }
+@media (max-width: 768px) { .board-grid-hmw { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 480px) { .board-grid-hmw { grid-template-columns: 1fr; } }
+
+/* === SCAMPER BOARD GRID === */
+/* Subject full-width top, S-C-A-M-P-E-R in 3-col grid (wraps), Top Picks full-width bottom */
+.board-grid-scamper {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 2px;
+    border: 1px solid var(--stage-color, rgba(255,255,255,0.1));
+    border-radius: 8px;
+    overflow: hidden;
+}
+.board-grid-scamper .board-zone {
+    min-height: auto; border-radius: 0; background: var(--bg, #12103a);
+    border-left: 3px solid var(--stage-color, #F15A22); padding: 0.6rem; overflow: visible;
+}
+.board-grid-scamper .board-zone .zone-cards { max-height: none; overflow: visible; }
+.board-grid-scamper .board-zone[data-zone="sc-subject"]   { grid-column: 1 / -1; }
+.board-grid-scamper .board-zone[data-zone="sc-shortlist"]  { grid-column: 1 / -1; }
+@media (max-width: 768px) { .board-grid-scamper { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 480px) { .board-grid-scamper { grid-template-columns: 1fr; } }
+
+/* === DEVIL'S ADVOCATE BOARD GRID === */
+/* Idea + Adversaries full-width top, Objection Log full, D/D/E triage 3-col, Heatmap + Danger + Actions bottom */
+.board-grid-devils-advocate {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 2px;
+    border: 1px solid var(--stage-color, rgba(255,255,255,0.1));
+    border-radius: 8px;
+    overflow: hidden;
+}
+.board-grid-devils-advocate .board-zone {
+    min-height: auto; border-radius: 0; background: var(--bg, #12103a);
+    border-left: 3px solid var(--stage-color, #ED3694); padding: 0.6rem; overflow: visible;
+}
+.board-grid-devils-advocate .board-zone .zone-cards { max-height: none; overflow: visible; }
+.board-grid-devils-advocate .board-zone[data-zone="da-idea"]        { grid-column: 1 / -1; }
+.board-grid-devils-advocate .board-zone[data-zone="da-adversaries"] { grid-column: 1 / -1; }
+.board-grid-devils-advocate .board-zone[data-zone="da-objections"]  { grid-column: 1 / -1; }
+/* Defended / Deflected / Exposed — the core triage, 3 columns */
+.board-grid-devils-advocate .board-zone[data-zone="da-heatmap"]     { grid-column: 1 / -1; }
+.board-grid-devils-advocate .board-zone[data-zone="da-danger"]      { grid-column: 1 / -1; }
+.board-grid-devils-advocate .board-zone[data-zone="actions"]        { grid-column: 1 / -1; }
+@media (max-width: 768px) { .board-grid-devils-advocate { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 480px) { .board-grid-devils-advocate { grid-template-columns: 1fr; } }
+
+/* === RAPID EXPERIMENT BOARD GRID === */
+/* 2-col: Diagnose left (Assumptions/Matrix/Top Risk), Design right (Hypothesis/Method/Sample/Metric/Timeline), First Step full */
+.board-grid-rapid-experiment {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    border: 1px solid var(--stage-color, rgba(255,255,255,0.1));
+    border-radius: 8px;
+    overflow: hidden;
+}
+.board-grid-rapid-experiment .board-zone {
+    min-height: auto; border-radius: 0; background: var(--bg, #12103a);
+    border-left: 3px solid var(--stage-color, #ED3694); padding: 0.6rem; overflow: visible;
+}
+.board-grid-rapid-experiment .board-zone .zone-cards { max-height: none; overflow: visible; }
+.board-grid-rapid-experiment .board-zone[data-zone="re-assumptions"] { grid-column: 1; grid-row: 1; }
+.board-grid-rapid-experiment .board-zone[data-zone="re-matrix"]      { grid-column: 1; grid-row: 2; }
+.board-grid-rapid-experiment .board-zone[data-zone="re-top-risk"]    { grid-column: 1; grid-row: 3; }
+.board-grid-rapid-experiment .board-zone[data-zone="re-hypothesis"]  { grid-column: 2; grid-row: 1; }
+.board-grid-rapid-experiment .board-zone[data-zone="re-method"]      { grid-column: 2; grid-row: 2; }
+.board-grid-rapid-experiment .board-zone[data-zone="re-sample"]      { grid-column: 2; grid-row: 3; }
+.board-grid-rapid-experiment .board-zone[data-zone="re-metric"]      { grid-column: 1; }
+.board-grid-rapid-experiment .board-zone[data-zone="re-timeline"]    { grid-column: 2; }
+.board-grid-rapid-experiment .board-zone[data-zone="actions"]        { grid-column: 1 / -1; }
+@media (max-width: 600px) { .board-grid-rapid-experiment { grid-template-columns: 1fr; }
+    .board-grid-rapid-experiment .board-zone { grid-column: auto !important; grid-row: auto !important; } }
+
+/* === COLD OPEN BOARD GRID === */
+/* 2-col: Interview skills left, Signals right, Action full-width bottom */
+.board-grid-cold-open {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    border: 1px solid var(--stage-color, rgba(255,255,255,0.1));
+    border-radius: 8px;
+    overflow: hidden;
+}
+.board-grid-cold-open .board-zone {
+    min-height: auto; border-radius: 0; background: var(--bg, #12103a);
+    border-left: 3px solid var(--stage-color, #ED3694); padding: 0.6rem; overflow: visible;
+}
+.board-grid-cold-open .board-zone .zone-cards { max-height: none; overflow: visible; }
+.board-grid-cold-open .board-zone[data-zone="co-persona"]   { grid-column: 1; grid-row: 1; }
+.board-grid-cold-open .board-zone[data-zone="co-open"]      { grid-column: 1; grid-row: 2; }
+.board-grid-cold-open .board-zone[data-zone="co-followup"]  { grid-column: 1; grid-row: 3; }
+.board-grid-cold-open .board-zone[data-zone="co-silence"]   { grid-column: 1; grid-row: 4; }
+.board-grid-cold-open .board-zone[data-zone="co-signals"]   { grid-column: 2; grid-row: 1 / 3; }
+.board-grid-cold-open .board-zone[data-zone="co-pitch"]     { grid-column: 2; grid-row: 3; }
+.board-grid-cold-open .board-zone[data-zone="co-insight"]   { grid-column: 2; grid-row: 4; }
+.board-grid-cold-open .board-zone[data-zone="actions"]      { grid-column: 1 / -1; }
+@media (max-width: 600px) { .board-grid-cold-open { grid-template-columns: 1fr; }
+    .board-grid-cold-open .board-zone { grid-column: auto !important; grid-row: auto !important; } }
+
+/* === SOCRATIC BOARD GRID === */
+/* 3-col triage: Verified / Assumed / Inherited, then Score + Critical + Test full-width */
+.board-grid-socratic {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 2px;
+    border: 1px solid var(--stage-color, rgba(255,255,255,0.1));
+    border-radius: 8px;
+    overflow: hidden;
+}
+.board-grid-socratic .board-zone {
+    min-height: auto; border-radius: 0; background: var(--bg, #12103a);
+    border-left: 3px solid var(--stage-color, #27BDBE); padding: 0.6rem; overflow: visible;
+}
+.board-grid-socratic .board-zone .zone-cards { max-height: none; overflow: visible; }
+/* Verified / Assumed / Inherited tile across 3 cols by default */
+.board-grid-socratic .board-zone[data-zone="sq-score"]     { grid-column: 1 / -1; }
+.board-grid-socratic .board-zone[data-zone="sq-critical"]   { grid-column: 1 / -1; }
+.board-grid-socratic .board-zone[data-zone="actions"]       { grid-column: 1 / -1; }
+@media (max-width: 768px) { .board-grid-socratic { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 480px) { .board-grid-socratic { grid-template-columns: 1fr; } }
+
+/* === REALITY CHECK BOARD GRID === */
+/* 2-col pairs: Risk + Rating side by side for all 4, Biggest + Test full-width */
+.board-grid-reality-check {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2px;
+    border: 1px solid var(--stage-color, rgba(255,255,255,0.1));
+    border-radius: 8px;
+    overflow: hidden;
+}
+.board-grid-reality-check .board-zone {
+    min-height: auto; border-radius: 0; background: var(--bg, #12103a);
+    border-left: 3px solid var(--stage-color, #ED3694); padding: 0.6rem; overflow: visible;
+}
+.board-grid-reality-check .board-zone .zone-cards { max-height: none; overflow: visible; }
+/* Risk descriptions get wider column, ratings get narrow column — auto-pairs via 2-col flow */
+.board-grid-reality-check .board-zone[data-zone="rc-biggest"] { grid-column: 1 / -1; }
+.board-grid-reality-check .board-zone[data-zone="rc-test"]    { grid-column: 1 / -1; }
+@media (max-width: 600px) { .board-grid-reality-check { grid-template-columns: 1fr; } }
+
+/* === THEORY OF CHANGE BOARD GRID === */
+/* Outcome full-width top, 3-col: Control / Influence / Outside, Activities + Missing + Weakest + Test full-width bottom */
+.board-grid-toc {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 2px;
+    border: 1px solid var(--stage-color, rgba(255,255,255,0.1));
+    border-radius: 8px;
+    overflow: hidden;
+}
+.board-grid-toc .board-zone {
+    min-height: auto; border-radius: 0; background: var(--bg, #12103a);
+    border-left: 3px solid var(--stage-color, #E4E517); padding: 0.6rem; overflow: visible;
+}
+.board-grid-toc .board-zone .zone-cards { max-height: none; overflow: visible; }
+.board-grid-toc .board-zone[data-zone="toc-outcome"]    { grid-column: 1 / -1; }
+/* Control / Influence / Outside tile across 3 cols */
+.board-grid-toc .board-zone[data-zone="toc-activities"]  { grid-column: 1 / -1; }
+.board-grid-toc .board-zone[data-zone="toc-missing"]     { grid-column: 1 / -1; }
+.board-grid-toc .board-zone[data-zone="toc-weakest"]     { grid-column: 1 / -1; }
+.board-grid-toc .board-zone[data-zone="actions"]         { grid-column: 1 / -1; }
+@media (max-width: 768px) { .board-grid-toc { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 480px) { .board-grid-toc { grid-template-columns: 1fr; } }
+
+/* === ICEBERG BOARD GRID === */
+/* Vertical drill-down is natural, but pair Leverage + Shift side by side at bottom */
+.board-grid-iceberg {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    border: 1px solid var(--stage-color, rgba(255,255,255,0.1));
+    border-radius: 8px;
+    overflow: hidden;
+}
+.board-grid-iceberg .board-zone {
+    min-height: auto; border-radius: 0; background: var(--bg, #12103a);
+    border-left: 3px solid var(--stage-color, #27BDBE); padding: 0.6rem; overflow: visible;
+}
+.board-grid-iceberg .board-zone .zone-cards { max-height: none; overflow: visible; }
+/* Event / Patterns / Structures / Mental Models each span full width — vertical drill */
+.board-grid-iceberg .board-zone[data-zone="ice-event"]      { grid-column: 1 / -1; }
+.board-grid-iceberg .board-zone[data-zone="ice-patterns"]    { grid-column: 1 / -1; }
+.board-grid-iceberg .board-zone[data-zone="ice-structures"]  { grid-column: 1 / -1; }
+.board-grid-iceberg .board-zone[data-zone="ice-mental"]      { grid-column: 1 / -1; }
+/* Leverage + Shift side by side at bottom */
+@media (max-width: 600px) { .board-grid-iceberg { grid-template-columns: 1fr; } }
+
+/* === CONSTRAINT FLIP BOARD GRID === */
+/* Constraint full-width top, Forces/Signals/Enables 3-col, Ideas + Moat + Actions bottom */
+.board-grid-constraint-flip {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 2px;
+    border: 1px solid var(--stage-color, rgba(255,255,255,0.1));
+    border-radius: 8px;
+    overflow: hidden;
+}
+.board-grid-constraint-flip .board-zone {
+    min-height: auto; border-radius: 0; background: var(--bg, #12103a);
+    border-left: 3px solid var(--stage-color, #F15A22); padding: 0.6rem; overflow: visible;
+}
+.board-grid-constraint-flip .board-zone .zone-cards { max-height: none; overflow: visible; }
+.board-grid-constraint-flip .board-zone[data-zone="cf-constraint"] { grid-column: 1 / -1; }
+/* Forces / Signals / Enables tile across 3 cols */
+.board-grid-constraint-flip .board-zone[data-zone="cf-ideas"]     { grid-column: 1 / -1; }
+.board-grid-constraint-flip .board-zone[data-zone="cf-moat"]      { grid-column: 1 / -1; }
+.board-grid-constraint-flip .board-zone[data-zone="actions"]      { grid-column: 1 / -1; }
+@media (max-width: 768px) { .board-grid-constraint-flip { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 480px) { .board-grid-constraint-flip { grid-template-columns: 1fr; } }
+
+/* === FLYWHEEL BOARD GRID === */
+/* 2x2 grid for 4 components, Connections + Bottleneck + Acceleration full-width bottom */
+.board-grid-flywheel {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    border: 1px solid var(--stage-color, rgba(255,255,255,0.1));
+    border-radius: 8px;
+    overflow: hidden;
+}
+.board-grid-flywheel .board-zone {
+    min-height: auto; border-radius: 0; background: var(--bg, #12103a);
+    border-left: 3px solid var(--stage-color, #E4E517); padding: 0.6rem; overflow: visible;
+}
+.board-grid-flywheel .board-zone .zone-cards { max-height: none; overflow: visible; }
+/* Components 1-4 auto-flow into 2x2 */
+.board-grid-flywheel .board-zone[data-zone="fw-connections"]   { grid-column: 1 / -1; }
+.board-grid-flywheel .board-zone[data-zone="fw-bottleneck"]    { grid-column: 1 / -1; }
+.board-grid-flywheel .board-zone[data-zone="fw-acceleration"]  { grid-column: 1 / -1; }
+@media (max-width: 600px) { .board-grid-flywheel { grid-template-columns: 1fr; } }
+
+/* === WARDLEY MAP BOARD GRID === */
+/* User Need + Components full-width top, 4-col evolution: Genesis/Custom/Product/Commodity, then bottom rows */
+.board-grid-wardley {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 2px;
+    border: 1px solid var(--stage-color, rgba(255,255,255,0.1));
+    border-radius: 8px;
+    overflow: hidden;
+}
+.board-grid-wardley .board-zone {
+    min-height: auto; border-radius: 0; background: var(--bg, #12103a);
+    border-left: 3px solid var(--stage-color, #E4E517); padding: 0.6rem; overflow: visible;
+}
+.board-grid-wardley .board-zone .zone-cards { max-height: none; overflow: visible; }
+.board-grid-wardley .board-zone[data-zone="wm-need"]        { grid-column: 1 / -1; }
+.board-grid-wardley .board-zone[data-zone="wm-components"]   { grid-column: 1 / -1; }
+/* Genesis / Custom / Product / Commodity tile across 4 cols */
+.board-grid-wardley .board-zone[data-zone="wm-mismatch"]    { grid-column: 1 / 3; }
+.board-grid-wardley .board-zone[data-zone="wm-inertia"]     { grid-column: 3 / 5; }
+.board-grid-wardley .board-zone[data-zone="wm-opportunity"] { grid-column: 1 / 3; }
+.board-grid-wardley .board-zone[data-zone="wm-risk"]        { grid-column: 3 / 5; }
+.board-grid-wardley .board-zone[data-zone="wm-movement"]    { grid-column: 1 / -1; }
+.board-grid-wardley .board-zone[data-zone="actions"]        { grid-column: 1 / -1; }
+@media (max-width: 768px) { .board-grid-wardley { grid-template-columns: 1fr 1fr; }
+    .board-grid-wardley .board-zone { grid-column: auto !important; } }
+@media (max-width: 480px) { .board-grid-wardley { grid-template-columns: 1fr; } }
+
 /* Compact text for all custom boards */
+/* Compact text for all custom board grids */
 .board-grid-trade-off .zone-name,
 .board-grid-cold-open .zone-name,
 .board-grid-socratic .zone-name,
@@ -5518,7 +5918,16 @@ body.light .feedback-input, html[data-theme="light"] .feedback-input { backgroun
 .board-grid-iceberg .zone-name,
 .board-grid-constraint-flip .zone-name,
 .board-grid-flywheel .zone-name,
-.board-grid-mash-up .zone-name { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+.board-grid-mash-up .zone-name,
+.board-grid-five-whys .zone-name,
+.board-grid-empathy-map .zone-name,
+.board-grid-jtbd .zone-name,
+.board-grid-crazy8s .zone-name,
+.board-grid-hmw .zone-name,
+.board-grid-scamper .zone-name,
+.board-grid-devils-advocate .zone-name,
+.board-grid-rapid-experiment .zone-name,
+.board-grid-wardley .zone-name { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
 
 .board-grid-trade-off .board-card-text,
 .board-grid-cold-open .board-card-text,
@@ -5528,7 +5937,16 @@ body.light .feedback-input, html[data-theme="light"] .feedback-input { backgroun
 .board-grid-iceberg .board-card-text,
 .board-grid-constraint-flip .board-card-text,
 .board-grid-flywheel .board-card-text,
-.board-grid-mash-up .board-card-text { font-size: 0.8rem; line-height: 1.4; }
+.board-grid-mash-up .board-card-text,
+.board-grid-five-whys .board-card-text,
+.board-grid-empathy-map .board-card-text,
+.board-grid-jtbd .board-card-text,
+.board-grid-crazy8s .board-card-text,
+.board-grid-hmw .board-card-text,
+.board-grid-scamper .board-card-text,
+.board-grid-devils-advocate .board-card-text,
+.board-grid-rapid-experiment .board-card-text,
+.board-grid-wardley .board-card-text { font-size: 0.8rem; line-height: 1.4; }
 
 .board-grid-trade-off .zone-empty,
 .board-grid-trade-off .zone-hint,
@@ -5547,7 +5965,25 @@ body.light .feedback-input, html[data-theme="light"] .feedback-input { backgroun
 .board-grid-flywheel .zone-empty,
 .board-grid-flywheel .zone-hint,
 .board-grid-mash-up .zone-empty,
-.board-grid-mash-up .zone-hint { font-size: 0.7rem; }
+.board-grid-mash-up .zone-hint,
+.board-grid-five-whys .zone-empty,
+.board-grid-five-whys .zone-hint,
+.board-grid-empathy-map .zone-empty,
+.board-grid-empathy-map .zone-hint,
+.board-grid-jtbd .zone-empty,
+.board-grid-jtbd .zone-hint,
+.board-grid-crazy8s .zone-empty,
+.board-grid-crazy8s .zone-hint,
+.board-grid-hmw .zone-empty,
+.board-grid-hmw .zone-hint,
+.board-grid-scamper .zone-empty,
+.board-grid-scamper .zone-hint,
+.board-grid-devils-advocate .zone-empty,
+.board-grid-devils-advocate .zone-hint,
+.board-grid-rapid-experiment .zone-empty,
+.board-grid-rapid-experiment .zone-hint,
+.board-grid-wardley .zone-empty,
+.board-grid-wardley .zone-hint { font-size: 0.7rem; }
 
 
 /* ============================================================
