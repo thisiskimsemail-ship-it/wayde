@@ -2620,7 +2620,7 @@ def chat():
             yield "data: [DONE]\n\n"
         except Exception as e:
             print(f"[Chat] All models failed: {e}")
-            yield f"data: {json.dumps({'error': 'Pete is a bit overwhelmed right now. Give it a moment and try again.'})}\n\n"
+            yield f"data: {json.dumps({'error': 'Pete\u2019s popped out to get the coffee. Hold tight.'})}\n\n"
 
     return Response(stream_with_context(generate()), mimetype='text/event-stream',
                     headers={'Cache-Control': 'no-cache', 'X-Accel-Buffering': 'no'})
@@ -4694,7 +4694,7 @@ def pre_report():
                 yield f"data: {json.dumps({'text': text})}\n\n"
         except Exception as e:
             print(f"[PreReport] All models failed: {e}")
-            yield f"data: {json.dumps({'error': 'Pete is a bit overwhelmed right now. Give it a moment and try again.'})}\n\n"
+            yield f"data: {json.dumps({'error': 'Pete\u2019s popped out to get the coffee. Hold tight.'})}\n\n"
         yield "data: [DONE]\n\n"
 
     return Response(stream_with_context(generate()), mimetype='text/event-stream',
