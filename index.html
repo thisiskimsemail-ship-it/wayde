@@ -350,7 +350,11 @@
                             </div>
                             <div class="lp-board-mock-zone" style="grid-column: 1 / -1">
                                 <span class="lp-board-mock-zone-label" style="color:var(--teal)">MINIMUM VIABLE OFFER</span>
-                                <div class="lp-board-mock-card" style="border-left-color:var(--teal)">Reporting + Integrations + Time Tracking at $39/mo</div>
+                                <div class="lp-board-mock-card" style="border-left-color:var(--teal)">Reporting + Integrations + Time Tracking at $39/mo — the simplest version someone would pay for</div>
+                            </div>
+                            <div class="lp-board-mock-zone" style="grid-column: 1 / -1">
+                                <span class="lp-board-mock-zone-label" style="color:var(--pink)">OPTIMISED OFFER</span>
+                                <div class="lp-board-mock-card" style="border-left-color:var(--pink)">Reporting + Integrations + Time Tracking + Client Portal at $49/mo — the best bundle the data supports</div>
                             </div>
                         </div>
                     </div>
@@ -502,10 +506,10 @@
         <div class="report-unlock hidden" id="reportUnlock">
             <h3 class="report-unlock-heading">Almost there — tell us where to send your report</h3>
             <form class="lead-form" id="unlockForm">
-                <input type="text" class="lead-input" id="unlockName" placeholder="Name" required>
+                <input type="text" class="lead-input" id="unlockName" placeholder="Name" required aria-label="Name">
                 <input type="email" class="lead-input" id="unlockEmail" placeholder="Email" required aria-label="Email address">
-                <input type="text" class="lead-input" id="unlockCompany" placeholder="Company / Organisation">
-                <input type="text" class="lead-input" id="unlockRole" placeholder="Role">
+                <input type="text" class="lead-input" id="unlockCompany" placeholder="Company / Organisation" aria-label="Company or Organisation">
+                <input type="text" class="lead-input" id="unlockRole" placeholder="Role" aria-label="Role">
                 <button type="submit" class="lead-submit" id="unlockSubmit">Build my report →</button>
             </form>
         </div>
@@ -729,10 +733,10 @@
             <h2 class="lead-modal-title">Your Studio Session report is ready</h2>
             <p class="lead-modal-sub">Enter your details to receive your report. A copy will also be shared with the Wade Institute team.</p>
             <form class="lead-form" id="leadForm">
-                <input type="text" class="lead-input" id="leadName" placeholder="Name" required>
+                <input type="text" class="lead-input" id="leadName" placeholder="Name" required aria-label="Name">
                 <input type="email" class="lead-input" id="leadEmail" placeholder="Email" required aria-label="Email address">
-                <input type="text" class="lead-input" id="leadCompany" placeholder="Company / Organisation">
-                <input type="text" class="lead-input" id="leadRole" placeholder="Role">
+                <input type="text" class="lead-input" id="leadCompany" placeholder="Company / Organisation" aria-label="Company or Organisation">
+                <input type="text" class="lead-input" id="leadRole" placeholder="Role" aria-label="Role">
                 <button type="submit" class="lead-submit" id="leadSubmit">Send me the report</button>
             </form>
         </div>
@@ -846,10 +850,10 @@
             <span>Not great</span>
             <span>Loved it</span>
         </div>
-        <textarea class="feedback-input" id="feedbackInput" placeholder="Tell us more... what worked, what didn't, what you'd change." rows="3"></textarea>
+        <textarea class="feedback-input" id="feedbackInput" placeholder="Tell us more... what worked, what didn't, what you'd change." rows="3" aria-label="Feedback"></textarea>
         <button class="feedback-submit" id="feedbackSubmit">Send feedback</button>
     </div>
 
-    <script src="app.js?v=195"></script>
+    <script src="app.js?v=198"></script>
 </body>
 </html>

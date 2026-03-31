@@ -1668,6 +1668,7 @@ inputField.addEventListener('keydown', (e) => {
 });
 
 async function sendMessage(text) {
+    if (state.streaming) return; // Guard against concurrent sends
     // Handle file uploads — build message content
     const uploads = [...pendingUploads];
     pendingUploads = [];
@@ -1780,6 +1781,12 @@ function saveSession() {
         projectContext: state.projectContext,
         parkingLot: state.parkingLot,
         board: state.board,
+        wrapped: state.wrapped,
+        tradeOffRound: state.tradeOffRound,
+        currentPhase: state.currentPhase,
+        sessionStartTime: state.sessionStartTime,
+        pushHarder: state.pushHarder,
+        preReportAsked: state.preReportAsked,
         savedAt: Date.now()
     }));
 }
@@ -1799,6 +1806,13 @@ function restoreSession(session) {
         projectContext: session.projectContext || [],
         parkingLot: session.parkingLot || [],
         board: session.board || { cards: [], visible: false },
+        wrapped: session.wrapped || false,
+        tradeOffRound: session.tradeOffRound || 0,
+        currentPhase: session.currentPhase || null,
+        sessionStartTime: session.sessionStartTime || Date.now(),
+        pushHarder: session.pushHarder || false,
+        preReportAsked: session.preReportAsked || false,
+        streaming: false,
         routing: false,
         rating: null,
         resumed: true,
@@ -2027,6 +2041,9 @@ async function streamResponse() {
         typing.remove();
         appendMessage('agent', 'Connection error. Make sure the server is running.');
     }
+
+    // Always remove typing indicator after stream ends
+    if (typing.parentNode) typing.remove();
 
     // Parse and render [OPTIONS: A | B] chips
     if (fullText && agentDiv) {
@@ -2282,10 +2299,11 @@ async function streamResponse() {
                 const tagKey = tm[1].trim().toLowerCase();
                 const tagText = tm[2].trim();
                 const zone = toolMap[tagKey] || tagKey;
-                // Tally zone: replace content instead of accumulating
-                if (zone === 'to-tally') {
-                    state.board.cards = state.board.cards.filter(c => c.zone !== 'to-tally');
-                    const zoneEl = document.querySelector(`.zone-cards[data-zone="to-tally"]`);
+                // Replace-mode zones: overwrite content instead of accumulating
+                const replaceZones = ['to-tally'];
+                if (replaceZones.includes(zone)) {
+                    state.board.cards = state.board.cards.filter(c => c.zone !== zone);
+                    const zoneEl = document.querySelector(`.zone-cards[data-zone="${zone}"]`);
                     if (zoneEl) zoneEl.innerHTML = '';
                 }
                 addBoardCard(tagText, zone, state.mode, EXERCISE_LABELS[state.exercise] || state.exercise);
@@ -2295,13 +2313,15 @@ async function streamResponse() {
         }
 
         // Parse [BUNDLE:...] tags for Trade-Off visual comparison cards
+        // Normalize: collapse any newlines inside BUNDLE tags (AI sometimes wraps long tags)
+        let bundleText = fullText.replace(/\[BUNDLE:([\s\S]*?)\]/g, (m, inner) => '[BUNDLE:' + inner.replace(/\n/g, ' ') + ']');
         const bundleRegex = /\[BUNDLE:([^\]]+)\]/g;
-        for (const bm of fullText.matchAll(bundleRegex)) {
+        for (const bm of bundleText.matchAll(bundleRegex)) {
             renderBundleCards(bm[1].trim(), messagesEl);
             state.tradeOffRound++;
             updateProgressIndicator();
         }
-        fullText = fullText.replace(/\n?\[BUNDLE:[^\]]+\]/g, '').trim();
+        fullText = fullText.replace(/\n?\[BUNDLE:[\s\S]*?\]/g, '').trim();
 
         if (agentDiv) agentDiv.innerHTML = renderMarkdown(fullText);
 
@@ -2607,6 +2627,7 @@ async function generateReport() {
         state.reportJson = data.report_json || null;
         state.reportSynopsis = data.synopsis || {};
         state.reportGenerated = true;
+        reportGenerating = false;
         console.log('[Report] Got report', state.reportHtml ? `HTML: ${state.reportHtml.length} chars` : `text: ${state.reportText.length} chars`);
 
         // Close board so report has full width
@@ -3522,6 +3543,7 @@ async function startPostSessionFlow() {
         state.reportJson = reportData.report_json || null;
         state.reportSynopsis = reportData.synopsis || {};
         state.reportGenerated = true;
+        reportGenerating = false;
         state._revealData = revealData;
         state._sessionDuration = sessionDuration;
 
@@ -4166,15 +4188,13 @@ const BOARD_LAYOUTS = {
     },
     'trade-off': {
         zones: [
-            { id: 'to-synopsis', name: 'Synopsis', empty: 'What was tested and what surprised you?', hint: '2-3 sentence summary of the trade-off exercise', colour: 'pink' },
             { id: 'to-setup', name: 'The Setup', empty: 'Categories with 3 levels each', hint: 'Category | Level 1 | Level 2 | Level 3 | Price range', colour: 'pink' },
-            { id: 'to-tally', name: 'Running Tally', empty: 'Win counts update after each round', hint: 'Which features are winning?', colour: 'pink' },
-            { id: 'to-rounds', name: 'Trade-Off Rounds', empty: 'Package A vs Package B', hint: 'Each round forces a sacrifice', colour: 'pink' },
             { id: 'to-musthave', name: 'Must-Have', empty: 'Won 7-10 rounds', hint: 'Core value — customers always choose this', colour: 'pink' },
             { id: 'to-nicetohave', name: 'Nice-to-Have', empty: 'Won 4-6 rounds', hint: 'Valuable but tradeable', colour: 'pink' },
             { id: 'to-expendable', name: 'Expendable', empty: 'Won 0-3 rounds', hint: 'You care more than your customer does', colour: 'pink' },
             { id: 'to-surprise', name: 'The Surprise', empty: 'The feature you were most wrong about', hint: 'Overvalued or undervalued going in', colour: 'pink' },
             { id: 'to-mvo', name: 'Minimum Viable Offer', empty: 'Survivors only — the simplest version someone would pay for', hint: 'Strip everything else away', colour: 'pink' },
+            { id: 'to-optimised', name: 'Optimised Offer', empty: 'The best bundle the data supports', hint: 'Must-haves at top level + nice-to-haves at mid + computed price', colour: 'pink' },
             { id: 'actions', name: 'What to Do Next', empty: 'What changes because of this', hint: 'Roadmap, pricing, or positioning shift', colour: 'pink' }
         ],
         gridClass: 'board-grid-trade-off'
@@ -4345,12 +4365,11 @@ const TOC_TAG_MAP = {
     'weakest': 'toc-weakest'
 };
 const TRADEOFF_TAG_MAP = {
-    'synopsis': 'to-synopsis', 'summary': 'to-synopsis',
     'setup': 'to-setup', 'feature': 'to-setup',
-    'round': 'to-rounds', 'tally': 'to-tally',
     'must-have': 'to-musthave', 'nice-to-have': 'to-nicetohave',
     'expendable': 'to-expendable', 'surprise': 'to-surprise',
-    'mvo': 'to-mvo', 'minimum-viable': 'to-mvo'
+    'mvo': 'to-mvo', 'minimum-viable': 'to-mvo',
+    'optimised': 'to-optimised', 'optimised-offer': 'to-optimised', 'optimal': 'to-optimised'
 };
 const ICEBERG_TAG_MAP = {
     'event': 'ice-event', 'pattern': 'ice-patterns', 'patterns': 'ice-patterns',
@@ -4468,8 +4487,16 @@ function switchBoardLayout(mode) {
 // Format: Round title|Name A|feat1=val1,feat2=val2,Price=$X|Name B|feat1=val1,feat2=val2,Price=$X
 function renderBundleCards(bundleStr, container) {
     const parts = bundleStr.split('|').map(s => s.trim());
-    if (parts.length < 5) return; // Need: title, nameA, featuresA, nameB, featuresB
-    const [roundTitle, nameA, featStrA, nameB, featStrB] = parts;
+    if (parts.length < 5) {
+        console.warn('[BUNDLE] Malformed — expected 5 pipe-separated parts, got', parts.length, bundleStr.substring(0, 100));
+        return;
+    }
+    // Handle extra pipes: first 3 parts are fixed, then nameB, then rejoin remaining as featStrB
+    const roundTitle = parts[0];
+    const nameA = parts[1];
+    const featStrA = parts[2];
+    const nameB = parts[3];
+    const featStrB = parts.slice(4).join('|'); // rejoin in case AI put extra pipes in features
 
     const parseFeatures = (str) => str.split(',').map(f => {
         const [key, val] = f.split('=').map(s => s.trim());
@@ -4627,8 +4654,8 @@ function removeBoardCard(cardId) {
             const zoneName = card.zone.replace(/-/g, ' ');
             const msg = `[I just removed "${card.text}" from the ${zoneName} block on the canvas. I'm not sure about that one.]`;
             state.messages.push({ role: 'user', content: msg });
-            appendMessage(msg, 'user');
-            streamResponse();
+            appendMessage('user', msg);
+            if (!state.streaming) streamResponse();
         }
     }
     updateBoardCounts();

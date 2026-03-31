@@ -98,38 +98,46 @@ report_json = {
         {'action': 'Shelf the collaboration engine. Don\'t delete the code — remove it from product and marketing until 50 paying customers ask for it.', 'timeframe': 'This week', 'owner': 'CTO'}
     ],
     'board_summary': {
-        'rounds': [
-            {'number': 1, 'packages': ['Reporting + Integrations', 'Collaboration + Custom Workflows'], 'chosen': 'Reporting + Integrations'},
-            {'number': 2, 'packages': ['Time Tracking + Portal', 'AI Suggestions + Collaboration'], 'chosen': 'Time Tracking + Portal'},
-            {'number': 3, 'packages': ['Reporting + Time Tracking', 'Collaboration + AI'], 'chosen': 'Reporting + Time Tracking'},
-            {'number': 4, 'packages': ['Integrations + Portal', 'Workflows + Collaboration'], 'chosen': 'Integrations + Portal'},
-            {'number': 5, 'packages': ['Reporting + AI', 'Integrations + Workflows'], 'chosen': 'Reporting + Integrations'},
-            {'number': 6, 'packages': ['All must-haves', 'All expendables'], 'chosen': 'Must-haves'}
-        ],
         'value_stack': [
             {
                 'tier': 'must',
                 'items': [
-                    {'name': 'Automated weekly reporting', 'wins': '6/6'},
-                    {'name': 'One-click integrations', 'wins': '5/6'}
+                    {'name': 'Reporting: Automated weekly', 'wins': '9/10', 'importance': '32%'},
+                    {'name': 'Integrations: One-click setup', 'wins': '8/10', 'importance': '26%'}
                 ]
             },
             {
                 'tier': 'nice',
                 'items': [
-                    {'name': 'Time tracking', 'wins': '4/6'},
-                    {'name': 'White-label client portal', 'wins': '3/6'}
+                    {'name': 'Time tracking: Built-in timer', 'wins': '6/10', 'importance': '18%'},
+                    {'name': 'Client portal: White-label', 'wins': '5/10', 'importance': '14%'}
                 ]
             },
             {
                 'tier': 'expendable',
                 'items': [
-                    {'name': 'Custom workflows', 'wins': '2/6'},
-                    {'name': 'AI task suggestions', 'wins': '1/6'},
-                    {'name': 'Real-time collaboration', 'wins': '1/6'}
+                    {'name': 'Custom workflows', 'wins': '3/10', 'importance': '6%'},
+                    {'name': 'AI task suggestions', 'wins': '2/10', 'importance': '3%'},
+                    {'name': 'Real-time collaboration', 'wins': '1/10', 'importance': '1%'}
                 ]
             }
-        ]
+        ],
+        'utilities': [
+            {'category': 'Reporting', 'level_1': 0.20, 'level_2': 0.55, 'level_3': 0.90, 'importance': 32},
+            {'category': 'Integrations', 'level_1': 0.25, 'level_2': 0.60, 'level_3': 0.85, 'importance': 26},
+            {'category': 'Time Tracking', 'level_1': 0.35, 'level_2': 0.55, 'level_3': 0.70, 'importance': 18},
+            {'category': 'Client Portal', 'level_1': 0.30, 'level_2': 0.50, 'level_3': 0.65, 'importance': 14},
+            {'category': 'Collaboration', 'level_1': 0.45, 'level_2': 0.50, 'level_3': 0.48, 'importance': 3}
+        ],
+        'surprise': 'Real-time collaboration — the founder\'s favourite feature and centrepiece of the pitch deck — had only 1% relative importance. Customers chose the bundle WITHOUT it 9 out of 10 times. Meanwhile, automated reporting drove 32% of all choices.',
+        'mvo': {
+            'features': ['Reporting: Automated weekly', 'Integrations: One-click', 'Time tracking: Basic', 'Portal: None', 'Collaboration: None'],
+            'price': '$39/mo'
+        },
+        'optimised': {
+            'features': ['Reporting: Automated weekly', 'Integrations: One-click', 'Time tracking: Built-in timer', 'Portal: White-label', 'Collaboration: None'],
+            'price': '$49/mo'
+        }
     },
     'go_further': {
         'text': 'This pattern — building for the demo instead of the buyer — is one of the most common reasons startups overbuild and underprice. The Trade-Off exercise surfaced it in 25 minutes. Imagine what a full program does.',

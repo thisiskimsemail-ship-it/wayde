@@ -327,6 +327,9 @@ html[data-theme="light"] .mobile-menu-control:hover { color: var(--navy); backgr
     --grey-dark: #49474D;
     --grey-light: #E7E6E5;
     --grey-bg: #F6F5F5;
+    --fg: #f5f5f5;
+    --border: rgba(255,255,255,0.12);
+    --accent: #F15A22;
     --font: 'GT Walsheim', 'Space Grotesk', sans-serif;
     --mono: 'GT Walsheim', sans-serif;
 }
@@ -418,6 +421,10 @@ body[data-mode="build"] { --stage-color: var(--yellow); }
 body[data-mode="routing"]   { --stage-color: var(--orange); }
 /* Light mode: yellow is invisible on white — swap to navy */
 html[data-theme="light"] body[data-mode="build"] { --stage-color: var(--navy); }
+/* Yellow text swaps to navy in light theme for readability */
+html[data-theme="light"] .card-build .card-mode-name { color: var(--navy); }
+html[data-theme="light"] [data-mode="build"] .activity-brief-stage { color: var(--navy); }
+html[data-theme="light"] .stage-step[data-stage="framework"] .stage-name { color: var(--navy); }
 
 /* Logo — swap wordmark per stage (JS sets src, no filters needed) */
 
@@ -4002,6 +4009,9 @@ html[data-theme="light"] {
     --text: #1E194F;
     --text-dim: rgba(30,25,79,0.78);
     --text-muted: rgba(30,25,79,0.58);
+    --fg: #1E194F;
+    --border: rgba(30,25,79,0.15);
+    --accent: #F15A22;
 }
 
 html[data-theme="light"] .input-hint { color: var(--text-dim); }
@@ -4735,7 +4745,7 @@ body[data-mode] .board-zone .zone-name { color: var(--stage-color); }
     border-radius: 6px;
     padding: 0.45rem 0.55rem;
     cursor: grab;
-    border-left: 3px solid var(--orange);
+    border-left: 3px solid var(--stage-color, var(--orange));
     transition: transform 0.1s, box-shadow 0.15s, opacity 0.15s;
     animation: cardFadeIn 0.25s ease-out;
 }
@@ -5375,7 +5385,9 @@ body.light .feedback-input, html[data-theme="light"] .feedback-input { backgroun
     max-height: none;
     overflow: visible;
 }
+.board-grid-trade-off .board-zone[data-zone="to-surprise"],
 .board-grid-trade-off .board-zone[data-zone="to-mvo"],
+.board-grid-trade-off .board-zone[data-zone="to-optimised"],
 .board-grid-trade-off .board-zone[data-zone="actions"] {
     grid-column: 1 / -1;
 }

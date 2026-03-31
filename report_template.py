@@ -1374,55 +1374,113 @@ def _render_board_reality_check(board, pathway):
 # ── 15. THE TRADE-OFF ──
 
 def _render_board_trade_off(board, pathway):
-    """Trade-Off: setup + 10 round cards + feature value stack."""
-    setup = board.get('setup', [])  # [{category, levels, price_range}]
-    rounds = board.get('rounds', [])  # [{number, packages, chosen}]
+    """Trade-Off: 3-col value stack (must/nice/expendable) + full-width surprise + MVO + optimised offer."""
     tiers = board.get('value_stack', [])  # [{tier, items}]  tier=must/nice/expendable
+    utilities = board.get('utilities', [])  # [{category, level_1, level_2, level_3, importance}]
+    mvo = board.get('mvo', {})  # {features: [...], price: "$X"}
+    optimised = board.get('optimised', {})  # {features: [...], price: "$X"}
+    surprise = board.get('surprise', '')  # string narrative
     accent = PATHWAY_COLOURS.get(pathway, '#ED3694')
 
-    # Round cards
-    round_html = ''
-    for r in rounds:
-        num = r.get('number', '')
-        chosen = r.get('chosen', '')
-        pkgs = r.get('packages', [])
-        picked_cls = 'picked' if chosen else ''
-        pkg_text = ' vs '.join(str(p) for p in pkgs) if pkgs else ''
-        chosen_text = f'<div style="font-size:7px;font-weight:700;color:{accent};">{_e(chosen)}</div>' if chosen else ''
-        round_html += f'''<div class="rnd {picked_cls}">
-          <div class="rn">R{_e(str(num))}</div>
-          <div style="font-size:7px;color:var(--grey-4);">{_e(pkg_text)}</div>
-          {chosen_text}
-        </div>'''
-
-    # Value stack
-    tier_colours = {'must': ('var(--navy)', 'white'), 'nice': ('var(--grey-4)', 'white'), 'expendable': ('var(--grey-2)', 'var(--grey-4)')}
-    stack_html = ''
+    # Value stack — 3 columns
+    tier_config = {
+        'must': {'bg': 'var(--navy)', 'color': 'white', 'label': 'Must-Have'},
+        'nice': {'bg': 'var(--grey-4)', 'color': 'white', 'label': 'Nice-to-Have'},
+        'expendable': {'bg': 'var(--grey-2)', 'color': 'var(--grey-4)', 'label': 'Expendable'}
+    }
+    cols_html = ''
     for t in tiers:
         tier_name = t.get('tier', 'must')
         items = t.get('items', [])
-        bg, color = tier_colours.get(tier_name, ('var(--grey-1)', 'var(--grey-4)'))
-        hd_label = tier_name.replace('-', ' ').title()
+        cfg = tier_config.get(tier_name, tier_config['must'])
         item_rows = ''
         for item in items:
             name = item if isinstance(item, str) else item.get('name', '')
             wins = '' if isinstance(item, str) else item.get('wins', '')
-            wins_html = f'<span style="font-size:8px;color:var(--grey-3);">{_e(wins)}</span>' if wins else ''
-            item_rows += f'<div style="display:flex;justify-content:space-between;padding:4px 14px;font-size:9px;border-bottom:1px solid var(--grey-2);">{_e(name)} {wins_html}</div>'
-        stack_html += f'''<div style="border-radius:4px;overflow:hidden;margin-bottom:4px;">
-          <div style="background:{bg};color:{color};padding:5px 14px;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.3px;">{_e(hd_label)}</div>
-          <div style="background:var(--grey-1);">{item_rows}</div>
+            importance = '' if isinstance(item, str) else item.get('importance', '')
+            meta_parts = []
+            if wins:
+                meta_parts.append(_e(wins))
+            if importance:
+                meta_parts.append(_e(importance))
+            meta_html = f'<div style="font-size:7px;color:var(--grey-3);margin-top:2px;">{" · ".join(meta_parts)}</div>' if meta_parts else ''
+            item_rows += f'''<div style="padding:5px 10px;font-size:8px;border-bottom:1px solid var(--grey-2);">
+              {_e(name)}{meta_html}
+            </div>'''
+        opacity = '0.6' if tier_name == 'expendable' else '1'
+        cols_html += f'''<div style="opacity:{opacity};">
+          <div style="background:{cfg['bg']};color:{cfg['color']};padding:5px 10px;font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:0.3px;border-radius:4px 4px 0 0;">{_e(cfg['label'])}</div>
+          <div style="background:var(--grey-1);border-radius:0 0 4px 4px;">{item_rows}</div>
         </div>'''
 
-    return f'''<div style="flex:1;display:grid;grid-template-columns:1.3fr 0.7fr;grid-template-rows:1fr;gap:1px;background:var(--grey-2);">
-      <div style="background:white;padding:12px 14px;overflow:auto;">
-        <div class="c-label" style="color:{accent};margin-bottom:8px;">The 10 Rounds</div>
-        <div class="rounds">{round_html}</div>
-      </div>
-      <div style="background:white;padding:12px 14px;overflow:auto;">
-        <div class="c-label" style="color:{accent};margin-bottom:8px;">Feature Value Stack</div>
-        {stack_html}
-      </div>
+    # Surprise — full width
+    surprise_text = surprise if isinstance(surprise, str) else ''
+    surprise_html = ''
+    if surprise_text:
+        surprise_html = f'''<div style="grid-column:1/-1;background:var(--grey-1);border-left:3px solid #F15A22;padding:8px 12px;border-radius:4px;">
+          <div style="font-size:8px;font-weight:700;color:#F15A22;text-transform:uppercase;letter-spacing:0.3px;margin-bottom:3px;">The Surprise</div>
+          <div style="font-size:8px;color:var(--grey-4);line-height:1.4;">{_e(surprise_text)}</div>
+        </div>'''
+
+    # MVO — full width
+    mvo_html = ''
+    if mvo:
+        mvo_features = mvo.get('features', [])
+        mvo_price = mvo.get('price', '')
+        mvo_list = ' · '.join(_e(f) for f in mvo_features)
+        mvo_html = f'''<div style="grid-column:1/-1;background:var(--grey-1);border-left:3px solid {accent};padding:8px 12px;border-radius:4px;">
+          <div style="font-size:8px;font-weight:700;color:{accent};text-transform:uppercase;letter-spacing:0.3px;margin-bottom:3px;">Minimum Viable Offer · {_e(mvo_price)}</div>
+          <div style="font-size:8px;color:var(--grey-4);line-height:1.4;">{mvo_list}</div>
+        </div>'''
+
+    # Optimised Offer — full width
+    opt_html = ''
+    if optimised:
+        opt_features = optimised.get('features', [])
+        opt_price = optimised.get('price', '')
+        opt_list = ' · '.join(_e(f) for f in opt_features)
+        opt_html = f'''<div style="grid-column:1/-1;background:var(--grey-1);border-left:3px solid #27BDBE;padding:8px 12px;border-radius:4px;">
+          <div style="font-size:8px;font-weight:700;color:#27BDBE;text-transform:uppercase;letter-spacing:0.3px;margin-bottom:3px;">Optimised Offer · {_e(opt_price)}</div>
+          <div style="font-size:8px;color:var(--grey-4);line-height:1.4;">{opt_list}</div>
+        </div>'''
+
+    # Utility table — full width (if data present)
+    util_html = ''
+    if utilities:
+        util_rows = ''
+        for u in utilities:
+            cat = u.get('category', '')
+            l1 = u.get('level_1', '')
+            l2 = u.get('level_2', '')
+            l3 = u.get('level_3', '')
+            imp = u.get('importance', '')
+            util_rows += f'''<tr>
+              <td style="padding:3px 6px;font-size:7px;border-bottom:1px solid var(--grey-2);">{_e(cat)}</td>
+              <td style="padding:3px 6px;font-size:7px;text-align:center;border-bottom:1px solid var(--grey-2);">{_e(str(l1))}</td>
+              <td style="padding:3px 6px;font-size:7px;text-align:center;border-bottom:1px solid var(--grey-2);">{_e(str(l2))}</td>
+              <td style="padding:3px 6px;font-size:7px;text-align:center;border-bottom:1px solid var(--grey-2);">{_e(str(l3))}</td>
+              <td style="padding:3px 6px;font-size:7px;text-align:center;font-weight:700;border-bottom:1px solid var(--grey-2);">{_e(str(imp)) + '%' if imp else ''}</td>
+            </tr>'''
+        util_html = f'''<div style="grid-column:1/-1;background:var(--grey-1);padding:8px 12px;border-radius:4px;">
+          <div style="font-size:8px;font-weight:700;color:{accent};text-transform:uppercase;letter-spacing:0.3px;margin-bottom:4px;">Conjoint Utilities</div>
+          <table style="width:100%;border-collapse:collapse;">
+            <tr>
+              <th style="padding:3px 6px;font-size:7px;text-align:left;border-bottom:2px solid var(--grey-3);">Category</th>
+              <th style="padding:3px 6px;font-size:7px;text-align:center;border-bottom:2px solid var(--grey-3);">Level 1</th>
+              <th style="padding:3px 6px;font-size:7px;text-align:center;border-bottom:2px solid var(--grey-3);">Level 2</th>
+              <th style="padding:3px 6px;font-size:7px;text-align:center;border-bottom:2px solid var(--grey-3);">Level 3</th>
+              <th style="padding:3px 6px;font-size:7px;text-align:center;border-bottom:2px solid var(--grey-3);">Importance</th>
+            </tr>
+            {util_rows}
+          </table>
+        </div>'''
+
+    return f'''<div style="flex:1;display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;padding:12px 14px;background:white;">
+      {cols_html}
+      {surprise_html}
+      {mvo_html}
+      {opt_html}
+      {util_html}
     </div>'''
 
 
@@ -1978,7 +2036,7 @@ def wrap_html_for_doc(html_content):
     Word opens the HTML and renders the CSS-driven layout.
     """
     # Count actual pages in the HTML
-    page_count = html_content.count('class="page')
+    page_count = html_content.count('class="page"') + html_content.count('class="page ')
 
     # Replace the <html> tag with Office-namespaced version
     doc_html = html_content.replace(

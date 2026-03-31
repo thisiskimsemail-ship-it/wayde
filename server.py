@@ -1631,40 +1631,43 @@ AMBIGUOUS INPUT DURING ROUNDS:
 - If the user's message does NOT clearly select a package (e.g., "show me round 7", "continue", "what's next", "tell me more"), do NOT interpret it as a selection. Instead, re-present the current round's [BUNDLE:...] tag.
 - NEVER fabricate or infer a choice the user did not make. If unclear, ask: "Which package — A or B?"
 
-TRACKING: Track wins internally. For each round, note which bundle was chosen and which was rejected. For each category, count how many times the user chose the bundle containing the HIGHER level of that category.
-
-After EACH round choice (not just Round 10), emit a running tally tag:
-[BOARD:tally: Round N — Cat1: X wins, Cat2: X wins, Cat3: X wins, Cat4: X wins, Cat5: X wins]
-
-After the user's Round 10 choice, also emit:
-[BOARD:round: Rounds complete — 10 trade-offs recorded]
+TRACKING: Track wins internally. For each round, note which bundle was chosen and which was rejected. For each category, count how many times the user chose the bundle containing the HIGHER level of that category. Do NOT emit board tags during rounds — the board populates in Phase 3.
 
 ## PHASE 3: THE ANALYSIS (~3 minutes, single message)
 
 After Round 10, deliver the full analysis in a SINGLE message. No questions. Pete reads the data, not the user's feelings about the data.
 
-1. **The Feature Value Stack** — for each category, calculate which level won most often. Rank the 5 categories by consistency:
-   - Must-have (won 7-10 of 10): these drive the purchase decision. The user consistently chose the higher level.
-   - Nice-to-have (won 4-6 of 10): valued but tradeable. Choice was inconsistent.
-   - Expendable (won 0-3 of 10): cut these. The user consistently chose the LOWER level or didn't care.
+CONJOINT UTILITY CALCULATION:
+For each category, calculate part-worth utilities from the 10 rounds:
+- For each level (1, 2, 3), count how many times the user CHOSE a bundle containing that level vs how many times it appeared.
+- Part-worth utility = (times chosen / times appeared). This gives a 0-1 score per level.
+- Relative importance of each category = range of utilities within that category (max utility - min utility), normalised so all 5 categories sum to 100%.
 
-2. **The Surprise** — the single most counter-intuitive finding. Compare the user's initial emphasis (inferred from Phase 1 — the order they listed categories, the enthusiasm of descriptions) against final win rates. The biggest gap is the surprise. Name the overvalued feature AND the undervalued one. Be specific: "You mentioned [X] as a major draw. But it won only [N] of 10 rounds. Every time it went head-to-head against [Y], [Y] won."
+1. **The Feature Value Stack** — rank by relative importance (highest = most influential on choice):
+   - Must-have (relative importance > 25% OR won 7-10 of 10): these drive the purchase decision.
+   - Nice-to-have (relative importance 10-25% OR won 4-6 of 10): valued but tradeable.
+   - Expendable (relative importance < 10% OR won 0-3 of 10): cut these.
 
-3. **The Minimum Viable Offer** — construct the simplest bundle: winning level of every must-have, middle level of every nice-to-have, lowest level of every expendable. Compute the price from this mix. "This is what they'd pay for."
+2. **The Surprise** — the single most counter-intuitive finding. Compare the user's initial emphasis (inferred from Phase 1 — the order they listed categories, the enthusiasm of descriptions) against final utility scores. The biggest gap is the surprise. Name the overvalued feature AND the undervalued one. Be specific: "You mentioned [X] as a major draw. But it had only [N]% relative importance. Every time it went head-to-head against [Y], [Y] won."
+
+3. **The Minimum Viable Offer** — construct the simplest bundle: winning level of every must-have, LOWEST level of every nice-to-have, lowest level of every expendable. Compute the price from this mix. "This is the floor — the cheapest version someone would still pay for."
+
+4. **The Optimised Offer** — construct the best-value bundle: winning level of every must-have, MID level of every nice-to-have, lowest level of every expendable. Compute the price from this mix. "This is the sweet spot — the bundle with the highest total utility relative to price."
 
 Emit all board tags in this message:
-[BOARD:must-have: Category — winning level (N/10 wins)] for each must-have
-[BOARD:nice-to-have: Category — mid level (N/10 wins)] for each nice-to-have
-[BOARD:expendable: Category — lowest level (N/10 wins)] for each expendable
+[BOARD:must-have: Category — winning level (N/10 wins, importance: X%)] for each must-have
+[BOARD:nice-to-have: Category — mid level (N/10 wins, importance: X%)] for each nice-to-have
+[BOARD:expendable: Category — lowest level (N/10 wins, importance: X%)] for each expendable
 [BOARD:surprise: The feature you were most wrong about — narrative]
 [BOARD:mvo: MVO — feature list at $computed_price]
+[BOARD:optimised: Optimised Offer — feature list at $computed_price]
 
 ## PHASE 4: THE CLOSE (~1 minute)
 
 Ask exactly ONE reflective question: "What's the one thing you were most wrong about?"
 
 The user answers. Pete acknowledges briefly (1-2 sentences max), then closes:
-"Your report is ready. The data's all there — the 10 rounds, the value stack, and your minimum viable offer. Go build that."
+"Your report is ready. The data's all there — the 10 rounds, the value stack, your minimum viable offer, and the optimised bundle. Go build that."
 
 Then emit: [WRAP]
 
@@ -1675,7 +1678,8 @@ KEY RULES:
 - ZERO commentary between rounds — just "Round N." and the next bundle
 - ALL analysis comes in ONE message after Round 10
 - Phase 4 has exactly ONE question, then close
-- The board populates progressively: features in Phase 1, round summary after Phase 2, full analysis in Phase 3""" + FACILITATOR_OVERLAY,
+- The board populates ONLY in Phase 3 (setup tags in Phase 1, everything else in Phase 3)
+- Conjoint utilities drive the value stack ranking, not just win counts""" + FACILITATOR_OVERLAY,
 
     "build:lean-canvas": STUDIO_IDENTITY + """
 
@@ -2378,6 +2382,13 @@ def index():
 
 @app.route('/<path:path>')
 def static_files(path):
+    # Block access to sensitive files
+    BLOCKED = {'leads.json', 'shared_reports.json', 'shared_canvases.json', 'feedback.json',
+               'server.py', '.env', '.gitignore', 'requirements.txt', 'Procfile',
+               'report_template.py', 'generate_showcase.py', 'generate_samples.py',
+               'CLAUDE.md', 'railway.json'}
+    if path in BLOCKED or path.startswith('.') or path.endswith('.py') or path.endswith('.pyc'):
+        return 'Not found', 404
     return send_from_directory('.', path)
 
 @app.route('/api/chat', methods=['POST'])
@@ -4149,8 +4160,14 @@ BOARD SUMMARY (board_summary):
 TRADE_OFF_REPORT = """You are producing a Trade-Off session report for The Studio at Wade Institute of Entrepreneurship.
 Frame everything as the user's own thinking. Output as JSON.
 
+CONJOINT ANALYSIS: Calculate part-worth utilities from the 10 rounds.
+- For each category and each level, count: times_chosen / times_appeared → utility score (0 to 1).
+- Relative importance per category = (max_utility - min_utility) within that category, normalised so all 5 sum to 100%.
+- The winning combination = the level with the highest utility in each category.
+- Price for any bundle = min_price + average_level_score × (max_price - min_price), where Level 1=0, Level 2=0.5, Level 3=1.0.
+
 TOOL-SPECIFIC EVIDENCE COMPONENTS:
-In the "evidence.components" array, include all 7 sections:
+In the "evidence.components" array, include all 9 sections:
 [
   {"type": "callout", "bold": "Synopsis", "text": "[The headline insight in 2-3 sentences. What product was tested? What did the data reveal about what customers actually value? What was the surprise? This is what a founder reads aloud to their co-founder.]"},
   {"type": "workshop_table", "headers": ["Category", "Level 1", "Level 2", "Level 3"], "rows": [
@@ -4161,26 +4178,32 @@ In the "evidence.components" array, include all 7 sections:
     {"tag": "Round 1", "matchup": "✓ [Chosen package] vs ✗ [Rejected package]", "quote": ""},
     ...for all 10 rounds. No commentary — the pattern speaks for itself.
   ]},
+  {"type": "workshop_table", "headers": ["Category", "Level 1 Utility", "Level 2 Utility", "Level 3 Utility", "Importance"], "rows": [
+    ["[Category name]", "[0.XX]", "[0.XX]", "[0.XX]", "[XX%]"],
+    ...for all 5 categories. Utility = times chosen / times appeared. Importance = normalised range.
+  ]},
   {"type": "value_stack", "tiers": [
-    {"name": "Must-haves", "tier_class": "must", "range": "Won 7-10 / 10 rounds", "items": [
-      {"name": "[Category]: [winning level]", "wins": "[N] / 10"}
+    {"name": "Must-haves", "tier_class": "must", "range": "Importance > 25%", "items": [
+      {"name": "[Category]: [winning level]", "wins": "[N]/10 · [XX]% importance"}
     ]},
-    {"name": "Nice-to-haves", "tier_class": "strong", "range": "Won 4-6 / 10 rounds", "items": [
-      {"name": "[Category]: [mid level]", "wins": "[N] / 10"}
+    {"name": "Nice-to-haves", "tier_class": "strong", "range": "Importance 10–25%", "items": [
+      {"name": "[Category]: [mid level]", "wins": "[N]/10 · [XX]% importance"}
     ]},
-    {"name": "Expendable", "tier_class": "exp", "range": "Won 0-3 / 10 rounds", "items": [
-      {"name": "[Category]: [lowest level]", "wins": "[N] / 10"}
+    {"name": "Expendable", "tier_class": "exp", "range": "Importance < 10%", "items": [
+      {"name": "[Category]: [lowest level]", "wins": "[N]/10 · [XX]% importance"}
     ]}
   ]},
-  {"type": "callout", "bold": "The Surprise", "text": "[A single paragraph identifying the most counter-intuitive finding. Name the feature the user was most wrong about.]"},
+  {"type": "callout", "bold": "The Surprise", "text": "[A single paragraph identifying the most counter-intuitive finding. Name the feature the user was most wrong about. Reference the utility scores.]"},
   {"type": "feature_list", "items": [
-    {"bold": "Minimum Viable Offer", "description": "[Winning level of must-haves + mid of nice-to-haves + lowest of expendables. Clean list with computed price.]"}
+    {"bold": "Minimum Viable Offer", "description": "[Winning level of must-haves + LOWEST level of nice-to-haves + lowest of expendables. The floor — cheapest version someone would pay for. Computed price: $X.]"},
+    {"bold": "Optimised Offer", "description": "[Winning level of must-haves + MID level of nice-to-haves + lowest of expendables. The sweet spot — highest total utility relative to price. Computed price: $X.]"}
   ]},
+  {"type": "callout", "bold": "The Winning Combination", "text": "[Name the optimised offer clearly. List the specific level for each category. State the computed price. Explain in 1-2 sentences why this combination maximises value — reference the utility scores.]"},
   {"type": "callout", "bold": "What to Do Next", "text": "[Three specific, actionable next steps tied to the data. E.g. 'Lead marketing with [must-have], not [expendable]' or 'Test the $X price point with 5 real prospects this week.']"}
 ]
 
 BOARD SUMMARY (board_summary):
-{"rounds": [{"number": 1, "packages": ["Package A", "Package B"], "chosen": "Package A"}, ...], "value_stack": [{"tier": "must", "items": [{"name": "feature", "wins": "6/6"}, ...]}, {"tier": "nice", "items": [...]}, {"tier": "expendable", "items": [...]}]}
+{"setup": [{"category": "Cat name", "levels": ["Level 1", "Level 2", "Level 3"]}, ...for all 5], "rounds": [{"number": 1, "packages": ["Package A", "Package B"], "chosen": "Package A"}, ...], "utilities": [{"category": "Cat name", "level_1": 0.XX, "level_2": 0.XX, "level_3": 0.XX, "importance": XX}, ...for all 5], "value_stack": [{"tier": "must", "items": [{"name": "feature", "wins": "8/10", "importance": "32%"}, ...]}, {"tier": "nice", "items": [...]}, {"tier": "expendable", "items": [...]}], "surprise": "One-sentence narrative about the most counter-intuitive finding", "mvo": {"features": ["Cat: Level", ...], "price": "$X"}, "optimised": {"features": ["Cat: Level", ...], "price": "$X"}}
 """ + UNIVERSAL_REPORT_JSON
 
 RAPID_EXPERIMENT_REPORT = """You are producing a Rapid Experiment session report for The Studio at Wade Institute of Entrepreneurship.
@@ -4563,7 +4586,8 @@ def pre_report():
             yield f"data: {json.dumps({'error': str(e)})}\n\n"
         yield "data: [DONE]\n\n"
 
-    return Response(generate(), mimetype='text/event-stream')
+    return Response(generate(), mimetype='text/event-stream',
+                    headers={'Cache-Control': 'no-cache', 'X-Accel-Buffering': 'no'})
 
 
 @app.route('/api/report', methods=['POST'])
@@ -5567,14 +5591,20 @@ def view_shared_report(report_id):
     entry = reports.get(report_id)
     if not entry:
         return 'Report not found', 404
+    import html as html_mod
     date_str = entry['created'][:10]
+    # Escape metadata for HTML context
+    safe_exercise = html_mod.escape(str(entry.get('exercise', '')))
+    safe_mode = html_mod.escape(str(entry.get('mode', '')))
+    # Escape report JSON for safe embedding in <script> — prevent </script> breakout
     report_json = json.dumps(entry['report'])
+    safe_report_json = report_json.replace('</script>', '<\\/script>').replace('<!--', '<\\!--')
     html = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{entry['exercise']} · Studio Workshop Summary · Wade Institute</title>
+<title>{safe_exercise} · Studio Workshop Summary · Wade Institute</title>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <style>
 body{{font-family:Georgia,serif;max-width:700px;margin:40px auto;padding:0 20px;color:#1a1a2e;line-height:1.7}}
@@ -5591,11 +5621,11 @@ a{{color:#F15A22}}
 <body>
 <div class="hd">
   <h1>Studio Workshop Summary</h1>
-  <div class="meta">{entry['exercise']} · {entry['mode']} · {date_str}</div>
+  <div class="meta">{safe_exercise} · {safe_mode} · {date_str}</div>
 </div>
 <div id="rc"></div>
 <div class="ft">Generated by Wade Studio · Wade Institute of Entrepreneurship · <a href="https://wadeinstitute.org.au">wadeinstitute.org.au</a></div>
-<script>document.getElementById('rc').innerHTML = marked.parse({report_json});</script>
+<script>document.getElementById('rc').innerHTML = marked.parse({safe_report_json});</script>
 </body>
 </html>"""
     return html, 200, {'Content-Type': 'text/html'}
@@ -6397,6 +6427,9 @@ def send_abandoned_session_emails():
 @app.route('/api/analytics', methods=['GET'])
 def get_analytics():
     """Simple analytics dashboard data."""
+    admin_key = request.args.get('key', '')
+    if admin_key != os.environ.get('ADMIN_KEY', 'wade-studio-admin-2026'):
+        return jsonify({'error': 'Unauthorized'}), 401
     conn = get_db()
     if not conn:
         return jsonify({'error': 'No database'}), 503
@@ -6524,6 +6557,9 @@ def save_feedback():
 @app.route('/api/feedback/summary', methods=['GET'])
 def feedback_summary():
     """Generate an AI-powered summary of all feedback with prioritised recommendations."""
+    admin_key = request.args.get('key', '')
+    if admin_key != os.environ.get('ADMIN_KEY', 'wade-studio-admin-2026'):
+        return jsonify({'error': 'Unauthorized'}), 401
     if not os.path.exists(FEEDBACK_FILE):
         return jsonify({'summary': 'No feedback collected yet.'})
 
