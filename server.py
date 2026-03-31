@@ -2523,7 +2523,7 @@ def chat():
     def generate():
         try:
             with client.messages.stream(
-                model="claude-sonnet-4-20250514",
+                model="claude-opus-4-6-20250415",
                 max_tokens=2048,
                 system=system_prompt,
                 messages=messages,
@@ -4599,7 +4599,7 @@ def pre_report():
     def generate():
         try:
             with client.messages.stream(
-                model="claude-sonnet-4-20250514",
+                model="claude-opus-4-6-20250415",
                 max_tokens=150,
                 system=PRE_REPORT_PROMPT,
                 messages=pre_messages,
@@ -4716,7 +4716,7 @@ def generate_report():
     try:
         print(f"[REPORT] Generating JSON for {exercise_name} ({mode_name}), {len(report_messages)} messages, system prompt ~{len(system)} chars")
         response = client.messages.create(
-            model="claude-sonnet-4-20250514",
+            model="claude-opus-4-6-20250415",
             max_tokens=8000,
             system=system,
             messages=report_messages,
