@@ -5768,7 +5768,7 @@ def _markdown_to_html(text):
     return f'<p style="margin:0 0 10px;">{t}</p>'
 
 
-HUBSPOT_BCC = '442435393@bcc.ap1.hubspot.com'
+# BCC removed — HubSpot now receives data via behavioural events API, not email BCC
 
 
 def _sync_lead_to_sheets(lead):
@@ -5805,88 +5805,121 @@ def _sync_lead_to_sheets(lead):
         print(f'[Sheets] sync failed: {e}')
 
 
+HUBSPOT_PORTAL_ID = '442435393'
+HUBSPOT_BUSINESS_UNIT_ID = '61132832'
+HUBSPOT_EVENT_NAME = f'pe{HUBSPOT_PORTAL_ID}_studio_session_completed'
+
+
 def _sync_lead_to_hubspot(lead):
-    """Push lead data to HubSpot via API as a contact with custom properties.
-    Creates a new contact or updates existing (by email). Silent no-op if not configured.
-    Uses urllib — no extra dependencies."""
+    """Revised HubSpot integration using behavioural events (Matt, Idea Science, 2 Apr 2026).
+
+    Flow:
+      1. GET contact by email — if 404, create it (profile fields only, never overwrite)
+      2. POST behavioural event on every session — preserves full history on contact timeline
+
+    Silent no-op if HUBSPOT_ACCESS_TOKEN not set. Uses urllib — no extra dependencies.
+    """
     token = os.environ.get('HUBSPOT_ACCESS_TOKEN')
     if not token:
         return
 
-    tags = lead.get('tags', {})
+    email = lead.get('email', '')
+    if not email:
+        return
 
-    # Split name into first/last
+    tags = lead.get('tags', {})
     name_parts = lead.get('name', '').strip().split(None, 1)
     firstname = name_parts[0] if name_parts else ''
     lastname = name_parts[1] if len(name_parts) > 1 else ''
-
-    # Standard + custom properties
-    properties = {
-        'email': lead.get('email', ''),
-        'firstname': firstname,
-        'lastname': lastname,
-        'company': lead.get('company', ''),
-        'jobtitle': lead.get('role', ''),
-        # Custom properties — must be created in HubSpot Admin > Properties first
-        'studio_exercise': lead.get('exercise', ''),
-        'studio_stage': lead.get('mode', ''),
-        'studio_rating': lead.get('rating', ''),
-        'studio_cluster': tags.get('cluster', ''),
-        'studio_industry': tags.get('industry', ''),
-        'studio_challenge': tags.get('challenge_summary', tags.get('challenge_category', '')),
-        'studio_venture_stage': tags.get('venture_stage', ''),
-        'studio_barrier': tags.get('primary_barrier', ''),
-        'studio_session_date': lead.get('timestamp', ''),
-    }
-    # Remove empty values to avoid overwriting existing data
-    properties = {k: v for k, v in properties.items() if v}
 
     headers = {
         'Authorization': f'Bearer {token}',
         'Content-Type': 'application/json',
     }
 
-    # Try to create the contact
-    payload = json.dumps({'properties': properties}).encode('utf-8')
+    # ── Step 1: Check if contact exists ───────────────────────────────────
+    contact_exists = False
     try:
         req = urllib.request.Request(
-            'https://api.hubapi.com/crm/v3/objects/contacts',
+            f'https://api.hubapi.com/crm/objects/2026-03/contacts/{email}?idProperty=email',
+            headers=headers, method='GET'
+        )
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            if resp.status == 200:
+                contact_exists = True
+                print(f'[HubSpot] Contact exists: {email}')
+    except urllib.error.HTTPError as e:
+        if e.code == 404:
+            contact_exists = False
+        else:
+            print(f'[HubSpot] Contact check failed ({e.code}): {e.read().decode()[:200]}')
+            return
+    except Exception as e:
+        print(f'[HubSpot] Contact check error: {e}')
+        return
+
+    # ── Step 2: Create contact if not found ───────────────────────────────
+    if not contact_exists:
+        contact_props = {
+            'email': email,
+            'firstname': firstname,
+            'lastname': lastname,
+            'company': lead.get('company', ''),
+            'jobtitle': lead.get('role', ''),
+            'hs_all_assigned_business_unit_ids': HUBSPOT_BUSINESS_UNIT_ID,
+        }
+        contact_props = {k: v for k, v in contact_props.items() if v}
+        try:
+            payload = json.dumps({'properties': contact_props}).encode('utf-8')
+            req = urllib.request.Request(
+                'https://api.hubapi.com/crm/objects/2026-03/contacts',
+                data=payload, headers=headers, method='POST'
+            )
+            with urllib.request.urlopen(req, timeout=10) as resp:
+                result = json.loads(resp.read())
+                print(f'[HubSpot] Contact created: {result.get("id")}')
+        except Exception as e:
+            print(f'[HubSpot] Contact create failed: {e}')
+            return  # Do not send event if contact creation failed
+
+    # ── Step 3: Send behavioural event ────────────────────────────────────
+    event_props = {
+        'studio_exercise': lead.get('exercise', ''),
+        'studio_stage': lead.get('mode', ''),
+        'studio_rating': lead.get('rating', '') or '',
+        'studio_cluster': tags.get('cluster', ''),
+        'studio_industry': tags.get('industry', ''),
+        'studio_challenge': tags.get('challenge_summary', tags.get('challenge_category', '')),
+        'studio_venture_stage': tags.get('venture_stage', ''),
+        'studio_barrier': tags.get('primary_barrier', ''),
+    }
+    event_props = {k: v for k, v in event_props.items() if v}
+    event_payload = {
+        'eventName': HUBSPOT_EVENT_NAME,
+        'email': email,
+        'occurredAt': lead.get('timestamp', datetime.now(timezone.utc).isoformat()),
+        'properties': event_props,
+    }
+    try:
+        payload = json.dumps(event_payload).encode('utf-8')
+        req = urllib.request.Request(
+            'https://api.hubapi.com/events/custom/2026-03/send',
             data=payload, headers=headers, method='POST'
         )
         with urllib.request.urlopen(req, timeout=10) as resp:
-            result = json.loads(resp.read())
-            print(f'[HubSpot] Contact created: {result.get("id")}')
-            return
+            print(f'[HubSpot] Event sent ({resp.status}): {HUBSPOT_EVENT_NAME} for {email}')
     except urllib.error.HTTPError as e:
-        if e.code == 409:
-            # Contact already exists — update via email
-            pass
-        else:
-            print(f'[HubSpot] Create failed ({e.code}): {e.read().decode()[:200]}')
-            return
-
-    # Update existing contact by email
-    try:
-        email = properties.pop('email', lead.get('email', ''))
-        update_payload = json.dumps({'properties': properties}).encode('utf-8')
-        req = urllib.request.Request(
-            f'https://api.hubapi.com/crm/v3/objects/contacts/{email}?idProperty=email',
-            data=update_payload, headers=headers, method='PATCH'
-        )
-        with urllib.request.urlopen(req, timeout=10) as resp:
-            result = json.loads(resp.read())
-            print(f'[HubSpot] Contact updated: {result.get("id")}')
+        print(f'[HubSpot] Event send failed ({e.code}): {e.read().decode()[:200]}')
     except Exception as e:
-        print(f'[HubSpot] Update failed: {e}')
+        print(f'[HubSpot] Event send error: {e}')
 
 
 def _resend_send_email(api_key, from_email, to_email, subject, html_body):
-    """Send a transactional email via Resend API, BCC'd to HubSpot for logging."""
+    """Send a transactional email via Resend API."""
     print(f"[EMAIL] Sending to {to_email} from {from_email} — subject: {subject[:60]}")
     payload = json.dumps({
         "from": from_email,
         "to": [to_email],
-        "bcc": [HUBSPOT_BCC],
         "subject": subject,
         "html": html_body,
     }).encode('utf-8')
