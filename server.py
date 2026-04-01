@@ -5880,16 +5880,20 @@ def _sync_lead_to_hubspot(lead):
         print(f'[HubSpot] Update failed: {e}')
 
 
-def _resend_send_email(api_key, from_email, to_email, subject, html_body):
-    """Send a transactional email via Resend API, BCC'd to HubSpot for logging."""
-    print(f"[EMAIL] Sending to {to_email} from {from_email} — subject: {subject[:60]}")
-    payload = json.dumps({
+def _resend_send_email(api_key, from_email, to_email, subject, html_body, scheduled_at=None):
+    """Send a transactional email via Resend API, BCC'd to HubSpot for logging.
+    Pass scheduled_at as an ISO 8601 UTC string (e.g. '2026-04-04T09:00:00.000Z') to delay delivery."""
+    print(f"[EMAIL] {'Scheduling' if scheduled_at else 'Sending'} to {to_email} from {from_email} — subject: {subject[:60]}")
+    body = {
         "from": from_email,
         "to": [to_email],
         "bcc": [HUBSPOT_BCC],
         "subject": subject,
         "html": html_body,
-    }).encode('utf-8')
+    }
+    if scheduled_at:
+        body["scheduled_at"] = scheduled_at
+    payload = json.dumps(body).encode('utf-8')
     req = urllib.request.Request(
         'https://api.resend.com/emails',
         data=payload,
@@ -6020,6 +6024,183 @@ def _notify_wade(lead):
         )
     except Exception as e:
         print(f"[EMAIL] User report email failed: {e}")
+
+
+def _send_nurture_sequence(lead, raw_mode):
+    """Schedule follow-up nurture emails at Day 3 and Day 7 after lead capture."""
+    resend_key = os.environ.get('RESEND_API_KEY')
+    from_email  = os.environ.get('WADE_FROM_EMAIL', 'Wade Studio <enquiries@wadeinstitute.org.au>')
+
+    if not resend_key or not lead.get('email'):
+        return
+
+    first_name = lead['name'].split()[0] if lead.get('name') else 'there'
+    now = datetime.now(timezone.utc)
+    day3 = (now + timedelta(days=3)).strftime('%Y-%m-%dT09:00:00.000Z')
+    day7 = (now + timedelta(days=7)).strftime('%Y-%m-%dT09:00:00.000Z')
+
+    # ── Stage-specific content ─────────────────────────────────────────────
+    stage_insight = {
+        'reframe': (
+            "The most valuable thing you did today was question the problem before jumping to solutions. "
+            "Most teams skip this step — and end up building the wrong thing beautifully."
+        ),
+        'ideate': (
+            "Generating many ideas before judging any of them is one of the hardest disciplines to maintain. "
+            "The key now is to keep moving without falling in love with any single idea too early."
+        ),
+        'debate': (
+            "The willingness to stress-test your own idea is rare. "
+            "Most people only test with people who agree with them. The real signal comes from the person who pushes back hard."
+        ),
+        'framework': (
+            "Having a clear business model isn't about perfection — it's about making your hypotheses explicit so you can test them. "
+            "You have a canvas. Now every conversation becomes an experiment."
+        ),
+    }.get(raw_mode, (
+        "The frameworks you worked with today are designed to be used repeatedly — "
+        "each time you apply them, you'll surface something new."
+    ))
+
+    stage_next_step = {
+        'reframe': (
+            "Before you generate solutions, try sharing your reframed problem statement with someone who's never heard of it. "
+            "Their first question often reveals the real gap you hadn't seen."
+        ),
+        'ideate': (
+            "Now that you have a strong idea set, the next move is to pick your most promising direction "
+            "and find the fastest way to test the core assumption behind it."
+        ),
+        'debate': (
+            "A strong pre-mortem gives you a hit list of assumptions to test. "
+            "Pick the single riskiest assumption and design a small, cheap experiment around it this week."
+        ),
+        'framework': (
+            "Your canvas is a set of hypotheses, not a plan. Each block is a bet. "
+            "The question now is: which bet do you test first — and how?"
+        ),
+    }.get(raw_mode, (
+        "The best next move is to share your key insight with someone who can push back on it — "
+        "a mentor, a potential customer, or a colleague who'll give you honest feedback."
+    ))
+
+    # ── Program recommendation for Email 3 ────────────────────────────────
+    program_map = {
+        'reframe': {
+            'name': 'Think Like an Entrepreneur',
+            'tagline': 'Build entrepreneurial skills you can use to lead change inside an organisation.',
+            'url': 'https://wadeinstitute.org.au/programs/entrepreneurs/think-like-an-entrepreneur/',
+            'next_intake': 'Jun 2026',
+            'why': 'You worked on clarifying and reframing a problem — this program goes deep on exactly that: building the mindset and tools to lead through uncertainty and drive change.',
+        },
+        'ideate': {
+            'name': 'Think Like an Entrepreneur',
+            'tagline': 'Build entrepreneurial skills you can use to lead change inside an organisation.',
+            'url': 'https://wadeinstitute.org.au/programs/entrepreneurs/think-like-an-entrepreneur/',
+            'next_intake': 'Jun 2026',
+            'why': 'You worked on generating and shaping ideas — this program builds the full toolkit: from opportunity identification through to making ideas stick inside an organisation.',
+        },
+        'debate': {
+            'name': 'Growth Engine',
+            'tagline': 'Build a clearer growth strategy for the next stage of your business.',
+            'url': 'https://wadeinstitute.org.au/programs/entrepreneurs/growth-engine/',
+            'next_intake': 'May 2026 (1 May + 4–5 May)',
+            'why': "You worked on validating assumptions and stress-testing your idea — this program is built for exactly that stage: diagnosing what's working, what isn't, and building a strategy that holds up.",
+        },
+        'framework': {
+            'name': 'Growth Engine',
+            'tagline': 'Build a clearer growth strategy for the next stage of your business.',
+            'url': 'https://wadeinstitute.org.au/programs/entrepreneurs/growth-engine/',
+            'next_intake': 'May 2026 (1 May + 4–5 May)',
+            'why': 'You worked on building out your business model — this program goes further: stress-testing your commercial model, your positioning, and your growth strategy alongside peers facing similar challenges.',
+        },
+    }.get(raw_mode, {
+        'name': 'Wade Programs',
+        'tagline': 'Build your innovation capability with Wade Institute of Entrepreneurship.',
+        'url': 'https://wadeinstitute.org.au/programs/',
+        'next_intake': 'Various intakes',
+        'why': 'Wade Institute runs programs for founders, investors, corporate innovators and educators — each one built around the same practice-first approach you experienced today.',
+    })
+
+    # ── Email 2 — Day 3: The thinking continues ───────────────────────────
+    email2_subject = f"The thinking continues, {first_name}"
+    email2_html = f"""<!DOCTYPE html><html><head><meta charset="UTF-8"></head>
+<body style="font-family:Arial,sans-serif;max-width:620px;margin:0 auto;padding:20px;color:#1a1a2e;">
+  <div style="background:#1E194F;padding:18px 24px;border-radius:6px 6px 0 0;">
+    <h2 style="margin:0;color:#fff;font-size:16px;">From Wade Studio</h2>
+    <p style="margin:4px 0 0;color:rgba(255,255,255,0.7);font-size:12px;">Wade Institute of Entrepreneurship</p>
+  </div>
+  <div style="border:1px solid #e0e0e0;border-top:none;border-radius:0 0 6px 6px;padding:24px;">
+    <p style="font-size:15px;color:#222;margin:0 0 18px;">Hi {first_name},</p>
+    <p style="font-size:14px;color:#444;line-height:1.7;margin:0 0 16px;">
+      A few days ago you worked through <strong>{lead.get('exercise', 'a Wade Studio exercise')}</strong>.
+      Here&rsquo;s something worth sitting with:
+    </p>
+    <div style="padding:16px 20px;background:#fff8f5;border-left:4px solid #F15A22;border-radius:0 5px 5px 0;margin:0 0 22px;">
+      <p style="font-size:14px;color:#222;line-height:1.7;margin:0;font-style:italic;">&ldquo;{stage_insight}&rdquo;</p>
+    </div>
+    <p style="font-size:13.5px;font-weight:bold;color:#1E194F;margin:0 0 8px;">The next move</p>
+    <p style="font-size:13.5px;color:#444;line-height:1.7;margin:0 0 22px;">{stage_next_step}</p>
+    <p style="font-size:13.5px;color:#444;line-height:1.7;margin:0 0 6px;">
+      Your session report is still available to revisit &mdash; it&rsquo;s worth returning to once you&rsquo;ve had a chance to let the ideas settle.
+    </p>
+    <p style="font-size:13px;color:#777;margin:22px 0 0;">&mdash; The Wade Studio team</p>
+  </div>
+  <p style="text-align:center;font-size:11px;color:#aaa;margin-top:14px;">
+    Wade Studio &middot; Wade Institute of Entrepreneurship &middot;
+    <a href="https://wadeinstitute.org.au" style="color:#F15A22;text-decoration:none;">wadeinstitute.org.au</a>
+  </p>
+</body></html>"""
+
+    try:
+        _resend_send_email(resend_key, from_email, lead['email'], email2_subject, email2_html, scheduled_at=day3)
+    except Exception as e:
+        print(f"[EMAIL] Nurture email 2 scheduling failed: {e}")
+
+    # ── Email 3 — Day 7: One program worth knowing about ──────────────────
+    prog = program_map
+    email3_subject = "One Wade program worth knowing about"
+    email3_html = f"""<!DOCTYPE html><html><head><meta charset="UTF-8"></head>
+<body style="font-family:Arial,sans-serif;max-width:620px;margin:0 auto;padding:20px;color:#1a1a2e;">
+  <div style="background:#1E194F;padding:18px 24px;border-radius:6px 6px 0 0;">
+    <h2 style="margin:0;color:#fff;font-size:16px;">From Wade Studio</h2>
+    <p style="margin:4px 0 0;color:rgba(255,255,255,0.7);font-size:12px;">Wade Institute of Entrepreneurship</p>
+  </div>
+  <div style="border:1px solid #e0e0e0;border-top:none;border-radius:0 0 6px 6px;padding:24px;">
+    <p style="font-size:15px;color:#222;margin:0 0 18px;">Hi {first_name},</p>
+    <p style="font-size:14px;color:#444;line-height:1.7;margin:0 0 20px;">
+      Based on the work you did in your Wade Studio session, one program stood out as a strong next step for you.
+    </p>
+    <div style="border:1.5px solid #F15A22;border-radius:6px;padding:20px 22px;margin:0 0 22px;background:#fdf9f7;">
+      <p style="font-size:9px;font-weight:bold;letter-spacing:0.12em;text-transform:uppercase;color:#F15A22;margin:0 0 6px;">Recommended for you</p>
+      <p style="font-size:17px;font-weight:bold;color:#1E194F;margin:0 0 6px;">{prog['name']}</p>
+      <p style="font-size:13px;color:#555;margin:0 0 14px;font-style:italic;">{prog['tagline']}</p>
+      <p style="font-size:13.5px;color:#333;line-height:1.7;margin:0 0 14px;">{prog['why']}</p>
+      <table style="width:100%;font-size:12.5px;color:#555;margin-bottom:16px;">
+        <tr><td style="padding:3px 0;font-weight:bold;width:90px;">Next intake</td><td style="padding:3px 0;">{prog['next_intake']}</td></tr>
+      </table>
+      <a href="{prog['url']}" style="display:inline-block;background:#F15A22;color:#fff;font-size:13px;font-weight:bold;padding:10px 20px;border-radius:4px;text-decoration:none;">Learn more &rarr;</a>
+    </div>
+    <p style="font-size:13.5px;color:#444;line-height:1.7;margin:0 0 6px;">
+      If you&rsquo;d like to talk it through first, reach out directly:
+    </p>
+    <p style="font-size:13px;color:#666;margin:0 0 20px;">
+      <a href="mailto:enquiries@wadeinstitute.org.au" style="color:#F15A22;text-decoration:none;">enquiries@wadeinstitute.org.au</a>
+      &nbsp;&middot;&nbsp; +61 3 9344 1100
+    </p>
+    <p style="font-size:13px;color:#777;margin:0;">&mdash; The Wade Studio team</p>
+  </div>
+  <p style="text-align:center;font-size:11px;color:#aaa;margin-top:14px;">
+    Wade Studio &middot; Wade Institute of Entrepreneurship &middot;
+    <a href="https://wadeinstitute.org.au" style="color:#F15A22;text-decoration:none;">wadeinstitute.org.au</a>
+  </p>
+</body></html>"""
+
+    try:
+        _resend_send_email(resend_key, from_email, lead['email'], email3_subject, email3_html, scheduled_at=day7)
+    except Exception as e:
+        print(f"[EMAIL] Nurture email 3 scheduling failed: {e}")
+
 
 def _tag_session(report, messages, exercise, mode):
     """Extract structured insight tags from a session using Claude Haiku."""
@@ -6675,13 +6856,14 @@ def get_analytics():
 def capture_lead():
     data = request.json
 
+    raw_mode = data.get('mode', '')
     lead = {
         'timestamp': datetime.now(timezone.utc).isoformat(),
         'name': data.get('name', ''),
         'email': data.get('email', ''),
         'company': data.get('company', ''),
         'role': data.get('role', ''),
-        'mode': MODE_NAMES.get(data.get('mode', ''), data.get('mode', '')),
+        'mode': MODE_NAMES.get(raw_mode, raw_mode),
         'exercise': EXERCISE_NAMES.get(data.get('exercise', ''), data.get('exercise', '')),
         'report': data.get('report', ''),
         'rating': data.get('rating', None),
@@ -6716,6 +6898,11 @@ def capture_lead():
         _notify_wade(lead)
     except Exception:
         pass  # Never break lead capture if email fails
+
+    try:
+        _send_nurture_sequence(lead, raw_mode)
+    except Exception:
+        pass  # Never break lead capture if nurture scheduling fails
 
     try:
         _sync_lead_to_sheets(lead)
