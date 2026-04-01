@@ -5907,6 +5907,8 @@ def _resend_send_email(api_key, from_email, to_email, subject, html_body):
     except urllib.error.HTTPError as e:
         error_body = e.read().decode('utf-8', errors='replace') if hasattr(e, 'read') else ''
         print(f"[EMAIL] Resend FAILED ({e.code}): {error_body[:500]}")
+        # Attach detail so callers can access it
+        e.resend_detail = error_body
         raise
 
 
@@ -6752,12 +6754,8 @@ def email_test():
         )
         return jsonify({'status': status, 'to': to, 'from': from_email, 'result': 'sent'})
     except urllib.error.HTTPError as e:
-        error_body = ''
-        try:
-            error_body = e.read().decode('utf-8', errors='replace')
-        except Exception:
-            pass
-        return jsonify({'error': str(e), 'http_code': e.code, 'detail': error_body}), 500
+        detail = getattr(e, 'resend_detail', '')
+        return jsonify({'error': str(e), 'http_code': e.code, 'detail': detail}), 500
     except Exception as e:
         return jsonify({'error': str(e), 'type': type(e).__name__}), 500
 
