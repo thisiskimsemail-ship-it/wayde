@@ -6800,6 +6800,57 @@ def email_test():
 
 FEEDBACK_FILE = os.path.join(os.path.dirname(__file__), 'feedback.json')
 
+@app.route('/api/hubspot-setup', methods=['POST'])
+def hubspot_setup():
+    """One-time: create the studio_session_completed event definition in HubSpot.
+    POST with no body. Safe to call multiple times — HubSpot returns 409 if already exists."""
+    token = os.environ.get('HUBSPOT_ACCESS_TOKEN')
+    if not token:
+        return jsonify({'error': 'HUBSPOT_ACCESS_TOKEN not set'}), 500
+
+    definition = {
+        'name': 'studio_session_completed',
+        'label': 'Studio Session Completed',
+        'description': 'Fired when a user completes a Studio thinking exercise and submits the lead form.',
+        'primaryObject': 'CONTACT',
+        'includeDefaultProperties': True,
+        'propertyDefinitions': [
+            {'name': 'studio_exercise',     'label': 'Exercise',       'type': 'string', 'description': 'The thinking exercise used (e.g. Five Whys, Lean Canvas)'},
+            {'name': 'studio_stage',        'label': 'Stage',          'type': 'string', 'description': 'The thinking mode (Clarify, Ideate, Validate, Develop)'},
+            {'name': 'studio_rating',       'label': 'Rating',         'type': 'string', 'description': "User's session rating (up/down)"},
+            {'name': 'studio_cluster',      'label': 'Cluster',        'type': 'string', 'description': 'Inferred audience type (Founder, Investor, Corporate Innovator, Educator)'},
+            {'name': 'studio_industry',     'label': 'Industry',       'type': 'string', 'description': 'Inferred industry from session content'},
+            {'name': 'studio_challenge',    'label': 'Challenge',      'type': 'string', 'description': "Summary of the user's core challenge"},
+            {'name': 'studio_venture_stage','label': 'Venture Stage',  'type': 'string', 'description': 'Inferred venture stage (idea, early, growth, scale)'},
+            {'name': 'studio_barrier',      'label': 'Barrier',        'type': 'string', 'description': 'Primary barrier identified in session'},
+        ]
+    }
+
+    try:
+        payload = json.dumps(definition).encode('utf-8')
+        req = urllib.request.Request(
+            'https://api.hubapi.com/events/custom/2026-03/event-definitions',
+            data=payload,
+            headers={
+                'Authorization': f'Bearer {token}',
+                'Content-Type': 'application/json',
+            },
+            method='POST'
+        )
+        with urllib.request.urlopen(req, timeout=15) as resp:
+            result = json.loads(resp.read())
+            fqn = result.get('fullyQualifiedName', '')
+            print(f'[HubSpot] Event definition created: {fqn}')
+            return jsonify({'success': True, 'fullyQualifiedName': fqn})
+    except urllib.error.HTTPError as e:
+        body = e.read().decode('utf-8', errors='replace')
+        if e.code == 409:
+            return jsonify({'success': True, 'note': 'Already exists', 'detail': body})
+        return jsonify({'error': f'HTTP {e.code}', 'detail': body}), e.code
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
 @app.route('/api/feedback', methods=['POST'])
 def save_feedback():
     data = request.json
