@@ -4,6 +4,7 @@ import uuid
 import time
 import smtplib
 import urllib.request
+import urllib.error
 import hashlib
 import secrets
 from email.mime.multipart import MIMEMultipart
@@ -5881,6 +5882,7 @@ def _sync_lead_to_hubspot(lead):
 
 def _resend_send_email(api_key, from_email, to_email, subject, html_body):
     """Send a transactional email via Resend API, BCC'd to HubSpot for logging."""
+    print(f"[EMAIL] Sending to {to_email} from {from_email} — subject: {subject[:60]}")
     payload = json.dumps({
         "from": from_email,
         "to": [to_email],
@@ -5897,8 +5899,15 @@ def _resend_send_email(api_key, from_email, to_email, subject, html_body):
         },
         method='POST'
     )
-    with urllib.request.urlopen(req, timeout=10) as resp:
-        return resp.status
+    try:
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            body = resp.read().decode('utf-8', errors='replace')
+            print(f"[EMAIL] Resend OK ({resp.status}): {body[:200]}")
+            return resp.status
+    except urllib.error.HTTPError as e:
+        error_body = e.read().decode('utf-8', errors='replace') if hasattr(e, 'read') else ''
+        print(f"[EMAIL] Resend FAILED ({e.code}): {error_body[:500]}")
+        raise
 
 
 def _tags_html(tags):
@@ -5975,8 +5984,8 @@ def _notify_wade(lead):
             f"New Wade Studio Session: {lead['name']} — {lead['exercise']} ({lead['mode']})",
             wade_html
         )
-    except Exception:
-        pass
+    except Exception as e:
+        print(f"[EMAIL] Wade notification failed: {e}")
 
     # ── 2. Email the user a copy of their report ──────────────────────────
     user_name = lead.get('name', '').split()[0] if lead.get('name') else 'there'
@@ -6006,8 +6015,8 @@ def _notify_wade(lead):
             f"Your Wade Studio workshop session report — {lead['exercise']}",
             user_html
         )
-    except Exception:
-        pass
+    except Exception as e:
+        print(f"[EMAIL] User report email failed: {e}")
 
 def _tag_session(report, messages, exercise, mode):
     """Extract structured insight tags from a session using Claude Haiku."""
@@ -6716,6 +6725,41 @@ def capture_lead():
         pass  # Never break lead capture if HubSpot sync fails
 
     return jsonify({'success': True})
+
+
+# === EMAIL DIAGNOSTIC (temporary — remove after Resend verified) ===
+
+@app.route('/api/email-test', methods=['POST'])
+def email_test():
+    """Temporary diagnostic: send a test email and return the actual Resend response/error."""
+    data = request.json or {}
+    to = data.get('to', '')
+    if not to:
+        return jsonify({'error': 'Provide "to" email address'}), 400
+    resend_key = os.environ.get('RESEND_API_KEY')
+    if not resend_key:
+        return jsonify({'error': 'RESEND_API_KEY not set in environment'}), 500
+    from_email = os.environ.get('WADE_FROM_EMAIL', 'Wade Studio <enquiries@wadeinstitute.org.au>')
+    try:
+        status = _resend_send_email(
+            resend_key, from_email, to,
+            'Wade Studio — Email Test',
+            '<html><body style="font-family:Arial,sans-serif;padding:20px;">'
+            '<h2 style="color:#F15A22;">Email test successful</h2>'
+            '<p>This confirms Resend is delivering emails from Wade Studio.</p>'
+            '<p style="color:#888;font-size:12px;">Sent via /api/email-test diagnostic endpoint</p>'
+            '</body></html>'
+        )
+        return jsonify({'status': status, 'to': to, 'from': from_email, 'result': 'sent'})
+    except urllib.error.HTTPError as e:
+        error_body = ''
+        try:
+            error_body = e.read().decode('utf-8', errors='replace')
+        except Exception:
+            pass
+        return jsonify({'error': str(e), 'http_code': e.code, 'detail': error_body}), 500
+    except Exception as e:
+        return jsonify({'error': str(e), 'type': type(e).__name__}), 500
 
 
 # === FEEDBACK ===

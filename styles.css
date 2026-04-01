@@ -6225,43 +6225,68 @@ body.light .feedback-input, html[data-theme="light"] .feedback-input { backgroun
     padding: 2rem 2.5rem;
     animation: psFadeUp 0.8s ease-out 0.3s both;
 }
-.ps-canvas-wrapper {
+/* Next Steps — numbered recommendations under synopsis */
+.ps-next-steps {
     max-width: 760px;
-    margin: 0 auto 1rem;
-    text-align: center;
+    margin: 0 auto 2rem;
+    animation: psFadeUp 0.8s ease-out 0.5s both;
 }
-.ps-svg-placeholder {
-    width: 100%;
-    background: var(--navy);
-    border-radius: 12px;
-    border: 1px solid rgba(255,255,255,0.08);
-    min-height: 200px;
-    max-height: 320px;
-    overflow: hidden;
-    display: flex; align-items: center; justify-content: center;
+.ps-next-steps-heading {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
     color: var(--text-muted, #9E9BC0);
-    font-size: 0.8rem;
-    transition: max-height 0.4s ease;
+    margin-bottom: 0.75rem;
 }
-.ps-canvas-expanded .ps-svg-placeholder {
-    max-height: none;
-    overflow: visible;
-}
-.ps-svg-placeholder svg, .ps-svg-placeholder img {
-    width: 100%; height: auto; display: block;
-}
-.ps-canvas-expand {
-    background: none;
-    border: none;
-    color: var(--teal, #27BDBE);
-    font-size: 0.75rem;
+.ps-next-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    background: var(--card-bg, #1A1750);
+    border-radius: 12px;
+    margin-bottom: 0.5rem;
     cursor: pointer;
-    padding: 0.5rem 0;
-    font-family: inherit;
-    display: none;
-    transition: opacity 0.2s;
+    transition: background 0.2s, transform 0.15s;
+    border: 1px solid rgba(255,255,255,0.06);
 }
-.ps-canvas-expand:hover { opacity: 0.8; text-decoration: underline; }
+.ps-next-step:hover {
+    background: rgba(255,255,255,0.06);
+    transform: translateX(4px);
+}
+.ps-step-number {
+    flex-shrink: 0;
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.85rem; font-weight: 700;
+    color: #fff;
+    background: var(--orange, #F15A22);
+}
+.ps-step-number[data-category="ideate"] { background: var(--pink, #ED3694); }
+.ps-step-number[data-category="debate"] { background: var(--teal, #27BDBE); color: #1E194F; }
+.ps-step-number[data-category="framework"] { background: var(--yellow, #E4E517); color: #1E194F; }
+.ps-step-body { flex: 1; min-width: 0; }
+.ps-step-name {
+    font-size: 0.9rem; font-weight: 600;
+    color: var(--text, #F5F5F5);
+    margin-bottom: 0.25rem;
+    display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;
+}
+.ps-step-tag {
+    font-size: 0.6rem; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.8px;
+    padding: 2px 8px; border-radius: 4px;
+    background: rgba(241,90,34,0.15); color: var(--orange, #F15A22);
+}
+.ps-step-tag[data-category="ideate"] { background: rgba(237,54,148,0.15); color: var(--pink, #ED3694); }
+.ps-step-tag[data-category="debate"] { background: rgba(39,189,190,0.15); color: var(--teal, #27BDBE); }
+.ps-step-tag[data-category="framework"] { background: rgba(228,229,23,0.15); color: var(--yellow, #E4E517); }
+.ps-step-reason {
+    font-size: 0.8rem; line-height: 1.5;
+    color: var(--text-dim, #D0CEE6);
+}
 .ps-synopsis-text {
     padding: 0;
     font-size: 0.9rem; line-height: 1.7;

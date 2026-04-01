@@ -3774,23 +3774,7 @@ async function startPostSessionFlow() {
         revealScreen.classList.remove('hidden');
         revealScreen.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
-        // Inject HTML board visual (replaces SVG canvas)
-        const svgPlaceholder = document.getElementById('psSvgPlaceholder');
-        const canvasExpand = document.getElementById('psCanvasExpand');
-        const canvasWrapper = document.getElementById('psCanvasWrapper');
-        if (boardHtml && svgPlaceholder) {
-            svgPlaceholder.innerHTML = boardHtml;
-            if (canvasExpand) canvasExpand.style.display = 'inline-block';
-        } else if (state.board.cards.length === 0) {
-            if (canvasWrapper) canvasWrapper.style.display = 'none';
-        }
-        // Canvas expand/collapse
-        if (canvasExpand) {
-            canvasExpand.addEventListener('click', () => {
-                const isExpanded = canvasWrapper.classList.toggle('ps-canvas-expanded');
-                canvasExpand.textContent = isExpanded ? 'Collapse board' : 'See your full board';
-            });
-        }
+        // Canvas removed from Screen 2 — board visual no longer shown here
 
         // Populate headline with yellow emphasis
         const headline = document.getElementById('psHeadline');
@@ -3822,8 +3806,37 @@ async function startPostSessionFlow() {
         const synopsisText = document.getElementById('psSynopsisText');
         if (synopsisText) synopsisText.innerHTML = (revealData.synopsis || '').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
 
-        // Store recommendations for Screen 3 (not shown on wrap screen)
+        // Render numbered next steps under synopsis
         state._revealRecommendations = revealData.recommendations || [];
+        const nextStepsContainer = document.getElementById('psNextSteps');
+        if (nextStepsContainer && state._revealRecommendations.length > 0) {
+            const stepsHeading = document.createElement('p');
+            stepsHeading.className = 'ps-next-steps-heading';
+            stepsHeading.textContent = 'Pete recommends next';
+            nextStepsContainer.appendChild(stepsHeading);
+
+            state._revealRecommendations.slice(0, 3).forEach((r, i) => {
+                const step = document.createElement('div');
+                step.className = 'ps-next-step';
+                const mode = EXERCISE_MODE[r.exercise] || 'reframe';
+                step.dataset.mode = mode;
+                step.dataset.exercise = r.exercise;
+                const name = EXERCISE_LABELS[r.exercise] || r.exercise;
+                const category = CATEGORY_LABELS[mode] || mode.toUpperCase();
+                step.innerHTML = `
+                    <div class="ps-step-number" data-category="${mode}">${i + 1}</div>
+                    <div class="ps-step-body">
+                        <div class="ps-step-name">${name} <span class="ps-step-tag" data-category="${mode}">${category}</span></div>
+                        <div class="ps-step-reason">${r.reason}</div>
+                    </div>
+                `;
+                step.addEventListener('click', () => {
+                    cleanupPostSessionScreens();
+                    startExercise(mode, r.exercise);
+                });
+                nextStepsContainer.appendChild(step);
+            });
+        }
 
         // Wire email form
         const emailForm = document.getElementById('psEmailForm');
