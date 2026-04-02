@@ -3902,8 +3902,6 @@ async function startPostSessionFlow() {
 
         // Wire format buttons
         document.getElementById('psFormatPdf')?.addEventListener('click', () => downloadReportPdf());
-        document.getElementById('psFormatPptx')?.addEventListener('click', () => downloadReportPptx());
-        // SVG/PNG/Word format buttons removed — PDF and PPTX only
 
         // Share buttons
         document.getElementById('psShareCopyLink')?.addEventListener('click', async () => {
