@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link rel="preload" href="fonts/GT-Walsheim-Regular.woff" as="font" type="font/woff" crossorigin>
     <link rel="preload" href="banner.webp" as="image" type="image/webp">
-    <link rel="stylesheet" href="styles.css?v=172">
+    <link rel="stylesheet" href="styles.css?v=174">
 </head>
 <body>
 
@@ -187,17 +187,15 @@
         <div class="chat-pane" id="chatPane">
         <div class="welcome" id="welcome">
 
-            <!-- HERO — Two-column editorial -->
+            <!-- HERO -->
             <section class="lp-hero">
                 <div class="lp-container lp-hero-inner">
                     <div class="lp-hero-text">
-                        <h1 class="lp-hero-heading">The Studio</h1>
-                        <p class="lp-hero-sub">An innovation workshop.</p>
-                        <p class="lp-hero-lead">More AI answers won't fix it. Better human thinking will.</p>
-                        <p class="lp-hero-desc">Bring whatever you're working on. We'll help you unpack it, reframe it, and decide what to do next. You'll be guided through proven tools, challenged where it matters, and leave with something you can actually use.</p>
-                        <button class="lp-cta enter-studio-trigger" id="enterStudioBtn">Jam with Pete →</button>
+                        <div class="lp-pete-avatar" aria-hidden="true">P</div>
+                        <h1 class="lp-hero-heading">Stuck on a hard problem?<br>Let's work through it.</h1>
+                        <p class="lp-hero-sub">Pete, your AI facilitator, will match you with the right tool and build a Board of your thinking in real time.</p>
+                        <button class="lp-cta enter-studio-trigger" id="enterStudioBtn">Start a free session →</button>
                         <p class="lp-cta-caption">No sign-up required · 15–30 minutes</p>
-                        <a class="lp-sample-link" href="sample-reports/showcase.html" target="_blank" rel="noopener" onclick="if(typeof trackEvent==='function')trackEvent('sample_report_view','hero')">See a sample report →</a>
                         <!-- Resume pill -->
                         <div class="resume-banner hidden" id="resumeBanner">
                             <span class="resume-text"><strong id="resumeLabel"></strong></span>
@@ -214,258 +212,111 @@
                 </div>
             </section>
 
-            <!-- CATEGORIES — 2×2 grid -->
-            <section class="lp-process">
+            <!-- TRUST STRIP -->
+            <section class="lp-trust">
+                <div class="lp-container lp-trust-inner">
+                    <span class="lp-trust-item">
+                        <img class="lp-trust-logo" src="wade-icon.png" alt="Wade Institute">
+                        <span>Wade Institute of Entrepreneurship</span>
+                    </span>
+                    <span class="lp-trust-divider" aria-hidden="true">·</span>
+                    <span class="lp-trust-item">20 tools across four pathways</span>
+                    <span class="lp-trust-divider" aria-hidden="true">·</span>
+                    <span class="lp-trust-item">Free · No login required</span>
+                </div>
+            </section>
+
+            <!-- PROBLEM-LED SECTION -->
+            <section class="lp-problems" id="how-it-works">
                 <div class="lp-container">
-                    <h2 class="lp-section-heading">Let's figure this out, together</h2>
-                    <p class="lp-section-sub">Pick the one that fits. Pete will take it from there.</p>
-                    <div class="lp-process-grid lp-grid-2x2">
-                        <div class="lp-process-card lp-cat-untangle" data-category="untangle">
-                            <span class="lp-cat-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
-                            <span class="lp-cat-badge">THE UNTANGLE</span>
-                            <h3 class="lp-process-tagline">I need to understand the real problem before I move forward</h3>
-                            <p class="lp-process-desc">Whether you're getting started or stuck, these tools help you dig into what's really going on.</p>
-                            <div class="lp-process-tools">
-                                <a class="lp-tool-pill" href="tool-detail-five-whys.html">Five Whys</a>
-                                <a class="lp-tool-pill" href="tool-detail-empathy-map.html">Empathy Map</a>
-                                <a class="lp-tool-pill" href="tool-detail-jobs-to-be-done.html">Jobs to Be Done</a>
-                                <a class="lp-tool-pill" href="tool-detail-socratic-questioning.html">Socratic Questioning</a>
-                                <a class="lp-tool-pill" href="tool-detail-iceberg.html">Iceberg</a>
+                    <h2 class="lp-section-heading">Sound familiar?</h2>
+                    <p class="lp-section-sub">Pete matches your problem to the right tool and guides you through it.</p>
+                    <div class="lp-problem-list">
+                        <div class="lp-problem-row">
+                            <p class="lp-problem-quote">"I'm not sure anyone will actually pay for this."</p>
+                            <div class="lp-problem-route">
+                                <span class="lp-pathway-badge lp-badge-untangle">The Untangle</span>
+                                <span class="lp-problem-tool">Jobs to Be Done</span>
                             </div>
                         </div>
-                        <div class="lp-process-card lp-cat-spark" data-category="spark">
-                            <span class="lp-cat-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>
-                            <span class="lp-cat-badge">THE SPARK</span>
-                            <h3 class="lp-process-tagline">I have the beginning of an idea — help me explore it</h3>
-                            <p class="lp-process-desc">You've got a seed of something. Pete will help you explore it from angles you haven't tried.</p>
-                            <div class="lp-process-tools">
-                                <a class="lp-tool-pill" href="tool-detail-crazy-8s.html">Crazy 8s</a>
-                                <a class="lp-tool-pill" href="tool-detail-how-might-we.html">How Might We</a>
-                                <a class="lp-tool-pill" href="tool-detail-scamper.html">SCAMPER</a>
-                                <a class="lp-tool-pill" href="tool-detail-analogical-thinking.html">Mash Up</a>
-                                <a class="lp-tool-pill" href="tool-detail-constraint-flip.html">Constraint Flip</a>
+                        <div class="lp-problem-row">
+                            <p class="lp-problem-quote">"We keep solving symptoms instead of the actual problem."</p>
+                            <div class="lp-problem-route">
+                                <span class="lp-pathway-badge lp-badge-untangle">The Untangle</span>
+                                <span class="lp-problem-tool">Five Whys</span>
                             </div>
                         </div>
-                        <div class="lp-process-card lp-cat-test" data-category="test">
-                            <span class="lp-cat-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg></span>
-                            <span class="lp-cat-badge">THE TEST</span>
-                            <h3 class="lp-process-tagline">I have a proposal — help me break it before I build it</h3>
-                            <p class="lp-process-desc">Pete will stress-test it, argue against it, and surface proven patterns from other fields.</p>
-                            <div class="lp-process-tools">
-                                <a class="lp-tool-pill" href="tool-detail-pre-mortem.html">Pre-Mortem</a>
-                                <a class="lp-tool-pill" href="tool-detail-devils-advocate.html">Devil's Advocate</a>
-                                <a class="lp-tool-pill" href="tool-detail-cold-open.html">Cold Open</a>
-                                <a class="lp-tool-pill" href="tool-detail-rapid-experiment.html">Rapid Experiment</a>
-                                <a class="lp-tool-pill" href="tool-detail-trade-off.html">The Trade-Off</a>
+                        <div class="lp-problem-row">
+                            <p class="lp-problem-quote">"My team has great ideas but nothing ever ships."</p>
+                            <div class="lp-problem-route">
+                                <span class="lp-pathway-badge lp-badge-build">The Build</span>
+                                <span class="lp-problem-tool">Rapid Experiment</span>
                             </div>
                         </div>
-                        <div class="lp-process-card lp-cat-build" data-category="build">
-                            <span class="lp-cat-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg></span>
-                            <span class="lp-cat-badge">THE BUILD</span>
-                            <h3 class="lp-process-tagline">I have a solution — help me turn it into a plan</h3>
-                            <p class="lp-process-desc">Pete will help you map the model, start with what you have, and find where to build, buy, or partner.</p>
-                            <div class="lp-process-tools">
-                                <a class="lp-tool-pill" href="tool-detail-lean-canvas.html">Lean Canvas</a>
-                                <a class="lp-tool-pill" href="tool-detail-effectuation.html">Effectuation</a>
-                                <a class="lp-tool-pill" href="tool-detail-wardley-mapping.html">Wardley Mapping</a>
-                                <a class="lp-tool-pill" href="tool-detail-flywheel.html">Flywheel</a>
-                                <a class="lp-tool-pill" href="tool-detail-theory-of-change.html">Theory of Change</a>
+                        <div class="lp-problem-row">
+                            <p class="lp-problem-quote">"I'm about to launch and I'm terrified I've missed something."</p>
+                            <div class="lp-problem-route">
+                                <span class="lp-pathway-badge lp-badge-test">The Test</span>
+                                <span class="lp-problem-tool">Pre-Mortem</span>
                             </div>
                         </div>
+                    </div>
+                    <div class="lp-problems-cta">
+                        <button class="lp-cta enter-studio-trigger">Start a free session →</button>
                     </div>
                 </div>
             </section>
 
-            <!-- IMPACT STATS -->
-            <section class="lp-stats">
+            <!-- HOW IT WORKS -->
+            <section class="lp-how">
                 <div class="lp-container">
-                    <div class="lp-stats-grid">
-                        <div class="lp-stat">
-                            <span class="lp-stat-number">20</span>
-                            <span class="lp-stat-label">Thinking Exercises</span>
+                    <h2 class="lp-section-heading" style="text-align:center">How it works</h2>
+                    <div class="lp-how-steps">
+                        <div class="lp-how-step">
+                            <span class="lp-how-num">1</span>
+                            <strong class="lp-how-title">Tell Pete what's going on</strong>
+                            <p class="lp-how-desc">Pick your situation from a set of real problem statements. Pete routes you to the right tool in under 30 seconds.</p>
                         </div>
-                        <div class="lp-stat">
-                            <span class="lp-stat-number">4</span>
-                            <span class="lp-stat-label">Entrepreneurial Modes</span>
+                        <span class="lp-how-arrow" aria-hidden="true">→</span>
+                        <div class="lp-how-step">
+                            <span class="lp-how-num">2</span>
+                            <strong class="lp-how-title">Work through it together</strong>
+                            <p class="lp-how-desc">Pete guides you through a structured workshop using proven innovation frameworks. He challenges you where it counts.</p>
                         </div>
-                        <div class="lp-stat">
-                            <span class="lp-stat-number">15-30</span>
-                            <span class="lp-stat-label">Minute Sessions</span>
-                        </div>
-                        <div class="lp-stat">
-                            <span class="lp-stat-number">1</span>
-                            <span class="lp-stat-label">Personalised Report</span>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- WHAT YOU GET — Two-column -->
-            <!-- FEATURES — 6-item grid + Workshop Board visual -->
-            <section class="lp-features">
-                <div class="lp-container">
-                    <h2 class="lp-section-heading">Not just a chat. A workshop.</h2>
-                    <p class="lp-features-lead">Pete, your AI facilitator, guides you through the same structured exercises used by founders, investors, and corporate innovators at Wade Institute. You leave with something real.</p>
-                    <div class="lp-features-grid">
-                        <div class="lp-feature-card">
-                            <span class="lp-feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></span>
-                            <strong>20 structured tools</strong>
-                            <p class="lp-feature-desc">Not open-ended chat — real innovation frameworks with proven methodology. Five Whys, Lean Canvas, Pre-Mortem, Mash Up, and more.</p>
-                        </div>
-                        <div class="lp-feature-card">
-                            <span class="lp-feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg></span>
-                            <strong>Workshop Board</strong>
-                            <p class="lp-feature-desc">Your insights, ideas, and actions organised visually as you work — a digital whiteboard that builds itself.</p>
-                        </div>
-                        <div class="lp-feature-card">
-                            <span class="lp-feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span>
-                            <strong>Downloadable report</strong>
-                            <p class="lp-feature-desc">The kind of document you'd normally get from a paid facilitator — observations, reframes, and concrete next steps. Share it with your team.</p>
-                        </div>
-                        <div class="lp-feature-card">
-                            <span class="lp-feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>
-                            <strong>Help me / Challenge me</strong>
-                            <p class="lp-feature-desc">You set the tone. Need encouragement? Hit "Help me." Ready to stress-test? Hit "Challenge me." Pete adapts to where you are.</p>
-                        </div>
-                        <div class="lp-feature-card">
-                            <span class="lp-feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span>
-                            <strong>AI Consolidation</strong>
-                            <p class="lp-feature-desc">Scattered thinking, synthesised. One click turns a messy board into clear, prioritised insights.</p>
-                        </div>
-                        <div class="lp-feature-card">
-                            <span class="lp-feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg></span>
-                            <strong>Session persistence</strong>
-                            <p class="lp-feature-desc">Sessions save automatically. Close the tab, come back tomorrow — pick up where you left off.</p>
+                        <span class="lp-how-arrow" aria-hidden="true">→</span>
+                        <div class="lp-how-step">
+                            <span class="lp-how-num">3</span>
+                            <strong class="lp-how-title">Walk away with a Board and a plan</strong>
+                            <p class="lp-how-desc">Your thinking is captured on a live Board. Download your report — insights, reframes, and concrete next steps.</p>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- WORKSHOP BOARD VISUAL -->
-            <section class="lp-board-showcase">
-                <div class="lp-container lp-board-inner">
-                    <div class="lp-board-text">
-                        <h2 class="lp-section-heading">See your thinking take shape</h2>
-                        <p class="lp-board-lead">As you work, Pete organises your insights, ideas, and actions onto a live Workshop Board. Not a chat log — a visual record you can edit, rearrange, and download.</p>
-                    </div>
-                    <div class="lp-board-mockup">
-                        <div class="lp-board-mock-header">
-                            <span class="lp-board-mock-title" style="color:var(--pink)">Workshop Board</span>
-                            <span class="lp-board-mock-meta">THE TEST · THE TRADE-OFF</span>
-                            <span class="lp-board-mock-actions">+ Add card &nbsp; ✦ Consolidate</span>
-                        </div>
-                        <div class="lp-board-mock-zones lp-board-mock-tradeoff">
-                            <div class="lp-board-mock-zone">
-                                <span class="lp-board-mock-zone-label" style="color:var(--pink)">MUST-HAVE</span>
-                                <div class="lp-board-mock-card" style="border-left-color:var(--pink)">Storage: 13 kWh whole-home backup (6/6 wins)</div>
-                                <div class="lp-board-mock-card" style="border-left-color:var(--pink)">Warranty: 15-year guarantee (5/6 wins)</div>
-                            </div>
-                            <div class="lp-board-mock-zone">
-                                <span class="lp-board-mock-zone-label" style="color:var(--pink)">NICE-TO-HAVE</span>
-                                <div class="lp-board-mock-card" style="border-left-color:var(--pink)">Backup: Instant switchover (3/6 wins)</div>
-                            </div>
-                            <div class="lp-board-mock-zone">
-                                <span class="lp-board-mock-zone-label" style="color:var(--text-muted, #6e6a8a)">EXPENDABLE</span>
-                                <div class="lp-board-mock-card" style="opacity:0.6">Smart: AI grid trading (1/6 wins)</div>
-                            </div>
-                            <div class="lp-board-mock-zone" style="grid-column: 1 / -1">
-                                <span class="lp-board-mock-zone-label" style="color:var(--orange)">SURPRISE</span>
-                                <div class="lp-board-mock-card" style="border-left-color:var(--orange)">AI grid trading — 18 months of engineering, won only 1 of 6 rounds</div>
-                            </div>
-                            <div class="lp-board-mock-zone" style="grid-column: 1 / -1">
-                                <span class="lp-board-mock-zone-label" style="color:var(--teal)">MINIMUM VIABLE OFFER</span>
-                                <div class="lp-board-mock-card" style="border-left-color:var(--teal)">Storage + Warranty at $9,900 — the simplest system someone would choose</div>
-                            </div>
-                            <div class="lp-board-mock-zone" style="grid-column: 1 / -1">
-                                <span class="lp-board-mock-zone-label" style="color:var(--pink)">OPTIMISED OFFER</span>
-                                <div class="lp-board-mock-card" style="border-left-color:var(--pink)">Storage + Warranty + Instant Backup at $11,900 — the best bundle the data supports</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- REPORT PREVIEW -->
-            <section class="lp-report-preview">
-                <div class="lp-container lp-report-inner">
-                    <div class="lp-report-mockup">
-                        <div class="lp-report-mock-header">
-                            <span class="lp-report-mock-logo" style="color:var(--orange)">WADE INSTITUTE</span>
-                            <span class="lp-report-mock-meta">THE TEST · THE TRADE-OFF · MARCH 2026</span>
-                        </div>
-                        <div class="lp-report-mock-title">Your Customers Want a Bigger Battery, Not a Smarter One</div>
-                        <div class="lp-report-mock-hook">You maxed out every dimension. Six rounds of forced trade-offs revealed that only two are must-haves — and the feature you spent 18 months engineering wasn't one of them.</div>
-                        <div class="lp-report-mock-section">
-                            <span class="lp-report-mock-h3">The Value Stack</span>
-                            <div class="lp-report-mock-chain">
-                                <span style="color:var(--pink)">Must-have</span> → <span>Nice-to-have</span> → <span>Expendable</span> → <span class="lp-report-mock-root">Minimum Viable Offer</span>
-                            </div>
-                        </div>
-                        <div class="lp-report-mock-fade"></div>
-                    </div>
-                    <div class="lp-report-text">
-                        <h2 class="lp-section-heading">Leave with something real</h2>
-                        <p class="lp-report-lead">Every session produces a professional report — the kind you'd normally get from a paid facilitator. Structured insights, coaching observations, and concrete next steps. Download it, email it, share it with your team.</p>
-                        <p class="lp-report-sub">You came in with a fuzzy problem. You leave with a structured breakdown, fresh insights, and a plan you can act on.</p>
-                        <a class="lp-sample-link" href="sample-reports/showcase.html" target="_blank" rel="noopener" onclick="if(typeof trackEvent==='function')trackEvent('sample_report_view','report_preview')">See a sample report →</a>
-                    </div>
-                </div>
-            </section>
-
-            <!-- WHO IT'S FOR -->
+            <!-- AUDIENCES -->
             <section class="lp-audience">
                 <div class="lp-container">
-                    <h2 class="lp-section-heading" style="text-align:center">Who uses The Studio</h2>
-                    <div class="lp-audience-grid">
+                    <h2 class="lp-section-heading" style="text-align:center">Who it's for</h2>
+                    <div class="lp-audience-grid lp-audience-two">
                         <div class="lp-audience-card">
-                            <strong>Founders</strong>
-                            <p>Stress-testing a business model before you pitch. Finding the real problem before you build.</p>
+                            <strong>Founders &amp; Startups</strong>
+                            <p>Validate your idea, stress-test your model, and find the real problem before you build.</p>
                         </div>
                         <div class="lp-audience-card">
-                            <strong>Corporate innovators</strong>
-                            <p>Reframing a stalled initiative. Building a case that survives the boardroom.</p>
-                        </div>
-                        <div class="lp-audience-card">
-                            <strong>Teams</strong>
-                            <p>Aligning on strategy before you commit resources. Getting everyone thinking with the same frameworks.</p>
-                        </div>
-                        <div class="lp-audience-card">
-                            <strong>Students</strong>
-                            <p>Learning innovation methodology by doing, not reading. Building real skills with real frameworks.</p>
+                            <strong>Corporate Innovators</strong>
+                            <p>Reframe stalled initiatives, align your team, and build a case that survives the boardroom.</p>
                         </div>
                     </div>
-                </div>
-            </section>
-
-            <!-- QUOTES — social proof -->
-            <section class="lp-quote">
-                <div class="lp-container lp-quotes-grid">
-                    <blockquote class="lp-blockquote">
-                        <span class="lp-quote-mark">"</span>
-                        <p class="lp-quote-text">Wade was a playground for connecting science and business — the kind of thinking you can't get from a textbook.</p>
-                        <cite class="lp-quote-cite">— Wade Institute Alumna</cite>
-                    </blockquote>
-                    <blockquote class="lp-blockquote">
-                        <span class="lp-quote-mark">"</span>
-                        <p class="lp-quote-text">The frameworks forced me to stop overthinking and start testing. I left every session with something I could act on immediately.</p>
-                        <cite class="lp-quote-cite">— Wade Institute Alumnus</cite>
-                    </blockquote>
-                    <blockquote class="lp-blockquote">
-                        <span class="lp-quote-mark">"</span>
-                        <p class="lp-quote-text">I expected a course. What I got was a thinking partner and a network that still challenges me two years later.</p>
-                        <cite class="lp-quote-cite">— Wade Institute Alumna</cite>
-                    </blockquote>
                 </div>
             </section>
 
             <!-- BOTTOM CTA -->
             <section class="lp-bottom-cta">
                 <div class="lp-container">
-                    <h2 class="lp-bottom-heading">Ready to think differently?</h2>
-                    <p class="lp-bottom-sub">Free. No login. Takes about 15 minutes.</p>
-                    <button class="lp-cta enter-studio-trigger">Jam with Pete →</button>
-                    <p class="lp-bottom-link"><a href="toolbox.html">Browse the toolbox →</a></p>
-                    <a class="lp-sample-link" href="sample-reports/showcase.html" target="_blank" rel="noopener" onclick="if(typeof trackEvent==='function')trackEvent('sample_report_view','bottom_cta')">See a sample report →</a>
+                    <h2 class="lp-bottom-heading">Ready to get unstuck?</h2>
+                    <p class="lp-bottom-sub">Free. No login. 15–30 minutes.</p>
+                    <button class="lp-cta enter-studio-trigger">Start a free session →</button>
+                    <p class="lp-bottom-link"><a href="#how-it-works">How it works</a></p>
                 </div>
             </section>
 
