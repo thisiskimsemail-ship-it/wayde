@@ -7789,7 +7789,24 @@ def generate_branded_pdf():
         pdf.ln(6)
 
         # ── Parse and render markdown report body ──
-        lines_all = report_text.split('\n')
+        # Skip any leading H1 + hook paragraph that were already rendered
+        # in the synopsis block above, to avoid duplication.
+        lines_raw = report_text.split('\n')
+        skip_until = 0
+        # Find the first non-empty line
+        for i, ln in enumerate(lines_raw):
+            if ln.strip():
+                # If it's an H1 matching the synopsis title, skip it + following blank lines + hook para
+                if ln.strip().startswith('# ') and title and ln.strip()[2:].strip()[:40] in title[:40]:
+                    skip_until = i + 1
+                    # Also skip any immediately following paragraph that matches the hook
+                    j = skip_until
+                    while j < len(lines_raw) and not lines_raw[j].strip():
+                        j += 1
+                    if hook and j < len(lines_raw) and lines_raw[j].strip() and lines_raw[j].strip()[:40] in hook[:60]:
+                        skip_until = j + 1
+                break
+        lines_all = lines_raw[skip_until:]
 
         # Detect "Go Further" section
         go_further_idx = None
