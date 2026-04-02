@@ -89,6 +89,31 @@
         </div>
     </header>
 
+    <!-- Location bar — 4-step journey progress (always visible) -->
+    <nav class="location-bar" id="locationBar" aria-label="Session progress">
+        <div class="location-bar-inner">
+            <button class="loc-step active" data-view="welcome" aria-label="Welcome" disabled>
+                <span class="loc-dot"></span>
+                <span class="loc-label">Welcome</span>
+            </button>
+            <span class="loc-connector"></span>
+            <button class="loc-step upcoming" data-view="brief" aria-label="The brief" disabled>
+                <span class="loc-dot"></span>
+                <span class="loc-label">The brief</span>
+            </button>
+            <span class="loc-connector"></span>
+            <button class="loc-step upcoming" data-view="work" aria-label="The work" disabled>
+                <span class="loc-dot"></span>
+                <span class="loc-label">The work</span>
+            </button>
+            <span class="loc-connector"></span>
+            <button class="loc-step upcoming" data-view="whats-next" aria-label="What's next" disabled>
+                <span class="loc-dot"></span>
+                <span class="loc-label">What's next</span>
+            </button>
+        </div>
+    </nav>
+
     <!-- Active session bar (hidden until an exercise is selected) -->
     <div class="session-bar hidden" id="sessionBar">
         <!-- JS state refs — not displayed -->
@@ -849,6 +874,6 @@
         <button class="feedback-submit" id="feedbackSubmit">Send feedback</button>
     </div>
 
-    <script src="app.js?v=207"></script>
+    <script src="app.js?v=208"></script>
 </body>
 </html>

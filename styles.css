@@ -491,6 +491,101 @@ body:not(.in-session) .chat-pane {
    Brand palette: Orange #F15A22 · Pink #ED3694 · Teal #27BDBE · Yellow #E4E517 */
 /* Logo stays orange — no colour shifting per stage */
 
+/* === LOCATION BAR — 4-step journey progress === */
+.location-bar {
+    display: flex;
+    justify-content: center;
+    padding: 0.5rem 1.5rem;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    flex-shrink: 0;
+}
+
+.location-bar-inner {
+    display: flex;
+    align-items: center;
+    gap: 0;
+}
+
+.loc-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    background: none;
+    border: none;
+    cursor: default;
+    padding: 0.25rem 0.75rem;
+    color: inherit;
+    font-family: inherit;
+}
+
+.loc-step.visited { cursor: pointer; }
+.loc-step.visited:hover .loc-dot { box-shadow: 0 0 0 3px rgba(39,189,190,0.25); }
+
+.loc-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 2px solid #E7E6E5;
+    background: transparent;
+    transition: background 0.2s, border-color 0.2s;
+    flex-shrink: 0;
+}
+
+.loc-step.active .loc-dot {
+    background: #F15A22;
+    border-color: #F15A22;
+}
+
+.loc-step.visited .loc-dot {
+    background: #27BDBE;
+    border-color: #27BDBE;
+}
+
+.loc-step.upcoming .loc-dot {
+    background: transparent;
+    border-color: #E7E6E5;
+}
+
+.loc-label {
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #A8A4A5;
+    white-space: nowrap;
+    transition: color 0.2s;
+}
+
+.loc-step.active .loc-label { color: #F15A22; }
+.loc-step.visited .loc-label { color: #27BDBE; }
+
+.loc-connector {
+    width: 32px;
+    height: 2px;
+    background: #E7E6E5;
+    flex-shrink: 0;
+    margin-bottom: 18px; /* align with dot row */
+    transition: background 0.2s;
+}
+
+.loc-connector.done { background: #27BDBE; }
+
+@media (max-width: 600px) {
+    .loc-label { display: none; }
+    .loc-step { padding: 0.25rem 0.5rem; }
+    .loc-connector { width: 20px; }
+    .location-bar { padding: 0.5rem 0.75rem; }
+}
+
+html[data-theme="light"] .location-bar { border-bottom-color: rgba(30,25,79,0.1); }
+html[data-theme="light"] .loc-connector { background: #E7E6E5; }
+html[data-theme="light"] .loc-connector.done { background: #27BDBE; }
+html[data-theme="light"] .loc-dot { border-color: rgba(30,25,79,0.2); }
+html[data-theme="light"] .loc-label { color: rgba(30,25,79,0.4); }
+html[data-theme="light"] .loc-step.active .loc-label { color: #F15A22; }
+html[data-theme="light"] .loc-step.visited .loc-label { color: #27BDBE; }
+
 /* === SESSION BAR (shown during active exercise) === */
 .session-bar {
     display: flex;

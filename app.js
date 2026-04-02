@@ -1,3 +1,45 @@
+// === LOCATION BAR ===
+const LOCATION_VIEWS = ['welcome', 'brief', 'work', 'whats-next'];
+
+function setLocationView(activeView) {
+    const steps = document.querySelectorAll('.loc-step');
+    const connectors = document.querySelectorAll('.loc-connector');
+    const activeIdx = LOCATION_VIEWS.indexOf(activeView);
+    steps.forEach((step, i) => {
+        step.classList.remove('active', 'visited', 'upcoming');
+        if (i < activeIdx) {
+            step.classList.add('visited');
+            step.disabled = false;
+        } else if (i === activeIdx) {
+            step.classList.add('active');
+            step.disabled = true;
+        } else {
+            step.classList.add('upcoming');
+            step.disabled = true;
+        }
+    });
+    connectors.forEach((c, i) => {
+        c.classList.toggle('done', i < activeIdx);
+    });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Wire visited dots to navigate back
+    document.querySelectorAll('.loc-step').forEach(step => {
+        step.addEventListener('click', () => {
+            const view = step.dataset.view;
+            if (!step.classList.contains('visited')) return;
+            if (view === 'welcome') {
+                // Return to welcome — same as closing a session
+                const closeBtn = document.getElementById('sessionClose');
+                if (closeBtn) closeBtn.click();
+            }
+        });
+    });
+    // Start on welcome
+    setLocationView('welcome');
+});
+
 // === THEME TOGGLE ===
 (function() {
     const saved = localStorage.getItem('studio_theme') || 'dark';
@@ -1175,6 +1217,7 @@ function startExercise(mode, exercise, startMsg = null) {
     sessionBar.dataset.mode = mode;
     document.body.dataset.mode = mode;
     updateStageLogo(mode);
+    setLocationView('work');
 
     // Update session bar text
     sessionMode.textContent = MODE_LABELS[mode] || mode;
@@ -1332,6 +1375,7 @@ function forceCloseSession() {
     // Hide input bar on welcome
     if (inputArea) inputArea.style.display = 'none';
     document.body.classList.remove('in-session', 'board-open', 'session-complete');
+    setLocationView('welcome');
     clearSession();
     window.scrollTo(0, 0);
 }
@@ -1422,6 +1466,7 @@ function doCloseSession() {
     state.projectContext = [];
     state.routing = false;
     document.body.classList.remove('in-session', 'board-open', 'session-complete');
+    setLocationView('welcome');
     clearSession();
     window.scrollTo(0, 0);
 }
@@ -3770,6 +3815,7 @@ async function startPostSessionFlow() {
 
         // ---- Screen 2: Reveal ----
         document.body.classList.add('session-complete');
+        setLocationView('whats-next');
         const revealScreen = document.getElementById('postSessionReveal');
         revealScreen.classList.remove('hidden');
         revealScreen.scrollIntoView({ behavior: 'smooth', block: 'start' });
