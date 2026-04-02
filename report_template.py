@@ -196,6 +196,10 @@ REPORT_CSS = r"""
 
   .div { height: 1px; background: var(--grey-2); margin: 20px 0; border: none; }
 
+  .ctx { border-left: 3px solid var(--navy); background: var(--grey-1); border-radius: 0 6px 6px 0; padding: 14px 18px; margin-bottom: 20px; }
+  .ctx-label { font-size: 9px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.6px; color: var(--grey-3); margin-bottom: 6px; }
+  .ctx-body { font-size: 13px; font-weight: 300; line-height: 1.6; color: var(--navy); }
+
   .page--landscape { width: 297mm; min-height: 210mm; }
 
   /* ── Canvas board styles (landscape page) ── */
@@ -416,6 +420,26 @@ def _render_callout(bold_text, body_text):
       <div class="co-bar"></div>
       <div class="co-body"><strong>{_e(bold_text)}</strong> {_e(body_text)}</div>
     </div>'''
+
+
+def _render_context_block(challenge):
+    """Render the Session Context block — user's starting point in their own words."""
+    if not challenge:
+        return ''
+    return f'''<div class="ctx">
+      <div class="ctx-label">What you brought</div>
+      <div class="ctx-body">{_e(challenge)}</div>
+    </div>'''
+
+
+def _render_actions_short(actions):
+    """Short action list for exec summary — bold title only, no descriptions."""
+    if not actions:
+        return ''
+    items = ''
+    for a in actions[:3]:
+        items += f'<li><div class="dot"></div><span><strong>{_e(a.get("bold", ""))}</strong></span></li>\n'
+    return f'<ul class="fl">{items}</ul>'
 
 
 def _render_value_stack(tiers):
@@ -1909,11 +1933,21 @@ def render_report_html(report_json, mode, exercise, board_cards=None):
     # Build pages
     pages = []
 
-    # ── PAGE 1: Synopsis (Hero + Insights + Opening + Challenge) ──
-    page1_body = f'''<div class="sec">{_paragraphs(opening)}</div>
+    # ── PAGE 1: Context + Executive Summary ──
+    # Session Context block: user's starting point in their own words (challenge field)
+    # Executive Summary: headline finding + insights + opening synthesis + top 3 actions (short)
+    actions_short_html = _render_actions_short(actions)
+    actions_short_section = f'''<hr class="div">
     <div class="sec">
-      {_render_section_heading("The challenge")}
-      {_paragraphs(challenge)}
+      {_render_section_heading("Top actions")}
+      {actions_short_html}
+    </div>''' if actions_short_html else ''
+
+    page1_body = f'''{_render_context_block(challenge)}
+    <div class="sec">
+      {_render_section_heading("Executive summary")}
+      {_paragraphs(opening)}
+      {actions_short_section}
     </div>'''
 
     pages.append(f'''<div class="page">
