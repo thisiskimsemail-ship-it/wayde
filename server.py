@@ -5,6 +5,7 @@ import time
 import smtplib
 import urllib.request
 import urllib.error
+import urllib.parse
 import hashlib
 import secrets
 from email.mime.multipart import MIMEMultipart
@@ -5837,11 +5838,11 @@ def _sync_lead_to_hubspot(lead):
         'Content-Type': 'application/json',
     }
 
-    # ── Step 1: Check if contact exists ───────────────────────────────────
+    # ── Step 1: Check if contact exists (stable v3 API) ──────────────────
     contact_exists = False
     try:
         req = urllib.request.Request(
-            f'https://api.hubapi.com/crm/objects/2026-03/contacts/{email}?idProperty=email',
+            f'https://api.hubapi.com/crm/v3/objects/contacts/{urllib.parse.quote(email)}?idProperty=email',
             headers=headers, method='GET'
         )
         with urllib.request.urlopen(req, timeout=10) as resp:
@@ -5858,7 +5859,7 @@ def _sync_lead_to_hubspot(lead):
         print(f'[HubSpot] Contact check error: {e}')
         return
 
-    # ── Step 2: Create contact if not found ───────────────────────────────
+    # ── Step 2: Create contact if not found (stable v3 API) ──────────────
     if not contact_exists:
         contact_props = {
             'email': email,
@@ -5872,15 +5873,19 @@ def _sync_lead_to_hubspot(lead):
         try:
             payload = json.dumps({'properties': contact_props}).encode('utf-8')
             req = urllib.request.Request(
-                'https://api.hubapi.com/crm/objects/2026-03/contacts',
+                'https://api.hubapi.com/crm/v3/objects/contacts',
                 data=payload, headers=headers, method='POST'
             )
             with urllib.request.urlopen(req, timeout=10) as resp:
                 result = json.loads(resp.read())
                 print(f'[HubSpot] Contact created: {result.get("id")}')
-        except Exception as e:
-            print(f'[HubSpot] Contact create failed: {e}')
+        except urllib.error.HTTPError as e:
+            body = e.read().decode()[:200]
+            print(f'[HubSpot] Contact create failed ({e.code}): {body}')
             return  # Do not send event if contact creation failed
+        except Exception as e:
+            print(f'[HubSpot] Contact create error: {e}')
+            return
 
     # ── Step 3: Send behavioural event ────────────────────────────────────
     event_props = {
@@ -5903,7 +5908,7 @@ def _sync_lead_to_hubspot(lead):
     try:
         payload = json.dumps(event_payload).encode('utf-8')
         req = urllib.request.Request(
-            'https://api.hubapi.com/events/custom/2026-03/send',
+            'https://api.hubapi.com/events/v3/send',
             data=payload, headers=headers, method='POST'
         )
         with urllib.request.urlopen(req, timeout=10) as resp:
@@ -6800,6 +6805,71 @@ def email_test():
 
 FEEDBACK_FILE = os.path.join(os.path.dirname(__file__), 'feedback.json')
 
+@app.route('/api/hubspot-diagnose', methods=['GET'])
+def hubspot_diagnose():
+    """Diagnose HubSpot integration step by step. Returns JSON with results of each call."""
+    token = os.environ.get('HUBSPOT_ACCESS_TOKEN')
+    results = {}
+
+    if not token:
+        return jsonify({'error': 'HUBSPOT_ACCESS_TOKEN not set in Railway env'}), 500
+
+    results['token_prefix'] = token[:12] + '...'
+    headers = {'Authorization': f'Bearer {token}', 'Content-Type': 'application/json'}
+    test_email = 'diagnose-test@wadeinstitute.org.au'
+
+    # Step 1: Check contact GET
+    try:
+        req = urllib.request.Request(
+            f'https://api.hubapi.com/crm/v3/objects/contacts/{urllib.parse.quote(test_email)}?idProperty=email',
+            headers=headers, method='GET'
+        )
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            results['contact_get'] = {'status': resp.status, 'note': 'contact exists or 200'}
+    except urllib.error.HTTPError as e:
+        results['contact_get'] = {'status': e.code, 'body': e.read().decode()[:300]}
+    except Exception as e:
+        results['contact_get'] = {'error': str(e)}
+
+    # Step 2: Check event definition exists
+    try:
+        req = urllib.request.Request(
+            f'https://api.hubapi.com/events/v3/event-definitions/{HUBSPOT_EVENT_NAME}',
+            headers=headers, method='GET'
+        )
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            body = json.loads(resp.read())
+            results['event_definition'] = {'status': resp.status, 'name': body.get('fullyQualifiedName', body.get('name', '?'))}
+    except urllib.error.HTTPError as e:
+        results['event_definition'] = {'status': e.code, 'body': e.read().decode()[:300],
+                                        'note': 'Run POST /api/hubspot-setup to create it'}
+    except Exception as e:
+        results['event_definition'] = {'error': str(e)}
+
+    # Step 3: Try sending a test event
+    test_event = {
+        'eventName': HUBSPOT_EVENT_NAME,
+        'email': test_email,
+        'occurredAt': datetime.now(timezone.utc).isoformat(),
+        'properties': {'studio_exercise': 'Diagnose Test', 'studio_stage': 'Clarify'},
+    }
+    try:
+        payload = json.dumps(test_event).encode('utf-8')
+        req = urllib.request.Request(
+            'https://api.hubapi.com/events/v3/send',
+            data=payload, headers=headers, method='POST'
+        )
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            results['event_send'] = {'status': resp.status, 'note': '204 = success'}
+    except urllib.error.HTTPError as e:
+        results['event_send'] = {'status': e.code, 'body': e.read().decode()[:300]}
+    except Exception as e:
+        results['event_send'] = {'error': str(e)}
+
+    results['event_name'] = HUBSPOT_EVENT_NAME
+    return jsonify(results)
+
+
 @app.route('/api/hubspot-setup', methods=['POST'])
 def hubspot_setup():
     """One-time: create the studio_session_completed event definition in HubSpot.
@@ -6829,7 +6899,7 @@ def hubspot_setup():
     try:
         payload = json.dumps(definition).encode('utf-8')
         req = urllib.request.Request(
-            'https://api.hubapi.com/events/custom/2026-03/event-definitions',
+            'https://api.hubapi.com/events/v3/event-definitions',
             data=payload,
             headers={
                 'Authorization': f'Bearer {token}',
