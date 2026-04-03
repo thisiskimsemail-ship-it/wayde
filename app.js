@@ -320,114 +320,153 @@ const MODE_LABELS = {
     build: 'The Build'
 };
 
-// === THE BRIEF — problem data for 3-phase structured intake ===
+// === THE BRIEF — problem data (spec v2.0, all 13 states) ===
 const BRIEF_PROBLEMS = {
     founder: [
         {
-            quote: "\u201CI\u2019m not sure my customers actually have this problem.\u201D",
-            start: "I\u2019m not sure my customers actually have this problem.",
+            text: "I\u2019m not sure if anyone will actually pay for this",
+            start: "I\u2019m not sure if anyone will actually pay for this.",
             pathway: 'untangle', pathwayLabel: 'The Untangle',
             mode: 'untangle', exercise: 'jtbd', tool: 'Jobs to Be Done',
             reflection: "You\u2019re questioning whether the problem is real before you commit further. That\u2019s exactly the right instinct.",
-            underneath: "Jobs to Be Done will help you see the problem from your customer\u2019s perspective \u2014 what they\u2019re actually trying to achieve, not just what you think they want."
+            underneath: "The real question isn\u2019t \u201Cwill they pay?\u201D \u2014 it\u2019s <strong>\u201Cwhat job are they already trying to get done?\u201D</strong> If you understand that, willingness to pay follows.",
+            title: "Jobs to Be Done: Find the job behind the problem",
+            desc: "We\u2019ll map what your customer is actually trying to achieve \u2014 not what they say, but what they\u2019re hiring a solution to do. Your Board will capture the real job, the current workaround, and what a better solution looks like.",
+            duration: "~20 min"
         },
         {
-            quote: "\u201CWe keep solving symptoms instead of the real issue.\u201D",
-            start: "We keep solving symptoms instead of the real issue.",
-            pathway: 'untangle', pathwayLabel: 'The Untangle',
-            mode: 'untangle', exercise: 'five-whys', tool: 'Five Whys',
-            reflection: "You\u2019re noticing a pattern \u2014 fixes that don\u2019t stick. That usually means the root cause hasn\u2019t been found yet.",
-            underneath: "Five Whys will dig beneath the surface until we find what\u2019s actually driving the problem."
-        },
-        {
-            quote: "\u201CI don\u2019t really understand what my customers think or feel.\u201D",
-            start: "I don\u2019t really understand what my customers think or feel.",
-            pathway: 'untangle', pathwayLabel: 'The Untangle',
-            mode: 'untangle', exercise: 'empathy-map', tool: 'Empathy Map',
-            reflection: "You sense there\u2019s a gap between your assumptions and your customer\u2019s reality. That gap is worth closing.",
-            underneath: "An Empathy Map will get you inside your customer\u2019s head \u2014 what they say, think, feel, and do."
-        },
-        {
-            quote: "\u201CWe\u2019ve run out of steam \u2014 I need a fresh direction.\u201D",
-            start: "We\u2019ve run out of steam and need a fresh direction.",
-            pathway: 'spark', pathwayLabel: 'The Spark',
-            mode: 'spark', exercise: 'hmw', tool: 'How Might We',
-            reflection: "You\u2019re stuck in a rut and need to open up the possibility space again. Good time for it.",
-            underneath: "How Might We reframes your challenge as an open question \u2014 inviting new directions instead of defending old ones."
-        },
-        {
-            quote: "\u201CI\u2019m about to launch and worried I\u2019ve missed something critical.\u201D",
-            start: "I\u2019m about to launch and worried I\u2019ve missed something critical.",
+            text: "My market feels too broad \u2014 I\u2019m building something generic",
+            start: "My market feels too broad and I\u2019m worried I\u2019m building something generic.",
             pathway: 'test', pathwayLabel: 'The Test',
             mode: 'test', exercise: 'pre-mortem', tool: 'Pre-Mortem',
-            reflection: "The launch anxiety is real \u2014 and useful. You\u2019re right to stress-test this before you go.",
-            underneath: "A Pre-Mortem imagines the failure in advance so you can prevent it. It\u2019s the most valuable thing you can do before a big commitment."
+            reflection: "A broad market is often a positioning crisis in disguise. If everyone could use it, no one will choose it.",
+            underneath: "The risk isn\u2019t that the market is too big \u2014 it\u2019s that you <strong>haven\u2019t committed to a specific customer</strong> yet. That\u2019s the assumption we need to test.",
+            title: "Pre-Mortem: Stress-test your positioning",
+            desc: "We\u2019ll imagine the venture has failed, then work backwards to find the assumptions that led there. Your Board will capture the critical risks, early signals, and what to watch for.",
+            duration: "~20 min"
         },
         {
-            quote: "\u201CI have too many options and can\u2019t decide which way to go.\u201D",
-            start: "I have too many options and can\u2019t decide which way to go.",
-            pathway: 'test', pathwayLabel: 'The Test',
-            mode: 'test', exercise: 'devils-advocate', tool: "Devil\u2019s Advocate",
-            reflection: "Too many good options is its own kind of stuck. You need a clear way to pressure-test each one.",
-            underneath: "Devil\u2019s Advocate will surface the weaknesses in your leading options \u2014 so you can choose with confidence."
+            text: "I can\u2019t explain what I\u2019m building in one sentence",
+            start: "I can\u2019t explain what I\u2019m building in one sentence.",
+            pathway: 'untangle', pathwayLabel: 'The Untangle',
+            mode: 'untangle', exercise: 'five-whys', tool: 'Five Whys',
+            reflection: "If you can\u2019t say it simply, the idea isn\u2019t fully clear yet \u2014 not just the words.",
+            underneath: "This is usually a signal that the <strong>core problem being solved isn\u2019t yet sharp enough</strong>. We need to find that before we can find the words.",
+            title: "Five Whys: Find the core of what you\u2019re building",
+            desc: "We\u2019ll ask \u2018why\u2019 five times to drill through to the real problem you\u2019re solving. Your Board will capture the root cause chain and the reframed problem statement.",
+            duration: "~15 min"
         },
         {
-            quote: "\u201CI need to turn this idea into a model that actually holds together.\u201D",
-            start: "I need to turn this idea into a model that actually holds together.",
+            text: "I have lots of ideas but I don\u2019t know which one to pursue",
+            start: "I have lots of ideas but I don\u2019t know which one to pursue.",
+            pathway: 'spark', pathwayLabel: 'The Spark',
+            mode: 'spark', exercise: 'crazy-8s', tool: 'Crazy 8s',
+            reflection: "Too many ideas and no clear winner is its own kind of stuck. You need to see them all clearly before you can choose.",
+            underneath: "More ideas isn\u2019t the problem \u2014 <strong>the absence of a clear selection criteria</strong> is. We\u2019ll surface that.",
+            title: "Crazy 8s: Find the idea worth pursuing",
+            desc: "We\u2019ll rapidly explore eight directions in eight minutes, then apply real pressure to the ones that feel most alive. Your Board will capture the ideas, the tensions, and what to test first.",
+            duration: "~15 min"
+        },
+        {
+            text: "I\u2019ve been building for months and still don\u2019t have product-market fit",
+            start: "I\u2019ve been building for months and still don\u2019t have product-market fit.",
+            pathway: 'untangle', pathwayLabel: 'The Untangle',
+            mode: 'untangle', exercise: 'empathy-map', tool: 'Empathy Map',
+            reflection: "Months of building without fit is usually a signal that you\u2019re solving the wrong problem \u2014 or solving it for the wrong person.",
+            underneath: "You\u2019ve been focused on <strong>what you built</strong>. We need to focus on <strong>who you built it for</strong> and whether their world matches your assumptions.",
+            title: "Empathy Map: Step into your customer\u2019s world",
+            desc: "We\u2019ll build a complete picture of what your customer thinks, feels, says, and does \u2014 and find the gap between that and what you\u2019ve built. Your Board will capture the hidden tensions.",
+            duration: "~20 min"
+        },
+        {
+            text: "I know what I want to build \u2014 I just need to figure out where to start",
+            start: "I know what I want to build \u2014 I just need to figure out where to start.",
             pathway: 'build', pathwayLabel: 'The Build',
-            mode: 'build', exercise: 'lean-canvas', tool: 'Lean Canvas',
-            reflection: "You\u2019ve got the idea \u2014 now you need the structure to see if the whole thing stacks up.",
-            underneath: "A Lean Canvas maps every moving part of your model on one page. It\u2019s where ideas become plans."
+            mode: 'build', exercise: 'effectuation', tool: 'Effectuation',
+            reflection: "You\u2019ve got clarity on the destination. The question is how to get there with what you have right now.",
+            underneath: "Most founders wait for the resources they wish they had. <strong>Effectuation starts with what you already have</strong> \u2014 and builds from there.",
+            title: "Effectuation: Build from what you have",
+            desc: "We\u2019ll map your existing resources, relationships, and constraints \u2014 then find the path that uses them. Your Board will capture your real starting point and first moves.",
+            duration: "~20 min"
+        },
+        {
+            text: "I\u2019m about to launch and I\u2019m terrified I\u2019ve missed something critical",
+            start: "I\u2019m about to launch and I\u2019m terrified I\u2019ve missed something critical.",
+            pathway: 'test', pathwayLabel: 'The Test',
+            mode: 'test', exercise: 'pre-mortem', tool: 'Pre-Mortem',
+            reflection: "Pre-launch terror is productive. You\u2019re right to stress-test this before you commit.",
+            underneath: "The most valuable thing you can do before a big bet is <strong>imagine it failing and work backwards</strong>. That\u2019s exactly what we\u2019re going to do.",
+            title: "Pre-Mortem: Stress-test your launch",
+            desc: "We\u2019ll imagine the launch has failed, then identify every assumption that could have led there. Your Board will capture the critical risks and what to watch for in week one.",
+            duration: "~20 min"
         }
     ],
     corporate: [
         {
-            quote: "\u201CI\u2019m not convinced we understand the real problem behind this brief.\u201D",
-            start: "I\u2019m not convinced we understand the real problem behind this brief.",
-            pathway: 'untangle', pathwayLabel: 'The Untangle',
-            mode: 'untangle', exercise: 'jtbd', tool: 'Jobs to Be Done',
-            reflection: "You\u2019re questioning the brief before jumping to solutions. That\u2019s more valuable than it sounds.",
-            underneath: "Jobs to Be Done reframes the challenge around what people are actually trying to achieve \u2014 not the brief as written."
+            text: "My team has great ideas but nothing ever ships",
+            start: "My team has great ideas but nothing ever ships.",
+            pathway: 'build', pathwayLabel: 'The Build',
+            mode: 'build', exercise: 'rapid-experiment', tool: 'Rapid Experiment',
+            reflection: "Ideas without traction usually means no clear path from idea to action. That\u2019s a system problem, not a people problem.",
+            underneath: "The bottleneck isn\u2019t creativity \u2014 it\u2019s that there\u2019s <strong>no agreed path from idea to a real-world test</strong>. We\u2019ll build that path.",
+            title: "Rapid Experiment: Design a test that ships",
+            desc: "We\u2019ll design the smallest possible test that could prove or disprove your best idea. Your Board will capture the hypothesis, the test design, and the go/no-go criteria.",
+            duration: "~20 min"
         },
         {
-            quote: "\u201CWe keep treating symptoms \u2014 the same issues keep coming back.\u201D",
-            start: "We keep treating symptoms and the same issues keep coming back.",
+            text: "I\u2019ve been asked to \u2018do something with AI\u2019 but I don\u2019t know where to start",
+            start: "I\u2019ve been asked to do something with AI but I don\u2019t know where to start.",
             pathway: 'untangle', pathwayLabel: 'The Untangle',
             mode: 'untangle', exercise: 'five-whys', tool: 'Five Whys',
-            reflection: "A recurring problem is a signal that the root cause hasn\u2019t been found. Let\u2019s go find it.",
-            underneath: "Five Whys drills down through the surface explanations until you hit something that\u2019s actually fixable."
+            reflection: "The request to \u2018do something with AI\u2019 is rarely about AI. There\u2019s usually a real problem underneath it.",
+            underneath: "Before you can answer \u2018what AI?\u2019 you need to answer <strong>\u2018what problem?\u2019</strong> We\u2019ll use Five Whys to find what\u2019s actually being asked for.",
+            title: "Five Whys: Find the real brief",
+            desc: "We\u2019ll ask \u2018why\u2019 five times to find the actual problem your organisation is trying to solve. Your Board will capture the root cause and a reframed brief you can actually act on.",
+            duration: "~15 min"
         },
         {
-            quote: "\u201CI need to understand what our customers or users actually feel.\u201D",
-            start: "I need to understand what our customers or users actually feel.",
-            pathway: 'untangle', pathwayLabel: 'The Untangle',
-            mode: 'untangle', exercise: 'empathy-map', tool: 'Empathy Map',
-            reflection: "There\u2019s a gap between what you think you know and what your users experience. That\u2019s worth closing.",
-            underneath: "An Empathy Map surfaces the hidden dimension of your customer\u2019s experience \u2014 what they feel, not just what they say."
-        },
-        {
-            quote: "\u201CWe need fresh thinking \u2014 the usual approaches aren\u2019t working.\u201D",
-            start: "We need fresh thinking \u2014 the usual approaches aren\u2019t working.",
-            pathway: 'spark', pathwayLabel: 'The Spark',
-            mode: 'spark', exercise: 'scamper', tool: 'SCAMPER',
-            reflection: "You\u2019re ready to break out of the default playbook. Good \u2014 that takes courage inside a big organisation.",
-            underneath: "SCAMPER is a structured way to generate genuinely new ideas by questioning every assumption about the current approach."
-        },
-        {
-            quote: "\u201CWe\u2019re about to commit big resources and I want to stress-test this.\u201D",
-            start: "We\u2019re about to commit big resources and I want to stress-test the plan.",
+            text: "We\u2019re about to invest heavily and I\u2019m not confident it will work",
+            start: "We\u2019re about to invest heavily and I\u2019m not confident it will work.",
             pathway: 'test', pathwayLabel: 'The Test',
             mode: 'test', exercise: 'pre-mortem', tool: 'Pre-Mortem',
-            reflection: "Before a big commitment, imagining the failure is the most valuable thing you can do.",
-            underneath: "A Pre-Mortem surfaces the risks that optimism tends to hide \u2014 so you can address them before they surface on their own."
+            reflection: "Doubt before a big commitment is healthy. The question is whether you\u2019ve stress-tested it enough.",
+            underneath: "Optimism is useful for starting \u2014 dangerous for investing. <strong>Naming what could go wrong before it does</strong> is the most valuable thing you can do right now.",
+            title: "Pre-Mortem: Stress-test the investment",
+            desc: "We\u2019ll imagine the initiative has failed, then work backwards to find the assumptions that haven\u2019t been tested. Your Board will capture the critical risks and what to de-risk first.",
+            duration: "~20 min"
         },
         {
-            quote: "\u201CThere\u2019s no shortage of ideas \u2014 the hard part is deciding what to build.\u201D",
-            start: "There\u2019s no shortage of ideas. The hard part is deciding what to build.",
-            pathway: 'build', pathwayLabel: 'The Build',
-            mode: 'build', exercise: 'lean-canvas', tool: 'Lean Canvas',
-            reflection: "You\u2019ve got ideas, but you need a clear framework to compare them and make the case for one.",
-            underneath: "A Lean Canvas puts every idea on the same page \u2014 so you can see which one actually holds together end to end."
+            text: "We keep solving symptoms instead of the actual problem",
+            start: "We keep solving symptoms instead of the actual problem.",
+            pathway: 'untangle', pathwayLabel: 'The Untangle',
+            mode: 'untangle', exercise: 'five-whys', tool: 'Five Whys',
+            reflection: "A recurring problem is a reliable signal that the root cause hasn\u2019t been found yet. Let\u2019s go find it.",
+            underneath: "Every fix that doesn\u2019t stick is telling you the same thing: <strong>you\u2019re one level up from the real cause</strong>. Five Whys will get us there.",
+            title: "Five Whys: Find the root cause",
+            desc: "We\u2019ll drill through five levels of explanation until we find something that\u2019s actually fixable. Your Board will capture the full cause chain and the reframed problem.",
+            duration: "~15 min"
+        },
+        {
+            text: "We know our industry is being disrupted but we can\u2019t agree on what to do",
+            start: "We know our industry is being disrupted but we can\u2019t agree on what to do.",
+            pathway: 'spark', pathwayLabel: 'The Spark',
+            mode: 'spark', exercise: 'hmw', tool: 'How Might We',
+            reflection: "Disagreement about disruption is usually disagreement about the problem, not the solution. You need a shared frame first.",
+            underneath: "Before you can agree on a response, you need to agree on <strong>what opportunity the disruption creates</strong>. That\u2019s what How Might We surfaces.",
+            title: "How Might We: Find the opportunity in the disruption",
+            desc: "We\u2019ll reframe the disruption as a set of open questions your team can explore together. Your Board will capture the best reframes and the directions worth pursuing.",
+            duration: "~20 min"
+        },
+        {
+            text: "We built what customers asked for and they still aren\u2019t using it",
+            start: "We built what customers asked for and they still aren\u2019t using it.",
+            pathway: 'untangle', pathwayLabel: 'The Untangle',
+            mode: 'untangle', exercise: 'jtbd', tool: 'Jobs to Be Done',
+            reflection: "Building what was asked and still missing the mark is a classic sign of solving the stated need, not the real one.",
+            underneath: "Customers can tell you what they want. <strong>They can\u2019t always tell you what job they need done</strong>. That\u2019s the gap we\u2019re going to close.",
+            title: "Jobs to Be Done: Find the real job",
+            desc: "We\u2019ll map what your customer is actually trying to achieve when they reach for your product. Your Board will capture the real job, the workaround they\u2019re using, and what would make them switch.",
+            duration: "~20 min"
         }
     ]
 };
@@ -1726,7 +1765,16 @@ function exitBrief() {
 function showBriefPhase(n) {
     for (let i = 1; i <= 3; i++) {
         const el = document.getElementById(`briefPhase${i}`);
-        if (el) el.classList.toggle('hidden', i !== n);
+        if (!el) continue;
+        if (i === n) {
+            el.classList.remove('hidden', 'brief-fade-up');
+            // Force reflow so animation re-triggers
+            void el.offsetWidth;
+            el.classList.add('brief-fade-up');
+        } else {
+            el.classList.add('hidden');
+            el.classList.remove('brief-fade-up');
+        }
     }
     briefState.phase = n;
 }
@@ -1739,12 +1787,13 @@ function selectSegment(segment) {
 
     grid.innerHTML = problems.map((p, i) => `
         <button class="brief-problem-card" data-index="${i}">
-            <p class="brief-problem-quote">${p.quote}</p>
-            <span class="lp-pathway-badge lp-badge-${p.pathway}">${p.pathwayLabel}</span>
+            <span class="brief-ps-dot brief-ps-dot-${p.pathway}" aria-hidden="true"></span>
+            <p class="brief-problem-text">${p.text}</p>
         </button>
     `).join('') + `
         <button class="brief-problem-card brief-problem-card-other" data-index="other">
-            <p class="brief-problem-quote">Something else \u2014 I\u2019ll describe it</p>
+            <span class="brief-ps-dot brief-ps-dot-other" aria-hidden="true"></span>
+            <p class="brief-problem-text">Something else \u2014 I\u2019ll describe it</p>
         </button>
     `;
 
@@ -1767,19 +1816,23 @@ function selectProblem(idx) {
     if (readback) {
         readback.innerHTML = `
             <p class="brief-readback-label">What I\u2019m hearing is\u2026</p>
+            <p class="brief-readback-quote">\u201C${problem.text}\u201D</p>
             <p class="brief-readback-reflection">${problem.reflection}</p>
-            <p class="brief-readback-underneath">${problem.underneath}</p>
+            <div class="brief-readback-beneath">${problem.underneath}</div>
+            <div class="brief-readback-route">
+                <span class="brief-readback-pw brief-readback-pw-${problem.pathway}">${problem.pathwayLabel}</span>
+                <span class="brief-readback-tool">${problem.tool}</span>
+            </div>
         `;
     }
 
     const launchCard = document.getElementById('briefLaunchCard');
     if (launchCard) {
-        launchCard.className = `brief-launch-card pathway-${problem.pathway}`;
+        launchCard.className = 'brief-launch-card';
         launchCard.innerHTML = `
-            <div class="brief-launch-info">
-                <p class="brief-launch-tool-label">${problem.pathwayLabel} \u00b7 ${problem.tool}</p>
-                <p class="brief-launch-heading">Ready to dig in?</p>
-            </div>
+            <span class="brief-workshop-ready">Workshop ready</span>
+            <h3 class="brief-launch-title">${problem.title}</h3>
+            <p class="brief-launch-desc">${problem.desc} ${problem.duration}. I\u2019ll push your thinking \u2014 that\u2019s the point.</p>
             <button class="brief-launch-btn" id="briefLaunchBtn">Let\u2019s go \u2192</button>
         `;
         document.getElementById('briefLaunchBtn').addEventListener('click', () => {
