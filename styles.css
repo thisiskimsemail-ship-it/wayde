@@ -822,6 +822,149 @@ html[data-theme="light"] .brief-launch-card { background: #fff; }
     .brief-launch-btn { width: 100%; text-align: center; }
 }
 
+/* ── Lobby nav row ── */
+.lobby-nav-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
+.lobby-back {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 0.8rem; font-weight: 500; color: var(--text-dim);
+    cursor: pointer; border: none; background: none;
+    font-family: var(--font); transition: color 0.15s; padding: 0;
+}
+.lobby-back:hover { color: var(--text); }
+.lobby-back svg { width: 16px; height: 16px; flex-shrink: 0; }
+.lobby-progress { display: flex; gap: 6px; align-items: center; }
+.lobby-progress-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.15); transition: all 0.3s; }
+.lobby-progress-dot.active { background: var(--orange); transform: scale(1.2); }
+.lobby-progress-dot.done { background: var(--teal); }
+
+/* ── Lobby phases ── */
+.lobby-phase { display: none; }
+.lobby-phase.active { display: block; animation: briefFadeUp 0.25s ease; }
+
+/* ── Segment card SVG icon containers ── */
+.brief-seg-icon { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 0.6rem; }
+.brief-seg-icon--founder { background: rgba(241,90,34,0.15); color: var(--orange); }
+.brief-seg-icon--corporate { background: rgba(39,189,190,0.15); color: var(--teal); }
+
+/* ── Phase 2 heading ── */
+.problem-prompt { margin-bottom: 1rem; }
+.problem-prompt h3 { font-family: var(--font); font-weight: 400; font-size: 1.35rem; color: var(--text); margin: 0 0 0.3rem; }
+.problem-prompt p { font-size: 0.825rem; color: var(--text-dim); margin: 0; }
+
+/* ── Problem-state cards ── */
+.ps-cards { display: flex; flex-direction: column; gap: 0.5rem; }
+.ps-card {
+    background: rgba(255,255,255,0.04); border: 2px solid rgba(255,255,255,0.07);
+    border-radius: 12px; padding: 1rem 1.25rem;
+    cursor: pointer; transition: all 0.15s;
+    display: flex; align-items: flex-start; gap: 14px;
+    font-family: var(--font);
+}
+.ps-card:hover { border-color: var(--orange); transform: translateX(4px); background: rgba(241,90,34,0.04); }
+.ps-card.chosen { border-color: var(--orange); background: rgba(241,90,34,0.06); }
+.ps-dot { width: 10px; height: 10px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
+.ps-dot.untangle { background: var(--teal); }
+.ps-dot.spark { background: var(--orange); }
+.ps-dot.test { background: var(--pink); }
+.ps-dot.build { background: var(--yellow); }
+.ps-text { font-size: 0.925rem; color: var(--text); line-height: 1.5; font-weight: 500; }
+
+/* ── Something else card ── */
+.ps-escape {
+    margin-top: 0.75rem; padding: 1rem 1.25rem;
+    border-radius: 12px; border: 2px dashed rgba(255,255,255,0.2);
+    display: flex; align-items: center; gap: 14px;
+    cursor: pointer; transition: all 0.15s; font-family: var(--font);
+}
+.ps-escape:hover { border-color: rgba(255,255,255,0.45); }
+.ps-escape.active { border-color: var(--orange); border-style: solid; background: rgba(241,90,34,0.04); cursor: default; }
+.ps-escape-icon { width: 10px; height: 10px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.35); flex-shrink: 0; transition: all 0.15s; }
+.ps-escape.active .ps-escape-icon { border-color: var(--orange); background: var(--orange); }
+.ps-escape-label { font-size: 0.925rem; font-weight: 500; color: var(--text); }
+.ps-escape-hint { font-size: 0.75rem; color: var(--text-dim); margin-left: auto; }
+.ps-escape.active .ps-escape-hint { display: none; }
+
+/* ── Free-text input ── */
+.ps-freetext { display: none; margin-top: 0.875rem; animation: briefFadeUp 0.25s ease; }
+.ps-freetext.active { display: block; }
+.ps-freetext-area {
+    width: 100%; min-height: 80px; padding: 0.875rem 1.1rem; box-sizing: border-box;
+    border: 2px solid rgba(255,255,255,0.12); border-radius: 12px;
+    font-size: 0.925rem; font-family: var(--font); color: var(--text);
+    background: rgba(255,255,255,0.04); resize: vertical; outline: none;
+    transition: border-color 0.15s; line-height: 1.55;
+}
+.ps-freetext-area:focus { border-color: var(--orange); }
+.ps-freetext-area::placeholder { color: var(--text-dim); }
+.ps-freetext-row { display: flex; align-items: center; justify-content: space-between; margin-top: 0.625rem; }
+.ps-freetext-hint { font-size: 0.75rem; color: var(--text-dim); }
+.ps-freetext-submit {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--orange); color: white;
+    font-size: 0.875rem; font-weight: 600; padding: 0.5rem 1.25rem;
+    border-radius: 100px; border: none; cursor: pointer;
+    font-family: var(--font); transition: all 0.15s;
+    opacity: 0.4; pointer-events: none;
+}
+.ps-freetext-submit.ready { opacity: 1; pointer-events: auto; }
+.ps-freetext-submit.ready:hover { filter: brightness(1.1); }
+
+/* ── Phase 3: Pete's read-back ── */
+.lobby-readback {
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px; padding: 1.5rem; margin-top: 0.5rem;
+}
+.readback-header { display: flex; align-items: center; gap: 12px; margin-bottom: 1rem; }
+.readback-header span { font-size: 0.875rem; font-weight: 400; color: var(--text-dim); }
+.readback-body { font-size: 0.925rem; color: var(--text); line-height: 1.65; }
+.readback-body strong { color: white; }
+.readback-beneath {
+    margin: 1rem 0; padding: 0.875rem 1.1rem;
+    background: rgba(39,189,190,0.08); border-radius: 10px; border-left: 3px solid var(--teal);
+    font-size: 0.875rem; color: var(--text-dim); line-height: 1.55;
+}
+.readback-beneath em { color: var(--text); font-style: normal; font-weight: 600; }
+.readback-tool-intro { font-size: 0.875rem; color: var(--text-dim); margin: 1rem 0 0.5rem; }
+.readback-route { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.readback-pw {
+    font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase;
+    padding: 4px 12px; border-radius: 100px;
+}
+.readback-pw.untangle { background: rgba(39,189,190,0.15); color: var(--teal); }
+.readback-pw.spark { background: rgba(241,90,34,0.12); color: var(--orange); }
+.readback-pw.test { background: rgba(237,54,148,0.12); color: var(--pink); }
+.readback-pw.build { background: rgba(228,229,23,0.12); color: var(--yellow); }
+.readback-arrow { color: var(--text-dim); }
+.readback-tool-name { font-size: 0.95rem; font-weight: 600; color: var(--text); }
+.readback-why { margin-top: 1rem; font-size: 0.875rem; color: var(--text-dim); line-height: 1.6; }
+
+/* ── Transition / launch card ── */
+.lobby-transition {
+    background: rgba(255,255,255,0.03); border: 2px solid var(--orange);
+    border-radius: 16px; padding: 1.5rem; margin-top: 1rem;
+    text-align: center; display: flex; flex-direction: column; align-items: center; gap: 0.75rem;
+}
+.lt-badge {
+    display: inline-block; background: var(--orange); color: white;
+    font-size: 0.625rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+    padding: 4px 14px; border-radius: 100px;
+}
+.lobby-transition h3 { font-size: 1.05rem; font-weight: 600; color: var(--text); margin: 0; }
+.lobby-transition p { font-size: 0.875rem; color: var(--text-dim); line-height: 1.6; margin: 0; max-width: 32rem; }
+
+/* Light theme overrides for new brief elements */
+html[data-theme="light"] .lobby-progress-dot { background: rgba(30,25,79,0.15); }
+html[data-theme="light"] .ps-card { background: #f4f4f6; border-color: rgba(30,25,79,0.09); }
+html[data-theme="light"] .ps-card:hover { border-color: var(--orange); background: rgba(241,90,34,0.04); }
+html[data-theme="light"] .ps-escape { border-color: rgba(30,25,79,0.2); }
+html[data-theme="light"] .ps-escape:hover { border-color: rgba(30,25,79,0.45); }
+html[data-theme="light"] .ps-escape.active { border-color: var(--orange); background: rgba(241,90,34,0.04); }
+html[data-theme="light"] .ps-escape-icon { border-color: rgba(30,25,79,0.35); }
+html[data-theme="light"] .ps-freetext-area { background: white; border-color: rgba(30,25,79,0.15); }
+html[data-theme="light"] .lobby-readback { background: white; border-color: rgba(30,25,79,0.1); }
+html[data-theme="light"] .readback-beneath { background: rgba(39,189,190,0.06); }
+html[data-theme="light"] .lobby-transition { background: white; }
+
 /* === SESSION BAR (shown during active exercise) === */
 .session-bar {
     display: flex;

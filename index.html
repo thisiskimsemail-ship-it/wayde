@@ -23,7 +23,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link rel="preload" href="fonts/GT-Walsheim-Regular.woff" as="font" type="font/woff" crossorigin>
     <link rel="preload" href="banner.webp" as="image" type="image/webp">
-    <link rel="stylesheet" href="styles.css?v=214">
+    <link rel="stylesheet" href="styles.css?v=215">
 </head>
 <body>
 
@@ -270,8 +270,21 @@
         <div class="brief-view hidden" id="briefView">
             <div class="brief-inner">
 
+                <!-- Shared nav: back + progress dots -->
+                <div class="lobby-nav-row">
+                    <button class="lobby-back" id="lobbyBackBtn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+                        <span id="lobbyBackLabel">Back to home</span>
+                    </button>
+                    <div class="lobby-progress">
+                        <div class="lobby-progress-dot active" id="prog-1"></div>
+                        <div class="lobby-progress-dot" id="prog-2"></div>
+                        <div class="lobby-progress-dot" id="prog-3"></div>
+                    </div>
+                </div>
+
                 <!-- Phase 1: Who are you? -->
-                <div class="brief-phase" id="briefPhase1">
+                <div class="lobby-phase active" id="lobbyPhase1">
                     <div class="brief-pete-row">
                         <div class="brief-pete-avatar" aria-hidden="true">P</div>
                         <div class="brief-pete-bubble">
@@ -280,44 +293,86 @@
                     </div>
                     <div class="brief-segments">
                         <button class="brief-segment-card" data-segment="founder">
-                            <span class="brief-seg-icon brief-seg-icon-founder" aria-hidden="true">🚀</span>
+                            <span class="brief-seg-icon brief-seg-icon--founder" aria-hidden="true">
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>
+                            </span>
                             <strong>Building something new</strong>
                             <p>Startup founder, side project, freelancer going out on your own</p>
                         </button>
                         <button class="brief-segment-card" data-segment="corporate">
-                            <span class="brief-seg-icon brief-seg-icon-corporate" aria-hidden="true">🏢</span>
+                            <span class="brief-seg-icon brief-seg-icon--corporate" aria-hidden="true">
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20h20"/><path d="M5 20V6a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v14"/><path d="M13 20V10a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v10"/><path d="M8 9h.01"/><path d="M8 13h.01"/><path d="M16 13h.01"/><path d="M8 17h.01"/><path d="M16 17h.01"/></svg>
+                            </span>
                             <strong>Innovating inside an org</strong>
                             <p>Corporate innovator, intrapreneur, leading a new initiative at work</p>
                         </button>
                     </div>
                 </div>
 
-                <!-- Phase 2: What's the problem? -->
-                <div class="brief-phase hidden" id="briefPhase2">
-                    <button class="brief-back" id="briefBack2" aria-label="Back">&larr; Back</button>
-                    <div class="brief-pete-row">
-                        <div class="brief-pete-avatar" aria-hidden="true">P</div>
-                        <div class="brief-pete-bubble">
-                            <p>What's the thing that's keeping you stuck?</p>
-                            <p class="brief-pete-sub">Pick the one that resonates most. You don't have to match it exactly.</p>
-                        </div>
+                <!-- Phase 2: Founder problems -->
+                <div class="lobby-phase" id="lobbyPhase2Founder">
+                    <div class="problem-prompt">
+                        <h3>What&rsquo;s keeping you stuck?</h3>
+                        <p>Tap the one that resonates. You don&rsquo;t have to match it exactly.</p>
                     </div>
-                    <div class="brief-problems-grid" id="briefProblemsGrid">
-                        <!-- Populated by JS -->
+                    <div class="ps-cards" id="psCardsFounder"><!-- Populated by JS --></div>
+                    <div class="ps-escape" id="psEscapeFounder">
+                        <div class="ps-escape-icon"></div>
+                        <span class="ps-escape-label">Something else is going on</span>
+                        <span class="ps-escape-hint">Write your own</span>
+                    </div>
+                    <div class="ps-freetext" id="psFreetextFounder">
+                        <textarea class="ps-freetext-area" id="psFreetextAreaFounder" placeholder="Describe what you&rsquo;re dealing with in a sentence or two&hellip;"></textarea>
+                        <div class="ps-freetext-row">
+                            <span class="ps-freetext-hint">&#8984;+Enter to submit</span>
+                            <button class="ps-freetext-submit" id="psFreetextSubmitFounder">Find the right tool &rarr;</button>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Phase 3: Read-back + launch -->
-                <div class="brief-phase hidden" id="briefPhase3">
-                    <button class="brief-back" id="briefBack3" aria-label="Back">&larr; Back</button>
-                    <div class="brief-pete-row">
-                        <div class="brief-pete-avatar" aria-hidden="true">P</div>
-                        <div class="brief-pete-bubble" id="briefReadback">
-                            <!-- Populated by JS -->
+                <!-- Phase 2: Corporate problems -->
+                <div class="lobby-phase" id="lobbyPhase2Corporate">
+                    <div class="problem-prompt">
+                        <h3>What&rsquo;s keeping you stuck?</h3>
+                        <p>Tap the one that resonates. You don&rsquo;t have to match it exactly.</p>
+                    </div>
+                    <div class="ps-cards" id="psCardsCorporate"><!-- Populated by JS --></div>
+                    <div class="ps-escape" id="psEscapeCorporate">
+                        <div class="ps-escape-icon"></div>
+                        <span class="ps-escape-label">Something else is going on</span>
+                        <span class="ps-escape-hint">Write your own</span>
+                    </div>
+                    <div class="ps-freetext" id="psFreetextCorporate">
+                        <textarea class="ps-freetext-area" id="psFreetextAreaCorporate" placeholder="Describe what you&rsquo;re dealing with in a sentence or two&hellip;"></textarea>
+                        <div class="ps-freetext-row">
+                            <span class="ps-freetext-hint">&#8984;+Enter to submit</span>
+                            <button class="ps-freetext-submit" id="psFreetextSubmitCorporate">Find the right tool &rarr;</button>
                         </div>
                     </div>
-                    <div class="brief-launch-card" id="briefLaunchCard">
-                        <!-- Populated by JS -->
+                </div>
+
+                <!-- Phase 3: Pete read-back + launch -->
+                <div class="lobby-phase" id="lobbyPhase3">
+                    <div class="lobby-readback">
+                        <div class="readback-header">
+                            <div class="brief-pete-avatar" aria-hidden="true">P</div>
+                            <span>Here&rsquo;s what I&rsquo;m hearing</span>
+                        </div>
+                        <div class="readback-body" id="readbackBody"></div>
+                        <div class="readback-beneath" id="readbackBeneath"></div>
+                        <p class="readback-tool-intro">I think the right tool is:</p>
+                        <div class="readback-route">
+                            <span class="readback-pw" id="readbackPw"></span>
+                            <span class="readback-arrow">&rarr;</span>
+                            <span class="readback-tool-name" id="readbackTool"></span>
+                        </div>
+                        <div class="readback-why" id="readbackWhy"></div>
+                    </div>
+                    <div class="lobby-transition" id="lobbyTransition">
+                        <div class="lt-badge">Workshop ready</div>
+                        <h3 id="transitionTitle"></h3>
+                        <p id="transitionDesc"></p>
+                        <button class="brief-launch-btn" id="briefLaunchBtn">Let&rsquo;s go &rarr;</button>
                     </div>
                 </div>
 
@@ -667,6 +722,6 @@
         <button class="feedback-submit" id="feedbackSubmit">Send feedback</button>
     </div>
 
-    <script src="app.js?v=243"></script>
+    <script src="app.js?v=244"></script>
 </body>
 </html>

@@ -328,8 +328,9 @@ const BRIEF_PROBLEMS = {
             start: "I\u2019m not sure if anyone will actually pay for this.",
             pathway: 'untangle', pathwayLabel: 'The Untangle',
             mode: 'untangle', exercise: 'jtbd', tool: 'Jobs to Be Done',
-            reflection: "You\u2019re questioning whether the problem is real before you commit further. That\u2019s exactly the right instinct.",
-            underneath: "The real question isn\u2019t \u201Cwill they pay?\u201D \u2014 it\u2019s <strong>\u201Cwhat job are they already trying to get done?\u201D</strong> If you understand that, willingness to pay follows.",
+            beneath: "You haven\u2019t validated demand yet. You\u2019re building on assumptions about what customers want, not evidence. That\u2019s fixable \u2014 but you need to understand the job your customer is trying to get done before the product can do it for them.",
+            underneath: "They haven\u2019t validated demand. Building on assumptions, not evidence.",
+            why: "We\u2019ll map the real job your customer is hiring for \u2014 not the features they say they want, but what they\u2019re actually trying to accomplish. Your Board will capture these jobs as we go.",
             title: "Jobs to Be Done: Find the job behind the problem",
             desc: "We\u2019ll map what your customer is actually trying to achieve \u2014 not what they say, but what they\u2019re hiring a solution to do. Your Board will capture the real job, the current workaround, and what a better solution looks like.",
             duration: "~20 min"
@@ -339,8 +340,9 @@ const BRIEF_PROBLEMS = {
             start: "My market feels too broad and I\u2019m worried I\u2019m building something generic.",
             pathway: 'test', pathwayLabel: 'The Test',
             mode: 'test', exercise: 'pre-mortem', tool: 'Pre-Mortem',
-            reflection: "A broad market is often a positioning crisis in disguise. If everyone could use it, no one will choose it.",
-            underneath: "The risk isn\u2019t that the market is too big \u2014 it\u2019s that you <strong>haven\u2019t committed to a specific customer</strong> yet. That\u2019s the assumption we need to test.",
+            beneath: "This is a positioning question, but it\u2019s also a fear question \u2014 optionality feels safer than commitment. You haven\u2019t identified your defensible wedge yet.",
+            underneath: "A positioning crisis. Optionality feels safer than conviction.",
+            why: "We\u2019ll imagine your venture has failed and work backwards to find out why. It usually surfaces the risks you haven\u2019t admitted to yourself yet. Your Board will build as we go.",
             title: "Pre-Mortem: Stress-test your positioning",
             desc: "We\u2019ll imagine the venture has failed, then work backwards to find the assumptions that led there. Your Board will capture the critical risks, early signals, and what to watch for.",
             duration: "~20 min"
@@ -350,8 +352,9 @@ const BRIEF_PROBLEMS = {
             start: "I can\u2019t explain what I\u2019m building in one sentence.",
             pathway: 'untangle', pathwayLabel: 'The Untangle',
             mode: 'untangle', exercise: 'five-whys', tool: 'Five Whys',
-            reflection: "If you can\u2019t say it simply, the idea isn\u2019t fully clear yet \u2014 not just the words.",
-            underneath: "This is usually a signal that the <strong>core problem being solved isn\u2019t yet sharp enough</strong>. We need to find that before we can find the words.",
+            beneath: "If you can\u2019t describe it simply, the idea isn\u2019t clear yet. That\u2019s not a communication problem \u2014 it\u2019s a clarity problem. We need to find the core of what you\u2019re actually building.",
+            underneath: "The idea isn\u2019t clear yet. If you can\u2019t describe it simply, you don\u2019t understand it well enough.",
+            why: "We\u2019ll peel back layers of your idea until we find the root motivation. Each \u2018why\u2019 gets us closer to the thing that actually matters. Your Board will capture the chain.",
             title: "Five Whys: Find the core of what you\u2019re building",
             desc: "We\u2019ll ask \u2018why\u2019 five times to drill through to the real problem you\u2019re solving. Your Board will capture the root cause chain and the reframed problem statement.",
             duration: "~15 min"
@@ -361,8 +364,9 @@ const BRIEF_PROBLEMS = {
             start: "I have lots of ideas but I don\u2019t know which one to pursue.",
             pathway: 'spark', pathwayLabel: 'The Spark',
             mode: 'spark', exercise: 'crazy-8s', tool: 'Crazy 8s',
-            reflection: "Too many ideas and no clear winner is its own kind of stuck. You need to see them all clearly before you can choose.",
-            underneath: "More ideas isn\u2019t the problem \u2014 <strong>the absence of a clear selection criteria</strong> is. We\u2019ll surface that.",
+            beneath: "You\u2019re stuck in divergent thinking. That\u2019s actually a good place to be \u2014 but you need a structured way to generate more options quickly and then converge on the strongest one.",
+            underneath: "Stuck in divergent thinking. Needs a way to generate fast, then converge.",
+            why: "We\u2019ll rapidly sketch 8 variations of your ideas, then score and filter them. Speed is the point \u2014 your instincts often know more than your analysis. Your Board will capture all 8.",
             title: "Crazy 8s: Find the idea worth pursuing",
             desc: "We\u2019ll rapidly explore eight directions in eight minutes, then apply real pressure to the ones that feel most alive. Your Board will capture the ideas, the tensions, and what to test first.",
             duration: "~15 min"
@@ -372,8 +376,9 @@ const BRIEF_PROBLEMS = {
             start: "I\u2019ve been building for months and still don\u2019t have product-market fit.",
             pathway: 'untangle', pathwayLabel: 'The Untangle',
             mode: 'untangle', exercise: 'empathy-map', tool: 'Empathy Map',
-            reflection: "Months of building without fit is usually a signal that you\u2019re solving the wrong problem \u2014 or solving it for the wrong person.",
-            underneath: "You\u2019ve been focused on <strong>what you built</strong>. We need to focus on <strong>who you built it for</strong> and whether their world matches your assumptions.",
+            beneath: "You might be in builder-mode when you should be in investigator-mode. The product might be fine \u2014 the market understanding is the gap. We need to go back to the humans.",
+            underneath: "Builder-mode when they should be in investigator-mode. The market understanding is the gap.",
+            why: "We\u2019ll map what your target customer thinks, feels, says and does \u2014 to find the gap between what you\u2019ve built and what they actually need. Your Board will build the map in real time.",
             title: "Empathy Map: Step into your customer\u2019s world",
             desc: "We\u2019ll build a complete picture of what your customer thinks, feels, says, and does \u2014 and find the gap between that and what you\u2019ve built. Your Board will capture the hidden tensions.",
             duration: "~20 min"
@@ -383,8 +388,9 @@ const BRIEF_PROBLEMS = {
             start: "I know what I want to build \u2014 I just need to figure out where to start.",
             pathway: 'build', pathwayLabel: 'The Build',
             mode: 'build', exercise: 'effectuation', tool: 'Effectuation',
-            reflection: "You\u2019ve got clarity on the destination. The question is how to get there with what you have right now.",
-            underneath: "Most founders wait for the resources they wish they had. <strong>Effectuation starts with what you already have</strong> \u2014 and builds from there.",
+            beneath: "You\u2019re overwhelmed by the gap between vision and execution. The key is identifying the riskiest assumption and testing it first \u2014 starting with what you have, not what you need.",
+            underneath: "Overwhelmed by the gap between vision and execution.",
+            why: "Instead of planning the whole journey, we\u2019ll start with what you have right now \u2014 your skills, network, and resources \u2014 and find the first meaningful step. Your Board will map your means.",
             title: "Effectuation: Build from what you have",
             desc: "We\u2019ll map your existing resources, relationships, and constraints \u2014 then find the path that uses them. Your Board will capture your real starting point and first moves.",
             duration: "~20 min"
@@ -394,8 +400,9 @@ const BRIEF_PROBLEMS = {
             start: "I\u2019m about to launch and I\u2019m terrified I\u2019ve missed something critical.",
             pathway: 'test', pathwayLabel: 'The Test',
             mode: 'test', exercise: 'pre-mortem', tool: 'Pre-Mortem',
-            reflection: "Pre-launch terror is productive. You\u2019re right to stress-test this before you commit.",
-            underneath: "The most valuable thing you can do before a big bet is <strong>imagine it failing and work backwards</strong>. That\u2019s exactly what we\u2019re going to do.",
+            beneath: "Pre-launch anxiety usually masks genuine blind spots. You don\u2019t need reassurance \u2014 you need structured stress-testing so the surprises happen here, not out there.",
+            underneath: "Pre-launch anxiety masking genuine blind spots. Needs structured stress-testing, not reassurance.",
+            why: "We\u2019ll imagine your launch has failed and work backwards to surface every risk category. Better to find the holes now. Your Board will map every risk we surface.",
             title: "Pre-Mortem: Stress-test your launch",
             desc: "We\u2019ll imagine the launch has failed, then identify every assumption that could have led there. Your Board will capture the critical risks and what to watch for in week one.",
             duration: "~20 min"
@@ -407,8 +414,9 @@ const BRIEF_PROBLEMS = {
             start: "My team has great ideas but nothing ever ships.",
             pathway: 'build', pathwayLabel: 'The Build',
             mode: 'build', exercise: 'rapid-experiment', tool: 'Rapid Experiment',
-            reflection: "Ideas without traction usually means no clear path from idea to action. That\u2019s a system problem, not a people problem.",
-            underneath: "The bottleneck isn\u2019t creativity \u2014 it\u2019s that there\u2019s <strong>no agreed path from idea to a real-world test</strong>. We\u2019ll build that path.",
+            beneath: "This is usually innovation theatre \u2014 ideas get validated through consensus, not evidence. You need to find the riskiest assumption and test it cheaply, not build the whole thing.",
+            underneath: "Innovation theatre. The organisation validates ideas through consensus, not evidence.",
+            why: "We\u2019ll design the cheapest possible experiment to test your riskiest assumption. The goal is evidence, not a prototype. Your Board will capture the experiment design.",
             title: "Rapid Experiment: Design a test that ships",
             desc: "We\u2019ll design the smallest possible test that could prove or disprove your best idea. Your Board will capture the hypothesis, the test design, and the go/no-go criteria.",
             duration: "~20 min"
@@ -418,9 +426,10 @@ const BRIEF_PROBLEMS = {
             start: "I\u2019ve been asked to do something with AI but I don\u2019t know where to start.",
             pathway: 'untangle', pathwayLabel: 'The Untangle',
             mode: 'untangle', exercise: 'five-whys', tool: 'Five Whys',
-            reflection: "The request to \u2018do something with AI\u2019 is rarely about AI. There\u2019s usually a real problem underneath it.",
-            underneath: "Before you can answer \u2018what AI?\u2019 you need to answer <strong>\u2018what problem?\u2019</strong> We\u2019ll use Five Whys to find what\u2019s actually being asked for.",
-            title: "Five Whys: Find the real brief",
+            beneath: "You have an unfocused mandate. Before you can act on it, you need to separate AI-as-efficiency from AI-as-opportunity and figure out which bets to make first.",
+            underneath: "An unfocused mandate. Needs to separate AI-as-efficiency from AI-as-opportunity.",
+            why: "We\u2019ll dig into what your organisation actually means by \u2018do something with AI\u2019 \u2014 and find the real problem underneath the mandate. Your Board will capture the chain.",
+            title: "Five Whys: Find the real AI opportunity",
             desc: "We\u2019ll ask \u2018why\u2019 five times to find the actual problem your organisation is trying to solve. Your Board will capture the root cause and a reframed brief you can actually act on.",
             duration: "~15 min"
         },
@@ -429,8 +438,9 @@ const BRIEF_PROBLEMS = {
             start: "We\u2019re about to invest heavily and I\u2019m not confident it will work.",
             pathway: 'test', pathwayLabel: 'The Test',
             mode: 'test', exercise: 'pre-mortem', tool: 'Pre-Mortem',
-            reflection: "Doubt before a big commitment is healthy. The question is whether you\u2019ve stress-tested it enough.",
-            underneath: "Optimism is useful for starting \u2014 dangerous for investing. <strong>Naming what could go wrong before it does</strong> is the most valuable thing you can do right now.",
+            beneath: "This is high-stakes decision anxiety. You need to name the failure modes before committing resources, not after. The strongest investment is one that has already stress-tested itself.",
+            underneath: "High-stakes decision anxiety. Needs to name failure modes before committing resources.",
+            why: "We\u2019ll imagine this initiative has failed and work backwards to surface every risk. Better to find the cracks before the money is spent. Your Board will map every risk.",
             title: "Pre-Mortem: Stress-test the investment",
             desc: "We\u2019ll imagine the initiative has failed, then work backwards to find the assumptions that haven\u2019t been tested. Your Board will capture the critical risks and what to de-risk first.",
             duration: "~20 min"
@@ -440,8 +450,9 @@ const BRIEF_PROBLEMS = {
             start: "We keep solving symptoms instead of the actual problem.",
             pathway: 'untangle', pathwayLabel: 'The Untangle',
             mode: 'untangle', exercise: 'five-whys', tool: 'Five Whys',
-            reflection: "A recurring problem is a reliable signal that the root cause hasn\u2019t been found yet. Let\u2019s go find it.",
-            underneath: "Every fix that doesn\u2019t stick is telling you the same thing: <strong>you\u2019re one level up from the real cause</strong>. Five Whys will get us there.",
+            beneath: "Root cause blindness. Your organisation is probably optimising at the wrong level \u2014 fixing processes when the structure is broken. We need to find what\u2019s actually going on.",
+            underneath: "Root cause blindness. Optimising at the wrong level.",
+            why: "We\u2019ll trace the symptom back through layers of cause until we find the structural issue. Each \u2018why\u2019 peels back an assumption. Your Board will capture the chain.",
             title: "Five Whys: Find the root cause",
             desc: "We\u2019ll drill through five levels of explanation until we find something that\u2019s actually fixable. Your Board will capture the full cause chain and the reframed problem.",
             duration: "~15 min"
@@ -451,8 +462,9 @@ const BRIEF_PROBLEMS = {
             start: "We know our industry is being disrupted but we can\u2019t agree on what to do.",
             pathway: 'spark', pathwayLabel: 'The Spark',
             mode: 'spark', exercise: 'hmw', tool: 'How Might We',
-            reflection: "Disagreement about disruption is usually disagreement about the problem, not the solution. You need a shared frame first.",
-            underneath: "Before you can agree on a response, you need to agree on <strong>what opportunity the disruption creates</strong>. That\u2019s what How Might We surfaces.",
+            beneath: "Strategic paralysis. You have multiple plausible futures and no framework for choosing between them. You need to generate options before narrowing.",
+            underneath: "Strategic paralysis. Multiple plausible futures, no framework for choosing.",
+            why: "We\u2019ll reframe your disruption challenge into possibility statements, then generate concrete responses. The framework moves you from debate to action. Your Board will capture every option.",
             title: "How Might We: Find the opportunity in the disruption",
             desc: "We\u2019ll reframe the disruption as a set of open questions your team can explore together. Your Board will capture the best reframes and the directions worth pursuing.",
             duration: "~20 min"
@@ -462,8 +474,9 @@ const BRIEF_PROBLEMS = {
             start: "We built what customers asked for and they still aren\u2019t using it.",
             pathway: 'untangle', pathwayLabel: 'The Untangle',
             mode: 'untangle', exercise: 'jtbd', tool: 'Jobs to Be Done',
-            reflection: "Building what was asked and still missing the mark is a classic sign of solving the stated need, not the real one.",
-            underneath: "Customers can tell you what they want. <strong>They can\u2019t always tell you what job they need done</strong>. That\u2019s the gap we\u2019re going to close.",
+            beneath: "You listened to feature requests instead of understanding the underlying job. Customers describe solutions, not needs \u2014 and the gap between the two is where adoption breaks down.",
+            underneath: "Listened to feature requests instead of understanding the underlying job.",
+            why: "We\u2019ll map what your customers are actually trying to accomplish \u2014 the job they\u2019re hiring your product for. It\u2019s usually not what they told you. Your Board will capture the real jobs.",
             title: "Jobs to Be Done: Find the real job",
             desc: "We\u2019ll map what your customer is actually trying to achieve when they reach for your product. Your Board will capture the real job, the workaround they\u2019re using, and what would make them switch.",
             duration: "~20 min"
@@ -1736,22 +1749,25 @@ function enterStudio() {
 
 // === THE BRIEF — View 2 functions ===
 
-let briefState = { segment: null, phase: 1 };
+let briefState = { segment: null, phase: 1, problem: null };
 
 function enterBrief() {
     trackEvent('brief_start');
-    briefState = { segment: null, phase: 1 };
+    briefState = { segment: null, phase: 1, problem: null };
 
     welcome.classList.add('hidden');
     if (wadeCta) wadeCta.style.display = 'none';
     const briefView = document.getElementById('briefView');
     briefView.classList.remove('hidden');
 
-    showBriefPhase(1);
-    setLocationView('brief');
+    // Reset to phase 1
+    document.querySelectorAll('.lobby-phase').forEach(ph => ph.classList.remove('active'));
+    const ph1 = document.getElementById('lobbyPhase1');
+    if (ph1) ph1.classList.add('active');
+    updateLobbyProgress(1);
 
-    const chatPane = document.getElementById('chatPane');
-    if (chatPane) chatPane.scrollTop = 0;
+    setLocationView('brief');
+    window.scrollTo(0, 0);
 }
 
 function exitBrief() {
@@ -1762,105 +1778,150 @@ function exitBrief() {
     window.scrollTo(0, 0);
 }
 
-function showBriefPhase(n) {
-    for (let i = 1; i <= 3; i++) {
-        const el = document.getElementById(`briefPhase${i}`);
-        if (!el) continue;
-        if (i === n) {
-            el.classList.remove('hidden', 'brief-fade-up');
-            // Force reflow so animation re-triggers
-            void el.offsetWidth;
-            el.classList.add('brief-fade-up');
-        } else {
-            el.classList.add('hidden');
-            el.classList.remove('brief-fade-up');
-        }
-    }
-    briefState.phase = n;
+function updateLobbyProgress(phase) {
+    briefState.phase = phase;
+    const dots = [
+        document.getElementById('prog-1'),
+        document.getElementById('prog-2'),
+        document.getElementById('prog-3')
+    ];
+    dots.forEach((d, i) => {
+        if (!d) return;
+        d.classList.remove('active', 'done');
+        if (i + 1 === phase) d.classList.add('active');
+        else if (i + 1 < phase) d.classList.add('done');
+    });
+    const label = document.getElementById('lobbyBackLabel');
+    if (label) label.textContent = phase === 1 ? 'Back to home' : 'Back';
 }
 
-function selectSegment(segment) {
+function lobbyBack() {
+    if (briefState.phase === 1) {
+        exitBrief();
+    } else if (briefState.phase === 2) {
+        document.querySelectorAll('.lobby-phase').forEach(ph => ph.classList.remove('active'));
+        const ph1 = document.getElementById('lobbyPhase1');
+        if (ph1) ph1.classList.add('active');
+        // Reset freetext states
+        document.querySelectorAll('.ps-escape').forEach(e => e.classList.remove('active'));
+        document.querySelectorAll('.ps-freetext').forEach(f => f.classList.remove('active'));
+        updateLobbyProgress(1);
+        window.scrollTo(0, 0);
+    } else if (briefState.phase === 3) {
+        document.querySelectorAll('.lobby-phase').forEach(ph => ph.classList.remove('active'));
+        const seg = briefState.segment;
+        const ph2id = seg === 'founder' ? 'lobbyPhase2Founder' : 'lobbyPhase2Corporate';
+        const ph2 = document.getElementById(ph2id);
+        if (ph2) ph2.classList.add('active');
+        updateLobbyProgress(2);
+        window.scrollTo(0, 0);
+    }
+}
+
+function pickSegment(segment) {
     briefState.segment = segment;
     const problems = BRIEF_PROBLEMS[segment];
-    const grid = document.getElementById('briefProblemsGrid');
-    if (!grid) return;
-
-    grid.innerHTML = problems.map((p, i) => `
-        <button class="brief-problem-card" data-index="${i}">
-            <span class="brief-ps-dot brief-ps-dot-${p.pathway}" aria-hidden="true"></span>
-            <p class="brief-problem-text">${p.text}</p>
-        </button>
-    `).join('') + `
-        <button class="brief-problem-card brief-problem-card-other" data-index="other">
-            <span class="brief-ps-dot brief-ps-dot-other" aria-hidden="true"></span>
-            <p class="brief-problem-text">Something else \u2014 I\u2019ll describe it</p>
-        </button>
-    `;
-
-    grid.querySelectorAll('.brief-problem-card').forEach(card => {
-        card.addEventListener('click', () => {
-            const idx = card.dataset.index;
-            if (idx === 'other') selectProblemOther();
-            else selectProblem(parseInt(idx));
+    const gridId = segment === 'founder' ? 'psCardsFounder' : 'psCardsCorporate';
+    const grid = document.getElementById(gridId);
+    if (grid && grid.children.length === 0) {
+        grid.innerHTML = problems.map((p, i) => `
+            <div class="ps-card" data-index="${i}">
+                <div class="ps-dot ${p.pathway}"></div>
+                <div class="ps-text">\u201C${p.text}\u201D</div>
+            </div>
+        `).join('');
+        grid.querySelectorAll('.ps-card').forEach(card => {
+            card.addEventListener('click', () => {
+                grid.querySelectorAll('.ps-card').forEach(c => c.classList.remove('chosen'));
+                card.classList.add('chosen');
+                // deactivate escape if open
+                const esc = document.getElementById(`psEscape${segment.charAt(0).toUpperCase() + segment.slice(1)}`);
+                const ft = document.getElementById(`psFreetext${segment.charAt(0).toUpperCase() + segment.slice(1)}`);
+                if (esc) esc.classList.remove('active');
+                if (ft) ft.classList.remove('active');
+                setTimeout(() => pickProblem(parseInt(card.dataset.index)), 400);
+            });
         });
-    });
+    }
 
-    showBriefPhase(2);
+    document.querySelectorAll('.lobby-phase').forEach(ph => ph.classList.remove('active'));
+    const ph2id = segment === 'founder' ? 'lobbyPhase2Founder' : 'lobbyPhase2Corporate';
+    const ph2 = document.getElementById(ph2id);
+    if (ph2) ph2.classList.add('active');
+    updateLobbyProgress(2);
+    window.scrollTo(0, 0);
 }
 
-function selectProblem(idx) {
+function pickProblem(idx) {
     const problem = BRIEF_PROBLEMS[briefState.segment][idx];
     briefState.problem = problem;
-
-    const readback = document.getElementById('briefReadback');
-    if (readback) {
-        readback.innerHTML = `
-            <p class="brief-readback-label">What I\u2019m hearing is\u2026</p>
-            <p class="brief-readback-quote">\u201C${problem.text}\u201D</p>
-            <p class="brief-readback-reflection">${problem.reflection}</p>
-            <div class="brief-readback-beneath">${problem.underneath}</div>
-            <div class="brief-readback-route">
-                <span class="brief-readback-pw brief-readback-pw-${problem.pathway}">${problem.pathwayLabel}</span>
-                <span class="brief-readback-tool">${problem.tool}</span>
-            </div>
-        `;
-    }
-
-    const launchCard = document.getElementById('briefLaunchCard');
-    if (launchCard) {
-        launchCard.className = 'brief-launch-card';
-        launchCard.innerHTML = `
-            <span class="brief-workshop-ready">Workshop ready</span>
-            <h3 class="brief-launch-title">${problem.title}</h3>
-            <p class="brief-launch-desc">${problem.desc} ${problem.duration}. I\u2019ll push your thinking \u2014 that\u2019s the point.</p>
-            <button class="brief-launch-btn" id="briefLaunchBtn">Let\u2019s go \u2192</button>
-        `;
-        document.getElementById('briefLaunchBtn').addEventListener('click', () => {
-            launchFromBrief(problem);
-        });
-    }
-
-    showBriefPhase(3);
+    populateReadback(problem);
+    document.querySelectorAll('.lobby-phase').forEach(ph => ph.classList.remove('active'));
+    const ph3 = document.getElementById('lobbyPhase3');
+    if (ph3) ph3.classList.add('active');
+    updateLobbyProgress(3);
+    window.scrollTo(0, 0);
 }
 
-function selectProblemOther() {
-    const readback = document.getElementById('briefReadback');
-    if (readback) {
-        readback.innerHTML = `
-            <p style="margin:0 0 0.75rem;color:var(--text)">Tell me what you\u2019re working on \u2014 I\u2019ll find the right tool.</p>
-            <textarea class="brief-other-textarea" id="briefOtherText" placeholder="Describe your situation in a few sentences\u2026" rows="4"></textarea>
-            <button class="brief-other-submit" id="briefOtherSubmit">Find the right tool \u2192</button>
-        `;
-        document.getElementById('briefOtherSubmit').addEventListener('click', () => {
-            const text = (document.getElementById('briefOtherText')?.value || '').trim();
-            if (!text) return;
-            launchFromBriefOther(text);
-        });
-    }
-    const launchCard = document.getElementById('briefLaunchCard');
-    if (launchCard) launchCard.innerHTML = '';
+function populateReadback(problem) {
+    const body = document.getElementById('readbackBody');
+    if (body) body.innerHTML = 'You said: <em>\u201C' + problem.text + '\u201D</em><br><br>' + problem.beneath;
 
-    showBriefPhase(3);
+    const beneath = document.getElementById('readbackBeneath');
+    if (beneath) beneath.innerHTML = '<em>What\u2019s underneath:</em> ' + problem.underneath;
+
+    const pw = document.getElementById('readbackPw');
+    if (pw) { pw.textContent = problem.pathwayLabel; pw.className = 'readback-pw ' + problem.pathway; }
+
+    const tool = document.getElementById('readbackTool');
+    if (tool) tool.textContent = problem.tool;
+
+    const why = document.getElementById('readbackWhy');
+    if (why) why.textContent = problem.why;
+
+    const title = document.getElementById('transitionTitle');
+    if (title) title.textContent = problem.title;
+
+    const desc = document.getElementById('transitionDesc');
+    if (desc) desc.textContent = problem.desc + ' ' + problem.duration + '. I\u2019ll push your thinking \u2014 that\u2019s the point.';
+
+    const launchBtn = document.getElementById('briefLaunchBtn');
+    if (launchBtn) {
+        launchBtn.onclick = null;
+        launchBtn.addEventListener('click', () => launchFromBrief(problem));
+    }
+}
+
+function toggleFreetext(segment) {
+    const segCap = segment.charAt(0).toUpperCase() + segment.slice(1);
+    const esc = document.getElementById('psEscape' + segCap);
+    const ft = document.getElementById('psFreetext' + segCap);
+    // Deselect any chosen problem card
+    const grid = document.getElementById('psCards' + segCap);
+    if (grid) grid.querySelectorAll('.ps-card').forEach(c => c.classList.remove('chosen'));
+    if (esc) esc.classList.add('active');
+    if (ft) ft.classList.add('active');
+    // Auto-focus textarea on desktop
+    const textarea = document.getElementById('psFreetextArea' + segCap);
+    if (textarea) setTimeout(() => textarea.focus(), 100);
+}
+
+function checkFreetext(segment) {
+    const segCap = segment.charAt(0).toUpperCase() + segment.slice(1);
+    const textarea = document.getElementById('psFreetextArea' + segCap);
+    const btn = document.getElementById('psFreetextSubmit' + segCap);
+    if (!textarea || !btn) return;
+    if (textarea.value.trim().length > 5) btn.classList.add('ready');
+    else btn.classList.remove('ready');
+}
+
+function submitBriefFreetext(segment) {
+    const segCap = segment.charAt(0).toUpperCase() + segment.slice(1);
+    const textarea = document.getElementById('psFreetextArea' + segCap);
+    if (!textarea) return;
+    const text = textarea.value.trim();
+    if (text.length < 6) return;
+    launchFromBriefOther(text);
 }
 
 function launchFromBrief(problem) {
@@ -1901,15 +1962,31 @@ function launchFromBriefOther(text) {
 document.addEventListener('DOMContentLoaded', () => {
     trackEvent('page_view', { page: location.pathname });
 
-    // Back buttons in The Brief
-    document.getElementById('briefBack2')?.addEventListener('click', () => showBriefPhase(1));
-    document.getElementById('briefBack3')?.addEventListener('click', () => {
-        if (briefState.phase === 3) showBriefPhase(2);
+    // Lobby back button
+    document.getElementById('lobbyBackBtn')?.addEventListener('click', lobbyBack);
+
+    // Segment cards → pickSegment
+    document.querySelectorAll('.brief-segment-card').forEach(card => {
+        card.addEventListener('click', () => pickSegment(card.dataset.segment));
     });
 
-    // Segment cards
-    document.querySelectorAll('.brief-segment-card').forEach(card => {
-        card.addEventListener('click', () => selectSegment(card.dataset.segment));
+    // "Something else" escape cards
+    ['founder', 'corporate'].forEach(seg => {
+        const segCap = seg.charAt(0).toUpperCase() + seg.slice(1);
+        document.getElementById('psEscape' + segCap)?.addEventListener('click', () => toggleFreetext(seg));
+        document.getElementById('psFreetextArea' + segCap)?.addEventListener('input', () => checkFreetext(seg));
+        document.getElementById('psFreetextSubmit' + segCap)?.addEventListener('click', () => submitBriefFreetext(seg));
+    });
+
+    // Cmd/Ctrl+Enter to submit freetext
+    document.addEventListener('keydown', e => {
+        if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+            const ta = document.activeElement;
+            if (ta && ta.classList.contains('ps-freetext-area')) {
+                const seg = briefState.segment;
+                if (seg) submitBriefFreetext(seg);
+            }
+        }
     });
 
     const enterBtn = document.getElementById('enterStudioBtn');
