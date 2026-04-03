@@ -320,6 +320,118 @@ const MODE_LABELS = {
     build: 'The Build'
 };
 
+// === THE BRIEF — problem data for 3-phase structured intake ===
+const BRIEF_PROBLEMS = {
+    founder: [
+        {
+            quote: "\u201CI\u2019m not sure my customers actually have this problem.\u201D",
+            start: "I\u2019m not sure my customers actually have this problem.",
+            pathway: 'untangle', pathwayLabel: 'The Untangle',
+            mode: 'untangle', exercise: 'jtbd', tool: 'Jobs to Be Done',
+            reflection: "You\u2019re questioning whether the problem is real before you commit further. That\u2019s exactly the right instinct.",
+            underneath: "Jobs to Be Done will help you see the problem from your customer\u2019s perspective \u2014 what they\u2019re actually trying to achieve, not just what you think they want."
+        },
+        {
+            quote: "\u201CWe keep solving symptoms instead of the real issue.\u201D",
+            start: "We keep solving symptoms instead of the real issue.",
+            pathway: 'untangle', pathwayLabel: 'The Untangle',
+            mode: 'untangle', exercise: 'five-whys', tool: 'Five Whys',
+            reflection: "You\u2019re noticing a pattern \u2014 fixes that don\u2019t stick. That usually means the root cause hasn\u2019t been found yet.",
+            underneath: "Five Whys will dig beneath the surface until we find what\u2019s actually driving the problem."
+        },
+        {
+            quote: "\u201CI don\u2019t really understand what my customers think or feel.\u201D",
+            start: "I don\u2019t really understand what my customers think or feel.",
+            pathway: 'untangle', pathwayLabel: 'The Untangle',
+            mode: 'untangle', exercise: 'empathy-map', tool: 'Empathy Map',
+            reflection: "You sense there\u2019s a gap between your assumptions and your customer\u2019s reality. That gap is worth closing.",
+            underneath: "An Empathy Map will get you inside your customer\u2019s head \u2014 what they say, think, feel, and do."
+        },
+        {
+            quote: "\u201CWe\u2019ve run out of steam \u2014 I need a fresh direction.\u201D",
+            start: "We\u2019ve run out of steam and need a fresh direction.",
+            pathway: 'spark', pathwayLabel: 'The Spark',
+            mode: 'spark', exercise: 'hmw', tool: 'How Might We',
+            reflection: "You\u2019re stuck in a rut and need to open up the possibility space again. Good time for it.",
+            underneath: "How Might We reframes your challenge as an open question \u2014 inviting new directions instead of defending old ones."
+        },
+        {
+            quote: "\u201CI\u2019m about to launch and worried I\u2019ve missed something critical.\u201D",
+            start: "I\u2019m about to launch and worried I\u2019ve missed something critical.",
+            pathway: 'test', pathwayLabel: 'The Test',
+            mode: 'test', exercise: 'pre-mortem', tool: 'Pre-Mortem',
+            reflection: "The launch anxiety is real \u2014 and useful. You\u2019re right to stress-test this before you go.",
+            underneath: "A Pre-Mortem imagines the failure in advance so you can prevent it. It\u2019s the most valuable thing you can do before a big commitment."
+        },
+        {
+            quote: "\u201CI have too many options and can\u2019t decide which way to go.\u201D",
+            start: "I have too many options and can\u2019t decide which way to go.",
+            pathway: 'test', pathwayLabel: 'The Test',
+            mode: 'test', exercise: 'devils-advocate', tool: "Devil\u2019s Advocate",
+            reflection: "Too many good options is its own kind of stuck. You need a clear way to pressure-test each one.",
+            underneath: "Devil\u2019s Advocate will surface the weaknesses in your leading options \u2014 so you can choose with confidence."
+        },
+        {
+            quote: "\u201CI need to turn this idea into a model that actually holds together.\u201D",
+            start: "I need to turn this idea into a model that actually holds together.",
+            pathway: 'build', pathwayLabel: 'The Build',
+            mode: 'build', exercise: 'lean-canvas', tool: 'Lean Canvas',
+            reflection: "You\u2019ve got the idea \u2014 now you need the structure to see if the whole thing stacks up.",
+            underneath: "A Lean Canvas maps every moving part of your model on one page. It\u2019s where ideas become plans."
+        }
+    ],
+    corporate: [
+        {
+            quote: "\u201CI\u2019m not convinced we understand the real problem behind this brief.\u201D",
+            start: "I\u2019m not convinced we understand the real problem behind this brief.",
+            pathway: 'untangle', pathwayLabel: 'The Untangle',
+            mode: 'untangle', exercise: 'jtbd', tool: 'Jobs to Be Done',
+            reflection: "You\u2019re questioning the brief before jumping to solutions. That\u2019s more valuable than it sounds.",
+            underneath: "Jobs to Be Done reframes the challenge around what people are actually trying to achieve \u2014 not the brief as written."
+        },
+        {
+            quote: "\u201CWe keep treating symptoms \u2014 the same issues keep coming back.\u201D",
+            start: "We keep treating symptoms and the same issues keep coming back.",
+            pathway: 'untangle', pathwayLabel: 'The Untangle',
+            mode: 'untangle', exercise: 'five-whys', tool: 'Five Whys',
+            reflection: "A recurring problem is a signal that the root cause hasn\u2019t been found. Let\u2019s go find it.",
+            underneath: "Five Whys drills down through the surface explanations until you hit something that\u2019s actually fixable."
+        },
+        {
+            quote: "\u201CI need to understand what our customers or users actually feel.\u201D",
+            start: "I need to understand what our customers or users actually feel.",
+            pathway: 'untangle', pathwayLabel: 'The Untangle',
+            mode: 'untangle', exercise: 'empathy-map', tool: 'Empathy Map',
+            reflection: "There\u2019s a gap between what you think you know and what your users experience. That\u2019s worth closing.",
+            underneath: "An Empathy Map surfaces the hidden dimension of your customer\u2019s experience \u2014 what they feel, not just what they say."
+        },
+        {
+            quote: "\u201CWe need fresh thinking \u2014 the usual approaches aren\u2019t working.\u201D",
+            start: "We need fresh thinking \u2014 the usual approaches aren\u2019t working.",
+            pathway: 'spark', pathwayLabel: 'The Spark',
+            mode: 'spark', exercise: 'scamper', tool: 'SCAMPER',
+            reflection: "You\u2019re ready to break out of the default playbook. Good \u2014 that takes courage inside a big organisation.",
+            underneath: "SCAMPER is a structured way to generate genuinely new ideas by questioning every assumption about the current approach."
+        },
+        {
+            quote: "\u201CWe\u2019re about to commit big resources and I want to stress-test this.\u201D",
+            start: "We\u2019re about to commit big resources and I want to stress-test the plan.",
+            pathway: 'test', pathwayLabel: 'The Test',
+            mode: 'test', exercise: 'pre-mortem', tool: 'Pre-Mortem',
+            reflection: "Before a big commitment, imagining the failure is the most valuable thing you can do.",
+            underneath: "A Pre-Mortem surfaces the risks that optimism tends to hide \u2014 so you can address them before they surface on their own."
+        },
+        {
+            quote: "\u201CThere\u2019s no shortage of ideas \u2014 the hard part is deciding what to build.\u201D",
+            start: "There\u2019s no shortage of ideas. The hard part is deciding what to build.",
+            pathway: 'build', pathwayLabel: 'The Build',
+            mode: 'build', exercise: 'lean-canvas', tool: 'Lean Canvas',
+            reflection: "You\u2019ve got ideas, but you need a clear framework to compare them and make the case for one.",
+            underneath: "A Lean Canvas puts every idea on the same page \u2014 so you can see which one actually holds together end to end."
+        }
+    ]
+};
+
 // Exercises with custom board layouts (single source of truth — used for layout switching)
 const CUSTOM_BOARD_EXERCISES = ['lean-canvas', 'pre-mortem', 'effectuation', 'flywheel', 'cold-open', 'iceberg', 'constraint-flip', 'socratic', 'reality-check', 'theory-of-change', 'trade-off', 'five-whys', 'empathy-map', 'jtbd', 'crazy-8s', 'hmw', 'scamper', 'devils-advocate', 'rapid-experiment', 'mash-up', 'analogical', 'wardley'];
 
@@ -1375,6 +1487,7 @@ function forceCloseSession() {
     // Hide input bar on welcome
     if (inputArea) inputArea.style.display = 'none';
     document.body.classList.remove('in-session', 'board-open', 'session-complete');
+    document.getElementById('briefView')?.classList.add('hidden');
     setLocationView('welcome');
     clearSession();
     window.scrollTo(0, 0);
@@ -1440,6 +1553,7 @@ function doCloseSession() {
     if (chatPaneEl) chatPaneEl.style.display = '';
 
     // Show welcome, move input back, hide session bar
+    document.getElementById('briefView')?.classList.add('hidden');
     welcome.classList.remove('hidden');
     moveInputToWelcome();
     sessionBar.classList.add('hidden');
@@ -1581,12 +1695,173 @@ function enterStudio() {
     });
 }
 
+// === THE BRIEF — View 2 functions ===
+
+let briefState = { segment: null, phase: 1 };
+
+function enterBrief() {
+    trackEvent('brief_start');
+    briefState = { segment: null, phase: 1 };
+
+    welcome.classList.add('hidden');
+    if (wadeCta) wadeCta.style.display = 'none';
+    const briefView = document.getElementById('briefView');
+    briefView.classList.remove('hidden');
+
+    showBriefPhase(1);
+    setLocationView('brief');
+
+    const chatPane = document.getElementById('chatPane');
+    if (chatPane) chatPane.scrollTop = 0;
+}
+
+function exitBrief() {
+    document.getElementById('briefView').classList.add('hidden');
+    welcome.classList.remove('hidden');
+    if (wadeCta) wadeCta.style.display = '';
+    setLocationView('welcome');
+    window.scrollTo(0, 0);
+}
+
+function showBriefPhase(n) {
+    for (let i = 1; i <= 3; i++) {
+        const el = document.getElementById(`briefPhase${i}`);
+        if (el) el.classList.toggle('hidden', i !== n);
+    }
+    briefState.phase = n;
+}
+
+function selectSegment(segment) {
+    briefState.segment = segment;
+    const problems = BRIEF_PROBLEMS[segment];
+    const grid = document.getElementById('briefProblemsGrid');
+    if (!grid) return;
+
+    grid.innerHTML = problems.map((p, i) => `
+        <button class="brief-problem-card" data-index="${i}">
+            <p class="brief-problem-quote">${p.quote}</p>
+            <span class="lp-pathway-badge lp-badge-${p.pathway}">${p.pathwayLabel}</span>
+        </button>
+    `).join('') + `
+        <button class="brief-problem-card brief-problem-card-other" data-index="other">
+            <p class="brief-problem-quote">Something else \u2014 I\u2019ll describe it</p>
+        </button>
+    `;
+
+    grid.querySelectorAll('.brief-problem-card').forEach(card => {
+        card.addEventListener('click', () => {
+            const idx = card.dataset.index;
+            if (idx === 'other') selectProblemOther();
+            else selectProblem(parseInt(idx));
+        });
+    });
+
+    showBriefPhase(2);
+}
+
+function selectProblem(idx) {
+    const problem = BRIEF_PROBLEMS[briefState.segment][idx];
+    briefState.problem = problem;
+
+    const readback = document.getElementById('briefReadback');
+    if (readback) {
+        readback.innerHTML = `
+            <p class="brief-readback-label">What I\u2019m hearing is\u2026</p>
+            <p class="brief-readback-reflection">${problem.reflection}</p>
+            <p class="brief-readback-underneath">${problem.underneath}</p>
+        `;
+    }
+
+    const launchCard = document.getElementById('briefLaunchCard');
+    if (launchCard) {
+        launchCard.className = `brief-launch-card pathway-${problem.pathway}`;
+        launchCard.innerHTML = `
+            <div class="brief-launch-info">
+                <p class="brief-launch-tool-label">${problem.pathwayLabel} \u00b7 ${problem.tool}</p>
+                <p class="brief-launch-heading">Ready to dig in?</p>
+            </div>
+            <button class="brief-launch-btn" id="briefLaunchBtn">Let\u2019s go \u2192</button>
+        `;
+        document.getElementById('briefLaunchBtn').addEventListener('click', () => {
+            launchFromBrief(problem);
+        });
+    }
+
+    showBriefPhase(3);
+}
+
+function selectProblemOther() {
+    const readback = document.getElementById('briefReadback');
+    if (readback) {
+        readback.innerHTML = `
+            <p style="margin:0 0 0.75rem;color:var(--text)">Tell me what you\u2019re working on \u2014 I\u2019ll find the right tool.</p>
+            <textarea class="brief-other-textarea" id="briefOtherText" placeholder="Describe your situation in a few sentences\u2026" rows="4"></textarea>
+            <button class="brief-other-submit" id="briefOtherSubmit">Find the right tool \u2192</button>
+        `;
+        document.getElementById('briefOtherSubmit').addEventListener('click', () => {
+            const text = (document.getElementById('briefOtherText')?.value || '').trim();
+            if (!text) return;
+            launchFromBriefOther(text);
+        });
+    }
+    const launchCard = document.getElementById('briefLaunchCard');
+    if (launchCard) launchCard.innerHTML = '';
+
+    showBriefPhase(3);
+}
+
+function launchFromBrief(problem) {
+    document.getElementById('briefView').classList.add('hidden');
+    trackEvent('brief_complete', { mode: problem.mode, exercise: problem.exercise });
+    startExercise(problem.mode, problem.exercise, problem.start);
+}
+
+function launchFromBriefOther(text) {
+    document.getElementById('briefView').classList.add('hidden');
+    trackEvent('brief_other_launch');
+
+    state.mode = 'routing'; state.exercise = 'suggest'; state.routing = true;
+    state.messages = []; state.exchangeCount = 0; state.tradeOffRound = 0;
+    state.reportGenerated = false; state.reportText = '';
+
+    welcome.classList.add('hidden');
+    if (wadeCta) wadeCta.style.display = 'none';
+    document.body.classList.add('in-session');
+    document.body.dataset.mode = 'routing';
+    updateStageLogo('routing');
+    if (inputArea) inputArea.style.display = 'none';
+    moveInputToSession();
+    modeLabel.textContent = 'The Studio \u00b7 ';
+    if (toolLearnLink) toolLearnLink.classList.add('hidden');
+
+    state.messages.push({ role: 'user', content: text });
+    appendMessage('user', text);
+
+    inputField.value = ''; sendBtn.disabled = true;
+    inputField.style.height = 'auto';
+
+    streamResponse().then(() => { if (inputArea) inputArea.style.display = ''; });
+    setLocationView('work');
+}
+
 // Wire up Enter Studio buttons + hide input on welcome
 document.addEventListener('DOMContentLoaded', () => {
     trackEvent('page_view', { page: location.pathname });
+
+    // Back buttons in The Brief
+    document.getElementById('briefBack2')?.addEventListener('click', () => showBriefPhase(1));
+    document.getElementById('briefBack3')?.addEventListener('click', () => {
+        if (briefState.phase === 3) showBriefPhase(2);
+    });
+
+    // Segment cards
+    document.querySelectorAll('.brief-segment-card').forEach(card => {
+        card.addEventListener('click', () => selectSegment(card.dataset.segment));
+    });
+
     const enterBtn = document.getElementById('enterStudioBtn');
     if (enterBtn) {
-        enterBtn.addEventListener('click', enterStudio);
+        enterBtn.addEventListener('click', enterBrief);
         // Hide the input bar on the welcome page — it appears when you enter the studio
         if (inputArea) inputArea.style.display = 'none';
         // Always hide report elements on welcome page — prevents stale state from showing
@@ -1597,7 +1872,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     // Bind all secondary CTA buttons (e.g. bottom CTA on landing page)
     document.querySelectorAll('.enter-studio-trigger').forEach(btn => {
-        if (btn !== enterBtn) btn.addEventListener('click', enterStudio);
+        if (btn !== enterBtn) btn.addEventListener('click', enterBrief);
     });
 
     // Clickable category cards on homepage — start session with category context
