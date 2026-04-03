@@ -1,4 +1,5 @@
 /* === CRITICAL HIDDEN RULES (must be at top to avoid CSS parse limit) === */
+.brief-view.hidden { display: none !important; }
 .help-menu-dropdown.hidden { display: none !important; }
 .help-menu-item.hidden { display: none !important; }
 .tour-prev.hidden { display: none !important; }
@@ -2284,11 +2285,12 @@ html[data-theme="light"] .account-dropdown-item:hover { background: rgba(0,0,0,0
     background: var(--navy); border: 1.5px solid rgba(255,255,255,0.15);
     display: flex; align-items: center; justify-content: center;
     font-size: 1.25rem; font-weight: 700; color: var(--text);
-    margin-bottom: 1.5rem;
+    flex-shrink: 0;
 }
 html[data-theme="light"] .lp-pete-avatar { background: #1E194F; color: #fff; border-color: rgba(30,25,79,0.15); }
 .lp-hero-heading { font-size: 3.25rem; font-weight: 700; line-height: 1.1; letter-spacing: -0.02em; color: var(--text); margin-bottom: 1rem; }
-.lp-hero-sub { font-size: 1rem; color: var(--text-dim); line-height: 1.65; margin-bottom: 1.75rem; max-width: 440px; }
+.lp-hero-sub-row { display: flex; align-items: flex-start; gap: 0.75rem; margin-bottom: 1.75rem; max-width: 440px; }
+.lp-hero-sub { font-size: 1rem; color: var(--text-dim); line-height: 1.65; margin: 0; }
 .lp-hero-visual { border-radius: 12px; overflow: hidden; }
 .lp-hero-img { width: 100%; height: auto; display: block; }
 
